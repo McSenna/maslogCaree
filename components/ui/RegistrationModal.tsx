@@ -5,12 +5,13 @@ import {
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   Text,
   TextInput,
   View,
 } from "react-native";
-import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { Feather } from "@expo/vector-icons";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { registerResident } from "../../services/auth";
 
 type RegistrationModalProps = {
@@ -20,11 +21,12 @@ type RegistrationModalProps = {
 };
 
 type TabKey = "manual" | "scanner";
+type GenderOption = "male" | "female" | "other";
 
-const GENDER_OPTIONS = [
-  { label: "Male",   value: "male",   icon: "user" as const },
-  { label: "Female", value: "female", icon: "user" as const },
-  { label: "Other",  value: "other",  icon: "users" as const },
+const GENDER_OPTIONS: { label: string; value: GenderOption; icon: string }[] = [
+  { label: "Male", value: "male", icon: "user" },
+  { label: "Female", value: "female", icon: "user" },
+  { label: "Other", value: "other", icon: "users" },
 ];
 
 export default function RegistrationModal({
@@ -34,41 +36,37 @@ export default function RegistrationModal({
 }: RegistrationModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>("manual");
   const [fullname, setFullname] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");       
-  const [dobDate, setDobDate] = useState<Date>(new Date(2000, 0, 1));
+  const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState<GenderOption | "">("");
   const [address, setAddress] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const formatDate = (date: Date | null): string => {
+    if (!date) return "";
+    return date.toISOString().split("T")[0]; // YYYY-MM-DD
+  };
 
-  const formatDateDisplay = (d: Date) =>
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-
-  const onDateChange = (_event: DateTimePickerEvent, selected?: Date) => {
-    if (Platform.OS === "android") setShowDatePicker(false);
-    if (selected) {
-      setDobDate(selected);
-      setDateOfBirth(formatDateDisplay(selected));
-    }
+  const displayDate = (date: Date | null): string => {
+    if (!date) return "";
+    return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
   };
 
   const resetState = () => {
     setActiveTab("manual");
     setFullname("");
-    setDateOfBirth("");
-    setDobDate(new Date(2000, 0, 1));
-    setShowDatePicker(false);
+    setDateOfBirth(null);
     setEmail("");
     setPassword("");
     setConfirmPassword("");
     setGender("");
     setAddress("");
     setIsSubmitting(false);
+    setShowDatePicker(false);
   };
 
   const handleClose = () => {
@@ -76,23 +74,20 @@ export default function RegistrationModal({
     onClose();
   };
 
-  const validateForm = (): boolean => {
+  const validateForm = () => {
     if (!fullname || !dateOfBirth || !email || !password || !confirmPassword || !gender || !address) {
       Alert.alert("Missing Information", "Please fill in all required fields.");
       return false;
     }
-
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email.trim())) {
       Alert.alert("Invalid Email", "Please enter a valid email address.");
       return false;
     }
-
     if (password !== confirmPassword) {
       Alert.alert("Password Mismatch", "Password and confirm password must match.");
       return false;
     }
-
     const passwordPattern =
       /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d!@#$%^&*()_+\-={}[\]|:";'<>?,./]{8,}$/;
     if (!passwordPattern.test(password)) {
@@ -102,13 +97,6 @@ export default function RegistrationModal({
       );
       return false;
     }
-
-    const dob = new Date(dateOfBirth.trim());
-    if (Number.isNaN(dob.getTime())) {
-      Alert.alert("Invalid Date of Birth", "Please select a valid date.");
-      return false;
-    }
-
     return true;
   };
 
@@ -118,25 +106,22 @@ export default function RegistrationModal({
 
     try {
       setIsSubmitting(true);
-
-      const result = await registerResident({
+      const payload = {
         fullname: fullname.trim(),
-        dateOfBirth: dateOfBirth.trim(),
+        dateOfBirth: formatDate(dateOfBirth),
         email: email.trim(),
         password,
         confirmPassword,
         gender: gender.trim(),
         address: address.trim(),
-      });
-
+      };
+      const result = await registerResident(payload);
       Alert.alert("Registration Successful", result.message);
       onRegisteredEmail?.(result.email);
       resetState();
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Unable to register. Please try again.";
+    } catch (error: any) {
+      const message: string =
+        error?.response?.data?.message || "Unable to register. Please try again.";
       Alert.alert("Registration Failed", message);
     } finally {
       setIsSubmitting(false);
@@ -145,22 +130,22 @@ export default function RegistrationModal({
 
   const handleMockScan = () => {
     setFullname("Sample Resident");
-    const mockDate = new Date(2000, 0, 1);
-    setDobDate(mockDate);
-    setDateOfBirth(formatDateDisplay(mockDate));
+    setDateOfBirth(new Date("2000-01-01"));
     Alert.alert(
       "Scan Simulated",
       "Name and date of birth have been filled. Connect your actual QR / ID scanner to populate real data."
     );
   };
 
+  const onDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === "ios");
+    if (selectedDate) {
+      setDateOfBirth(selectedDate);
+    }
+  };
+
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={handleClose}
-    >
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={handleClose}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1 items-center justify-center px-4"
@@ -214,28 +199,38 @@ export default function RegistrationModal({
               Choose a registration method and complete your details to access MaslogCare.
             </Text>
 
-            {/* Tab switcher */}
+            {/* Tab Switcher */}
             <View className="mt-4 flex-row rounded-full bg-white/10 p-1">
               <Pressable
-                onPress={() => setActiveTab("manual")}
-                className={`flex-1 rounded-full py-2 items-center ${
-                  activeTab === "manual" ? "bg-white" : ""
+                className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-full px-3 py-1.5 ${
+                  activeTab === "manual" ? "bg-white" : "bg-transparent"
                 }`}
+                onPress={() => setActiveTab("manual")}
               >
+                <Feather
+                  name="edit"
+                  size={14}
+                  color={activeTab === "manual" ? "#2A7DE1" : "rgba(255,255,255,0.8)"}
+                />
                 <Text
                   className={`text-[11px] font-bold ${
                     activeTab === "manual" ? "text-mc-primary" : "text-white/80"
                   }`}
                 >
-                  Manual Entry
+                  Manual Input
                 </Text>
               </Pressable>
               <Pressable
-                onPress={() => setActiveTab("scanner")}
-                className={`flex-1 rounded-full py-2 items-center ${
-                  activeTab === "scanner" ? "bg-white" : ""
+                className={`flex-1 flex-row items-center justify-center gap-1.5 rounded-full px-3 py-1.5 ${
+                  activeTab === "scanner" ? "bg-white" : "bg-transparent"
                 }`}
+                onPress={() => setActiveTab("scanner")}
               >
+                <Feather
+                  name="maximize"
+                  size={14}
+                  color={activeTab === "scanner" ? "#2A7DE1" : "rgba(255,255,255,0.8)"}
+                />
                 <Text
                   className={`text-[11px] font-bold ${
                     activeTab === "scanner" ? "text-mc-primary" : "text-white/80"
@@ -247,24 +242,24 @@ export default function RegistrationModal({
             </View>
           </View>
 
-          {/* ── Form ── */}
-          <View className="px-6 py-5 gap-4">
+          {/* ── Form Body ── */}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 24, paddingVertical: 20, gap: 16 }}
+          >
             {activeTab === "scanner" && (
-              <View className="mb-2 rounded-2xl border border-dashed border-mc-primary/40 bg-mc-primary/5 p-3">
+              <View className="rounded-2xl border border-dashed border-mc-primary/40 bg-mc-primary/5 p-3">
                 <View className="flex-row items-center justify-between gap-3">
                   <View className="flex-1">
                     <Text className="text-[12px] font-semibold text-slate-700 mb-1">
                       Scanner Registration
                     </Text>
                     <Text className="text-[11px] text-slate-500">
-                      Connect a QR or ID scanner to your device. Scanned details will
-                      automatically fill the name and date of birth fields.
+                      Connect a QR or ID scanner to your device. Scanned details will automatically
+                      fill the name and date of birth fields.
                     </Text>
                   </View>
-                  <Pressable
-                    onPress={handleMockScan}
-                    className="rounded-full bg-mc-primary px-3 py-2"
-                  >
+                  <Pressable onPress={handleMockScan} className="rounded-full bg-mc-primary px-3 py-2">
                     <View className="flex-row items-center gap-1.5">
                       <Feather name="camera" size={13} color="#fff" />
                       <Text className="text-[11px] font-bold text-white">Simulate Scan</Text>
@@ -291,47 +286,66 @@ export default function RegistrationModal({
               </View>
             </View>
 
-            {/* ── Gender — Radio Buttons ── */}
+            {/* Gender — Radio Buttons */}
             <View>
               <Text className="mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-400">
                 Gender
               </Text>
-              <View className="flex-row gap-2">
-                {GENDER_OPTIONS.map((opt) => {
-                  const selected = gender === opt.value;
+              <View className="flex-row justify-center gap-3">
+                {GENDER_OPTIONS.map((option) => {
+                  const isSelected = gender === option.value;
                   return (
                     <Pressable
-                      key={opt.value}
-                      onPress={() => setGender(opt.value)}
+                      key={option.value}
+                      onPress={() => setGender(option.value)}
                       accessibilityRole="radio"
-                      accessibilityState={{ checked: selected }}
-                      style={({ pressed }) => ({ opacity: pressed ? 0.75 : 1, flex: 1 })}
+                      accessibilityState={{ checked: isSelected }}
+                      style={{
+                        flex: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        paddingVertical: 10,
+                        paddingHorizontal: 8,
+                        borderRadius: 16,
+                        borderWidth: 1.5,
+                        borderColor: isSelected ? "#2A7DE1" : "#E2E8F0",
+                        backgroundColor: isSelected ? "#EFF6FF" : "#F8FAFC",
+                        gap: 6,
+                      }}
                     >
+                      {/* Radio circle */}
                       <View
-                        className={`flex-row items-center justify-center gap-1.5 rounded-2xl border py-2.5 px-2 ${
-                          selected
-                            ? "border-mc-primary bg-mc-primary/10"
-                            : "border-slate-200 bg-slate-50"
-                        }`}
+                        style={{
+                          width: 18,
+                          height: 18,
+                          borderRadius: 9,
+                          borderWidth: 2,
+                          borderColor: isSelected ? "#2A7DE1" : "#CBD5E1",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: "#fff",
+                        }}
                       >
-                        {/* Radio circle */}
-                        <View
-                          className={`h-4 w-4 rounded-full border-2 items-center justify-center ${
-                            selected ? "border-mc-primary" : "border-slate-300"
-                          }`}
-                        >
-                          {selected && (
-                            <View className="h-2 w-2 rounded-full bg-mc-primary" />
-                          )}
-                        </View>
-                        <Text
-                          className={`text-[12px] font-semibold ${
-                            selected ? "text-mc-primary" : "text-slate-500"
-                          }`}
-                        >
-                          {opt.label}
-                        </Text>
+                        {isSelected && (
+                          <View
+                            style={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: 4,
+                              backgroundColor: "#2A7DE1",
+                            }}
+                          />
+                        )}
                       </View>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: isSelected ? "700" : "500",
+                          color: isSelected ? "#2A7DE1" : "#64748B",
+                        }}
+                      >
+                        {option.label}
+                      </Text>
                     </Pressable>
                   );
                 })}
@@ -355,7 +369,7 @@ export default function RegistrationModal({
               </View>
             </View>
 
-            {/* ── Date of Birth — Tappable Date Picker ── */}
+            {/* Date of Birth — Date Picker */}
             <View>
               <Text className="mb-1.5 text-[11px] font-bold uppercase tracking-widest text-slate-400">
                 Date of Birth
@@ -366,49 +380,30 @@ export default function RegistrationModal({
                 accessibilityLabel="Select date of birth"
               >
                 <View
-                  className={`flex-row items-center rounded-2xl border px-3.5 bg-slate-50 ${
-                    showDatePicker ? "border-mc-primary" : "border-slate-200"
-                  }`}
+                  className="flex-row items-center rounded-2xl border bg-slate-50 px-3.5"
+                  style={{
+                    borderColor: showDatePicker ? "#2A7DE1" : "#E2E8F0",
+                    borderWidth: showDatePicker ? 1.5 : 1,
+                  }}
                 >
-                  <Feather name="calendar" size={15} color={showDatePicker ? "#2A7DE1" : "#94A3B8"} />
+                  <Feather name="calendar" size={15} color={dateOfBirth ? "#2A7DE1" : "#94A3B8"} />
                   <Text
-                    className={`flex-1 py-3 pl-2.5 text-sm ${
-                      dateOfBirth ? "text-slate-800" : "text-[#CBD5E1]"
-                    }`}
+                    className="flex-1 py-3 pl-2.5 text-sm"
+                    style={{ color: dateOfBirth ? "#1E293B" : "#CBD5E1" }}
                   >
-                    {dateOfBirth || "Select your birthday"}
+                    {dateOfBirth ? displayDate(dateOfBirth) : "Select your date of birth"}
                   </Text>
                   <Feather name="chevron-down" size={14} color="#94A3B8" />
                 </View>
               </Pressable>
 
-              {/* iOS inline picker — shown below the row */}
-              {showDatePicker && Platform.OS === "ios" && (
-                <View className="mt-2 rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden">
-                  <DateTimePicker
-                    value={dobDate}
-                    mode="date"
-                    display="spinner"
-                    maximumDate={new Date()}
-                    onChange={onDateChange}
-                    textColor="#1E293B"
-                  />
-                  <Pressable
-                    onPress={() => setShowDatePicker(false)}
-                    className="mx-4 mb-3 rounded-xl bg-mc-primary py-2.5 items-center"
-                  >
-                    <Text className="text-sm font-bold text-white">Done</Text>
-                  </Pressable>
-                </View>
-              )}
-
-              {/* Android: native modal picker */}
-              {showDatePicker && Platform.OS === "android" && (
+              {showDatePicker && (
                 <DateTimePicker
-                  value={dobDate}
+                  value={dateOfBirth ?? new Date(2000, 0, 1)}
                   mode="date"
-                  display="default"
+                  display={Platform.OS === "ios" ? "spinner" : "default"}
                   maximumDate={new Date()}
+                  minimumDate={new Date(1900, 0, 1)}
                   onChange={onDateChange}
                 />
               )}
@@ -433,7 +428,7 @@ export default function RegistrationModal({
               </View>
             </View>
 
-            {/* Password + Confirm */}
+            {/* Password Row */}
             <View className="flex-row gap-3">
               <View className="flex-1">
                 <Text className="mb-1.5 text-[11px] font-bold uppercase tracking-widest text-slate-400">
@@ -451,7 +446,6 @@ export default function RegistrationModal({
                   />
                 </View>
               </View>
-
               <View className="flex-1">
                 <Text className="mb-1.5 text-[11px] font-bold uppercase tracking-widest text-slate-400">
                   Confirm Password
@@ -472,11 +466,7 @@ export default function RegistrationModal({
                     onPress={() => setShowPassword((prev) => !prev)}
                     className="ml-1 h-8 w-8 items-center justify-center"
                   >
-                    <Feather
-                      name={showPassword ? "eye-off" : "eye"}
-                      size={15}
-                      color="#94A3B8"
-                    />
+                    <Feather name={showPassword ? "eye-off" : "eye"} size={15} color="#94A3B8" />
                   </Pressable>
                 </View>
               </View>
@@ -504,13 +494,13 @@ export default function RegistrationModal({
               </View>
             </Pressable>
 
-            <View className="flex-row items-center justify-center gap-1.5 pt-1">
+            <View className="flex-row items-center justify-center gap-1.5 pb-2">
               <Feather name="lock" size={10} color="#CBD5E1" />
               <Text className="text-[10px] text-slate-400">
                 Your information is securely stored in MaslogCare.
               </Text>
             </View>
-          </View>
+          </ScrollView>
         </View>
       </KeyboardAvoidingView>
     </Modal>

@@ -10,6 +10,27 @@ import {
 } from "react-native";
 import { Paragraph } from "@/components/ui/Typography";
 
+const HC = {
+  teal:        "#0B7A75",
+  tealLight:   "#14A89F",
+  tealPale:    "#E6F7F6",
+  tealMid:     "#B2E5E3",
+  emerald:     "#059669",
+  emeraldPale: "#ECFDF5",
+  navy:        "#0F2D3D",
+  navyMid:     "#1A4259",
+  sky:         "#0EA5E9",
+  skyPale:     "#E0F2FE",
+  gold:        "#D4A017",
+  goldPale:    "#FEF9EC",
+  white:       "#FFFFFF",
+  offWhite:    "#F4F9F9",
+  slate:       "#64748B",
+  slateLight:  "#94A3B8",
+  border:      "#D1EAE9",
+  shadow:      "#0B7A75",
+};
+
 type OrgMember = {
   _id: { $oid: string };
   fullname: string;
@@ -20,14 +41,231 @@ type OrgMember = {
   photo: string;
 };
 
+const BHW_PALETTE = [
+  { fg: "#0B7A75", bg: "#B2E5E3", light: "#E6F7F6" },
+  { fg: "#059669", bg: "#A7F3D0", light: "#ECFDF5" },
+  { fg: "#0369A1", bg: "#BAE6FD", light: "#E0F2FE" },
+  { fg: "#7C3AED", bg: "#DDD6FE", light: "#F5F3FF" },
+  { fg: "#B45309", bg: "#FDE68A", light: "#FFFBEB" },
+  { fg: "#0E7490", bg: "#A5F3FC", light: "#ECFEFF" },
+  { fg: "#4338CA", bg: "#C7D2FE", light: "#EEF2FF" },
+  { fg: "#BE123C", bg: "#FECDD3", light: "#FFF1F2" },
+  { fg: "#4D7C0F", bg: "#D9F99D", light: "#F7FEE7" },
+  { fg: "#0F766E", bg: "#99F6E4", light: "#F0FDFA" },
+];
+
+const MedicalCross = ({ size = 16, color = HC.teal, opacity = 1 }: { size?: number; color?: string; opacity?: number }) => {
+  const arm = size * 0.28;
+  return (
+    <View style={{ width: size, height: size, alignItems: "center", justifyContent: "center", opacity }}>
+      <View style={{ position: "absolute", width: arm, height: size, backgroundColor: color, borderRadius: arm / 2 }} />
+      <View style={{ position: "absolute", width: size, height: arm, backgroundColor: color, borderRadius: arm / 2 }} />
+    </View>
+  );
+};
+
+const ConnectorLine = ({ height = 24 }: { height?: number }) => (
+  <View style={{ alignItems: "center", marginVertical: 2 }}>
+    <View style={{ width: 2, height, backgroundColor: HC.tealMid }} />
+    <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: HC.teal, marginTop: -1 }} />
+  </View>
+);
+
+const SectionHeader = ({ eyebrow, title, isTablet }: { eyebrow: string; title: string; isTablet: boolean }) => (
+  <View style={{ marginBottom: 12 }}>
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
+      <MedicalCross size={14} color={HC.teal} />
+      <Text style={{ fontSize: isTablet ? 10 : 9, fontWeight: "800", color: HC.teal, letterSpacing: 2, textTransform: "uppercase" }}>
+        {eyebrow}
+      </Text>
+    </View>
+    <Text style={{ fontSize: isTablet ? 22 : 18, fontWeight: "900", color: HC.navy }}>
+      {title}
+    </Text>
+  </View>
+);
+
+const LeaderCard = ({
+  title, subtitle, icon, name, tier, isTablet,
+}: {
+  title: string; subtitle: string; icon: string;
+  name?: string; tier: "top" | "mid"; isTablet: boolean;
+}) => {
+  const isTop = tier === "top";
+  const avatarSize = isTop ? (isTablet ? 64 : 54) : isTablet ? 52 : 44;
+  const outerSize = avatarSize + 12;
+  const iconSize = Math.round(avatarSize * 0.38);
+
+  if (isTop) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          borderRadius: 20,
+          overflow: "hidden",
+          marginHorizontal: 8,
+          backgroundColor: HC.navy,
+          shadowColor: HC.navy,
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.3,
+          shadowRadius: 16,
+          elevation: 8,
+        }}
+      >
+        <View style={{ height: 5, width: "100%", backgroundColor: HC.tealLight }} />
+        <View style={{ position: "absolute", width: 100, height: 100, borderRadius: 50, backgroundColor: "rgba(11,122,117,0.12)", top: -20, right: -20 }} />
+        <View style={{ position: "absolute", width: 60, height: 60, borderRadius: 30, backgroundColor: "rgba(20,168,159,0.08)", bottom: 10, left: -15 }} />
+
+        <View style={{ alignItems: "center", width: "100%", paddingHorizontal: 12, paddingTop: 20, paddingBottom: 18 }}>
+          <View
+            style={{
+              width: outerSize, height: outerSize, borderRadius: outerSize / 2,
+              borderWidth: 2, borderColor: HC.tealLight, borderStyle: "dashed",
+              alignItems: "center", justifyContent: "center", marginBottom: 12,
+            }}
+          >
+            <View
+              style={{
+                width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2,
+                backgroundColor: "rgba(11,122,117,0.25)",
+                alignItems: "center", justifyContent: "center",
+                borderWidth: 1.5, borderColor: "rgba(20,168,159,0.5)",
+              }}
+            >
+              <Feather name={icon as any} size={iconSize} color={HC.tealLight} />
+            </View>
+          </View>
+
+          <View style={{ borderRadius: 10, width: "100%", alignItems: "center", paddingHorizontal: 8, paddingVertical: 6, marginBottom: 6, backgroundColor: "rgba(11,122,117,0.2)", borderWidth: 1, borderColor: "rgba(20,168,159,0.2)" }}>
+            <Text style={{ color: HC.tealLight, fontSize: isTablet ? 12 : 10.5, fontWeight: "900", textAlign: "center" }} numberOfLines={2}>
+              {name ?? "— Unassigned —"}
+            </Text>
+          </View>
+
+          <Text style={{ color: "rgba(255,255,255,0.55)", fontSize: isTablet ? 9 : 7.5, fontWeight: "700", textTransform: "uppercase", letterSpacing: 1.2, textAlign: "center" }}>
+            {title}
+          </Text>
+          <Text style={{ color: "rgba(255,255,255,0.3)", fontSize: isTablet ? 8 : 6.5, textAlign: "center", marginTop: 2 }}>
+            {subtitle}
+          </Text>
+        </View>
+      </View>
+    );
+  }
+
+  return (
+    <View
+      style={{
+        flex: 1, alignItems: "center", borderRadius: 16, overflow: "hidden", marginHorizontal: 4,
+        backgroundColor: HC.white,
+        borderWidth: 1, borderColor: HC.border,
+        shadowColor: HC.shadow,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.08, shadowRadius: 10, elevation: 3,
+      }}
+    >
+      <View style={{ height: 4, width: "100%", backgroundColor: HC.teal }} />
+      <View style={{ alignItems: "center", width: "100%", paddingHorizontal: 12, paddingTop: 14, paddingBottom: 14 }}>
+        <View
+          style={{
+            width: outerSize, height: outerSize, borderRadius: outerSize / 2,
+            borderWidth: 1.5, borderColor: `${HC.teal}50`, borderStyle: "dashed",
+            alignItems: "center", justifyContent: "center", marginBottom: 10,
+          }}
+        >
+          <View
+            style={{
+              width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2,
+              backgroundColor: HC.tealPale,
+              alignItems: "center", justifyContent: "center",
+              borderWidth: 1, borderColor: HC.tealMid,
+            }}
+          >
+            <Feather name={icon as any} size={iconSize} color={HC.teal} />
+          </View>
+        </View>
+
+        <View style={{ borderRadius: 8, width: "100%", alignItems: "center", paddingHorizontal: 6, paddingVertical: 5, marginBottom: 4, backgroundColor: HC.tealPale }}>
+          <Text style={{ color: HC.teal, fontSize: isTablet ? 11 : 9.5, fontWeight: "900", textAlign: "center" }} numberOfLines={2}>
+            {name ?? "— Unassigned —"}
+          </Text>
+        </View>
+
+        <Text style={{ color: HC.slateLight, fontSize: isTablet ? 8.5 : 7.5, fontWeight: "700", textTransform: "uppercase", letterSpacing: 0.8, textAlign: "center" }}>
+          {title}
+        </Text>
+        <Text style={{ color: "#CBD5E1", fontSize: isTablet ? 7.5 : 6.5, textAlign: "center", marginTop: 2 }}>
+          {subtitle}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+const BhwCard = ({ member, index, isTablet }: { member: OrgMember; index: number; isTablet: boolean }) => {
+  const palette = BHW_PALETTE[index % BHW_PALETTE.length];
+  const avatarSize = isTablet ? 46 : 38;
+  const outerSize = avatarSize + 8;
+  const initials = member.fullname
+    .split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+
+  return (
+    <View
+      style={{
+        flex: 1, borderRadius: 14, overflow: "hidden",
+        backgroundColor: HC.white,
+        borderWidth: 1, borderColor: "#EEF2F1",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.04, shadowRadius: 6, elevation: 1,
+      }}
+    >
+      <View style={{ height: 3, backgroundColor: palette.fg }} />
+      <View style={{ alignItems: "center", width: "100%", paddingHorizontal: 6, paddingTop: 10, paddingBottom: 10 }}>
+        <View
+          style={{
+            width: outerSize, height: outerSize, borderRadius: outerSize / 2,
+            borderWidth: 1.5, borderColor: `${palette.fg}40`, borderStyle: "dashed",
+            alignItems: "center", justifyContent: "center", marginBottom: 7,
+          }}
+        >
+          <View
+            style={{
+              width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2,
+              backgroundColor: palette.bg,
+              alignItems: "center", justifyContent: "center",
+              borderWidth: 1, borderColor: `${palette.fg}30`,
+            }}
+          >
+            <Text style={{ fontSize: isTablet ? 13 : 11, fontWeight: "900", color: palette.fg, letterSpacing: 0.5 }}>
+              {initials}
+            </Text>
+          </View>
+        </View>
+
+        <View style={{ borderRadius: 6, width: "100%", alignItems: "center", paddingHorizontal: 4, paddingVertical: 4, marginBottom: 3, backgroundColor: palette.light }}>
+          <Text style={{ color: palette.fg, fontSize: isTablet ? 10 : 8.5, fontWeight: "900", textAlign: "center" }} numberOfLines={2}>
+            {member.fullname}
+          </Text>
+        </View>
+
+        <Text style={{ color: "#9CA3AF", fontSize: isTablet ? 7.5 : 6.5, fontWeight: "700", textTransform: "uppercase", letterSpacing: 0.8, textAlign: "center" }}>
+          {member.role === "bhw" ? "BHW" : "BHWN"}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
 export default function About() {
   const { width } = useWindowDimensions();
-  const isTablet = width >= 768;
+  const isTablet  = width >= 768;
   const isDesktop = width >= 1024;
 
   const [orgMembers, setOrgMembers] = useState<OrgMember[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState<string | null>(null);
 
   const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
@@ -47,15 +285,11 @@ export default function About() {
     fetchOrganization();
   }, [API_URL]);
 
-  const getByRole = (role: string) => orgMembers.find((m) => m.role === role);
-
-  const bhwMembers = orgMembers.filter(
-    (m) => m.role === "bhw" || m.role === "bhwn"
-  );
-
-  const captain = getByRole("barangay_captain");
-  const admin = getByRole("barangay_admin");
-  const doctor = getByRole("doctor");
+  const getByRole  = (role: string) => orgMembers.find((m) => m.role === role);
+  const bhwMembers = orgMembers.filter((m) => m.role === "bhw" || m.role === "bhwn");
+  const captain    = getByRole("barangay_captain");
+  const admin      = getByRole("barangay_admin");
+  const doctor     = getByRole("doctor");
 
   const BHW_COLS = 3;
   const bhwRows: OrgMember[][] = [];
@@ -63,510 +297,51 @@ export default function About() {
     bhwRows.push(bhwMembers.slice(i, i + BHW_COLS));
   }
 
-    
-  const BHW_PALETTE = [
-    { fg: "#1D4ED8", bg: "#DBEAFE", light: "#EFF6FF" },
-    { fg: "#059669", bg: "#D1FAE5", light: "#ECFDF5" },
-    { fg: "#7C3AED", bg: "#EDE9FE", light: "#F5F3FF" },
-    { fg: "#BE123C", bg: "#FFE4E6", light: "#FFF1F2" },
-    { fg: "#B45309", bg: "#FEF3C7", light: "#FFFBEB" },
-    { fg: "#0E7490", bg: "#CFFAFE", light: "#ECFEFF" },
-    { fg: "#4338CA", bg: "#E0E7FF", light: "#EEF2FF" },
-    { fg: "#A21CAF", bg: "#FAE8FF", light: "#FDF4FF" },
-    { fg: "#4D7C0F", bg: "#ECFCCB", light: "#F7FEE7" },
-    { fg: "#0F766E", bg: "#CCFBF1", light: "#F0FDFA" },
-  ];
-
-  const FEATURES = [
-    {
-      title: "Community-Centered Care",
-      description:
-        "Designed specifically for Barangay Maslog residents with easy access to all healthcare services.",
-      icon: "heart",
-      color: "#EF4444",
-      bg: "#FFF1F2",
-    },
-    {
-      title: "Digital Health Records",
-      description:
-        "Securely store and manage your health records and medical history online.",
-      icon: "file-text",
-      color: "#2D5BFF",
-      bg: "#EFF6FF",
-    },
-    {
-      title: "Easy Appointment Booking",
-      description:
-        "Schedule appointments with healthcare providers in just a few taps.",
-      icon: "calendar",
-      color: "#10B981",
-      bg: "#ECFDF5",
-    },
-    {
-      title: "Real-Time Announcements",
-      description:
-        "Stay updated with health announcements and community programs.",
-      icon: "bell",
-      color: "#F59E0B",
-      bg: "#FFFBEB",
-    },
-  ];
-
-  function ConnectorLine({ height = 24 }: { height?: number }) {
-    return (
-      <View className="items-center my-1">
-        <View style={{ width: 1.5, height, backgroundColor: "#CBD5E1" }} />
-        <View
-          style={{
-            width: 7,
-            height: 7,
-            borderRadius: 3.5,
-            backgroundColor: "#94A3B8",
-            marginTop: -1,
-          }}
-        />
-      </View>
-    );
-  }
-
-  function LeaderCard({
-    title,
-    subtitle,
-    icon,
-    name,
-    tier,
-    isTablet,
-  }: {
-    title: string;
-    subtitle: string;
-    icon: string;
-    name?: string;
-    tier: "top" | "mid";
-    isTablet: boolean;
-  }) {
-    const isTop = tier === "top";
-    const avatarSize = isTop ? (isTablet ? 64 : 52) : isTablet ? 52 : 44;
-    const outerSize = avatarSize + 10;
-    const iconSize = Math.round(avatarSize * 0.38);
-
-    if (isTop) {
-      return (
-        <View
-          className="flex-1 items-center rounded-2xl overflow-hidden mx-2"
-          style={{
-            backgroundColor: "#0C1F6E",
-            shadowColor: "#0C1F6E",
-            shadowOffset: { width: 0, height: 6 },
-            shadowOpacity: 0.25,
-            shadowRadius: 14,
-            elevation: 6,
-          }}
-        >
-          <View style={{ height: 4, width: "100%", backgroundColor: "#F59E0B" }} />
-          <View className="items-center w-full px-3 pt-5 pb-5">
-            <View
-              style={{
-                width: outerSize,
-                height: outerSize,
-                borderRadius: outerSize / 2,
-                borderWidth: 2,
-                borderColor: "rgba(245,158,11,0.6)",
-                borderStyle: "dashed",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 10,
-              }}
-            >
-              <View
-                style={{
-                  width: avatarSize,
-                  height: avatarSize,
-                  borderRadius: avatarSize / 2,
-                  backgroundColor: "rgba(255,255,255,0.08)",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderWidth: 1.5,
-                  borderColor: "rgba(245,158,11,0.4)",
-                }}
-              >
-                <Feather name={icon as any} size={iconSize} color="#F59E0B" />
-              </View>
-            </View>
-
-            <View
-              className="rounded-xl w-full items-center px-2 py-1.5 mb-1.5"
-              style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
-            >
-              <Text
-                className="font-black text-center leading-snug"
-                style={{ color: "#F59E0B", fontSize: isTablet ? 12 : 10.5 }}
-                numberOfLines={2}
-              >
-                {name ?? "— Unassigned —"}
-              </Text>
-            </View>
-            <Text
-              className="text-center font-semibold uppercase tracking-wider"
-              style={{ color: "rgba(255,255,255,0.5)", fontSize: isTablet ? 9 : 7.5 }}
-            >
-              {title}
-            </Text>
-            <Text
-              className="text-center mt-0.5"
-              style={{ color: "rgba(255,255,255,0.3)", fontSize: isTablet ? 8 : 6.5 }}
-            >
-              {subtitle}
-            </Text>
-          </View>
-        </View>
-      );
-    }
-
-    return (
-      <View
-        className="flex-1 items-center rounded-2xl overflow-hidden mx-1"
-        style={{
-          backgroundColor: "#FFFFFF",
-          borderWidth: 1,
-          borderColor: "#E2E8F0",
-          shadowColor: "#0F172A",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.06,
-          shadowRadius: 8,
-          elevation: 2,
-        }}
-      >
-        <View style={{ height: 3, width: "100%", backgroundColor: "#10B981" }} />
-        <View className="items-center w-full px-3 pt-4 pb-4">
-          <View
-            style={{
-              width: outerSize,
-              height: outerSize,
-              borderRadius: outerSize / 2,
-              borderWidth: 1.5,
-              borderColor: "rgba(16,185,129,0.4)",
-              borderStyle: "dashed",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 8,
-            }}
-          >
-            <View
-              style={{
-                width: avatarSize,
-                height: avatarSize,
-                borderRadius: avatarSize / 2,
-                backgroundColor: "#ECFDF5",
-                alignItems: "center",
-                justifyContent: "center",
-                borderWidth: 1,
-                borderColor: "#A7F3D0",
-              }}
-            >
-              <Feather name={icon as any} size={iconSize} color="#059669" />
-            </View>
-          </View>
-
-          <View
-            className="rounded-xl w-full items-center px-2 py-1.5 mb-1"
-            style={{ backgroundColor: "#F0FDF4" }}
-          >
-            <Text
-              className="font-black text-center leading-snug"
-              style={{ color: "#059669", fontSize: isTablet ? 11 : 9.5 }}
-              numberOfLines={2}
-            >
-              {name ?? "— Unassigned —"}
-            </Text>
-          </View>
-          <Text
-            className="text-center font-semibold uppercase tracking-wider"
-            style={{ color: "#94A3B8", fontSize: isTablet ? 8.5 : 7.5 }}
-          >
-            {title}
-          </Text>
-          <Text
-            className="text-center mt-0.5"
-            style={{ color: "#CBD5E1", fontSize: isTablet ? 7.5 : 6.5 }}
-          >
-            {subtitle}
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
-  function BhwCard({
-    member,
-    index,
-    isTablet,
-  }: {
-    member: OrgMember;
-    index: number;
-    isTablet: boolean;
-  }) {
-    const palette = BHW_PALETTE[index % BHW_PALETTE.length];
-    const avatarSize = isTablet ? 46 : 38;
-    const outerSize = avatarSize + 8;
-
-    const initials = member.fullname
-      .split(" ")
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase();
-
-    return (
-      <View
-        className="rounded-xl overflow-hidden"
-        style={{
-          flex: 1,
-          backgroundColor: "#FFFFFF",
-          borderWidth: 1,
-          borderColor: "#F1F5F9",
-          shadowColor: "#0F172A",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.04,
-          shadowRadius: 4,
-          elevation: 1,
-        }}
-      >
-        <View style={{ height: 3, backgroundColor: palette.fg }} />
-        <View className="items-center w-full px-1.5 pt-3 pb-3">
-          <View
-            style={{
-              width: outerSize,
-              height: outerSize,
-              borderRadius: outerSize / 2,
-              borderWidth: 1.5,
-              borderColor: `${palette.fg}50`,
-              borderStyle: "dashed",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 7,
-            }}
-          >
-            <View
-              style={{
-                width: avatarSize,
-                height: avatarSize,
-                borderRadius: avatarSize / 2,
-                backgroundColor: palette.bg,
-                alignItems: "center",
-                justifyContent: "center",
-                borderWidth: 1,
-                borderColor: `${palette.fg}30`,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: isTablet ? 13 : 11,
-                  fontWeight: "900",
-                  color: palette.fg,
-                  letterSpacing: 0.5,
-                }}
-              >
-                {initials}
-              </Text>
-            </View>
-          </View>
-
-          <View
-            className="rounded-lg w-full items-center px-1 py-1 mb-1"
-            style={{ backgroundColor: palette.light }}
-          >
-            <Text
-              className="font-black text-center leading-snug"
-              style={{ color: palette.fg, fontSize: isTablet ? 10 : 8.5 }}
-              numberOfLines={2}
-            >
-              {member.fullname}
-            </Text>
-          </View>
-
-          <Text
-            className="text-center font-semibold uppercase"
-            style={{ color: "#9CA3AF", fontSize: isTablet ? 7.5 : 6.5, letterSpacing: 0.8 }}
-          >
-            {member.role}
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
-  function FeatureCard({
-    title,
-    description,
-    icon,
-    color,
-    bg,
-    isTablet,
-  }: {
-    title: string;
-    description: string;
-    icon: string;
-    color: string;
-    bg: string;
-    isTablet: boolean;
-  }) {
-    return (
-      <View
-        className="bg-white rounded-2xl p-4 flex-row gap-3"
-        style={{
-          borderWidth: 1,
-          borderColor: "#F1F5F9",
-          shadowColor: "#0F172A",
-          shadowOffset: { width: 0, height: 1 },
-          shadowOpacity: 0.04,
-          shadowRadius: 6,
-          elevation: 1,
-        }}
-      >
-        <View className="rounded-xl p-2.5 self-start" style={{ backgroundColor: bg }}>
-          <Feather name={icon as any} size={isTablet ? 20 : 18} color={color} />
-        </View>
-        <View className="flex-1">
-          <Text
-            className="font-bold text-slate-800 mb-0.5"
-            style={{ fontSize: isTablet ? 14 : 13 }}
-          >
-            {title}
-          </Text>
-          <Text
-            className="text-slate-400 leading-relaxed"
-            style={{ fontSize: isTablet ? 12 : 11 }}
-          >
-            {description}
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
-  function SectionHeader({
-    eyebrow,
-    title,
-    isTablet,
-  }: {
-    eyebrow: string;
-    title: string;
-    isTablet: boolean;
-  }) {
-    return (
-      <View className="mb-3">
-        <View className="flex-row items-center gap-2 mb-1">
-          <View className="w-1 h-3.5 rounded-full bg-blue-500" />
-          <Text
-            className="font-black uppercase tracking-widest text-slate-400"
-            style={{ fontSize: isTablet ? 10 : 9 }}
-          >
-            {eyebrow}
-          </Text>
-        </View>
-        <Text
-          className="font-black text-slate-900"
-          style={{ fontSize: isTablet ? 22 : 18 }}
-        >
-          {title}
-        </Text>
-      </View>
-    );
-  }
-
-
   return (
     <ScrollView
-      className="flex-1 bg-slate-50"
+      style={{ flex: 1, backgroundColor: HC.offWhite }}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         paddingHorizontal: isDesktop ? 48 : isTablet ? 28 : 16,
-        paddingTop: 16,
-        paddingBottom: 48,
+        paddingTop: 20,
+        paddingBottom: 52,
         gap: 28,
       }}
     >
       <View
-        className="rounded-3xl overflow-hidden"
+        className="rounded-3xl overflow-hidden bg-white border border-slate-100"
         style={{
-          backgroundColor: "#7988d2",
-          shadowColor: "#2D5BFF",
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.22,
-          shadowRadius: 24,
-          elevation: 10,
+          shadowColor: "#0F172A",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.02,
+          shadowRadius: 12,
+          elevation: 2,
         }}
       >
-        <View
-          className="absolute rounded-full"
-          style={{
-            width: 220, height: 220,
-            top: -70, right: -50,
-            backgroundColor: "rgba(45,91,255,0.15)",
-          }}
-        />
-        <View
-          className="absolute rounded-full"
-          style={{
-            width: 90, height: 90,
-            bottom: -20, left: 24,
-            backgroundColor: "rgba(16,185,129,0.1)",
-          }}
-        />
-
-        <View
-          className="p-6"
-          style={{ padding: isTablet ? 32 : 24 }}
-        >
+        <View className="p-6 md:p-8">
           <View className="flex-row items-center gap-3 mb-4">
-            <View
-              className="rounded-2xl items-center justify-center"
-              style={{
-                width: isTablet ? 52 : 44,
-                height: isTablet ? 52 : 44,
-                backgroundColor: "rgba(245,158,11,0.15)",
-                borderWidth: 1,
-                borderColor: "rgba(245,158,11,0.3)",
-              }}
-            >
-              <Feather name="activity" size={isTablet ? 26 : 22} color="#F59E0B" />
+            <View className="w-10 h-10 rounded-xl bg-blue-50 items-center justify-center border border-blue-100">
+              <Feather name="activity" size={20} color="#2563EB" />
             </View>
             <View>
-              <Text
-                className="font-bold uppercase tracking-widest"
-                style={{ color: "#F59E0B", fontSize: 9 }}
-              >
+              <Text className="text-xs font-medium uppercase tracking-widest text-blue-500">
                 Digital Healthcare
               </Text>
-              <Text
-                className="font-black text-white"
-                style={{ fontSize: isTablet ? 26 : 22 }}
-              >
+              <Text className="text-2xl font-semibold text-slate-800">
                 MASLOG CARE
               </Text>
             </View>
           </View>
 
           <Text
-            className="leading-relaxed mb-5"
-            style={{
-              color: "rgba(255,255,255,0.6)",
-              fontSize: isTablet ? 14 : 13,
-              maxWidth: isTablet ? 480 : undefined,
-            }}
+            className="text-slate-500 leading-relaxed mb-6"
+            style={{ fontSize: isTablet ? 15 : 14, maxWidth: 540 }}
           >
             Your trusted digital healthcare partner for Barangay Maslog —
             bringing quality care closer to every resident.
           </Text>
 
-          <View
-            className="flex-row rounded-2xl"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.06)",
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.08)",
-            }}
-          >
+          <View className="flex-row bg-slate-50 rounded-xl py-2 px-3 self-start border border-slate-100">
             {[
               { value: "24/7", label: "Support" },
               { value: "100+", label: "Residents" },
@@ -574,28 +349,11 @@ export default function About() {
             ].map((s, i) => (
               <View
                 key={i}
-                className="flex-1 items-center py-3.5"
-                style={
-                  i < 2
-                    ? {
-                        borderRightWidth: 1,
-                        borderRightColor: "rgba(255,255,255,0.08)",
-                      }
-                    : {}
-                }
+                className="flex-row items-center"
+                style={i < 2 ? { marginRight: 16, paddingRight: 16, borderRightWidth: 1, borderRightColor: "#E2E8F0" } : {}}
               >
-                <Text
-                  className="font-black"
-                  style={{ color: "#F59E0B", fontSize: isTablet ? 18 : 15 }}
-                >
-                  {s.value}
-                </Text>
-                <Text
-                  className="font-medium mt-0.5"
-                  style={{ color: "rgba(255,255,255,0.4)", fontSize: isTablet ? 10 : 8.5 }}
-                >
-                  {s.label}
-                </Text>
+                <Text className="font-semibold text-slate-700 text-sm mr-1.5">{s.value}</Text>
+                <Text className="text-slate-400 text-xs">{s.label}</Text>
               </View>
             ))}
           </View>
@@ -605,186 +363,122 @@ export default function About() {
       <View>
         <SectionHeader eyebrow="Our Purpose" title="Mission & Vision" isTablet={isTablet} />
         <View
-          className="bg-white rounded-2xl p-4 flex-row gap-3"
           style={{
-            borderWidth: 1,
-            borderColor: "#E2E8F0",
-            shadowColor: "#0F172A",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.05,
-            shadowRadius: 8,
-            elevation: 2,
+            backgroundColor: HC.white, borderRadius: 18, padding: 16,
+            flexDirection: "row", gap: 14,
+            borderWidth: 1, borderColor: HC.border,
+            shadowColor: HC.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.07, shadowRadius: 10, elevation: 3,
           }}
         >
-          <View className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 items-center justify-center shrink-0">
-            <Feather name="target" size={18} color="#2D5BFF" />
-          </View>
-          <Text
-            className="flex-1 text-slate-500 leading-relaxed"
-            style={{ fontSize: isTablet ? 14 : 12 }}
+          <View
+            style={{
+              width: 44, height: 44, borderRadius: 12,
+              backgroundColor: HC.tealPale, borderWidth: 1, borderColor: HC.tealMid,
+              alignItems: "center", justifyContent: "center", flexShrink: 0,
+            }}
           >
-            To empower Barangay Maslog residents through accessible, digital
-            health services — fostering a community where every individual
-            receives timely and compassionate care.
+            <Feather name="target" size={20} color={HC.teal} />
+          </View>
+          <Text style={{ flex: 1, color: HC.slate, lineHeight: isTablet ? 22 : 20, fontSize: isTablet ? 14 : 12.5 }}>
+            To empower Barangay Maslog residents through accessible, digital health services — fostering a community where every individual receives timely and compassionate care.
           </Text>
-        </View>
-      </View>
-
-      <View>
-        <SectionHeader eyebrow="What We Offer" title="Key Features" isTablet={isTablet} />
-        <View className="gap-2.5">
-          {FEATURES.map((f, i) => (
-            <FeatureCard
-              key={i}
-              title={f.title}
-              description={f.description}
-              icon={f.icon}
-              color={f.color}
-              bg={f.bg}
-              isTablet={isTablet}
-            />
-          ))}
         </View>
       </View>
 
       <View>
         <SectionHeader eyebrow="Our Community" title="About Barangay Maslog" isTablet={isTablet} />
         <View
-          className="bg-white rounded-2xl p-4"
           style={{
-            borderWidth: 1,
-            borderColor: "#E2E8F0",
-            shadowColor: "#0F172A",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.05,
-            shadowRadius: 8,
-            elevation: 2,
+            backgroundColor: HC.white, borderRadius: 18, padding: 16,
+            borderWidth: 1, borderColor: HC.border,
+            shadowColor: HC.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.07, shadowRadius: 10, elevation: 3,
           }}
         >
-          <Paragraph>
-            Barangay Maslog is a vibrant community dedicated to the health and
-            well-being of its residents. Our healthcare workers and medical
-            professionals are committed to providing comprehensive healthcare
-            services to ensure a healthier community for all.
-          </Paragraph>
+          <View style={{ flexDirection: "row", gap: 14 }}>
+            <View style={{ width: 4, borderRadius: 2, backgroundColor: HC.teal }} />
+            <Text style={{ flex: 1, color: HC.slate, lineHeight: isTablet ? 22 : 20, fontSize: isTablet ? 14 : 12.5 }}>
+              Barangay Maslog is a vibrant community dedicated to the health and well-being of its residents. Our healthcare workers and medical professionals are committed to providing comprehensive healthcare services to ensure a healthier community for all.
+            </Text>
+          </View>
         </View>
       </View>
 
       <View>
         <SectionHeader eyebrow="Our People" title="Healthcare Team" isTablet={isTablet} />
-        <Text
-          className="text-slate-400 -mt-2 mb-4"
-          style={{ fontSize: isTablet ? 12 : 11 }}
-        >
-          Organizational structure of Barangay Maslog&apos;s health team
+        <Text style={{ color: HC.slateLight, fontSize: isTablet ? 12 : 11, marginTop: -8, marginBottom: 16 }}>
+          Organizational structure of Barangay Maslog's health team
         </Text>
 
         <View
-          className="bg-white rounded-2xl py-6"
           style={{
-            paddingHorizontal: isTablet ? 20 : 10,
-            borderWidth: 1,
-            borderColor: "#E2E8F0",
-            shadowColor: "#0F172A",
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.07,
-            shadowRadius: 16,
-            elevation: 4,
+            backgroundColor: HC.white, borderRadius: 20,
+            paddingVertical: 24, paddingHorizontal: isTablet ? 20 : 10,
+            borderWidth: 1, borderColor: HC.border,
+            shadowColor: HC.shadow,
+            shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.09, shadowRadius: 18, elevation: 5,
           }}
         >
           {loading ? (
-            <View className="items-center py-12 gap-3">
-              <ActivityIndicator size="large" color="#2D5BFF" />
-              <Text className="text-slate-400 text-sm">Loading team data...</Text>
+            <View style={{ alignItems: "center", paddingVertical: 48, gap: 12 }}>
+              <ActivityIndicator size="large" color={HC.teal} />
+              <Text style={{ color: HC.slateLight, fontSize: 14 }}>Loading team data...</Text>
             </View>
           ) : error ? (
-            <View className="items-center py-12 gap-3">
-              <View className="w-14 h-14 rounded-full bg-red-50 items-center justify-center">
+            <View style={{ alignItems: "center", paddingVertical: 48, gap: 12 }}>
+              <View style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: "#FEF2F2", alignItems: "center", justifyContent: "center" }}>
                 <Feather name="alert-circle" size={28} color="#EF4444" />
               </View>
-              <Text className="text-red-400 text-sm text-center">{error}</Text>
+              <Text style={{ color: "#EF4444", fontSize: 14, textAlign: "center" }}>{error}</Text>
             </View>
           ) : (
-            <View className="items-center w-full">
+            <View style={{ alignItems: "center", width: "100%" }}>
               <View style={{ width: "100%", paddingHorizontal: isTablet ? 40 : 20 }}>
-                <LeaderCard
-                  title="Barangay Captain"
-                  subtitle="Head of Barangay Governance"
-                  icon="shield"
-                  name={captain?.fullname}
-                  tier="top"
-                  isTablet={isTablet}
-                />
+                <LeaderCard title="Barangay Captain" subtitle="Head of Barangay Governance" icon="shield" name={captain?.fullname} tier="top" isTablet={isTablet} />
               </View>
 
               <ConnectorLine height={28} />
 
-              <View
-                style={{
-                  height: 1.5,
-                  backgroundColor: "#E2E8F0",
-                  width: isTablet ? "55%" : "60%",
-                }}
-              />
+              <View style={{ height: 1.5, backgroundColor: HC.tealMid, width: isTablet ? "55%" : "60%" }} />
 
-              <View className="flex-row w-full gap-2">
-                <LeaderCard
-                  title="Barangay Admin"
-                  subtitle="Operations & Coordination"
-                  icon="settings"
-                  name={admin?.fullname}
-                  tier="mid"
-                  isTablet={isTablet}
-                />
-                <LeaderCard
-                  title="Doctor"
-                  subtitle="Primary Healthcare Provider"
-                  icon="activity"
-                  name={doctor?.fullname}
-                  tier="mid"
-                  isTablet={isTablet}
-                />
+              <View style={{ flexDirection: "row", width: "100%", gap: 8 }}>
+                <LeaderCard title="Barangay Admin" subtitle="Operations & Coordination" icon="settings" name={admin?.fullname} tier="mid" isTablet={isTablet} />
+                <LeaderCard title="Doctor" subtitle="Primary Healthcare Provider" icon="activity" name={doctor?.fullname} tier="mid" isTablet={isTablet} />
               </View>
 
               <ConnectorLine height={24} />
 
-              <View className="flex-row items-center gap-2 w-full mb-4">
-                <View className="flex-1 h-px" style={{ backgroundColor: "#E2E8F0" }} />
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 8, width: "100%", marginBottom: 14 }}>
+                <View style={{ flex: 1, height: 1, backgroundColor: HC.border }} />
                 <View
-                  className="flex-row items-center gap-1.5 rounded-full px-3.5 py-1.5"
-                  style={{ backgroundColor: "#0C1F6E" }}
+                  style={{
+                    flexDirection: "row", alignItems: "center", gap: 6,
+                    borderRadius: 50, paddingHorizontal: 14, paddingVertical: 6,
+                    backgroundColor: HC.teal,
+                  }}
                 >
-                  <Feather name="users" size={10} color="#fff" />
-                  <Text
-                    className="text-white font-black uppercase"
-                    style={{ fontSize: isTablet ? 9.5 : 8, letterSpacing: 0.8 }}
-                  >
-                    Barangay Health Workers ({bhwMembers.length})
+                  <MedicalCross size={10} color="#fff" />
+                  <Text style={{ color: "#fff", fontWeight: "800", fontSize: isTablet ? 9.5 : 8, letterSpacing: 0.8, textTransform: "uppercase" }}>
+                    Health Workers ({bhwMembers.length})
                   </Text>
                 </View>
-                <View className="flex-1 h-px" style={{ backgroundColor: "#E2E8F0" }} />
+                <View style={{ flex: 1, height: 1, backgroundColor: HC.border }} />
               </View>
 
               {bhwMembers.length === 0 ? (
-                <Text className="text-slate-400 text-sm text-center py-5">
+                <Text style={{ color: HC.slateLight, fontSize: 14, textAlign: "center", paddingVertical: 20 }}>
                   No BHW members found.
                 </Text>
               ) : (
-                <View className="w-full gap-2">
+                <View style={{ width: "100%", gap: 8 }}>
                   {bhwRows.map((row, rowIdx) => (
-                    <View key={rowIdx} className="flex-row gap-2">
+                    <View key={rowIdx} style={{ flexDirection: "row", gap: 8 }}>
                       {row.map((member, colIdx) => (
-                        <BhwCard
-                          key={member.organizationId}
-                          member={member}
-                          index={rowIdx * BHW_COLS + colIdx}
-                          isTablet={isTablet}
-                        />
+                        <BhwCard key={member.organizationId} member={member} index={rowIdx * BHW_COLS + colIdx} isTablet={isTablet} />
                       ))}
                       {row.length < BHW_COLS &&
-                        Array.from({ length: BHW_COLS - row.length }).map(
-                          (_, k) => <View key={`pad-${k}`} style={{ flex: 1 }} />
-                        )}
+                        Array.from({ length: BHW_COLS - row.length }).map((_, k) => (
+                          <View key={`pad-${k}`} style={{ flex: 1 }} />
+                        ))}
                     </View>
                   ))}
                 </View>
@@ -794,11 +488,11 @@ export default function About() {
         </View>
       </View>
 
-      <View className="flex-row items-center justify-center gap-2 py-2">
-        <View className="rounded-full p-1.5" style={{ backgroundColor: "#F1F5F9" }}>
-          <Feather name="lock" size={11} color="#94A3B8" />
+      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, paddingVertical: 8 }}>
+        <View style={{ borderRadius: 50, padding: 6, backgroundColor: HC.tealPale }}>
+          <Feather name="lock" size={11} color={HC.teal} />
         </View>
-        <Text className="text-slate-400" style={{ fontSize: isTablet ? 12 : 11 }}>
+        <Text style={{ color: HC.slateLight, fontSize: isTablet ? 12 : 11 }}>
           Secure &amp; exclusively for Barangay Maslog residents
         </Text>
       </View>

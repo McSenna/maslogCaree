@@ -6,11 +6,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // MASLOG CARE modern healthcare palette (updated)
         mc: {
-          primary: "#2A7DE1", // Primary Blue
-          secondary: "#2ECC71", // Secondary Green
-          accent: "#17A2B8", // Accent Teal
+          primary: "#2A7DE1", 
+          secondary: "#2ECC71", 
+          accent: "#17A2B8", 
           background: "#F5F7FA",
           card: "#FFFFFF",
           text: "#1F2933",

@@ -2,13 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hide scrollbars globally while keeping scroll functionality */
 * {
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
 
 *::-webkit-scrollbar {
   width: 0px;
   height: 0px;
-  display: none; /* Chrome, Safari, Edge */
+  display: none; 
 }
