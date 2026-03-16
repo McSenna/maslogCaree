@@ -103,17 +103,16 @@ const LeaderCard = ({
           flex: 1,
           alignItems: "center",
           borderRadius: 20,
-          overflow: "hidden",
           marginHorizontal: 8,
           backgroundColor: HC.navy,
-          shadowColor: HC.navy,
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.3,
-          shadowRadius: 16,
-          elevation: 8,
+          borderTopWidth: 5, borderTopColor: HC.tealLight,
+          shadowColor: "#90CAF9",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.6,
+          shadowRadius: 12,
+          elevation: 6,
         }}
       >
-        <View style={{ height: 5, width: "100%", backgroundColor: HC.tealLight }} />
         <View style={{ position: "absolute", width: 100, height: 100, borderRadius: 50, backgroundColor: "rgba(11,122,117,0.12)", top: -20, right: -20 }} />
         <View style={{ position: "absolute", width: 60, height: 60, borderRadius: 30, backgroundColor: "rgba(20,168,159,0.08)", bottom: 10, left: -15 }} />
 
@@ -157,15 +156,17 @@ const LeaderCard = ({
   return (
     <View
       style={{
-        flex: 1, alignItems: "center", borderRadius: 16, overflow: "hidden", marginHorizontal: 4,
+        flex: 1, alignItems: "center", borderRadius: 16, marginHorizontal: 4,
         backgroundColor: HC.white,
         borderWidth: 1, borderColor: HC.border,
-        shadowColor: HC.shadow,
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.08, shadowRadius: 10, elevation: 3,
+        borderTopWidth: 4, borderTopColor: HC.teal,
+        shadowColor: "#90CAF9",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.6,
+        shadowRadius: 12,
+        elevation: 6,
       }}
     >
-      <View style={{ height: 4, width: "100%", backgroundColor: HC.teal }} />
       <View style={{ alignItems: "center", width: "100%", paddingHorizontal: 12, paddingTop: 14, paddingBottom: 14 }}>
         <View
           style={{
@@ -213,15 +214,17 @@ const BhwCard = ({ member, index, isTablet }: { member: OrgMember; index: number
   return (
     <View
       style={{
-        flex: 1, borderRadius: 14, overflow: "hidden",
+        flex: 1, borderRadius: 14,
         backgroundColor: HC.white,
         borderWidth: 1, borderColor: "#EEF2F1",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.04, shadowRadius: 6, elevation: 1,
+        borderTopWidth: 3, borderTopColor: palette.fg,
+        shadowColor: "#90CAF9",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.6,
+        shadowRadius: 12,
+        elevation: 6,
       }}
     >
-      <View style={{ height: 3, backgroundColor: palette.fg }} />
       <View style={{ alignItems: "center", width: "100%", paddingHorizontal: 6, paddingTop: 10, paddingBottom: 10 }}>
         <View
           style={{
@@ -302,61 +305,77 @@ export default function About() {
       style={{ flex: 1, backgroundColor: HC.offWhite }}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
-        paddingHorizontal: isDesktop ? 48 : isTablet ? 28 : 16,
+        paddingHorizontal: isDesktop ? 16 : isTablet ? 12 : 0,
         paddingTop: 20,
         paddingBottom: 52,
         gap: 28,
       }}
     >
+      {/* Hero Card */}
       <View
-        className="rounded-3xl overflow-hidden bg-white border border-slate-100"
         style={{
-          shadowColor: "#0F172A",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.02,
-          shadowRadius: 12,
-          elevation: 2,
+          borderRadius: 24,
+          backgroundColor: "#7988d2",
+          marginHorizontal: 4,
+          padding: 24,
         }}
       >
-        <View className="p-6 md:p-8">
-          <View className="flex-row items-center gap-3 mb-4">
-            <View className="w-10 h-10 rounded-xl bg-blue-50 items-center justify-center border border-blue-100">
-              <Feather name="activity" size={20} color="#2563EB" />
-            </View>
-            <View>
-              <Text className="text-xs font-medium uppercase tracking-widest text-blue-500">
-                Digital Healthcare
-              </Text>
-              <Text className="text-2xl font-semibold text-slate-800">
-                MASLOG CARE
-              </Text>
-            </View>
-          </View>
+        {/* Decorative blobs — moved inside flow, no absolute positioning conflict */}
+        <View
+          style={{
+            position: "absolute", width: 160, height: 160, borderRadius: 80,
+            backgroundColor: "rgba(255,255,255,0.09)", top: -30, right: -30,
+          }}
+          pointerEvents="none"
+        />
+        <View
+          style={{
+            position: "absolute", width: 90, height: 90, borderRadius: 45,
+            backgroundColor: "rgba(255,255,255,0.07)", bottom: 10, left: -10,
+          }}
+          pointerEvents="none"
+        />
 
-          <Text
-            className="text-slate-500 leading-relaxed mb-6"
-            style={{ fontSize: isTablet ? 15 : 14, maxWidth: 540 }}
+        {/* Icon badge + title row */}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 }}>
+          <View
+            style={{
+              width: 46, height: 46, borderRadius: 14,
+              backgroundColor: "rgba(255,255,255,0.2)",
+              alignItems: "center", justifyContent: "center",
+            }}
           >
-            Your trusted digital healthcare partner for Barangay Maslog —
-            bringing quality care closer to every resident.
-          </Text>
-
-          <View className="flex-row bg-slate-50 rounded-xl py-2 px-3 self-start border border-slate-100">
-            {[
-              { value: "24/7", label: "Support" },
-              { value: "100+", label: "Residents" },
-              { value: "Free", label: "Services" },
-            ].map((s, i) => (
-              <View
-                key={i}
-                className="flex-row items-center"
-                style={i < 2 ? { marginRight: 16, paddingRight: 16, borderRightWidth: 1, borderRightColor: "#E2E8F0" } : {}}
-              >
-                <Text className="font-semibold text-slate-700 text-sm mr-1.5">{s.value}</Text>
-                <Text className="text-slate-400 text-xs">{s.label}</Text>
-              </View>
-            ))}
+            <Feather name="heart" size={22} color="#fff" />
           </View>
+          <View>
+            <Text style={{ fontSize: 10, fontWeight: "700", color: "rgba(255,255,255,0.65)", letterSpacing: 2, textTransform: "uppercase" }}>
+              Barangay Maslog
+            </Text>
+            <Text style={{ fontSize: isTablet ? 22 : 20, fontWeight: "800", color: "#fff" }}>
+              Maslog Care
+            </Text>
+          </View>
+        </View>
+
+        {/* Subtitle */}
+        <Text style={{ fontSize: isTablet ? 14 : 13, color: "rgba(255,255,255,0.78)", lineHeight: 21, marginBottom: 20 }}>
+          Stay updated with the latest health services, programs, and care reminders from your community.
+        </Text>
+
+        {/* Pill badge */}
+        <View
+          style={{
+            flexDirection: "row", alignItems: "center", gap: 8,
+            alignSelf: "flex-start",
+            backgroundColor: "rgba(255,255,255,0.2)",
+            borderRadius: 50,
+            paddingHorizontal: 16, paddingVertical: 9,
+          }}
+        >
+          <Feather name="users" size={14} color="#fff" />
+          <Text style={{ color: "#fff", fontSize: 13, fontWeight: "600" }}>
+            Free Community Health Services
+          </Text>
         </View>
       </View>
 
@@ -367,7 +386,7 @@ export default function About() {
             backgroundColor: HC.white, borderRadius: 18, padding: 16,
             flexDirection: "row", gap: 14,
             borderWidth: 1, borderColor: HC.border,
-            shadowColor: HC.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.07, shadowRadius: 10, elevation: 3,
+              
           }}
         >
           <View
@@ -391,7 +410,7 @@ export default function About() {
           style={{
             backgroundColor: HC.white, borderRadius: 18, padding: 16,
             borderWidth: 1, borderColor: HC.border,
-            shadowColor: HC.shadow, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.07, shadowRadius: 10, elevation: 3,
+              
           }}
         >
           <View style={{ flexDirection: "row", gap: 14 }}>
@@ -411,11 +430,8 @@ export default function About() {
 
         <View
           style={{
-            backgroundColor: HC.white, borderRadius: 20,
-            paddingVertical: 24, paddingHorizontal: isTablet ? 20 : 10,
-            borderWidth: 1, borderColor: HC.border,
-            shadowColor: HC.shadow,
-            shadowOffset: { width: 0, height: 5 }, shadowOpacity: 0.09, shadowRadius: 18, elevation: 5,
+            borderRadius: 20,
+            paddingVertical: 8, paddingHorizontal: isTablet ? 8 : 4,
           }}
         >
           {loading ? (
@@ -432,7 +448,7 @@ export default function About() {
             </View>
           ) : (
             <View style={{ alignItems: "center", width: "100%" }}>
-              <View style={{ width: "100%", paddingHorizontal: isTablet ? 40 : 20 }}>
+              <View style={{ width: "100%", paddingHorizontal: isTablet ? 16 : 8 }}>
                 <LeaderCard title="Barangay Captain" subtitle="Head of Barangay Governance" icon="shield" name={captain?.fullname} tier="top" isTablet={isTablet} />
               </View>
 

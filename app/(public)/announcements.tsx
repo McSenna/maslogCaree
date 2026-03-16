@@ -245,7 +245,7 @@ export default function Announcements() {
         <View
           className="overflow-hidden rounded-3xl"
           style={{
-            backgroundColor: "#0C1F6E",
+            backgroundColor: "#7988d2",
             shadowColor: "#2D5BFF",
             shadowOffset: { width: 0, height: 6 },
             shadowOpacity: 0.2,

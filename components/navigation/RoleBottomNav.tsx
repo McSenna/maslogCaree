@@ -8,7 +8,7 @@ type RoleBottomNavProps = {
   items: NavItem[];
 };
 
-export default function RoleBottomNav({ items }: RoleBottomNavProps) {
+const RoleBottomNav = ({ items }: RoleBottomNavProps) => {
   const pathname = usePathname();
 
   function NavItem({
@@ -138,3 +138,5 @@ export default function RoleBottomNav({ items }: RoleBottomNavProps) {
     </View>
   );
 }
+
+export default RoleBottomNav

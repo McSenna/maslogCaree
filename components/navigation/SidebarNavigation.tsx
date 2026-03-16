@@ -13,7 +13,7 @@ type SidebarNavigationProps = {
   roleLabel: string;
 };
 
-export default function SidebarNavigation({ items, roleLabel }: SidebarNavigationProps) {
+const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
   const pathname = usePathname();
 
   return (
@@ -82,3 +82,5 @@ export default function SidebarNavigation({ items, roleLabel }: SidebarNavigatio
     </View>
   );
 }
+
+export default SidebarNavigation
