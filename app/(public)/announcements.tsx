@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View, useWindowDimensions } from "react-native";
-import ScreenScroll from "../../components/layout/ScreenScroll";
+import ScreenScroll from "@/components/layout/ScreenScroll";
 
 const announcements = [
   {

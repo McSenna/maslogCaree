@@ -6,5 +6,9 @@ module.exports = defineConfig([
   expoConfig,
   {
     ignores: ['dist/*'],
+    rules: {
+      // Metro handles platform/module resolution; this rule is noisy in RN/Expo.
+      "import/no-unresolved": "off",
+    },
   },
 ]);

@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { ScrollView, View } from "react-native";
-import StatCard from "../../components/ui/StatCard";
-import InfoCard from "../../components/ui/InfoCard";
-import { PageSubtitle, PageTitle } from "../../components/ui/Typography";
+import StatCard from "@/components/ui/StatCard";
+import InfoCard from "@/components/ui/InfoCard";
+import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 
 const todaysSchedule = [
   { time: "10:00 AM", patient: "Juan Dela Cruz", purpose: "Follow‑up consultation" },

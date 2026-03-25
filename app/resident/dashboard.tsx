@@ -1,10 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import StatCard from "../../components/ui/StatCard";
-import InfoCard from "../../components/ui/InfoCard";
-import { PageSubtitle, PageTitle, Paragraph } from "../../components/ui/Typography";
+import StatCard from "@/components/ui/StatCard";
+import InfoCard from "@/components/ui/InfoCard";
+import { PageSubtitle, PageTitle, Paragraph } from "@/components/ui/Typography";
 
-export default function ResidentDashboard() {
+const ResidentDashboard = () => {
   return (
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
       <View className="gap-6">
@@ -90,3 +90,5 @@ export default function ResidentDashboard() {
     </ScrollView>
   );
 }
+
+export default ResidentDashboard;

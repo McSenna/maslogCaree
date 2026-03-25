@@ -1,10 +1,11 @@
-import { Redirect, Stack } from "expo-router";
-import { useAuth } from "../../contexts/AuthContext";
-import RoleLayout from "../../components/layout/RoleLayout";
+import { Redirect, Stack, type Href } from "expo-router";
+import { useAuth } from "@/contexts/AuthContext";
+import RoleLayout from "@/components/layout/RoleLayout";
+import { getDashboardPath } from "@/data/mockUsers";
 import {
   adminNavItems,
   adminBottomNavItems,
-} from "../../config/roleNavConfig";
+} from "@/config/roleNavConfig";
 
 export default function AdminLayout() {
   const { user, isLoading } = useAuth();
@@ -16,8 +17,7 @@ export default function AdminLayout() {
   }
 
   if (user.role !== "admin") {
-    const { getDashboardPath } = require("../../data/mockUsers");
-    return <Redirect href={getDashboardPath(user.role)} />;
+    return <Redirect href={getDashboardPath(user.role) as Href} />;
   }
 
   return (

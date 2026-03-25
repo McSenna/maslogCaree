@@ -1,9 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import { ScrollView, View } from "react-native";
-import InfoCard from "../../components/ui/InfoCard";
-import { PageSubtitle, PageTitle } from "../../components/ui/Typography";
+import InfoCard from "@/components/ui/InfoCard";
+import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 
-export default function ResidentAppointments() {
+const ResidentAppointments = () => {
   return (
     <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
       <View className="gap-6">
@@ -35,3 +35,5 @@ export default function ResidentAppointments() {
     </ScrollView>
   );
 }
+
+export default ResidentAppointments;

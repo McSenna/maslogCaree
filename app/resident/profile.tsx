@@ -1,3 +1,1 @@
-import ResidentProfileScreen from "../../screens/ResidentProfileScreen";
-
-export default ResidentProfileScreen;
+export { default } from "@/features/profile/screens/ResidentProfileScreen";

@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { ScrollView, View } from "react-native";
-import InfoCard from "../../components/ui/InfoCard";
-import { PageSubtitle, PageTitle } from "../../components/ui/Typography";
+import InfoCard from "@/components/ui/InfoCard";
+import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 
 export default function DoctorConsultations() {
   return (

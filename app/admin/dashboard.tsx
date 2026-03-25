@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { ScrollView, View } from "react-native";
-import StatCard from "../../components/ui/StatCard";
-import InfoCard from "../../components/ui/InfoCard";
-import { PageSubtitle, PageTitle } from "../../components/ui/Typography";
+import StatCard from "@/components/ui/StatCard";
+import InfoCard from "@/components/ui/InfoCard";
+import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 
 export default function AdminDashboard() {
   return (

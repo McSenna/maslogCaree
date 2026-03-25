@@ -1,8 +1,8 @@
 import { ScrollView, View } from "react-native";
-import { useAuth } from "../contexts/AuthContext";
-import ProfileHeader from "../components/profile/ProfileHeader";
-import ProfileMenu from "../components/profile/ProfileMenu";
-import ProfileInfoItem from "../components/profile/ProfileInfoItem";
+import { useAuth } from "@/contexts/AuthContext";
+import ProfileHeader from "@/features/profile/components";
+import ProfileMenuItem from "@/features/profile/components";
+import { ProfileInfoItem } from "@/features/profile/components";
 
 export default function ResidentProfileScreen() {
   const { user } = useAuth();
@@ -35,7 +35,7 @@ export default function ResidentProfileScreen() {
           </View>
         </View>
 
-        <ProfileMenu />
+        <ProfileMenuItem />
       </View>
     </ScrollView>
   );

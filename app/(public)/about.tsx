@@ -1,5 +1,4 @@
 import { Feather } from "@expo/vector-icons";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -8,7 +7,8 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { Paragraph } from "@/components/ui/Typography";
+
+import api from "@/services/api";
 
 const HC = {
   teal:        "#0B7A75",
@@ -270,13 +270,11 @@ export default function About() {
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState<string | null>(null);
 
-  const API_URL = process.env.EXPO_PUBLIC_API_URL;
-
   useEffect(() => {
     const fetchOrganization = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/organizations`);
+        const response = await api.get("/organizations");
         setOrgMembers(response.data);
       } catch (err) {
         setError("Failed to load organization data.");
@@ -286,7 +284,7 @@ export default function About() {
       }
     };
     fetchOrganization();
-  }, [API_URL]);
+  }, []);
 
   const getByRole  = (role: string) => orgMembers.find((m) => m.role === role);
   const bhwMembers = orgMembers.filter((m) => m.role === "bhw" || m.role === "bhwn");
@@ -425,7 +423,7 @@ export default function About() {
       <View>
         <SectionHeader eyebrow="Our People" title="Healthcare Team" isTablet={isTablet} />
         <Text style={{ color: HC.slateLight, fontSize: isTablet ? 12 : 11, marginTop: -8, marginBottom: 16 }}>
-          Organizational structure of Barangay Maslog's health team
+          {"Organizational structure of Barangay Maslog's health team"}
         </Text>
 
         <View
