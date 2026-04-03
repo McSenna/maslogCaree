@@ -2,16 +2,21 @@ import { Feather } from "@expo/vector-icons";
 import { Link, usePathname } from "expo-router";
 import { useEffect, useRef } from "react";
 import { Animated, Pressable, View } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 import type { NavItem } from "./SidebarNavigation";
 
 type RoleBottomNavProps = {
   items: NavItem[];
 };
 
+const PRIMARY = "#2A7DE1";
+
 const RoleBottomNav = ({ items }: RoleBottomNavProps) => {
   const pathname = usePathname();
+  const { classes, resolvedTheme } = useTheme();
+  const inactiveIcon = resolvedTheme === "dark" ? "#94a3b8" : "#94a3b8";
 
-  function NavItem({
+  function NavItemButton({
     item,
     isActive,
   }: {
@@ -48,17 +53,14 @@ const RoleBottomNav = ({ items }: RoleBottomNavProps) => {
       }).start();
     };
 
+    const activeRgb =
+      resolvedTheme === "dark" ? "56, 189, 248" : "45, 91, 255";
     const bgColor = activeAnim.interpolate({
       inputRange: [0, 1],
-      outputRange: ["rgba(45, 91, 255, 0)", "rgba(45, 91, 255, 0.10)"],
+      outputRange: [`rgba(${activeRgb}, 0)`, `rgba(${activeRgb}, 0.14)`],
     });
 
-    const labelColor = activeAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["#94a3b8", "#2D5BFF"],
-    });
-
-    const iconColor = isActive ? "#2D5BFF" : "#94a3b8";
+    const iconColor = isActive ? PRIMARY : inactiveIcon;
 
     return (
       <Link href={item.href as any} asChild>
@@ -73,24 +75,13 @@ const RoleBottomNav = ({ items }: RoleBottomNavProps) => {
             <Animated.View
               style={{
                 alignItems: "center",
-                gap: 3,
                 paddingHorizontal: 12,
-                paddingVertical: 7,
-                borderRadius: 16,
+                paddingVertical: 10,
+                borderRadius: 18,
                 backgroundColor: bgColor,
               }}
             >
-              <Feather name={item.icon} size={18} color={iconColor} />
-              <Animated.Text
-                style={{
-                  fontSize: 10,
-                  fontWeight: "600",
-                  letterSpacing: 0.2,
-                  color: labelColor,
-                }}
-              >
-                {item.label}
-              </Animated.Text>
+              <Feather name={item.icon} size={20} color={iconColor} />
             </Animated.View>
           </Animated.View>
         </Pressable>
@@ -116,27 +107,27 @@ const RoleBottomNav = ({ items }: RoleBottomNavProps) => {
           alignItems: "center",
           marginHorizontal: 24,
           borderRadius: 26,
-          backgroundColor: "#F8F8FA",
+          backgroundColor: classes.bottomNavBg,
           paddingHorizontal: 8,
           paddingVertical: 6,
-          shadowColor: "#2D5BFF",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 16,
+          boxShadow:
+            resolvedTheme === "dark"
+              ? "0px 4px 20px rgba(0,0,0,0.45)"
+              : "0px 4px 16px rgba(45,91,255,0.1)",
           elevation: 8,
           borderWidth: 1,
-          borderColor: "rgba(255,255,255,0.9)",
+          borderColor: classes.bottomNavBorder,
         }}
       >
         {items.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <NavItem key={item.href} item={item} isActive={isActive} />
+            <NavItemButton key={item.href} item={item} isActive={isActive} />
           );
         })}
       </View>
     </View>
   );
-}
+};
 
-export default RoleBottomNav
+export default RoleBottomNav;

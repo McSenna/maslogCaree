@@ -1,4 +1,4 @@
-export type UserRole = "admin" | "doctor" | "bhw" | "resident";
+export type UserRole = "admin" | "doctor" | "midwife" | "bhw" | "resident";
 
 export interface MockUser {
   id: number;
@@ -25,6 +25,13 @@ export const mockUsers: MockUser[] = [
   },
   {
     id: 3,
+    name: "Midwife",
+    email: "midwife@maslog.gov.ph",
+    password: "123456",
+    role: "midwife",
+  },
+  {
+    id: 5,
     name: "BHW",
     email: "bhw@maslog.gov.ph",
     password: "123456",
@@ -43,6 +50,7 @@ export const getDashboardPath = (role: UserRole): string => {
   const paths: Record<UserRole, string> = {
     admin: "/admin/dashboard",
     doctor: "/doctor/dashboard",
+    midwife: "/midwife/dashboard",
     bhw: "/bhw/dashboard",
     resident: "/resident/dashboard",
   };
@@ -54,6 +62,7 @@ export const getProfilePath = (role: UserRole): string => {
   const paths: Record<UserRole, string> = {
     admin: "/admin/profile",
     doctor: "/doctor/profile",
+    midwife: "/midwife/profile",
     bhw: "/bhw/profile",
     resident: "/resident/profile",
   };

@@ -53,10 +53,7 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
         <View
           className="w-full max-w-md rounded-3xl bg-white overflow-hidden"
           style={{
-            shadowColor: "#3B5BDB",
-            shadowOpacity: 0.25,
-            shadowRadius: 40,
-            shadowOffset: { width: 0, height: 16 },
+            boxShadow: "0px 16px 40px rgba(59,91,219,0.25)",
           }}
         >
           {/* ── Header ── */}
@@ -197,10 +194,7 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
                 height: 48,
                 transform: [{ scale: pressed ? 0.97 : 1 }],
                 opacity: pressed || isSubmitting ? 0.72 : 1,
-                shadowColor: "#3B5BDB",
-                shadowOpacity: 0.35,
-                shadowRadius: 12,
-                shadowOffset: { width: 0, height: 5 },
+                boxShadow: "0px 5px 12px rgba(59,91,219,0.35)",
               })}
               disabled={isSubmitting}
               onPress={handleSubmit}

@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { registerResident } from "@/services/auth";
-import { useAuth } from "@/contexts/AuthContext";
 import OtpVerificationModal from "./OtpVerificationModal";
 
 const MC_PRIMARY = "#2A7DE1";
@@ -31,7 +30,6 @@ export default function RegisterModal({
   onLoginPress,
   onRegistrationComplete,
 }: RegisterModalProps) {
-  const { logout } = useAuth();
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -147,10 +145,7 @@ export default function RegisterModal({
           <View
             className="w-full max-w-md rounded-2xl bg-white overflow-hidden self-center max-h-[90%]"
             style={{
-              shadowColor: "#0f172a",
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              shadowOffset: { width: 0, height: 12 },
+              boxShadow: "0px 12px 24px rgba(15,23,42,0.2)",
               elevation: 12,
             }}
           >
@@ -400,10 +395,7 @@ export default function RegisterModal({
                     height: 50,
                     opacity: pressed || isLoading ? 0.85 : 1,
                     transform: [{ scale: pressed ? 0.98 : 1 }],
-                    shadowColor: MC_PRIMARY,
-                    shadowOpacity: 0.35,
-                    shadowRadius: 10,
-                    shadowOffset: { width: 0, height: 4 },
+                    boxShadow: "0px 4px 10px rgba(42,125,225,0.35)",
                     elevation: 4,
                   })}
                 >

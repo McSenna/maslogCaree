@@ -10,7 +10,9 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { CurrentUser } from "@/contexts/AuthContext";
+import { BREAKPOINTS } from "@/constants/breakpoints";
 import { getDashboardPath, getProfilePath } from "@/data/mockUsers";
+import UserAvatar from "../ui/UserAvatar";
 
 type HeaderProps = {
   isMobile: boolean;
@@ -30,38 +32,24 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
 
-  const isDesktop = width >= 1024;
+  const isDesktop = width >= BREAKPOINTS.desktop;
   const logoSize = isMobile ? 35 : 40;
 
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#000000" />
+      <StatusBar barStyle="light-content" backgroundColor="#1e2a6e" />
 
       <View
-        className="sticky top-0 z-50"
         style={{
+          zIndex: 50,
           backgroundColor: "#3f54be",
           borderBottomWidth: 1,
-          borderBottomColor: "#3f54be",
-          shadowColor: "#0C1F6E",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.2,
-          shadowRadius: 12,
+          borderBottomColor: "rgba(12,31,110,0.35)",
+          boxShadow: "0px 4px 12px rgba(12,31,110,0.2)",
           elevation: 8,
           paddingTop: insets.top,
         }}
       >
-        <View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: insets.top,
-            backgroundColor: "#000000",
-          }}
-        />
-
         <View
           className="flex-row items-center justify-between"
           style={{
@@ -82,10 +70,7 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
                 alignItems: "center",
                 justifyContent: "center",
                 overflow: "hidden",
-                shadowColor: "#000",
-                shadowOpacity: 0.18,
-                shadowRadius: 8,
-                shadowOffset: { width: 0, height: 3 },
+                boxShadow: "0px 3px 8px rgba(0,0,0,0.18)",
                 elevation: 6,
                 borderWidth: 2,
                 borderColor: "rgba(255,255,255,0.3)",
@@ -93,10 +78,10 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
             >
               <Image
                 source={require("../../../assets/images/maslogicon.png")}
+                resizeMode="contain"
                 style={{
                   width: logoSize,
                   height: logoSize,
-                  resizeMode: "contain",
                 }}
               />
             </View>
@@ -235,7 +220,11 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
                     opacity: pressed ? 0.9 : 1,
                   })}
                 >
-                  <Feather name="user" size={18} color="#FFFFFF" />
+                  <UserAvatar
+                    size={34}
+                    imageUrl={user?.avatarUrl ?? null}
+                    accessibilityLabel="Profile photo"
+                  />
                 </Pressable>
 
                 <Pressable

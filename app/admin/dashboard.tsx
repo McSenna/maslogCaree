@@ -1,77 +1,43 @@
 import { Feather } from "@expo/vector-icons";
-import { ScrollView, View } from "react-native";
-import StatCard from "@/components/ui/StatCard";
+import { useRouter } from "expo-router";
+import { View } from "react-native";
+import Button from "@/components/ui/Button";
 import InfoCard from "@/components/ui/InfoCard";
-import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
+import Section from "@/components/ui/Section";
+import { DashboardHeader, DashboardShell } from "@/components/dashboard";
+import { chartColors } from "@/design/dashboardTheme";
+
+const ICON = chartColors.primary;
 
 export default function AdminDashboard() {
+  const router = useRouter();
+
   return (
-    <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-      <View className="gap-6">
-        <View>
-          <PageTitle>Admin Dashboard</PageTitle>
-          <PageSubtitle>
-            Overview of residents, appointments, and healthcare operations in
-            Barangay Maslog.
-          </PageSubtitle>
-        </View>
+    <DashboardShell>
+      <View className="gap-7">
+        <DashboardHeader
+          title="Administration"
+          subtitle="User management and reports are available from the sidebar. Aggregate analytics will appear here when wired to the API."
+          roleBadge="Admin"
+          notifications={[]}
+        />
 
-        <View className="gap-4 md:grid md:grid-cols-3 md:gap-5">
-          <StatCard
-            label="Total Residents"
-            value="1,240"
-            helperText="Registered in the MASLOG CARE system"
-            tone="primary"
-            icon={<Feather name="users" size={22} color="#2D5BFF" />}
+        <Section eyebrow="Overview" title="At a glance">
+          <InfoCard
+            title="Live metrics pending"
+            description="Sample workforce counts, charts, and events were removed. Connect admin reporting endpoints to populate this dashboard."
+            icon={<Feather name="pie-chart" size={18} color={ICON} />}
           />
-          <StatCard
-            label="Appointments Today"
-            value={35}
-            helperText="Including walk-in and scheduled visits"
-            icon={<Feather name="calendar" size={22} color="#2D5BFF" />}
-          />
-          <StatCard
-            label="Pending Requests"
-            value={12}
-            helperText="Awaiting confirmation by staff"
-            icon={<Feather name="clock" size={22} color="#2D5BFF" />}
-          />
-        </View>
+        </Section>
 
-        <View className="gap-4 md:grid md:grid-cols-2 md:gap-5">
-          <View className="gap-3">
-            <PageTitle className="text-lg md:text-xl">
-              Announcements Management
-            </PageTitle>
-            <InfoCard
-              title="Upcoming Health Programs"
-              description="Review and publish new announcements for vaccination drives, medical missions, and health seminars."
-            />
-            <InfoCard
-              title="Draft: Community Health Day"
-              description="Scheduled for April 10, 2026. Pending final approval from the Barangay Health Committee."
-            />
+        <Section eyebrow="Shortcuts" title="Go to">
+          <View className="gap-3 md:flex-row md:flex-wrap">
+            <Button variant="accent" title="Users" onPress={() => router.push("/admin/users" as any)} />
+            <Button variant="secondary" title="Reports" onPress={() => router.push("/admin/reports" as any)} />
+            <Button variant="secondary" title="Settings" onPress={() => router.push("/admin/settings" as any)} />
           </View>
-
-          <View className="gap-3">
-            <PageTitle className="text-lg md:text-xl">
-              Healthcare Staff List
-            </PageTitle>
-            <InfoCard
-              title="Dr. Maria Santos"
-              description="General Physician – Primary care and consultations."
-            />
-            <InfoCard
-              title="Nurse Team"
-              description="Responsible for triage, vital signs, and follow‑up care."
-            />
-            <InfoCard
-              title="Barangay Health Workers"
-              description="On-the-ground support for residents, vaccination, and health education."
-            />
-          </View>
-        </View>
+        </Section>
       </View>
-    </ScrollView>
+    </DashboardShell>
   );
 }

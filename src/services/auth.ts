@@ -1,18 +1,38 @@
-import { setStoredUser, clearStoredUser } from "@/utils/storage";
-
-const RAW_API_URL = process.env.EXPO_PUBLIC_API_URL?.trim();
-const NORMALIZED_BASE = (RAW_API_URL || "http://localhost:5000/api").replace(/\/+$/, "");
-const API_URL = NORMALIZED_BASE.endsWith("/api")
-  ? NORMALIZED_BASE
-  : `${NORMALIZED_BASE}/api`;
-
+import api from "@/services/api";
+import { setStoredUser, clearStoredUser, type StoredUser } from "@/utils/storage";
 
 export interface AuthUser {
   _id: string;
   fullname: string;
   email: string;
-  role: "admin" | "doctor" | "bhw" | "resident";
+  role: "admin" | "doctor" | "midwife" | "bhw" | "resident";
   verified: boolean;
+  dateOfBirth?: string;
+  gender?: string;
+  address?: string;
+  /** Base64 data URI (data:image/...;base64,...) */
+  avatarUrl?: string | null;
+}
+
+function toStoredUser(user: AuthUser, token: string): StoredUser {
+  const dob =
+    typeof user.dateOfBirth === "string"
+      ? user.dateOfBirth
+      : user.dateOfBirth != null
+        ? String(user.dateOfBirth)
+        : undefined;
+  return {
+    id: user._id,
+    name: user.fullname,
+    email: user.email,
+    role: user.role,
+    token,
+    avatarUrl: user.avatarUrl ?? undefined,
+    dateOfBirth: dob,
+    gender: user.gender,
+    address: user.address,
+    verified: user.verified,
+  };
 }
 
 export interface RegisterPayload {
@@ -23,12 +43,7 @@ export interface RegisterPayload {
   confirmPassword?: string;
   gender: string;
   address: string;
-}
-
-interface ApiErrorBody {
-  success: false;
-  message: string;
-  errors?: string[];
+  profilePhoto?: string | null;
 }
 
 interface RegisterResponse {
@@ -60,25 +75,8 @@ async function postJson<T>(
   path: string,
   body: Record<string, unknown>
 ): Promise<T> {
-  const response = await fetch(`${API_URL}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    const message =
-      (data as ApiErrorBody)?.message ||
-      `Request failed with status ${response.status}`;
-
-    const err = new Error(message) as Error & { errors?: string[] };
-    err.errors = (data as ApiErrorBody)?.errors;
-    throw err;
-  }
-
-  return data as T;
+  const response = await api.post<T>(path, body);
+  return response.data;
 }
 
 export async function registerResident(
@@ -93,6 +91,7 @@ export async function registerResident(
     gender: payload.gender.trim().toLowerCase(),
     dateOfBirth,
     address: payload.address.trim(),
+    profilePhoto: payload.profilePhoto ?? undefined,
   });
 
   if (!data.success) {
@@ -130,13 +129,7 @@ export async function verifyOtp(
   }
 
   if (data.token) {
-    setStoredUser({
-      id: data.user._id,
-      name: data.user.fullname,
-      email: data.user.email,
-      role: data.user.role,
-      token: data.token,
-    });
+    setStoredUser(toStoredUser(data.user, data.token));
   }
 
   return { message: data.message, token: data.token, user: data.user };
@@ -156,13 +149,7 @@ export async function loginWithEmail(
   }
 
   if (data.token) {
-    setStoredUser({
-      id: data.user._id,
-      name: data.user.fullname,
-      email: data.user.email,
-      role: data.user.role,
-      token: data.token,
-    });
+    setStoredUser(toStoredUser(data.user, data.token));
   }
 
   return { token: data.token, user: data.user };
@@ -178,11 +165,26 @@ export function logout(): boolean {
   }
 }
 
-export function isTokenValid(token: string): boolean {
-  if (!token) return false;
+function decodeJwtExp(token: string): number | null {
   try {
-    return token.split(".").length === 3;
+    const part = token.split(".")[1];
+    if (!part) return null;
+    const b64 = part.replace(/-/g, "+").replace(/_/g, "/");
+    const pad = (4 - (b64.length % 4)) % 4;
+    const padded = b64 + "=".repeat(pad);
+    const atobFn = typeof globalThis.atob === "function" ? globalThis.atob.bind(globalThis) : null;
+    if (!atobFn) return null;
+    const json = atobFn(padded);
+    const payload = JSON.parse(json) as { exp?: number };
+    return typeof payload.exp === "number" ? payload.exp : null;
   } catch {
-    return false;
+    return null;
   }
+}
+
+export function isTokenValid(token: string): boolean {
+  if (!token || token.split(".").length !== 3) return false;
+  const exp = decodeJwtExp(token);
+  if (exp == null) return false;
+  return Date.now() < exp * 1000;
 }

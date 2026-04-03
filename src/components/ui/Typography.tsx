@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Text } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type TypographyProps = {
   children: ReactNode;
@@ -7,9 +8,11 @@ type TypographyProps = {
 };
 
 export function PageTitle({ children, className = "" }: TypographyProps) {
+  const { classes } = useTheme();
+
   return (
     <Text
-      className={`text-2xl font-bold tracking-tight text-slate-900 md:text-3xl ${className}`}
+      className={`text-2xl font-bold tracking-tight md:text-3xl ${classes.textPrimary} ${className}`}
     >
       {children}
     </Text>
@@ -17,9 +20,11 @@ export function PageTitle({ children, className = "" }: TypographyProps) {
 }
 
 export function PageSubtitle({ children, className = "" }: TypographyProps) {
+  const { classes } = useTheme();
+
   return (
     <Text
-      className={`mt-1 text-sm font-medium text-sky-700 md:text-base ${className}`}
+      className={`mt-1 text-sm font-medium md:text-base ${classes.textAccent} ${className}`}
     >
       {children}
     </Text>
@@ -27,12 +32,13 @@ export function PageSubtitle({ children, className = "" }: TypographyProps) {
 }
 
 export function Paragraph({ children, className = "" }: TypographyProps) {
+  const { classes } = useTheme();
+
   return (
     <Text
-      className={`text-sm leading-relaxed text-slate-600 md:text-base ${className}`}
+      className={`text-sm leading-relaxed md:text-base ${classes.textSecondary} ${className}`}
     >
       {children}
     </Text>
   );
 }
-

@@ -24,9 +24,9 @@ export default function AdminLayout() {
     <RoleLayout
       sidebarItems={adminNavItems}
       bottomNavItems={adminBottomNavItems}
-      roleLabel="Admin"
+      roleLabel="MaslogCare"
     >
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false, animation: "none" }} />
     </RoleLayout>
   );
 }

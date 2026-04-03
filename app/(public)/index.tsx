@@ -2,10 +2,11 @@ import { Feather } from "@expo/vector-icons";
 import { Redirect, type Href } from "expo-router";
 import { Text, View, useWindowDimensions } from "react-native";
 import ScreenScroll from "@/components/layout/ScreenScroll";
-import HeroCard from "@/components/home/HeroCard";
 import ServiceCard, { type ServiceCardItem } from "@/components/home/ServiceCard";
 import { useAuth } from "@/contexts/AuthContext";
+import { BREAKPOINTS } from "@/constants/breakpoints";
 import { getDashboardPath } from "@/data/mockUsers";
+import HeroCard from "@/components/home/HeroCard";
 
 const SERVICES: ServiceCardItem[] = [
   {
@@ -53,35 +54,31 @@ const SERVICES: ServiceCardItem[] = [
 const HOW_TO_STEPS = [
   {
     title: "Create or Login to Your Account",
-    description:
-      "Residents can register or log in to access all healthcare services.",
+    description: "Residents can register or log in to access all healthcare services.",
     icon: "user-check" as const,
     color: "#2D5BFF",
   },
   {
     title: "Book Healthcare Appointments",
-    description:
-      "Schedule appointments or view your appointment history easily.",
+    description: "Schedule appointments or view your appointment history easily.",
     icon: "calendar" as const,
     color: "#10B981",
   },
   {
     title: "View Health Announcements",
-    description:
-      "Stay informed with barangay health advisories and programs.",
+    description: "Stay informed with barangay health advisories and programs.",
     icon: "bell" as const,
     color: "#F59E0B",
   },
   {
     title: "Connect with Health Workers",
-    description:
-      "Communicate with barangay health workers for direct assistance.",
+    description: "Communicate with barangay health workers for direct assistance.",
     icon: "users" as const,
     color: "#8B5CF6",
   },
 ];
 
-function StepRow({
+const StepRow = ({
   number,
   title,
   desc,
@@ -95,12 +92,13 @@ function StepRow({
   icon: string;
   color: string;
   isLast?: boolean;
-}) {
+}) => {
   const { width } = useWindowDimensions();
-  const isTablet = width >= 768;
+  const isTablet = width >= BREAKPOINTS.tablet;
 
   return (
     <View className="flex-row gap-4">
+      {/* Step number + connector line */}
       <View className="items-center" style={{ width: 44, flexShrink: 0 }}>
         <View
           className="items-center justify-center rounded-full"
@@ -127,7 +125,9 @@ function StepRow({
         )}
       </View>
 
+      {/* Step content */}
       <View className="flex-1 min-w-0 pb-5">
+        {/* Icon + title row */}
         <View className="mb-1 flex-row items-center gap-2">
           <View
             className="rounded-lg p-1.5"
@@ -143,6 +143,7 @@ function StepRow({
             {title}
           </Text>
         </View>
+        {/* Description indented to align with title */}
         <Text
           className="ml-8 leading-relaxed text-slate-400"
           style={{ fontSize: isTablet ? 12 : 11 }}
@@ -152,13 +153,13 @@ function StepRow({
       </View>
     </View>
   );
-}
+};
 
-export default function Index() {
+const Index = () => {
   const { user, isLoading } = useAuth();
   const { width } = useWindowDimensions();
-  const isTablet = width >= 768;
-  const isDesktop = width >= 1024;
+  const isTablet = width >= BREAKPOINTS.tablet;
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
   if (!isLoading && user) {
     return <Redirect href={getDashboardPath(user.role) as Href} />;
@@ -170,14 +171,14 @@ export default function Index() {
         className="gap-6"
         style={{
           paddingHorizontal: isDesktop ? 48 : 0,
-          maxWidth: 640,
+          maxWidth: isDesktop ? 1200 : 640,
           alignSelf: "center",
           width: "100%",
         }}
       >
         <HeroCard />
 
-        {/* Healthcare Services */}
+        {/* ── Healthcare Services ── */}
         <View className="gap-3">
           <View>
             <Text
@@ -194,21 +195,24 @@ export default function Index() {
             </Text>
           </View>
 
-          <View
-            className="flex-row flex-wrap gap-3"
-            style={
-              isDesktop
-                ? { justifyContent: "space-between" }
-                : { justifyContent: "flex-start" }
-            }
-          >
+          {/* Responsive 2-col (mobile) → 4-col (desktop) grid */}
+          <View className="flex-row flex-wrap gap-3">
             {SERVICES.map((s, i) => (
-              <ServiceCard key={i} {...s} />
+              <View
+                key={i}
+                style={{
+                  flexBasis: isDesktop ? "22%" : "47%",
+                  flexGrow: 1,
+                  maxWidth: isDesktop ? "25%" : "50%",
+                }}
+              >
+                <ServiceCard {...s} />
+              </View>
             ))}
           </View>
         </View>
 
-        {/* How to Use */}
+        {/* ── How to Use ── */}
         <View className="gap-3">
           <View>
             <Text
@@ -225,15 +229,13 @@ export default function Index() {
             </Text>
           </View>
 
+          {/* Steps card */}
           <View
             className="rounded-3xl bg-white px-5 pt-6 pb-2"
             style={{
               borderWidth: 1,
               borderColor: "#F1F5F9",
-              shadowColor: "#0F172A",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.05,
-              shadowRadius: 12,
+              boxShadow: "0px 2px 12px rgba(15,23,42,0.05)",
               elevation: 2,
             }}
           >
@@ -251,12 +253,9 @@ export default function Index() {
           </View>
         </View>
 
-        {/* Footer */}
+        {/* ── Footer note ── */}
         <View className="flex-row items-center justify-center gap-2 py-3">
-          <View
-            className="rounded-full p-1.5"
-            style={{ backgroundColor: "#F1F5F9" }}
-          >
+          <View className="rounded-full p-1.5 bg-slate-100">
             <Feather name="lock" size={11} color="#94A3B8" />
           </View>
           <Text
@@ -269,4 +268,6 @@ export default function Index() {
       </View>
     </ScreenScroll>
   );
-}
+};
+
+export default Index;

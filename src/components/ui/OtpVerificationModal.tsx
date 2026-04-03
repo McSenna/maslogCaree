@@ -10,8 +10,10 @@ import {
   View,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { resendOtp, verifyOtp } from "@/services/auth";
 import { useAuth } from "@/contexts/AuthContext";
+import { getDashboardPath } from "@/data/mockUsers";
 
 const MC_PRIMARY = "#2A7DE1";
 const OTP_LENGTH = 6;
@@ -21,14 +23,18 @@ export type OtpVerificationModalProps = {
   visible: boolean;
   email: string;
   onClose: () => void;
+  /** If set, called after successful verify instead of `onClose` (e.g. close parent registration UI). */
+  onVerified?: () => void;
 };
 
 export default function OtpVerificationModal({
   visible,
   email,
   onClose,
+  onVerified,
 }: OtpVerificationModalProps) {
-  const { logout } = useAuth();
+  const router = useRouter();
+  const { logout, applyAuthUser } = useAuth();
   const [otpDigits, setOtpDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -85,12 +91,19 @@ export default function OtpVerificationModal({
     try {
       setIsVerifying(true);
       setVerificationError("");
-      await verifyOtp(email.trim(), otp);
+      const { token, user } = await verifyOtp(email.trim(), otp);
+      applyAuthUser(user, token);
       Alert.alert("Success!", "Your email has been verified. Registration complete!");
       setOtpDigits(Array(OTP_LENGTH).fill(""));
-      onClose();
+      if (onVerified) {
+        onVerified();
+      } else {
+        onClose();
+      }
+      router.replace(getDashboardPath(user.role as any) as any);
     } catch (error: any) {
       setVerificationError(
+        error?.message ??
         error?.response?.data?.message ?? "Unable to verify code. Please check and try again."
       );
     } finally {
@@ -110,6 +123,7 @@ export default function OtpVerificationModal({
     } catch (error: any) {
       Alert.alert(
         "Resend Failed",
+        error?.message ??
         error?.response?.data?.message ?? "Unable to resend code. Please try again."
       );
     } finally {
@@ -140,10 +154,7 @@ export default function OtpVerificationModal({
         <View
           className="w-full max-w-md rounded-2xl bg-white overflow-hidden self-center"
           style={{
-            shadowColor: "#0f172a",
-            shadowOpacity: 0.2,
-            shadowRadius: 24,
-            shadowOffset: { width: 0, height: 12 },
+            boxShadow: "0px 12px 24px rgba(15,23,42,0.2)",
             elevation: 12,
           }}
         >
@@ -286,10 +297,7 @@ export default function OtpVerificationModal({
                 height: 50,
                 opacity: pressed || isVerifying || otp.length !== OTP_LENGTH ? 0.7 : 1,
                 transform: [{ scale: pressed ? 0.98 : 1 }],
-                shadowColor: MC_PRIMARY,
-                shadowOpacity: 0.35,
-                shadowRadius: 10,
-                shadowOffset: { width: 0, height: 4 },
+                boxShadow: "0px 4px 10px rgba(42,125,225,0.35)",
                 elevation: 4,
               })}
             >

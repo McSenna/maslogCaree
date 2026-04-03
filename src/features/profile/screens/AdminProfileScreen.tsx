@@ -1,9 +1,12 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { Alert, Platform } from "react-native";
-import { ScrollView } from "react-native";
+import { Alert, Platform, ScrollView, View } from "react-native";
 import { useAuth } from "@/contexts/AuthContext";
-import { ProfileHeader, ProfileMenuSection } from "@/features/profile/components";
+import {
+  ProfileIdentityCard,
+  ProfileMenuSection,
+  ThemePreferenceEndSlot,
+} from "@/features/profile/components";
 
 type AdminProfileScreenProps = {
   onNavigateToProfileEdit?: () => void;
@@ -36,17 +39,16 @@ const buildAccountItems = (handlers: AdminProfileScreenProps) => [
   },
 ];
 
-const buildPreferenceItems = (_handlers: AdminProfileScreenProps) => [
+const buildPreferenceItems = (router: ReturnType<typeof useRouter>, _handlers: AdminProfileScreenProps) => [
   {
-    label: "About Us",
-    icon: <Feather name="info" size={18} color="#6b7280" />,
-    onPress: undefined,
+    label: "Dark mode",
+    icon: <Feather name="moon" size={18} color="#6b7280" />,
+    endSlot: <ThemePreferenceEndSlot />,
   },
   {
-    label: "Theme",
-    icon: <Feather name="sun" size={18} color="#6b7280" />,
-    value: "Light",
-    onPress: undefined,
+    label: "About",
+    icon: <Feather name="info" size={18} color="#6b7280" />,
+    onPress: () => router.push("/about" as any),
   },
 ];
 
@@ -91,22 +93,31 @@ export default function AdminProfileScreen(props?: AdminProfileScreenProps) {
   const profileUser = {
     fullname: user?.name ?? "Admin User",
     email: user?.email ?? "",
-    bio: "System administrator.",
     role: "Admin",
     verified: true,
     avatarUrl: user?.avatarUrl ?? null,
+    address: user?.address ?? null,
+    gender: user?.gender ?? null,
+    dateOfBirth: user?.dateOfBirth ?? null,
   };
 
   return (
     <ScrollView
-      className="flex-1 bg-slate-50"
+      className="flex-1 bg-transparent"
       showsVerticalScrollIndicator={false}
-      contentContainerClassName="gap-4 px-4 py-4 pb-10"
+      style={{ backgroundColor: "transparent" }}
     >
-      <ProfileHeader user={profileUser} />
-      <ProfileMenuSection title="Account" items={accountItems} />
-      <ProfileMenuSection title="Preferences" items={buildPreferenceItems(handlers)} />
-      <ProfileMenuSection title="Support" items={supportItems} />
+      <View
+        className="w-full max-w-[980px] self-center"
+        style={{ backgroundColor: "transparent" }}
+      >
+        <View className="gap-5">
+          <ProfileIdentityCard user={profileUser} />
+          <ProfileMenuSection title="Account" items={accountItems} />
+          <ProfileMenuSection title="Preferences" items={buildPreferenceItems(router, handlers)} />
+          <ProfileMenuSection title="Support" items={supportItems} />
+        </View>
+      </View>
     </ScrollView>
   );
 }

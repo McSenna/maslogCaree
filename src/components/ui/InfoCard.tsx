@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type InfoCardProps = {
   title: string;
@@ -18,17 +19,18 @@ export default function InfoCard({
   showArrow = false,
   variant = "default",
 }: InfoCardProps) {
+  const { classes, resolvedTheme } = useTheme();
   const isFeatured = variant === "featured";
+
+  const surface = isFeatured
+    ? "border-transparent bg-mc-primary shadow-lg shadow-mc-primary/35"
+    : `${classes.border} ${resolvedTheme === "dark" ? "bg-slate-900/70" : "bg-white"} shadow-sm shadow-black/5`;
 
   return (
     <Pressable
       disabled={!onPress}
       onPress={onPress}
-      className={`w-full rounded-2xl p-4 md:p-5 ${
-        isFeatured
-          ? "bg-mc-primary shadow-lg shadow-mc-primary/30"
-          : "bg-white shadow-sm shadow-slate-200 border border-slate-100"
-      }`}
+      className={`w-full rounded-2xl border p-4 md:p-5 ${surface}`}
       style={({ pressed }) => ({
         transform: [{ scale: pressed ? 0.975 : 1 }],
         opacity: pressed ? 0.92 : 1,
@@ -38,7 +40,7 @@ export default function InfoCard({
         {icon && (
           <View
             className={`rounded-xl p-2.5 ${
-              isFeatured ? "bg-white/20" : "bg-mc-primary/8"
+              isFeatured ? "bg-white/20" : classes.statIconWrap
             }`}
           >
             {icon}
@@ -47,7 +49,7 @@ export default function InfoCard({
         <View className="flex-1">
           <Text
             className={`text-base font-bold md:text-lg ${
-              isFeatured ? "text-white" : "text-slate-800"
+              isFeatured ? "text-white" : classes.textPrimary
             }`}
           >
             {title}
@@ -55,7 +57,7 @@ export default function InfoCard({
           {description && (
             <Text
               className={`mt-1 text-sm leading-relaxed md:text-base ${
-                isFeatured ? "text-white/80" : "text-slate-500"
+                isFeatured ? "text-white/80" : classes.textMuted
               }`}
             >
               {description}
@@ -65,12 +67,12 @@ export default function InfoCard({
         {showArrow && (
           <View
             className={`rounded-full p-2 ${
-              isFeatured ? "bg-white/20" : "bg-mc-primary/8"
+              isFeatured ? "bg-white/20" : classes.statIconWrap
             }`}
           >
             <Text
               className={`text-sm font-bold ${
-                isFeatured ? "text-white" : "text-mc-primary"
+                isFeatured ? "text-white" : classes.textAccent
               }`}
             >
               →

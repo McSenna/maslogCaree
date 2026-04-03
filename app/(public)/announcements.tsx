@@ -2,6 +2,15 @@ import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View, useWindowDimensions } from "react-native";
 import ScreenScroll from "@/components/layout/ScreenScroll";
 
+function hexToRgba(hex: string, alpha: number) {
+  const normalized = hex.replace("#", "").trim();
+  if (normalized.length !== 6) return `rgba(0,0,0,${alpha})`;
+  const r = parseInt(normalized.slice(0, 2), 16);
+  const g = parseInt(normalized.slice(2, 4), 16);
+  const b = parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 const announcements = [
   {
     title: "Free Medical Checkup",
@@ -66,10 +75,7 @@ function FeaturedCard({
       style={{
         borderRadius: 20,
         overflow: "hidden",
-        shadowColor: color,
-        shadowOpacity: 0.18,
-        shadowRadius: 16,
-        shadowOffset: { width: 0, height: 6 },
+        boxShadow: `0px 6px 16px ${hexToRgba(color, 0.18)}`,
         elevation: 6,
       }}
     >
@@ -176,10 +182,7 @@ function AnnouncementCard({
       style={{
         borderWidth: 1,
         borderColor: "#F1F5F9",
-        shadowColor: "#0F172A",
-        shadowOpacity: 0.04,
-        shadowRadius: 6,
-        shadowOffset: { width: 0, height: 2 },
+        boxShadow: "0px 2px 6px rgba(15,23,42,0.04)",
         elevation: 2,
       }}
     >
@@ -246,10 +249,7 @@ export default function Announcements() {
           className="overflow-hidden rounded-3xl"
           style={{
             backgroundColor: "#7988d2",
-            shadowColor: "#2D5BFF",
-            shadowOffset: { width: 0, height: 6 },
-            shadowOpacity: 0.2,
-            shadowRadius: 20,
+            boxShadow: "0px 6px 20px rgba(45,91,255,0.2)",
             elevation: 8,
           }}
         >

@@ -31,10 +31,7 @@ const RegistrationModal = ({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
-        <RegistrationScreen
-          onBackPress={onClose}
-          onRegistrationSuccess={onClose}
-        />
+        <RegistrationScreen onBackPress={onClose} onRegistrationSuccess={onClose} />
       </KeyboardAvoidingView>
     </Modal>
   );

@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import type { OrganizationMember } from "@/types/organization";
 import {
   ActivityIndicator,
   ScrollView,
@@ -8,7 +8,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 
-import api from "@/services/api";
+import { useOrganizations } from "@/hooks/useOrganizations";
 
 const HC = {
   teal:        "#0B7A75",
@@ -31,15 +31,7 @@ const HC = {
   shadow:      "#0B7A75",
 };
 
-type OrgMember = {
-  _id: { $oid: string };
-  fullname: string;
-  gender: string;
-  address: string;
-  role: string;
-  organizationId: string;
-  photo: string;
-};
+type OrgMember = OrganizationMember;
 
 const BHW_PALETTE = [
   { fg: "#0B7A75", bg: "#B2E5E3", light: "#E6F7F6" },
@@ -106,10 +98,7 @@ const LeaderCard = ({
           marginHorizontal: 8,
           backgroundColor: HC.navy,
           borderTopWidth: 5, borderTopColor: HC.tealLight,
-          shadowColor: "#90CAF9",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.6,
-          shadowRadius: 12,
+          boxShadow: "0px 4px 12px rgba(144,202,249,0.6)",
           elevation: 6,
         }}
       >
@@ -160,10 +149,7 @@ const LeaderCard = ({
         backgroundColor: HC.white,
         borderWidth: 1, borderColor: HC.border,
         borderTopWidth: 4, borderTopColor: HC.teal,
-        shadowColor: "#90CAF9",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.6,
-        shadowRadius: 12,
+        boxShadow: "0px 4px 12px rgba(144,202,249,0.6)",
         elevation: 6,
       }}
     >
@@ -218,10 +204,7 @@ const BhwCard = ({ member, index, isTablet }: { member: OrgMember; index: number
         backgroundColor: HC.white,
         borderWidth: 1, borderColor: "#EEF2F1",
         borderTopWidth: 3, borderTopColor: palette.fg,
-        shadowColor: "#90CAF9",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.6,
-        shadowRadius: 12,
+        boxShadow: "0px 4px 12px rgba(144,202,249,0.6)",
         elevation: 6,
       }}
     >
@@ -265,26 +248,7 @@ export default function About() {
   const { width } = useWindowDimensions();
   const isTablet  = width >= 768;
   const isDesktop = width >= 1024;
-
-  const [orgMembers, setOrgMembers] = useState<OrgMember[]>([]);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchOrganization = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get("/organizations");
-        setOrgMembers(response.data);
-      } catch (err) {
-        setError("Failed to load organization data.");
-        console.error("Error fetching organizations:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrganization();
-  }, []);
+  const { orgMembers, loading, error } = useOrganizations();
 
   const getByRole  = (role: string) => orgMembers.find((m) => m.role === role);
   const bhwMembers = orgMembers.filter((m) => m.role === "bhw" || m.role === "bhwn");
@@ -323,15 +287,15 @@ export default function About() {
           style={{
             position: "absolute", width: 160, height: 160, borderRadius: 80,
             backgroundColor: "rgba(255,255,255,0.09)", top: -30, right: -30,
+            pointerEvents: "none",
           }}
-          pointerEvents="none"
         />
         <View
           style={{
             position: "absolute", width: 90, height: 90, borderRadius: 45,
             backgroundColor: "rgba(255,255,255,0.07)", bottom: 10, left: -10,
+            pointerEvents: "none",
           }}
-          pointerEvents="none"
         />
 
         {/* Icon badge + title row */}

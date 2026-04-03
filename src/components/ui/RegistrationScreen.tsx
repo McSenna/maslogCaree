@@ -236,10 +236,18 @@ const RegistrationScreen = ({
         base64: true,
       });
       if (!result.canceled && result.assets[0]) {
-        setProfileImage(result.assets[0].uri);
+        const asset = result.assets[0];
+        // `base64` is required so we can store the image in the database (no filesystem/local paths).
+        if (!asset.base64) {
+          Alert.alert("Error", "Could not read image data. Please try a different photo.");
+          return;
+        }
+        const mime = asset.mimeType || (asset.type ? (String(asset.type).includes("/") ? asset.type : `image/${asset.type}`) : "image/jpeg");
+        const dataUri = `data:${mime};base64,${asset.base64}`;
+        setProfileImage(dataUri);
         clearError("profileImage");
       }
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to pick image. Please try again.');
     }
   };
@@ -258,10 +266,17 @@ const RegistrationScreen = ({
         base64: true,
       });
       if (!result.canceled && result.assets[0]) {
-        setProfileImage(result.assets[0].uri);
+        const asset = result.assets[0];
+        if (!asset.base64) {
+          Alert.alert("Error", "Could not read image data. Please try a different photo.");
+          return;
+        }
+        const mime = asset.mimeType || (asset.type ? (String(asset.type).includes("/") ? asset.type : `image/${asset.type}`) : "image/jpeg");
+        const dataUri = `data:${mime};base64,${asset.base64}`;
+        setProfileImage(dataUri);
         clearError("profileImage");
       }
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to take photo. Please try again.');
     }
   };
@@ -331,7 +346,8 @@ const RegistrationScreen = ({
         address: address.trim(),
       };
       if (profileImage) {
-        registrationData.profileImage = profileImage;
+        // Stored directly in MongoDB as base64 (data URI).
+        registrationData.profilePhoto = profileImage;
       }
       const result = await registerResident(registrationData);
       setRegisteredEmail(result.email);
@@ -339,6 +355,7 @@ const RegistrationScreen = ({
     } catch (error: any) {
       Alert.alert(
         "Registration Failed",
+        error?.message ||
         error?.response?.data?.message ||
         error?.response?.data?.errors?.join(", ") ||
         "Registration failed. Please try again."
@@ -348,9 +365,16 @@ const RegistrationScreen = ({
     }
   };
 
-  const handleOtpVerificationSuccess = () => {
+  const handleOtpVerified = () => {
     setShowOtpModal(false);
-    Alert.alert("Registration Complete", "Your account has been created and verified!");
+    setFullname("");
+    setEmail("");
+    setPassword("");
+    setGender("male");
+    setDateOfBirth("");
+    setAddress("");
+    setProfileImage(null);
+    setErrors({});
     onRegistrationSuccess?.();
   };
 
@@ -365,10 +389,7 @@ const RegistrationScreen = ({
       <View className="flex-1">
         {/* ── Sticky Header ────────────────────────────────────────────────────── */}
         <View className="bg-mc-primary z-10" style={{
-          shadowColor: "#000",
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          shadowOffset: { width: 0, height: 2 },
+          boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
           elevation: 5,
         }}>
           <View className="px-5 pt-12 pb-4 overflow-hidden">
@@ -576,10 +597,9 @@ const RegistrationScreen = ({
                       className="flex-1 items-center justify-center rounded-[9px]"
                       style={{
                         backgroundColor: isSelected ? "#fff" : "transparent",
-                        shadowColor: isSelected ? "#000" : "transparent",
-                        shadowOpacity: isSelected ? 0.08 : 0,
-                        shadowRadius: isSelected ? 4 : 0,
-                        shadowOffset: { width: 0, height: 1 },
+                        boxShadow: isSelected
+                          ? "0px 1px 4px rgba(0,0,0,0.08)"
+                          : "0px 0px 0px rgba(0,0,0,0)",
                         elevation: isSelected ? 2 : 0,
                       }}
                     >
@@ -693,10 +713,7 @@ const RegistrationScreen = ({
             paddingTop: 16,
             paddingHorizontal: 16,
             paddingBottom: Platform.OS === "ios" ? 34 : 24,
-            shadowColor: "#000",
-            shadowOpacity: 0.08,
-            shadowRadius: 12,
-            shadowOffset: { width: 0, height: -4 },
+            boxShadow: "0px -4px 12px rgba(0,0,0,0.08)",
             elevation: 8,
           }}
         >
@@ -749,7 +766,7 @@ const RegistrationScreen = ({
               fontSize: 10,
               color: "#94A3B8",
               lineHeight: 16,
-              marginTop: 14, // Slightly increased margin
+              marginTop: 14,
             }}
           >
             By registering, you agree to our{" "}
@@ -775,13 +792,17 @@ const RegistrationScreen = ({
       <OtpVerificationModal
         visible={showOtpModal}
         email={registeredEmail}
+        onVerified={handleOtpVerified}
         onClose={() => {
           setShowOtpModal(false);
-          setFullname(""); setEmail(""); setPassword("");
-          setGender("male"); setDateOfBirth(""); setAddress("");
+          setFullname("");
+          setEmail("");
+          setPassword("");
+          setGender("male");
+          setDateOfBirth("");
+          setAddress("");
           setProfileImage(null);
           setErrors({});
-          handleOtpVerificationSuccess();
         }}
       />
     </KeyboardAvoidingView>

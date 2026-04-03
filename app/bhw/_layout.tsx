@@ -24,9 +24,9 @@ export default function BhwLayout() {
     <RoleLayout
       sidebarItems={bhwNavItems}
       bottomNavItems={bhwBottomNavItems}
-      roleLabel="BHW"
+      roleLabel="MaslogCare"
     >
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false, animation: "none" }} />
     </RoleLayout>
   );
 }

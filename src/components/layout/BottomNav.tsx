@@ -3,15 +3,16 @@ import { useRef } from "react";
 import { Animated, Pressable, View, useWindowDimensions } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BREAKPOINTS } from "@/constants/breakpoints";
 
 export default function BottomNav() {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const isTablet = width >= 768;
-  const isDesktop = width >= 1024;
+  const isTablet = width >= BREAKPOINTS.tablet;
+  const isDesktop = width >= BREAKPOINTS.desktop;
 
-  const bottomOffset = isDesktop ? 24 : Math.max(10, insets.bottom + 10);
+  const bottomPad = Math.max(insets.bottom, 8);
 
   const navItems: {
     label: string;
@@ -119,22 +120,22 @@ export default function BottomNav() {
 
   return (
     <View
-      pointerEvents="box-none"
-      className="absolute left-0 right-0 z-50 items-center"
+      className="absolute left-0 right-0 items-center"
       style={{
-        bottom: bottomOffset,
+        zIndex: 50,
+        bottom: 0,
+        paddingBottom: bottomPad,
+        paddingHorizontal: isDesktop ? 24 : 16,
+        pointerEvents: "box-none",
       }}
     >
       <View
         className="flex-row items-center rounded-3xl border border-slate-200/80 bg-white px-2 py-1.5"
         style={{
           width: navWidth,
-          marginHorizontal: navWidth ? undefined : 20,
+          marginHorizontal: navWidth ? undefined : 0,
           minHeight: BAR_MIN_HEIGHT,
-          shadowColor: "#0C1F6E",
-          shadowOffset: { width: 0, height: 6 },
-          shadowOpacity: 0.12,
-          shadowRadius: 20,
+          boxShadow: "0px 6px 20px rgba(12,31,110,0.12)",
           elevation: 10,
         }}
       >
