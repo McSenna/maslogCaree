@@ -30,6 +30,8 @@ interface AuthCardProps {
   onOpenRegister?: () => void;
   /** Whether to use mobile-optimized layout */
   isMobile?: boolean;
+  /** Reduced desktop scale for short/narrow viewports (e.g. 1366×768). */
+  compact?: boolean;
 }
 
 /**
@@ -39,10 +41,17 @@ interface AuthCardProps {
  * Preserves the existing `useAuth().login()` call, role-based redirects,
  * loading indicators, and form validation.
  */
-export default function AuthCard({ onOpenRegister, isMobile = false }: AuthCardProps) {
+export default function AuthCard({
+  onOpenRegister,
+  isMobile = false,
+  compact = false,
+}: AuthCardProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pressedButton, setPressedButton] = useState<"login" | "create" | null>(
+    null
+  );
 
   const { login } = useAuth();
   const router = useRouter();
@@ -84,15 +93,33 @@ export default function AuthCard({ onOpenRegister, isMobile = false }: AuthCardP
     );
   };
 
+  // Vertical rhythm differs between the approved desktop and mobile designs:
+  // the desktop card is airy, the mobile card compact so it fits a 360×800
+  // screen without clipping the Create New Account button.
+  const m = isMobile
+    ? MOBILE_METRICS
+    : compact
+      ? COMPACT_DESKTOP_METRICS
+      : DESKTOP_METRICS;
+
   return (
-    <View style={[styles.card, isMobile ? styles.cardMobile : styles.cardDesktop]}>
+    <View
+      style={[
+        styles.card,
+        isMobile
+          ? styles.cardMobile
+          : compact
+            ? styles.cardDesktopCompact
+            : styles.cardDesktop,
+      ]}
+    >
       {/* Heading + Subtitle */}
-      <View style={isMobile ? styles.headerWrapperMobile : styles.headerWrapperDesktop}>
-        <AuthHeader centered={isMobile} />
+      <View style={{ marginBottom: m.headerGap }}>
+        <AuthHeader centered={isMobile} compact={isMobile || compact} />
       </View>
 
       {/* Inputs */}
-      <View style={styles.form}>
+      <View style={[styles.form, { gap: m.fieldGap, marginBottom: m.formGap }]}>
         <AuthInput
           icon="mail-outline"
           placeholder="Email address or phone number"
@@ -100,6 +127,8 @@ export default function AuthCard({ onOpenRegister, isMobile = false }: AuthCardP
           onChangeText={setEmail}
           keyboardType="email-address"
           accessibilityLabel="Email address or phone number"
+          height={m.fieldHeight}
+          fontSize={m.fieldFontSize}
         />
 
         <AuthInput
@@ -109,6 +138,8 @@ export default function AuthCard({ onOpenRegister, isMobile = false }: AuthCardP
           onChangeText={setPassword}
           secureTextEntry
           accessibilityLabel="Password"
+          height={m.fieldHeight}
+          fontSize={m.fieldFontSize}
         />
       </View>
 
@@ -118,9 +149,17 @@ export default function AuthCard({ onOpenRegister, isMobile = false }: AuthCardP
         accessibilityLabel="Log In"
         onPress={handleLogin}
         disabled={isSubmitting}
-        style={({ pressed }) => [
+        onPressIn={() => setPressedButton("login")}
+        onPressOut={() => setPressedButton(null)}
+        android_ripple={ANDROID_RIPPLE}
+        style={[
           styles.loginButton,
-          (pressed || isSubmitting) && styles.buttonPressed,
+          {
+            height: m.buttonHeight,
+            marginBottom: m.afterLoginGap,
+            backgroundColor: LANDING_COLORS.primaryBlue,
+          },
+          (pressedButton === "login" || isSubmitting) && styles.buttonPressed,
         ]}
       >
         {isSubmitting ? (
@@ -138,13 +177,13 @@ export default function AuthCard({ onOpenRegister, isMobile = false }: AuthCardP
         accessibilityRole="link"
         accessibilityLabel="Forgotten password"
         onPress={handleForgotPassword}
-        style={styles.forgotContainer}
+        style={[styles.forgotContainer, { marginBottom: m.afterForgotGap }]}
       >
         <Text style={styles.forgotText}>Forgotten password?</Text>
       </Pressable>
 
       {/* Divider */}
-      <View style={styles.dividerWrapper}>
+      <View style={{ marginBottom: m.afterDividerGap }}>
         <AuthDivider />
       </View>
 
@@ -153,9 +192,17 @@ export default function AuthCard({ onOpenRegister, isMobile = false }: AuthCardP
         accessibilityRole="button"
         accessibilityLabel="Create New Account"
         onPress={onOpenRegister}
-        style={({ pressed }) => [
+        onPressIn={() => setPressedButton("create")}
+        onPressOut={() => setPressedButton(null)}
+        android_ripple={ANDROID_RIPPLE}
+        style={[
           styles.createButton,
-          pressed && styles.buttonPressed,
+          {
+            height: m.buttonHeight,
+            marginBottom: m.afterCreateGap,
+            backgroundColor: LANDING_COLORS.green,
+          },
+          pressedButton === "create" && styles.buttonPressed,
         ]}
       >
         <Text style={styles.createButtonText}>Create New Account</Text>
@@ -168,6 +215,57 @@ export default function AuthCard({ onOpenRegister, isMobile = false }: AuthCardP
     </View>
   );
 }
+
+/**
+ * Pressable's function-style form (`style={({ pressed }) => ...}`) rendered as
+ * an unstyled view on Android in Expo Go — the buttons lost their background
+ * and height and became invisible white-on-white text. Plain array styles with
+ * explicit press state behave identically on every platform, so the primary
+ * actions are never at the mercy of that callback.
+ */
+const ANDROID_RIPPLE = { color: "rgba(255, 255, 255, 0.24)" } as const;
+
+/** Airy rhythm for the 1920×1080 desktop card. */
+const DESKTOP_METRICS = {
+  headerGap: 34,
+  fieldHeight: 60,
+  fieldGap: 18,
+  formGap: 26,
+  buttonHeight: 56,
+  afterLoginGap: 20,
+  afterForgotGap: 28,
+  afterDividerGap: 28,
+  afterCreateGap: 24,
+  fieldFontSize: 16,
+} as const;
+
+/** Reduced desktop rhythm for 1366×768-class viewports. */
+const COMPACT_DESKTOP_METRICS = {
+  headerGap: 24,
+  fieldHeight: 54,
+  fieldGap: 14,
+  formGap: 20,
+  buttonHeight: 52,
+  afterLoginGap: 14,
+  afterForgotGap: 20,
+  afterDividerGap: 20,
+  afterCreateGap: 18,
+  fieldFontSize: 15,
+} as const;
+
+/** Compact rhythm for Android, within the 48–52px control guidance. */
+const MOBILE_METRICS = {
+  headerGap: 20,
+  fieldHeight: 52,
+  fieldGap: 14,
+  formGap: 18,
+  buttonHeight: 50,
+  afterLoginGap: 12,
+  afterForgotGap: 16,
+  afterDividerGap: 16,
+  afterCreateGap: 16,
+  fieldFontSize: 15,
+} as const;
 
 const styles = StyleSheet.create({
   card: {
@@ -191,37 +289,35 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 446,
     borderRadius: 24,
-    paddingHorizontal: 38,
-    paddingTop: 38,
-    paddingBottom: 32,
+    paddingHorizontal: 40,
+    paddingTop: 54,
+    paddingBottom: 44,
+  },
+  cardDesktopCompact: {
+    width: "100%",
+    maxWidth: 404,
+    borderRadius: 20,
+    paddingHorizontal: 32,
+    paddingTop: 34,
+    paddingBottom: 30,
   },
   cardMobile: {
     width: "100%",
-    borderRadius: 26,
+    borderRadius: 24,
     paddingHorizontal: 22,
-    paddingTop: 32,
-    paddingBottom: 28,
-  },
-
-  headerWrapperDesktop: {
-    marginBottom: 24,
-  },
-  headerWrapperMobile: {
-    marginBottom: 24,
+    paddingTop: 28,
+    paddingBottom: 24,
   },
 
   form: {
-    gap: 14,
-    marginBottom: 18,
+    flexDirection: "column",
   },
 
   loginButton: {
-    height: 52,
     backgroundColor: LANDING_COLORS.primaryBlue,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 14,
     ...Platform.select({
       web: {
         cursor: "pointer",
@@ -251,7 +347,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 2,
-    marginBottom: 20,
     ...Platform.select({
       web: {
         cursor: "pointer",
@@ -265,17 +360,11 @@ const styles = StyleSheet.create({
     fontFamily: FONT_FAMILY,
   },
 
-  dividerWrapper: {
-    marginBottom: 20,
-  },
-
   createButton: {
-    height: 52,
     backgroundColor: LANDING_COLORS.green,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 22,
     ...Platform.select({
       web: {
         cursor: "pointer",

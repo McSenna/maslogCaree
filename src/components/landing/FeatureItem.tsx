@@ -10,6 +10,8 @@ interface FeatureItemProps {
   iconBgColor: string;
   title: string;
   description: string;
+  /** Reduced scale for compact desktops. */
+  compact?: boolean;
 }
 
 /**
@@ -26,11 +28,18 @@ export default function FeatureItem({
   iconBgColor,
   title,
   description,
+  compact = false,
 }: FeatureItemProps) {
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, compact && styles.rowCompact]}>
       {/* Icon container */}
-      <View style={[styles.iconBox, { backgroundColor: iconBgColor }]}>
+      <View
+        style={[
+          styles.iconBox,
+          compact && styles.iconBoxCompact,
+          { backgroundColor: iconBgColor },
+        ]}
+      >
         {customIcon ? (
           customIcon
         ) : icon ? (
@@ -40,8 +49,10 @@ export default function FeatureItem({
 
       {/* Text column */}
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        <Text style={[styles.title, compact && styles.titleCompact]}>{title}</Text>
+        <Text style={[styles.description, compact && styles.descriptionCompact]}>
+          {description}
+        </Text>
       </View>
     </View>
   );
@@ -51,32 +62,47 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 18,
+    gap: 22,
     paddingVertical: 2,
   },
+  rowCompact: {
+    gap: 16,
+  },
   iconBox: {
-    width: 58,
-    height: 58,
-    borderRadius: 18,
+    width: 70,
+    height: 70,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
   },
+  iconBoxCompact: {
+    width: 54,
+    height: 54,
+    borderRadius: 17,
+  },
   textContainer: {
     flex: 1,
-    gap: 4,
-    paddingTop: 3,
+    gap: 5,
+    paddingTop: 5,
   },
   title: {
-    fontSize: 18.5,
+    fontSize: 23,
     fontWeight: "700",
     color: LANDING_COLORS.navy,
-    letterSpacing: -0.2,
+    letterSpacing: -0.3,
+  },
+  titleCompact: {
+    fontSize: 18.5,
   },
   description: {
-    fontSize: 14.5,
+    fontSize: 18,
     color: LANDING_COLORS.mutedText,
-    lineHeight: 22,
+    lineHeight: 27,
     fontWeight: "400",
+  },
+  descriptionCompact: {
+    fontSize: 14.5,
+    lineHeight: 22,
   },
 });

@@ -15,11 +15,15 @@
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/maslogicon.png",
-        "backgroundImage": "./assets/images/maslogback.png",
-        "monochromeImage": "./assets/images/maslogmono.png"
+        "backgroundImage": "./assets/images/maslogicon.png",
+        "monochromeImage": "./assets/images/maslogicon.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
+    },
+    "androidStatusBar": {
+      "barStyle": "dark-content",
+      "translucent": true
     },
     "web": {
       "output": "static",

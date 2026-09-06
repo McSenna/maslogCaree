@@ -8,7 +8,12 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
 import { BREAKPOINTS } from "@/constants/breakpoints";
+import {
+  desktopWaveHeight,
+  WAVE_HEIGHT_MOBILE,
+} from "@/components/landing/WaveDecoration";
 import { LANDING_COLORS } from "@/config/landingAssets";
 
 import LandingBackground from "@/components/landing/LandingBackground";
@@ -24,14 +29,14 @@ import RegistrationModal from "@/components/ui/RegistrationModal";
  * DESKTOP (≥1024px, benchmark 1920×1080):
  * - Edge-to-edge atmospheric light-blue environment filling 100vw × 100vh.
  * - Multi-layered organic SVG waves extending across the full 1920px bottom.
- * - Foreground content centered within a 1440px max-width container:
+ * - Foreground content centered within a ~1600px content band:
  *     Left (~57%): MaslogCare Heart logo + brand title + subtitle + description + accent + 3 feature rows
  *     Right (~43%): Floating white Auth Card (~446px)
  * - Fits naturally at 1920×1080 without unwanted scrolling.
  *
  * ANDROID MOBILE (<768px):
  * - Real full device screen with safe-area insets.
- * - Stacked layout: Centered Brand + Subtitle → Hero region → Wave transition → White Auth Card.
+ * - Stacked layout: Hero photograph + centered Brand → Wave transition → White Auth Card.
  */
 export default function MaslogCareLandingScreen() {
   const { width, height } = useWindowDimensions();
@@ -48,13 +53,21 @@ export default function MaslogCareLandingScreen() {
   // DESKTOP & TABLET LAYOUT
   // ──────────────────────────────────────────────────────────────
   if (isDesktop || isTablet) {
-    const contentMaxWidth = isDesktop ? 1440 : 960;
+    // The full-scale desktop typography is tuned for the 1920×1080 benchmark.
+    // Shorter or narrower desktops (1366×768, 1440×900) step down a density so
+    // the whole composition still fits above the wave band without clipping.
+    const isCompactDesktop = !isDesktop || width < 1600 || height < 900;
+    const waveHeight = desktopWaveHeight(isCompactDesktop);
+
+    // At 1920×1080 this yields a ~1600px content band centred in the viewport,
+    // matching the approved desktop design's side margins.
+    const contentMaxWidth = isDesktop ? 1640 : 960;
     const horizontalPadding = isDesktop
-      ? width >= 1800
-        ? 64
+      ? width >= 1780
+        ? 20
         : width >= 1400
         ? 48
-        : 28
+        : 32
       : 20;
 
     return (
@@ -63,7 +76,7 @@ export default function MaslogCareLandingScreen() {
         <LandingBackground variant="desktop" />
 
         {/* Full-viewport bottom waves */}
-        <WaveDecoration variant="desktop" />
+        <WaveDecoration variant="desktop" compact={isCompactDesktop} />
 
         {/* Foreground scrollable content */}
         <ScrollView
@@ -72,7 +85,9 @@ export default function MaslogCareLandingScreen() {
             styles.desktopScrollContent,
             {
               paddingTop: Math.max(insets.top, 24),
-              paddingBottom: Math.max(insets.bottom, 24),
+              // Reserve part of the wave band so the vertically-centred
+              // content always clears the decorative crests.
+              paddingBottom: Math.max(insets.bottom, 24) + waveHeight * 0.6,
               minHeight: height,
             },
           ]}
@@ -91,13 +106,16 @@ export default function MaslogCareLandingScreen() {
           >
             {/* Left information zone (57%) */}
             <View style={styles.desktopLeftColumn}>
-              <MaslogCareBrand variant="desktop" />
-              <DesktopInfoPanel />
+              <MaslogCareBrand variant="desktop" compact={isCompactDesktop} />
+              <DesktopInfoPanel compact={isCompactDesktop} />
             </View>
 
             {/* Right authentication zone (43%) */}
             <View style={styles.desktopRightColumn}>
-              <AuthCard onOpenRegister={handleOpenRegister} />
+              <AuthCard
+                onOpenRegister={handleOpenRegister}
+                compact={isCompactDesktop}
+              />
             </View>
           </View>
         </ScrollView>
@@ -115,6 +133,9 @@ export default function MaslogCareLandingScreen() {
   // ──────────────────────────────────────────────────────────────
   return (
     <View style={[styles.mobileRoot, { backgroundColor: "#F2F7FD" }]}>
+      {/* The hero is light, so dark system icons stay readable over it. */}
+      {Platform.OS !== "web" && <StatusBar style="dark" translucent />}
+
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -134,17 +155,22 @@ export default function MaslogCareLandingScreen() {
             style={[
               styles.mobileHeroSection,
               {
-                paddingTop: Math.max(insets.top, 20) + 14,
-                minHeight: Math.max(height * 0.31, 235),
-                paddingBottom: 75,
+                minHeight: Math.max(height * 0.38, 296),
+                paddingBottom: WAVE_HEIGHT_MOBILE,
               },
             ]}
           >
             {/* Hero background */}
             <LandingBackground variant="mobile" />
 
-            {/* Centered Branding */}
-            <View style={styles.mobileBrandWrapper}>
+            {/* Centered Branding — the only element that takes the top inset,
+                so the hero photograph still runs under the status bar. */}
+            <View
+              style={[
+                styles.mobileBrandWrapper,
+                { paddingTop: Math.max(insets.top, 20) + 12 },
+              ]}
+            >
               <MaslogCareBrand variant="mobile" />
             </View>
 
@@ -158,7 +184,10 @@ export default function MaslogCareLandingScreen() {
               styles.mobileCardWrapper,
               {
                 marginHorizontal: width < 360 ? 14 : width < 400 ? 16 : 20,
-                marginTop: Math.min(Math.max(height * 0.032, 22), 34),
+                // The wave's front layer is filled with the page background,
+                // so overlapping its solid tail closes the gap between the
+                // hero and the card without any visible seam.
+                marginTop: -Math.round(WAVE_HEIGHT_MOBILE * 0.34),
               },
             ]}
           >
@@ -207,7 +236,7 @@ const styles = StyleSheet.create({
   },
   desktopLeftColumn: {
     width: "57%",
-    gap: 28,
+    gap: 26,
     paddingRight: 40,
   },
   desktopRightColumn: {
@@ -228,7 +257,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     overflow: "hidden",
-    paddingBottom: 50,
   },
   mobileBrandWrapper: {
     zIndex: 2,

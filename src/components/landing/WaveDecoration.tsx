@@ -1,46 +1,49 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import Svg, { Path } from "react-native-svg";
+import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
 
 interface WaveDecorationProps {
   variant: "desktop" | "mobile";
+  /** Shorter band for compact desktops (e.g. 1366×768). */
+  compact?: boolean;
 }
 
-/**
- * Decorative SVG wave system for MaslogCare.
- *
- * Desktop: Edge-to-edge organic multi-layered waves spanning the full 1920px
- * viewport width along the bottom edge, behind all foreground content.
- * Features prominent, graceful crests on the left and soft flowing curves
- * tapering towards the right behind the login card, perfectly positioned
- * below the feature list.
- *
- * Mobile: Soft wave transition bridging the hero photograph area and the
- * top edge of the white authentication card.
- */
-export default function WaveDecoration({ variant }: WaveDecorationProps) {
+export const WAVE_HEIGHT_MOBILE = 92;
+
+export const WAVE_HEIGHT_DESKTOP = 210;
+
+export const WAVE_HEIGHT_DESKTOP_COMPACT = 150;
+
+export const desktopWaveHeight = (compact: boolean) =>
+  compact ? WAVE_HEIGHT_DESKTOP_COMPACT : WAVE_HEIGHT_DESKTOP;
+
+
+const WaveDecoration = ({
+  variant,
+  compact = false,
+}: WaveDecorationProps) => {
   if (variant === "mobile") {
     return (
       <View style={styles.mobileWrapper} pointerEvents="none">
         <Svg
           width="100%"
-          height={75}
-          viewBox="0 0 400 75"
+          height={WAVE_HEIGHT_MOBILE}
+          viewBox="0 0 400 92"
           preserveAspectRatio="none"
         >
-          {/* Wave 3 — soft translucent sky blue */}
+          {/* Back layer — soft sky blue */}
           <Path
-            d="M0 32 C80 14, 170 48, 260 25 C320 10, 365 34, 400 22 L400 75 L0 75 Z"
-            fill="rgba(191, 219, 254, 0.45)"
+            d="M0 26 C70 6, 150 40, 232 24 C300 11, 356 32, 400 20 L400 92 L0 92 Z"
+            fill="rgba(173, 209, 255, 0.55)"
           />
-          {/* Wave 2 — pale sky blue-tinted crest */}
+          {/* Middle layer — pale blue-white */}
           <Path
-            d="M0 42 C95 22, 180 54, 275 32 C335 18, 375 40, 400 32 L400 75 L0 75 Z"
-            fill="rgba(224, 238, 254, 0.75)"
+            d="M0 44 C86 20, 172 54, 258 36 C322 22, 366 42, 400 34 L400 92 L0 92 Z"
+            fill="rgba(224, 238, 255, 0.9)"
           />
-          {/* Wave 1 — solid #F2F7FD flowing seamlessly into the page background */}
+          {/* Front layer — page background, flows seamlessly into the card area */}
           <Path
-            d="M0 54 C105 34, 190 60, 290 44 C345 32, 380 48, 400 44 L400 75 L0 75 Z"
+            d="M0 62 C100 40, 190 68, 288 52 C344 42, 378 56, 400 50 L400 92 L0 92 Z"
             fill="#F2F7FD"
           />
         </Svg>
@@ -48,31 +51,41 @@ export default function WaveDecoration({ variant }: WaveDecorationProps) {
     );
   }
 
-  // Desktop full-width wave system (1920px master viewBox, height 175)
+  // Desktop full-width wave system (1920px master viewBox)
   return (
     <View style={styles.desktopWrapper} pointerEvents="none">
       <Svg
         width="100%"
-        height={175}
-        viewBox="0 0 1920 175"
+        height={desktopWaveHeight(compact)}
+        viewBox="0 0 1920 210"
         preserveAspectRatio="none"
       >
-        {/* Wave 3 (back layer) — soft light blue extending across */}
+        <Defs>
+          <LinearGradient id="maslogWaveFront" x1="0" y1="0" x2="1" y2="0.6">
+            <Stop offset="0" stopColor="#8CB9FF" stopOpacity="0.95" />
+            <Stop offset="0.55" stopColor="#5E9BF5" stopOpacity="0.95" />
+            <Stop offset="1" stopColor="#4A90F7" stopOpacity="0.92" />
+          </LinearGradient>
+        </Defs>
+
+        {/* Back layer — near-white crest, highest on the left */}
         <Path
-          d="M0 68 C240 22, 460 105, 750 62 C1020 22, 1290 92, 1590 58 C1750 36, 1860 72, 1920 55 L1920 175 L0 175 Z"
-          fill="rgba(147, 197, 253, 0.45)"
+          d="M0 58 C200 20, 420 46, 640 70 C900 98, 1180 124, 1450 142 C1640 154, 1810 160, 1920 162 L1920 210 L0 210 Z"
+          fill="#FFFFFF"
+          opacity={0.72}
         />
 
-        {/* Wave 2 (middle layer) — sky blue curve */}
+        {/* Middle layer — pale blue */}
         <Path
-          d="M0 88 C210 38, 420 120, 670 74 C910 32, 1150 108, 1430 72 C1660 38, 1835 96, 1920 78 L1920 175 L0 175 Z"
-          fill="rgba(96, 165, 250, 0.58)"
+          d="M0 96 C190 58, 400 86, 620 110 C880 138, 1170 160, 1440 174 C1630 183, 1800 187, 1920 189 L1920 210 L0 210 Z"
+          fill="#DCEBFF"
+          opacity={0.92}
         />
 
-        {/* Wave 1 (front layer) — vibrant royal blue with gentle crest */}
+        {/* Front layer — brand blue, tapering to a slim band on the right */}
         <Path
-          d="M0 108 C170 55, 340 130, 570 84 C790 42, 1030 115, 1290 84 C1520 48, 1760 105, 1920 92 L1920 175 L0 175 Z"
-          fill="rgba(59, 130, 246, 0.82)"
+          d="M0 136 C180 100, 390 126, 610 150 C870 178, 1170 192, 1450 199 C1640 203, 1810 205, 1920 206 L1920 210 L0 210 Z"
+          fill="url(#maslogWaveFront)"
         />
       </Svg>
     </View>
@@ -97,3 +110,5 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 });
+
+export default WaveDecoration

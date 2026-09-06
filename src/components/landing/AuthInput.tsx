@@ -20,16 +20,13 @@ interface AuthInputProps {
   keyboardType?: KeyboardTypeOptions;
   autoCapitalize?: TextInputProps["autoCapitalize"];
   accessibilityLabel?: string;
+  /** Field height — desktop and mobile use different control sizes. */
+  height?: number;
+  /** Text size; mobile trims it so the email placeholder fits at 360px. */
+  fontSize?: number;
 }
 
-/**
- * Modern outlined input field for the MaslogCare auth card.
- *
- * Features:
- * - Blue mail icon / slate lock icon matching reference UI
- * - Subtle border with clear focus state
- * - Password visibility toggle (eye / eye-off)
- */
+
 const AuthInput = ({
   icon,
   placeholder,
@@ -39,7 +36,10 @@ const AuthInput = ({
   keyboardType = "default",
   autoCapitalize = "none",
   accessibilityLabel,
+  height = 60,
+  fontSize = 16,
 }: AuthInputProps) => {
+  
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -58,6 +58,7 @@ const AuthInput = ({
     <View
       style={[
         styles.container,
+        { height },
         isFocused && styles.containerFocused,
       ]}
     >
@@ -77,7 +78,7 @@ const AuthInput = ({
         autoCapitalize={autoCapitalize}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        style={styles.input}
+        style={[styles.input, { fontSize }]}
         placeholderTextColor="#8A9BA8"
         accessibilityLabel={accessibilityLabel || placeholder}
       />
@@ -112,7 +113,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    height: 54,
     borderWidth: 1,
     borderColor: "#D9E3EF",
     borderRadius: 13,
@@ -130,7 +130,6 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 15,
     fontFamily: FONT_FAMILY,
     color: LANDING_COLORS.navy,
     paddingVertical: 0,
