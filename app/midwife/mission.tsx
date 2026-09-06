@@ -1,3 +1,12 @@
-import MissionControlScreen from "@/screens/MissionControlScreen";
+import { Text, View } from 'react-native'
+import React, { Component } from 'react'
 
-export default MissionControlScreen;
+export default class mission extends Component {
+  render() {
+    return (
+      <View>
+        <Text>mission</Text>
+      </View>
+    )
+  }
+}

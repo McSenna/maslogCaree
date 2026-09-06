@@ -5,7 +5,7 @@ import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 
 export default function DoctorConsultations() {
   return (
-    <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+    <ScrollView className="flex-1 bg-white" showsVerticalScrollIndicator={false}>
       <View className="gap-6">
         <View>
           <PageTitle>Consultations</PageTitle>

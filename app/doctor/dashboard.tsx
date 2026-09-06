@@ -15,7 +15,6 @@ export default function DoctorDashboard() {
           title="Clinical workspace"
           subtitle="Operational tools live under Patients, Consultations, and Mission. Dashboard charts will populate when analytics APIs are enabled."
           roleBadge="Doctor"
-          notifications={[]}
         />
 
         <Section eyebrow="Overview" title="At a glance">

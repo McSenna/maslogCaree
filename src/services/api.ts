@@ -51,12 +51,20 @@ apiClient.interceptors.response.use(
     }
 
     const data = error?.response?.data as
-      | { message?: string; errors?: string[] }
+      | { message?: string; errors?: string[]; code?: string }
       | undefined;
 
     const message = data?.message || error?.message || "Request failed";
-    const err = new Error(message) as Error & { errors?: string[] };
+    const err = new Error(message) as Error & {
+      errors?: string[];
+      code?: string;
+      status?: number;
+      response?: typeof error.response;
+    };
     if (Array.isArray(data?.errors)) err.errors = data.errors;
+    if (data?.code) err.code = data.code;
+    if (status) err.status = status;
+    err.response = error?.response;
 
     return Promise.reject(err);
   }

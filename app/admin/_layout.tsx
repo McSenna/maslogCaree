@@ -7,7 +7,7 @@ import {
   adminBottomNavItems,
 } from "@/config/roleNavConfig";
 
-export default function AdminLayout() {
+const AdminLayout = () => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) return null;
@@ -24,9 +24,11 @@ export default function AdminLayout() {
     <RoleLayout
       sidebarItems={adminNavItems}
       bottomNavItems={adminBottomNavItems}
-      roleLabel="MaslogCare"
+      roleLabel="Admin"
     >
       <Stack screenOptions={{ headerShown: false, animation: "none" }} />
     </RoleLayout>
   );
 }
+
+export default AdminLayout

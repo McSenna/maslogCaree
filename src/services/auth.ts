@@ -10,7 +10,6 @@ export interface AuthUser {
   dateOfBirth?: string;
   gender?: string;
   address?: string;
-  /** Base64 data URI (data:image/...;base64,...) */
   avatarUrl?: string | null;
 }
 

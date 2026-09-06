@@ -65,8 +65,8 @@ export function getDashboardThemeClasses(theme: StoredTheme): DashboardThemeClas
   };
 
   const light: DashboardThemeClasses = {
-    screenBg: "bg-slate-100",
-    scrollBg: "bg-slate-100",
+    screenBg: "bg-white",
+    scrollBg: "bg-white",
     card: "rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5",
     cardElevated: "rounded-3xl border border-slate-100 bg-white shadow-md shadow-slate-900/10",
     border: "border-slate-200",
@@ -85,11 +85,11 @@ export function getDashboardThemeClasses(theme: StoredTheme): DashboardThemeClas
     sidebarBorder: "border-slate-200",
     sidebarText: "text-slate-900",
     sidebarMuted: "text-slate-500",
-    bottomNavBg: "#F8F8FA",
+    bottomNavBg: "#FFFFFF",
     bottomNavBorder: "rgba(255,255,255,0.9)",
     headerBar: "border-b border-mc-primary/10 bg-mc-primary shadow-md shadow-mc-primary/30",
     headerTitle: "text-white",
-    safeAreaBg: "#f1f5f9",
+    safeAreaBg: "#FFFFFF",
     skeleton: "bg-slate-200",
     overlay: "bg-black/40",
     toolbarIcon:

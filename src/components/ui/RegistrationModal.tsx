@@ -11,10 +11,7 @@ type RegistrationModalProps = {
   onOpenLogin?: () => void;
 };
 
-/**
- * Wraps RegistrationScreen in a Modal so it can be launched
- * from LoginModal's "Register Now →" link.
- */
+
 const RegistrationModal = ({
   visible,
   onClose,
@@ -31,7 +28,10 @@ const RegistrationModal = ({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
       >
-        <RegistrationScreen onBackPress={onClose} onRegistrationSuccess={onClose} />
+        <RegistrationScreen
+          onBackPress={onClose}
+          onRegistrationSuccess={onClose}
+        />
       </KeyboardAvoidingView>
     </Modal>
   );

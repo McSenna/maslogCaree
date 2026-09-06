@@ -1,4 +1,4 @@
-import type { NotificationItem } from "@/components/dashboard/NotificationPanel";
+import type { NotificationItem } from "@/services/notifications";
 import type { AppointmentRecord } from "@/services/appointments";
 
 export function getTimeGreeting(date = new Date()): string {
@@ -141,6 +141,7 @@ export function buildResidentNotifications(
       body: `${summary.pendingCount} appointment request(s) are waiting to be scheduled by the health team.`,
       time: "Now",
       tone: "warning",
+      isRead: false,
     });
   }
 
@@ -160,6 +161,7 @@ export function buildResidentNotifications(
         })}.`,
         time: "Soon",
         tone: "success",
+        isRead: false,
       });
     }
   }
@@ -174,6 +176,7 @@ export function buildResidentNotifications(
         : "An appointment request was declined. Open Appointments for details.",
       time: "Recent",
       tone: "info",
+      isRead: false,
     });
   }
 

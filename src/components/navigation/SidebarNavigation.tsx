@@ -23,16 +23,16 @@ const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
   const inactiveText = resolvedTheme === "dark" ? "text-slate-400" : "text-slate-600";
 
   return (
-    <View className={`w-56 shrink-0 border-r ${classes.sidebarBg}`}>
+    <View className={`w-60 shrink-0 border-r ${classes.sidebarBg}`}>
       <View className="sticky top-0 flex h-full flex-col p-4">
-        <View className="mb-6 flex-row items-center gap-3">
+        <View className="mb-7 flex-row items-center gap-3">
           <View
             className={`items-center justify-center overflow-hidden rounded-full ${
               resolvedTheme === "dark" ? "bg-slate-800" : "bg-white shadow-sm"
             }`}
             style={{
-              width: 44,
-              height: 44,
+              width: 50,
+              height: 50,
               boxShadow:
                 resolvedTheme === "dark"
                   ? undefined
@@ -43,12 +43,12 @@ const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
             <Image
               source={require("./images/maslogicon.png")}
               resizeMode="contain"
-              style={{ width: 44, height: 44 }}
+              style={{ width: 50, height: 50 }}
             />
           </View>
           <View>
-            <Text className={`text-sm font-bold ${classes.sidebarText}`}>MaslogCare</Text>
-            <Text className={`text-[10px] font-medium uppercase tracking-wider ${classes.sidebarMuted}`}>
+            <Text className={`text-s font-bold ${classes.sidebarText}`}>MaslogCare</Text>
+            <Text className={`text-[15px] font-medium uppercase tracking-wider ${classes.sidebarMuted}`}>
               {roleLabel}
             </Text>
           </View>
@@ -66,7 +66,7 @@ const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
             return (
               <Link key={item.href} href={item.href as any} asChild>
                 <Pressable
-                  className={`flex-row items-center gap-3 rounded-xl px-3 py-2.5 ${
+                  className={`flex-row items-center gap-3 rounded-xl px-4 py-3   ${
                     isActive
                       ? resolvedTheme === "dark"
                         ? "bg-sky-500/15"
@@ -83,7 +83,7 @@ const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
                     color={isActive ? PRIMARY : inactiveIcon}
                   />
                   <Text
-                    className={`text-sm font-medium ${
+                    className={`text-s font-medium ${
                       isActive ? "text-mc-primary" : inactiveText
                     }`}
                   >

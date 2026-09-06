@@ -7,15 +7,8 @@ import { Skeleton, StatCardSkeleton } from "@/components/ui/Skeleton";
 import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
+import { statusLabel } from "@/utils/appointmentDisplay";
 import { formatConsultationTypeLabel } from "@/utils/residentDashboard";
-
-function statusLabel(s: string) {
-  if (s === "pending") return "Pending — in queue";
-  if (s === "confirmed") return "Confirmed";
-  if (s === "rescheduled") return "Rescheduled";
-  if (s === "declined") return "Declined";
-  return s;
-}
 
 function formatWhen(appt: { slotStart?: string | null; createdAt?: string }) {
   if (!appt.slotStart) {

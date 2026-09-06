@@ -264,7 +264,7 @@ export default function About() {
 
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: HC.offWhite }}
+      style={{ flex: 1, backgroundColor: HC.white }}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         paddingHorizontal: isDesktop ? 16 : isTablet ? 12 : 0,

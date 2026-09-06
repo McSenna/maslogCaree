@@ -6,9 +6,6 @@ import {
   Platform,
 } from "react-native";
 
-/**
-  Recalculates layout on foreground return to prevent stale measurements without remounting or resetting scroll.
- */
 export function useAppForegroundLayout(onForeground?: () => void) {
   const onForegroundRef = useRef(onForeground);
   onForegroundRef.current = onForeground;

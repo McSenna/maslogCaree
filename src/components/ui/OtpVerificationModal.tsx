@@ -102,10 +102,16 @@ export default function OtpVerificationModal({
       }
       router.replace(getDashboardPath(user.role as any) as any);
     } catch (error: any) {
-      setVerificationError(
-        error?.message ??
-        error?.response?.data?.message ?? "Unable to verify code. Please check and try again."
-      );
+      const code = error?.code || error?.response?.data?.code;
+      let msg = error?.message ?? error?.response?.data?.message ?? "Unable to verify code. Please check and try again.";
+      if (code === "OTP_INVALID") {
+        msg = error?.message || "Incorrect verification code.";
+      } else if (code === "OTP_MAX_ATTEMPTS") {
+        msg = "Maximum verification attempts exceeded. Please close this window and register again.";
+      } else if (code === "OTP_EXPIRED") {
+        msg = "Verification code has expired. Please request a new code below.";
+      }
+      setVerificationError(msg);
     } finally {
       setIsVerifying(false);
     }
@@ -121,11 +127,14 @@ export default function OtpVerificationModal({
       setVerificationError("");
       startResendTimer();
     } catch (error: any) {
-      Alert.alert(
-        "Resend Failed",
-        error?.message ??
-        error?.response?.data?.message ?? "Unable to resend code. Please try again."
-      );
+      const code = error?.code || error?.response?.data?.code;
+      let msg = error?.message ?? error?.response?.data?.message ?? "Unable to resend code. Please try again.";
+      if (code === "EMAIL_SERVICE_LIMIT" || code === "EMAIL_QUOTA_EXCEEDED") {
+        msg = "Verification emails are temporarily unavailable. Please try again later.";
+      } else if (code === "OTP_RATE_LIMITED" || code === "OTP_COOLDOWN") {
+        msg = error?.message || "Please wait before requesting another verification code.";
+      }
+      Alert.alert("Resend Failed", msg);
     } finally {
       setIsResending(false);
     }

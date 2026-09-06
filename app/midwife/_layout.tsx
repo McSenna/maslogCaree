@@ -24,7 +24,7 @@ export default function MidwifeLayout() {
     <RoleLayout
       sidebarItems={midwifeNavItems}
       bottomNavItems={midwifeBottomNavItems}
-      roleLabel="MaslogCare"
+      roleLabel="MidWife"
     >
       <Stack screenOptions={{ headerShown: false, animation: "none" }} />
     </RoleLayout>

@@ -24,7 +24,7 @@ const ResidentLayout = () => {
     <RoleLayout
       sidebarItems={residentNavItems}
       bottomNavItems={residentBottomNavItems}
-      roleLabel="MaslogCare"
+      roleLabel="Resident"
     >
       <Stack screenOptions={{ headerShown: false, animation: "none" }} />
     </RoleLayout>

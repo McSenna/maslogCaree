@@ -40,7 +40,6 @@ export interface StoredUser {
   role: string;
   token?: string;
   avatarUrl?: string | null;
-  /** ISO date string from profile (for resident UI without extra fetch) */
   dateOfBirth?: string;
   gender?: string;
   address?: string;

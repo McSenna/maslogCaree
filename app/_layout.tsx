@@ -5,11 +5,13 @@ import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
 
-enableScreens(true);
 
-function ThemedStack() {
+const ThemedStack = () => {
   const { resolvedTheme } = useTheme();
-  const bg = resolvedTheme === "dark" ? "#020617" : "#f8fafc";
+  const bg = resolvedTheme === "dark" ? "#020617" : "#FFFFFF";
+
+
+  enableScreens(true);
 
   return (
     <Stack
@@ -22,7 +24,7 @@ function ThemedStack() {
   );
 }
 
-export default function RootLayout() {
+const RootLayout = () => {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
@@ -33,3 +35,5 @@ export default function RootLayout() {
     </SafeAreaProvider>
   );
 }
+
+export default RootLayout;

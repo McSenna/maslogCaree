@@ -15,7 +15,6 @@ export default function BhwDashboard() {
           title="Community field ops"
           subtitle="Use Residents, Visits, and Reports for day-to-day work. Coverage metrics will appear here when backend summaries are available."
           roleBadge="BHW"
-          notifications={[]}
         />
 
         <Section eyebrow="Overview" title="At a glance">

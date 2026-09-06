@@ -7,7 +7,7 @@ import {
   bhwBottomNavItems,
 } from "@/config/roleNavConfig";
 
-export default function BhwLayout() {
+const BhwLayout = () => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) return null;
@@ -24,9 +24,11 @@ export default function BhwLayout() {
     <RoleLayout
       sidebarItems={bhwNavItems}
       bottomNavItems={bhwBottomNavItems}
-      roleLabel="MaslogCare"
+      roleLabel="BHW"
     >
       <Stack screenOptions={{ headerShown: false, animation: "none" }} />
     </RoleLayout>
   );
 }
+
+export default BhwLayout;

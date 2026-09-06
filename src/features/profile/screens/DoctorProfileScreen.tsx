@@ -5,7 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   ProfileIdentityCard,
   ProfileMenuSection,
-  ThemePreferenceEndSlot,
 } from "@/features/profile/components";
 
 type DoctorProfileScreenProps = {
@@ -26,25 +25,9 @@ const buildAccountItems = (handlers: DoctorProfileScreenProps) => [
     icon: <Feather name="lock" size={18} color="#6b7280" />,
     onPress: handlers.onNavigateToSettings,
   },
-  {
-    label: "Notifications",
-    icon: <Feather name="bell" size={18} color="#6b7280" />,
-    onPress: undefined,
-  },
 ];
 
-const buildPreferenceItems = (router: ReturnType<typeof useRouter>) => [
-  {
-    label: "Dark mode",
-    icon: <Feather name="moon" size={18} color="#6b7280" />,
-    endSlot: <ThemePreferenceEndSlot />,
-  },
-  {
-    label: "About",
-    icon: <Feather name="info" size={18} color="#6b7280" />,
-    onPress: () => router.push("/about" as any),
-  },
-];
+
 
 const buildSupportItems = (handlers: DoctorProfileScreenProps) => [
   {
@@ -97,14 +80,13 @@ export default function DoctorProfileScreen(props?: DoctorProfileScreenProps) {
 
   return (
     <ScrollView
-      className="flex-1 bg-slate-50"
+      className="flex-1 bg-white"
       showsVerticalScrollIndicator={false}
     >
       <View className="w-full max-w-[980px] self-center">
         <View className="gap-5">
           <ProfileIdentityCard user={profileUser} />
           <ProfileMenuSection title="Account" items={accountItems} />
-          <ProfileMenuSection title="Preferences" items={buildPreferenceItems(router)} />
           <ProfileMenuSection title="Support" items={supportItems} />
         </View>
       </View>

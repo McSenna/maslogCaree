@@ -1,6 +1,6 @@
 export const UI = {
   screen: {
-    maxWidth: 1200,
+    maxWidth: 1920,
     gutter: {
       mobile: 16,
       tablet: 24,

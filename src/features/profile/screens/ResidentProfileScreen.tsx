@@ -5,7 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   ProfileIdentityCard,
   ProfileMenuSection,
-  ThemePreferenceEndSlot,
 } from "@/features/profile/components";
 
 type ResidentProfileScreenProps = {
@@ -28,11 +27,6 @@ const buildAccountItems = (handlers: ResidentProfileScreenProps) => [
     onPress: handlers.onNavigateToSettings,
   },
   {
-    label: "Notifications",
-    icon: <Feather name="bell" size={18} color="#6b7280" />,
-    onPress: undefined,
-  },
-  {
     label: "Language",
     icon: <Feather name="globe" size={18} color="#6b7280" />,
     value: "English",
@@ -40,26 +34,6 @@ const buildAccountItems = (handlers: ResidentProfileScreenProps) => [
   },
 ];
 
-const buildPreferenceItems = (
-  router: ReturnType<typeof useRouter>,
-  _handlers: ResidentProfileScreenProps
-) => [
-  {
-    label: "Dark mode",
-    icon: <Feather name="moon" size={18} color="#6b7280" />,
-    endSlot: <ThemePreferenceEndSlot />,
-  },
-  {
-    label: "Appointments",
-    icon: <Feather name="calendar" size={18} color="#6b7280" />,
-    onPress: () => router.push("/resident/appointments" as any),
-  },
-  {
-    label: "About",
-    icon: <Feather name="info" size={18} color="#6b7280" />,
-    onPress: () => router.push("/about" as any),
-  },
-];
 
 const buildSupportItems = (handlers: ResidentProfileScreenProps) => [
   {
@@ -112,14 +86,13 @@ export default function ResidentProfileScreen(props?: ResidentProfileScreenProps
 
   return (
     <ScrollView
-      className="flex-1 bg-white-100"
+      className="flex-1 bg-white"
       showsVerticalScrollIndicator={false}
     >
       <View className="w-full max-w-[980px] self-center">
         <View className="gap-5">
           <ProfileIdentityCard user={profileUser} />
           <ProfileMenuSection title="Account" items={accountItems} />
-          <ProfileMenuSection title="Preferences" items={buildPreferenceItems(router, handlers)} />
           <ProfileMenuSection title="Support" items={supportItems} />
         </View>
       </View>

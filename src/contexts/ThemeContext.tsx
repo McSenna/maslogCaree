@@ -7,7 +7,6 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useColorScheme } from "react-native";
 import {
   getDashboardThemeClasses,
   type DashboardThemeClasses,
@@ -26,9 +25,8 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const system = useColorScheme();
   const [theme, setThemeState] = useState<StoredTheme>(
-    () => getStoredTheme() ?? "dark"
+    () => getStoredTheme() ?? "light"
   );
 
   useEffect(() => {
@@ -37,10 +35,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       setThemeState(stored);
       return;
     }
-    if (system === "light" || system === "dark") {
-      setThemeState(system);
-    }
-  }, [system]);
+    setThemeState("light");
+    setStoredTheme("light");
+  }, []);
 
   const setTheme = useCallback((t: StoredTheme) => {
     setThemeState(t);

@@ -13,7 +13,6 @@ type MainLayoutProps = {
   children: React.ReactNode;
 };
 
-/** Space for fixed bottom pill (~56px) + gap; safe area is added separately via insets. */
 const MOBILE_BOTTOM_NAV_RESERVED_PX = 68;
 const MainLayout = ({ children }: MainLayoutProps) => {
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
@@ -34,8 +33,8 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     : insets.bottom;
 
   return (
-    <SafeAreaView className="flex-1 bg-black" edges={["left", "right"]}>
-      <View className="flex-1 bg-mc-background" style={{ minHeight: 0 }}>
+    <SafeAreaView className="flex-1 bg-white" edges={["left", "right"]}>
+      <View className="flex-1 bg-white" style={{ minHeight: 0 }}>
         <Header
           isMobile={isMobile}
           onPressLogin={() => setIsLoginModalVisible(true)}

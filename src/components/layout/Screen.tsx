@@ -6,9 +6,10 @@ import { UI } from "@/design/tokens";
 type ScreenProps = {
   children: ReactNode;
   className?: string;
+  fullWidth?: boolean;
 };
 
-export default function Screen({ children, className = "" }: ScreenProps) {
+export default function Screen({ children, className = "", fullWidth = false }: ScreenProps) {
   const { width } = useWindowDimensions();
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -26,7 +27,7 @@ export default function Screen({ children, className = "" }: ScreenProps) {
         paddingHorizontal: gutter,
         alignSelf: "center",
         width: "100%",
-        maxWidth: isDesktop ? UI.screen.maxWidth : undefined,
+        maxWidth: fullWidth ? undefined : isDesktop ? UI.screen.maxWidth : undefined,
       }}
     >
       {children}

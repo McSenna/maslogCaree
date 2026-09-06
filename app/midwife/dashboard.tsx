@@ -15,7 +15,6 @@ export default function MidwifeDashboard() {
           title="Maternal care hub"
           subtitle="Patients and consultations are available from the sidebar. Caseload analytics will display when connected to the API."
           roleBadge="Midwife"
-          notifications={[]}
         />
 
         <Section eyebrow="Overview" title="At a glance">

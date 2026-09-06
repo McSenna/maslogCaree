@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View, useWindowDimensions } from "react-native";
+import Animated, { FadeIn, SlideInUp } from "react-native-reanimated";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 
 export type ServiceCardItem = {
@@ -42,31 +43,31 @@ export default function ServiceCard({
   const flexMin = isDesktop ? "23%" : "47%";
 
   return (
-    <Pressable
-      style={({ pressed }) => ({
-        flexBasis,
-        flexGrow: 0,
-        flexShrink: 0,
-        minWidth: flexMin,
-        maxWidth: isDesktop ? "24%" : "48%",
-        opacity: pressed ? 0.92 : 1,
-        transform: [{ scale: pressed ? 0.98 : 1 }],
-      })}
+    <Animated.View
+      entering={FadeIn.duration(400).delay(100)}
+      style={{ flexBasis, flexGrow: 0, flexShrink: 0, minWidth: flexMin, maxWidth: isDesktop ? "24%" : "48%" }}
     >
-      <View
-        className="rounded-2xl p-4"
-        style={{
-          backgroundColor: bg,
-          borderWidth: 1,
-          borderColor: border,
-          boxShadow: `0px 2px 8px ${hexToRgba(shadow, 0.06)}`,
-          elevation: 3,
-        }}
+      <Pressable
+        style={({ pressed }) => ({
+          opacity: pressed ? 0.92 : 1,
+          transform: [{ scale: pressed ? 0.98 : 1 }],
+        })}
       >
-        <View
-          className="mb-3 self-start rounded-xl p-2.5"
-          style={{ backgroundColor: iconBg }}
+        <Animated.View
+          className="rounded-2xl p-4"
+          entering={SlideInUp.duration(500).delay(150)}
+          style={{
+            backgroundColor: bg,
+            borderWidth: 1,
+            borderColor: border,
+            boxShadow: `0px 2px 8px ${hexToRgba(shadow, 0.06)}`,
+            elevation: 3,
+          }}
         >
+          <View
+            className="mb-3 self-start rounded-xl p-2.5"
+            style={{ backgroundColor: iconBg }}
+          >
           <Feather name={icon as any} size={isTablet ? 22 : 18} color={color} />
         </View>
 
@@ -89,7 +90,8 @@ export default function ServiceCard({
         >
           {desc}
         </Text>
-      </View>
-    </Pressable>
+        </Animated.View>
+      </Pressable>
+    </Animated.View>
   );
 }

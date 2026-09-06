@@ -1,7 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Image, View } from "react-native";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 export type ProfileAvatarProps = {
   size?: number;
@@ -9,7 +8,6 @@ export type ProfileAvatarProps = {
   verified?: boolean;
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ProfileAvatar({
   size = 72,
@@ -20,7 +18,6 @@ export default function ProfileAvatar({
 
   return (
     <View className="relative">
-      {/* Avatar circle */}
       <View
         className="items-center justify-center rounded-full bg-sky-100"
         style={{ width: size, height: size }}
@@ -35,7 +32,6 @@ export default function ProfileAvatar({
         )}
       </View>
 
-      {/* Verified badge */}
       {verified && (
         <View className="absolute -bottom-1 -right-1 rounded-full bg-emerald-500 p-1.5">
           <Feather name="check" size={12} color="#fff" />

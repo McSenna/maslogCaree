@@ -3,9 +3,9 @@ import { ScrollView, View } from "react-native";
 import InfoCard from "@/components/ui/InfoCard";
 import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 
-export default function AdminSettings() {
+const AdminSettings = () => {
   return (
-    <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+    <ScrollView className="flex-1 bg-white" showsVerticalScrollIndicator={false}>
       <View className="gap-6">
         <View>
           <PageTitle>Settings</PageTitle>
@@ -35,3 +35,5 @@ export default function AdminSettings() {
     </ScrollView>
   );
 }
+
+export default AdminSettings

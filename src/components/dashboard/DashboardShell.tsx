@@ -6,7 +6,6 @@ import { StatCardSkeleton } from "@/components/ui/Skeleton";
 
 type DashboardShellProps = {
   children: ReactNode;
-  /** When true, shows skeleton instead of children (no artificial delay). */
   loading?: boolean;
   skeleton?: ReactNode;
 };

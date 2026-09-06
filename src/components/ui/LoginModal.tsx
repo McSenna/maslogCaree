@@ -172,13 +172,13 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
               </View>
             </View>
 
-            {/* Links row */}
+            {/* Links row */} 
             <View className="flex-row items-center justify-between -mt-1">
               <Pressable>
                 <Text className="text-[10px] font-semibold text-slate-400">Forgot Password?</Text>
               </Pressable>
-              <Pressable
-                onPress={() => {
+                <Pressable
+                  onPress={() => {
                   onClose();
                   onOpenRegister?.();
                 }}

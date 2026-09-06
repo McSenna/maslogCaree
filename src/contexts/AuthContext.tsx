@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import api from "@/services/api";
 import type { UserRole } from "@/data/mockUsers";
 import {
   getStoredUser,
@@ -171,11 +172,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
-    setUser(null);
-    // Centralized logout so Axios interceptors and listeners stay consistent.
-    void forceLogout();
-    // Keep explicit clear for fast local UX even if listeners are delayed.
-    clearStoredUser();
+    void (async () => {
+      try {
+        await api.post("/logout");
+      } catch (error) {
+        console.warn("Logout audit request failed; clearing local session anyway.", error);
+      }
+
+      setUser(null);
+      void forceLogout();
+      clearStoredUser();
+    })();
   }, []);
 
   return (

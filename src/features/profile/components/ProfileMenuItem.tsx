@@ -2,7 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 export type ProfileMenuItemVariant = "default" | "danger";
 
@@ -10,14 +9,12 @@ export type ProfileMenuItemProps = {
   label: string;
   icon: ReactNode;
   value?: string;
-  /** When set, replaces value + chevron (e.g. theme switch). Row is non-pressable so controls receive touches. */
   endSlot?: ReactNode;
   onPress?: () => void;
   variant?: ProfileMenuItemVariant;
   showBorder?: boolean;
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ProfileMenuItem({
   label,

@@ -1,13 +1,11 @@
 import { Text, View } from "react-native";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type ProfileInfoItemProps = {
   label: string;
   value?: string | number | null;
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ProfileInfoItem({ label, value }: ProfileInfoItemProps) {
   const displayValue =

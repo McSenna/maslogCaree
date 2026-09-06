@@ -20,8 +20,7 @@ export function emitLogout(): void {
 }
 
 /**
- * Clears token + user cache and notifies subscribers.
- * Used by Axios interceptors on `401` to force a consistent logout.
+  401 - Clear token 
  */
 export async function forceLogout(_reason?: string): Promise<void> {
   clearStoredUser();

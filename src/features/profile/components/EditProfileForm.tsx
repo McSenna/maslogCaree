@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Alert, Pressable, Text, TextInput, View } from "react-native";
 import ProfileAvatar from "./ProfileAvatar";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 export type EditProfileValues = {
   fullname: string;
@@ -21,7 +20,6 @@ type EditProfileFormProps = {
   onSave?: (values: EditProfileValues) => Promise<void> | void;
 };
 
-// ─── Field sub-component ──────────────────────────────────────────────────────
 
 type FieldProps = {
   label: string;
@@ -63,8 +61,6 @@ function Field({
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 export default function EditProfileForm({
   initialValues,
   onDiscard,
@@ -72,8 +68,6 @@ export default function EditProfileForm({
 }: EditProfileFormProps) {
   const [values, setValues] = useState<EditProfileValues>(initialValues);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // ── Handlers ──────────────────────────────────────────────────────────────
 
   const handleChange = (field: keyof EditProfileValues, value: string) => {
     setValues((prev) => ({ ...prev, [field]: value }));
@@ -107,11 +101,9 @@ export default function EditProfileForm({
     }
   };
 
-  // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <View className="gap-5">
-      {/* Avatar picker */}
       <View className="items-center">
         <Pressable
           onPress={handleAvatarPress}
@@ -127,7 +119,6 @@ export default function EditProfileForm({
         </Text>
       </View>
 
-      {/* Form fields */}
       <View className="gap-4">
         <Field
           label="Full Name"
@@ -166,7 +157,6 @@ export default function EditProfileForm({
         />
       </View>
 
-      {/* Action buttons */}
       <View className="mt-2 flex-row gap-3">
         <Pressable
           onPress={onDiscard}

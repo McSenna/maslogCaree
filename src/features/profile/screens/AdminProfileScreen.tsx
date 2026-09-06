@@ -5,7 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import {
   ProfileIdentityCard,
   ProfileMenuSection,
-  ThemePreferenceEndSlot,
 } from "@/features/profile/components";
 
 type AdminProfileScreenProps = {
@@ -39,18 +38,6 @@ const buildAccountItems = (handlers: AdminProfileScreenProps) => [
   },
 ];
 
-const buildPreferenceItems = (router: ReturnType<typeof useRouter>, _handlers: AdminProfileScreenProps) => [
-  {
-    label: "Dark mode",
-    icon: <Feather name="moon" size={18} color="#6b7280" />,
-    endSlot: <ThemePreferenceEndSlot />,
-  },
-  {
-    label: "About",
-    icon: <Feather name="info" size={18} color="#6b7280" />,
-    onPress: () => router.push("/about" as any),
-  },
-];
 
 const buildSupportItems = (handlers: AdminProfileScreenProps) => [
   {
@@ -103,18 +90,17 @@ export default function AdminProfileScreen(props?: AdminProfileScreenProps) {
 
   return (
     <ScrollView
-      className="flex-1 bg-transparent"
+      className="flex-1 bg-white"
       showsVerticalScrollIndicator={false}
-      style={{ backgroundColor: "transparent" }}
+      style={{ backgroundColor: "white" }}
     >
       <View
         className="w-full max-w-[980px] self-center"
-        style={{ backgroundColor: "transparent" }}
+        style={{ backgroundColor: "white" }}
       >
         <View className="gap-5">
           <ProfileIdentityCard user={profileUser} />
           <ProfileMenuSection title="Account" items={accountItems} />
-          <ProfileMenuSection title="Preferences" items={buildPreferenceItems(router, handlers)} />
           <ProfileMenuSection title="Support" items={supportItems} />
         </View>
       </View>

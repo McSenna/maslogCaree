@@ -18,7 +18,6 @@ import * as ImagePicker from "expo-image-picker";
 import { registerResident } from "@/services/auth";
 import OtpVerificationModal from "./OtpVerificationModal";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -35,7 +34,6 @@ const GENDER_OPTIONS = [
   { value: "other",  label: "Other"  },
 ];
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type RegistrationScreenProps = {
   onRegistrationSuccess?: () => void;
@@ -44,12 +42,11 @@ type RegistrationScreenProps = {
 
 type DatePickerModalProps = {
   visible:   boolean;
-  value:     string; // "YYYY-MM-DD"
+  value:     string; 
   onConfirm: (date: string) => void;
   onClose:   () => void;
 };
 
-// ─── Date Picker Modal ────────────────────────────────────────────────────────
 
 const DatePickerModal = ({ visible, value, onConfirm, onClose }: DatePickerModalProps) => {
   const parsed    = value ? value.split("-") : [];
@@ -76,12 +73,10 @@ const DatePickerModal = ({ visible, value, onConfirm, onClose }: DatePickerModal
         <Pressable style={{ flex: 1 }} onPress={onClose} />
 
         <View className="bg-white rounded-t-3xl overflow-hidden">
-          {/* Handle */}
           <View className="items-center pt-3 pb-1">
             <View className="w-9 h-1 rounded-full bg-slate-200" />
           </View>
 
-          {/* Toolbar */}
           <View className="flex-row items-center justify-between px-5 py-3 border-b border-slate-100">
             <Pressable onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
               <Text className="text-[13px] font-semibold text-slate-400">Cancel</Text>
@@ -92,7 +87,6 @@ const DatePickerModal = ({ visible, value, onConfirm, onClose }: DatePickerModal
             </Pressable>
           </View>
 
-          {/* Selected date preview */}
           <View className="items-center py-3 bg-slate-50 border-b border-slate-100">
             <Text className="text-[15px] font-extrabold text-slate-800 tracking-tight">
               {MONTHS[selMonth]}{" "}
@@ -101,9 +95,7 @@ const DatePickerModal = ({ visible, value, onConfirm, onClose }: DatePickerModal
             </Text>
           </View>
 
-          {/* Column pickers */}
           <View className="flex-row px-4 pt-2 pb-8 gap-2" style={{ height: 230 }}>
-            {/* Month */}
             <View className="flex-[3]">
               <Text className="text-[8px] font-bold uppercase tracking-widest text-slate-400 text-center mb-1.5">
                 Month
@@ -353,13 +345,27 @@ const RegistrationScreen = ({
       setRegisteredEmail(result.email);
       setShowOtpModal(true);
     } catch (error: any) {
-      Alert.alert(
-        "Registration Failed",
+      const code = error?.code || error?.response?.data?.code;
+      let title = "Registration Failed";
+      let userMessage =
         error?.message ||
         error?.response?.data?.message ||
         error?.response?.data?.errors?.join(", ") ||
-        "Registration failed. Please try again."
-      );
+        "Registration failed. Please try again.";
+
+      if (code === "EMAIL_SERVICE_LIMIT" || code === "EMAIL_QUOTA_EXCEEDED") {
+        title = "Email Service Unavailable";
+        userMessage =
+          "Verification emails are temporarily unavailable due to server mail limits. Your registration has been saved. Please wait a moment and try resending the verification code.";
+      } else if (code === "OTP_RATE_LIMITED") {
+        title = "Rate Limit Reached";
+        userMessage = "Please wait before requesting another verification code.";
+      } else if (code === "EMAIL_CONFIGURATION_ERROR") {
+        title = "Service Unavailable";
+        userMessage = "Email verification is temporarily unavailable. Please contact the health center.";
+      }
+
+      Alert.alert(title, userMessage);
     } finally {
       setIsLoading(false);
     }

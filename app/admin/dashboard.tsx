@@ -9,17 +9,16 @@ import { chartColors } from "@/design/dashboardTheme";
 
 const ICON = chartColors.primary;
 
-export default function AdminDashboard() {
+const AdminDashboard = () => {
   const router = useRouter();
 
   return (
     <DashboardShell>
-      <View className="gap-7">
+      <View className="gap-0">
         <DashboardHeader
           title="Administration"
           subtitle="User management and reports are available from the sidebar. Aggregate analytics will appear here when wired to the API."
           roleBadge="Admin"
-          notifications={[]}
         />
 
         <Section eyebrow="Overview" title="At a glance">
@@ -41,3 +40,5 @@ export default function AdminDashboard() {
     </DashboardShell>
   );
 }
+
+export default AdminDashboard

@@ -24,7 +24,7 @@ const DoctorLayout = () => {
     <RoleLayout
       sidebarItems={doctorNavItems}
       bottomNavItems={doctorBottomNavItems}
-      roleLabel="MaslogCare"
+      roleLabel="Doctor"
     >
       <Stack screenOptions={{ headerShown: false, animation: "none" }} />
     </RoleLayout>

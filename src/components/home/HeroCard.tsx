@@ -1,6 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import Animated, {
+  FadeIn,
+  SlideInUp,
+} from "react-native-reanimated";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 
 const STATS = [
@@ -14,7 +18,9 @@ export default function HeroCard() {
   const isTablet = width >= BREAKPOINTS.tablet;
 
   return (
-    <View className="overflow-hidden rounded-3xl w-full self-center max-w-2xl shadow-2xl"
+    <Animated.View
+      className="overflow-hidden rounded-3xl w-full self-center max-w-2xl shadow-2xl"
+      entering={FadeIn.duration(500).springify()}
       style={{
         boxShadow: "0px 10px 28px rgba(30,58,138,0.28)",
         elevation: 12,
@@ -27,7 +33,6 @@ export default function HeroCard() {
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Frosted orbs */}
       <View
         className="absolute rounded-full w-[280px] h-[280px] -top-20 -right-20 bg-white/[0.08]"
         style={{ pointerEvents: "none" }}
@@ -41,8 +46,10 @@ export default function HeroCard() {
         style={{ left: "42%", marginLeft: -60, pointerEvents: "none" }}
       />
 
-      <View className={`pt-7 pb-7 ${isTablet ? "px-8" : "px-6"}`}>
-        {/* Badge */}
+      <Animated.View
+        className={`pt-7 pb-7 ${isTablet ? "px-8" : "px-6"}`}
+        entering={SlideInUp.duration(600).delay(200)}
+      >
         <View className="mb-5 self-start flex-row items-center gap-2 rounded-full border border-white/25 bg-white/15 px-3 py-1.5">
           <View className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
           <Text className="font-bold uppercase tracking-widest text-white/85 text-[9px]">
@@ -50,30 +57,26 @@ export default function HeroCard() {
           </Text>
         </View>
 
-        {/* Title */}
         <Text
           className={`mb-2 font-black leading-tight text-white tracking-tight ${isTablet ? "text-4xl" : "text-[28px]"}`}
         >
           Welcome to{"\n"}
-          <Text className="text-white/70">Maslog </Text>
-          <Text className="text-white">Care</Text>
+          <Text className="text-white/70">MaslogCare</Text>
+
         </Text>
 
-        {/* Subtitle */}
         <Text className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/45">
           Barangay 61 Maslog
         </Text>
 
-        {/* Description */}
         <Text
           className={`mb-7 mt-4 leading-relaxed text-white/70 ${isTablet ? "text-[15px]" : "text-[13px]"}`}
           style={{ maxWidth: isTablet ? 480 : undefined }}
         >
-          Your all-in-one healthcare assistant for the residents of Barangay
-          Maslog — accessible, secure, and community-centered.
+          Your all in one healthcare assistant for the residents of Barangay
+          Maslog accessible, secure, and community-centered.
         </Text>
 
-        {/* Stat Cards */}
         <View className="flex-row gap-2.5">
           {STATS.map((stat) => (
             <View
@@ -109,7 +112,7 @@ export default function HeroCard() {
             </View>
           ))}
         </View>
-      </View>
-    </View>
+      </Animated.View>
+    </Animated.View>
   );
 }

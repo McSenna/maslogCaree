@@ -268,7 +268,6 @@ export default function MissionControlScreen() {
       return;
     }
 
-    // UI guard for the critical rule (backend also enforces).
     const hasDuplicateForDay = missions.some((m) => {
       const mDay = m.date ? new Date(m.date).toISOString().slice(0, 10) : "";
       return mDay === newDate;
@@ -457,7 +456,7 @@ export default function MissionControlScreen() {
   }
 
   return (
-    <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+    <ScrollView className="flex-1 bg-white" showsVerticalScrollIndicator={false}>
       <View className="gap-6 pb-24">
         <View>
           <Text className="text-2xl font-bold text-slate-900">Mission & queue</Text>

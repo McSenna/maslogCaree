@@ -1,15 +1,12 @@
 import { Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type ProfileExpBarProps = {
-  /** 0–100 */
   progress?: number;
   level?: number;
 };
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const EXP_GRADIENT_COLORS = [
   "#8b5cf6",
@@ -19,7 +16,6 @@ const EXP_GRADIENT_COLORS = [
   "#ef4444",
 ] as const;
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function ProfileExpBar({
   progress = 62,
@@ -29,7 +25,6 @@ export default function ProfileExpBar({
     <View className="flex-row items-center gap-2">
       <Text className="w-6 text-[10px] text-slate-400">exp.</Text>
 
-      {/* Track */}
       <View className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
         <LinearGradient
           colors={EXP_GRADIENT_COLORS}
