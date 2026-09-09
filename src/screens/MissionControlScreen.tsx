@@ -33,6 +33,7 @@ import {
   type QueueOverview,
 } from "@/services/appointments";
 
+import { ROLE_LAYOUT_PADDING } from "@/components/layout/RoleLayout";
 import { useAuth } from "@/contexts/AuthContext";
 import { canAssignAppointments, canCreateMission } from "@/config/healthcareRoles";
 import AppointmentsPanel from "@/components/appointmentQueue/AppointmentsPanel";
@@ -137,6 +138,18 @@ export default function MissionControlScreen() {
   const { width } = useWindowDimensions();
 
   const isPhone = width < 768;
+
+  // Spacing this page wants from the edge of the content area, minus what the
+  // shell already applies — the same arithmetic Inventory, User Management and
+  // System Logs use, so the pages line up under the header and against the
+  // sidebar instead of each sitting at its own inset.
+  const layoutPadding = isPhone ? ROLE_LAYOUT_PADDING.mobile : ROLE_LAYOUT_PADDING.desktop;
+  const gutter = Math.max(
+    0,
+    (isPhone ? 16 : width >= 1024 ? 32 : 24) - layoutPadding.horizontal
+  );
+  const paddingTop = Math.max(0, (isPhone ? 16 : 24) - layoutPadding.top);
+  const paddingBottom = Math.max(0, (isPhone ? 28 : 32) - layoutPadding.bottom);
   const twoColumn = width >= TWO_COLUMN_WIDTH;
   const asTable = width >= TABLE_WIDTH;
   const fourCards = width >= FOUR_CARD_WIDTH;
@@ -588,11 +601,30 @@ export default function MissionControlScreen() {
   }, [missionDetail]);
 
   return (
-    <View className="flex-1" style={{ backgroundColor: palette.pageBg }}>
+    <View className="flex-1">
+      {/* The page tint runs edge to edge behind the shell's padding, the same
+          way Inventory and the other admin pages paint it: the navigator draws
+          its own plain surface over the shell's, so a page that does not paint
+          its ground sits on white instead of the admin near-white. */}
+      <View
+        style={{
+          position: "absolute",
+          top: -layoutPadding.top,
+          bottom: -layoutPadding.bottom,
+          left: -layoutPadding.horizontal,
+          right: -layoutPadding.horizontal,
+          backgroundColor: palette.pageBg,
+        }}
+      />
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ padding: isPhone ? 14 : 20, paddingBottom: 40, gap: 16 }}
+        contentContainerStyle={{
+          paddingHorizontal: gutter,
+          paddingTop,
+          paddingBottom,
+          gap: 16,
+        }}
       >
         <View>
           <Text className="text-[22px] font-bold" style={{ color: palette.heading }}>

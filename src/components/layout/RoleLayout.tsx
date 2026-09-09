@@ -10,6 +10,7 @@ import { getBottomContentPadding } from "@/constants/layout";
 import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
 import { AppHeader } from "@/components/header";
 import { getHeaderPalette } from "@/components/header/headerTokens";
+import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import RoleBottomNav from "../navigation/RoleBottomNav";
 import SidebarNavigation from "../navigation/SidebarNavigation";
 import type { NavItem } from "../navigation/SidebarNavigation";
@@ -52,9 +53,20 @@ const RoleLayout = ({
 
   const isMobile = width < BREAKPOINTS.tablet;
 
-  const { resolvedTheme, classes } = useTheme();
+  const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const headerPalette = getHeaderPalette(isDark);
+
+  /**
+   * The page surface every routed screen sits on.
+   *
+   * Painted here rather than per screen: the tint belongs to the shell, and
+   * leaving it to each page meant a screen that forgot it fell through to a
+   * different white. Applied outside this column's own padding, so it meets the
+   * sidebar and the header without a seam and no screen has to bleed a layer
+   * back out under the gutter to fake it.
+   */
+  const pageSurface = getAdminDashboardPalette(isDark ? "dark" : "light").pageBg;
 
   const [layoutEpoch, setLayoutEpoch] = useState(0);
   const appStateRef = useRef(AppState.currentState);
@@ -95,8 +107,12 @@ const RoleLayout = ({
     >
       <StatusBar style={isDark ? "light" : "dark"} />
 
-      {/* ROOT LAYOUT */}
-      <View className={`flex-1 w-full min-w-0 ${classes.screenBg}`}>
+      {/* ROOT LAYOUT
+          Painted with the page surface rather than a plain white: react-native
+          -web's own root sits at #F2F2F2, and any strip this shell does not
+          cover shows that grey through. Stating the surface here means the
+          fallback is the page colour, never the framework's. */}
+      <View className="flex-1 w-full min-w-0" style={{ backgroundColor: pageSurface }}>
         {/* On a phone there is no rail, so the header is simply the top of the
             screen — the existing mobile header, unchanged. */}
         {isMobile ? <AppHeader /> : null}
@@ -121,13 +137,9 @@ const RoleLayout = ({
 
           <View
             key={layoutEpoch}
-            className={`
-              flex-1
-              w-full
-              min-w-0
-              ${classes.scrollBg}
-            `}
+            className="flex-1 w-full min-w-0"
             style={{
+              backgroundColor: pageSurface,
               paddingHorizontal: isMobile
                 ? ROLE_LAYOUT_PADDING.mobile.horizontal
                 : ROLE_LAYOUT_PADDING.desktop.horizontal,

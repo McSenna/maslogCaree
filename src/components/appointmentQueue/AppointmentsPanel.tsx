@@ -189,7 +189,7 @@ function TableRow({
       className="w-full flex-row items-center"
       style={{
         minHeight: 64,
-        backgroundColor: hovered ? palette.pageBg : "transparent",
+        backgroundColor: hovered ? palette.rowHover : "transparent",
         borderBottomWidth: isLast ? 0 : 1,
         borderBottomColor: palette.divider,
       }}

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { Feather } from "@expo/vector-icons";
 import { useTheme } from "@/contexts/ThemeContext";
+import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { AppointmentRecord } from "@/services/appointments";
 
 /** Below this the two content columns stack. */
@@ -69,7 +70,16 @@ export function useQueuePalette() {
 
     return {
       isDark,
-      pageBg: isDark ? "#020617" : "#F7FAFE",
+      /**
+       * The page ground behind the panels.
+       *
+       * Taken from the admin dashboard palette rather than named here, so this
+       * page sits on the same cool near-white as Inventory and User Management
+       * instead of the navigator's plain white.
+       */
+      pageBg: getAdminDashboardPalette(resolvedTheme).pageBg,
+      /** The faint wash a table row takes on hover. Never the page. */
+      rowHover: isDark ? "#0B1220" : "#F5F9FF",
       panelBg: isDark ? "#0F172A" : "#FFFFFF",
       panelBorder: isDark ? "#1E293B" : "#E4ECF5",
       divider: isDark ? "#1E293B" : "#EEF3FA",
