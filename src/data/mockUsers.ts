@@ -68,3 +68,15 @@ export const getProfilePath = (role: UserRole): string => {
   };
   return paths[role];
 };
+
+/** Notifications screen path per role (for the bottom-nav unread badge). */
+export const getNotificationsPath = (role: UserRole): string => {
+  const paths: Record<UserRole, string> = {
+    admin: "/admin/notifications",
+    doctor: "/doctor/notifications",
+    midwife: "/midwife/notifications",
+    bhw: "/bhw/notifications",
+    resident: "/resident/notifications",
+  };
+  return paths[role];
+};

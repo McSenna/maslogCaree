@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchSystemLogs, type SystemLog, type SystemLogsQuery } from "@/services/systemLogService";
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 export interface UseSystemLogsReturn {
   logs: SystemLog[];
@@ -59,8 +60,7 @@ export function useSystemLogs(initialParams: SystemLogsQuery = {}): UseSystemLog
     try {
       await request;
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Unable to load system logs. Please try again.";
-      setError(message);
+      setError(getApiErrorMessage(err, "Unable to load system logs. Please try again."));
     } finally {
       requestRef.current = null;
       setLoading(false);

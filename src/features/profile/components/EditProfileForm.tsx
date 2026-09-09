@@ -1,9 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
-import { Alert, Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View } from "react-native";
 import ProfileAvatar from "./ProfileAvatar";
 
 
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { showAlert } from "@/utils/notify";
 export type EditProfileValues = {
   fullname: string;
   nickname?: string;
@@ -74,7 +76,7 @@ export default function EditProfileForm({
   };
 
   const handleAvatarPress = () => {
-    Alert.alert(
+    showAlert(
       "Change Profile Photo",
       "Profile photo upload is not yet connected. Integrate image picker / upload here."
     );
@@ -84,18 +86,18 @@ export default function EditProfileForm({
     if (!onSave) return;
 
     if (!values.fullname.trim()) {
-      Alert.alert("Full Name Required", "Please enter your full name.");
+      showAlert("Full Name Required", "Please enter your full name.");
       return;
     }
 
     try {
       setIsSubmitting(true);
       await onSave(values);
-    } catch (error: any) {
-      const message =
-        error?.message ??
-        "Unable to save your profile right now. Please try again.";
-      Alert.alert("Save Failed", message);
+    } catch (error: unknown) {
+      showAlert(
+        "Save Failed",
+        getApiErrorMessage(error, "Unable to save your profile right now. Please try again.")
+      );
     } finally {
       setIsSubmitting(false);
     }

@@ -81,8 +81,12 @@ const ResidentAppointments = () => {
                 key={appt._id}
                 title={`${formatConsultationTypeLabel(appt.consultationType)} · ${statusLabel(appt.status)}`}
                 description={`When: ${formatWhen(appt)}${
-                  appt.assignedCategoryKey ? ` · Category: ${appt.assignedCategoryKey}` : ""
-                }${appt.description ? `\nNote: ${appt.description}` : ""}`}
+                  appt.assignedCategoryKey
+                    ? ` · Category: ${formatConsultationTypeLabel(appt.assignedCategoryKey)}`
+                    : ""
+                }${appt.preferredProvider?.fullname ? `\nProvider requested: ${appt.preferredProvider.fullname}` : ""}${
+                  appt.description ? `\nReason: ${appt.description}` : ""
+                }`}
                 icon={<Feather name="calendar" size={18} color="#2D5BFF" />}
               />
             ))}

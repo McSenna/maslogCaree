@@ -1,14 +1,15 @@
 import { Feather } from "@expo/vector-icons";
 import { Link, usePathname, useRouter } from "expo-router";
 import {
-  Image,
   Pressable,
   StatusBar,
   Text,
   View,
   useWindowDimensions,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import MaslogCareLogo from "@/components/landing/MaslogCareLogo";
+import { LANDING_COLORS } from "@/config/landingAssets";
+import { useHeaderTopInset } from "@/components/header/useHeaderTopInset";
 import type { CurrentUser } from "@/contexts/AuthContext";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 import { getDashboardPath, getProfilePath } from "@/data/mockUsers";
@@ -30,7 +31,9 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
+  // Same single-source inset the authenticated header uses, so both bars
+  // clear the status bar by the same amount.
+  const topInset = useHeaderTopInset();
 
   const isDesktop = width >= BREAKPOINTS.desktop;
   const logoSize = isMobile ? 35 : 40;
@@ -47,7 +50,7 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
           borderBottomColor: "rgba(12,31,110,0.35)",
           boxShadow: "0px 4px 12px rgba(12,31,110,0.2)",
           elevation: 8,
-          paddingTop: insets.top,
+          paddingTop: topInset,
         }}
       >
         <View
@@ -76,13 +79,12 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
                 borderColor: "rgba(255,255,255,0.3)",
               }}
             >
-              <Image
-                source={require("../../../assets/images/maslogicon.png")}
-                resizeMode="contain"
-                style={{
-                  width: logoSize,
-                  height: logoSize,
-                }}
+              {/* The vector mark, the same one the authenticated header and the
+                  landing page use. Inset from the circle so it does not sit
+                  flush against the ring. */}
+              <MaslogCareLogo
+                size={Math.round(logoSize * 0.72)}
+                color={LANDING_COLORS.primaryBlue}
               />
             </View>
 

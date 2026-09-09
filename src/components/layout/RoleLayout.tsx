@@ -1,26 +1,29 @@
-import { useRouter } from "expo-router";
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
-import {
-  AppState,
-  Pressable,
-  Text,
-  useWindowDimensions,
-  View,
-} from "react-native";
-import { getProfilePath, type UserRole } from "@/data/mockUsers";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "@/contexts/AuthContext";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { AppState, useWindowDimensions, View } from "react-native";
+import { StatusBar } from "expo-status-bar";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useNotificationsContext } from "@/contexts/NotificationsContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { getNotificationsPath, type UserRole } from "@/data/mockUsers";
+import { BREAKPOINTS } from "@/constants/breakpoints";
+import { getBottomContentPadding } from "@/constants/layout";
+import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
+import { AppHeader } from "@/components/header";
+import { getHeaderPalette } from "@/components/header/headerTokens";
 import RoleBottomNav from "../navigation/RoleBottomNav";
 import SidebarNavigation from "../navigation/SidebarNavigation";
 import type { NavItem } from "../navigation/SidebarNavigation";
-import UserAvatar from "../ui/UserAvatar";
-import {
-  NotificationBell,
-  NotificationPanel,
-  type BellPosition,
-} from "@/components/notifications";
-import { useNotifications } from "@/hooks/useNotifications";
+
+/**
+ * Padding applied to the routed screen inside this layout.
+ *
+ * Exported so a full-bleed screen (the admin dashboard paints its own page
+ * background) can cancel it out instead of hard-coding the same numbers.
+ */
+export const ROLE_LAYOUT_PADDING = {
+  mobile: { horizontal: 7, top: 7, bottom: getBottomContentPadding(0) },
+  desktop: { horizontal: 24, top: 20, bottom: 24 },
+} as const;
 
 type RoleLayoutProps = {
   children: ReactNode;
@@ -35,32 +38,23 @@ const RoleLayout = ({
   sidebarItems,
   bottomNavItems,
   roleLabel,
-  title,
 }: RoleLayoutProps) => {
   const { width } = useWindowDimensions();
+  const bottomNav = useBottomNavMetrics();
 
-  const isMobile = width < 768;
-
+  // The bottom-nav badge and the web header bell read the same shared count,
+  // so opening one notification updates both at once.
   const { user } = useAuth();
-  const router = useRouter();
+  const { unreadCount } = useNotificationsContext();
+  const notificationBadges = user
+    ? { [getNotificationsPath(user.role as UserRole)]: unreadCount }
+    : undefined;
+
+  const isMobile = width < BREAKPOINTS.tablet;
+
   const { resolvedTheme, classes } = useTheme();
-
-  const {
-    notifications,
-    unreadCount,
-    loading: notifLoading,
-    error: notifError,
-    refresh: notifRefresh,
-    markRead,
-    markAllRead,
-  } = useNotifications();
-
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [bellPosition, setBellPosition] = useState<BellPosition | null>(null);
-
-  const handleBellMeasure = useCallback((pos: BellPosition) => {
-    setBellPosition(pos);
-  }, []);
+  const isDark = resolvedTheme === "dark";
+  const headerPalette = getHeaderPalette(isDark);
 
   const [layoutEpoch, setLayoutEpoch] = useState(0);
   const appStateRef = useRef(AppState.currentState);
@@ -81,136 +75,43 @@ const RoleLayout = ({
   }, []);
 
   /**
-   * Theme colors
+   * Root background matches the application header so the status-bar strip the
+   * header pads out reads as one continuous surface.
    */
-  const safeBg =
-    resolvedTheme === "dark"
-      ? "#020617"
-      : "#FFFFFF";
+  const safeBg = headerPalette.background;
+
+  /**
+   * Safe-area aware bottom clearance for scrollable screens — sourced from the
+   * bottom bar itself so the two can never drift apart.
+   */
+  const mobileBottomPadding = bottomNav.contentPadding;
 
   return (
-    <SafeAreaView
+    <View
       className="flex-1"
       style={{
         backgroundColor: safeBg,
       }}
-      edges={["top"]}
     >
+      <StatusBar style={isDark ? "light" : "dark"} />
+
       {/* ROOT LAYOUT */}
-      <View
-        className={`flex-1 flex-row w-full min-w-0 ${classes.screenBg}`}
-      >
-        {/* =====================================================
-            DESKTOP SIDEBAR
-        ====================================================== */}
-        {!isMobile && (
-          <SidebarNavigation
-            items={sidebarItems}
-            roleLabel={roleLabel}
-          />
-        )}
+      <View className={`flex-1 w-full min-w-0 ${classes.screenBg}`}>
+        {/* ===================================================
+            HEADER — spans the full width above the sidebar
+        ==================================================== */}
+        <AppHeader />
 
-        <View className="flex-1 min-w-0 w-full">
-
-          {/* ===================================================
-              HEADER
-          ==================================================== */}
-          <View
-            className={[
-              classes.headerBar,
-              "shadow-md",
-              "w-full",
-            ].join(" ")}
-          >
-            <View
-              className="
-                w-full
-                flex-row
-                items-center
-                justify-between
-                px-4
-                py-3
-                md:px-6
-                md:py-4
-              "
-            >
-              {/* PAGE TITLE */}
-              <Text
-                className={`
-                  text-base
-                  font-bold
-                  tracking-tight
-                  md:text-lg
-                  ${classes.headerTitle}
-                `}
-              >
-                {/* {title ?? roleLabel} */}
-              </Text>
-
-              {/* HEADER ACTIONS */}
-              <View className="flex-row items-center gap-3">
-
-                <NotificationBell
-                  unreadCount={unreadCount}
-                  onPress={() => setNotifOpen(true)}
-                  onMeasure={handleBellMeasure}
-                />
-
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel="Open profile"
-                  onPress={() => {
-                    if (!user) return;
-
-                    router.push(
-                      getProfilePath(
-                        user.role as UserRole
-                      ) as any
-                    );
-                  }}
-                  className="
-                    h-12
-                    w-12
-                    items-center
-                    justify-center
-                    rounded-full
-                    border
-                    border-white/30
-                    bg-white/10
-                    active:bg-white/15
-                  "
-                  style={({ pressed }) => ({
-                    transform: [
-                      {
-                        scale: pressed ? 0.96 : 1,
-                      },
-                    ],
-                    opacity: pressed ? 0.9 : 1,
-                  })}
-                >
-                  <UserAvatar
-                    size={40}
-                    imageUrl={user?.avatarUrl ?? null}
-                    accessibilityLabel="Profile photo"
-                  />
-                </Pressable>
-              </View>
-            </View>
-          </View>
-
-
-          <NotificationPanel
-            visible={notifOpen}
-            onClose={() => setNotifOpen(false)}
-            items={notifications}
-            unreadCount={unreadCount}
-            loading={notifLoading}
-            error={notifError}
-            onMarkRead={markRead}
-            onMarkAllRead={markAllRead}
-            onRefresh={notifRefresh}
-            bellPosition={bellPosition}
-          />
+        <View className="flex-1 flex-row w-full min-w-0">
+          {/* =================================================
+              DESKTOP SIDEBAR
+          ================================================== */}
+          {!isMobile && (
+            <SidebarNavigation
+              items={sidebarItems}
+              roleLabel={roleLabel}
+            />
+          )}
 
           <View
             key={layoutEpoch}
@@ -221,9 +122,15 @@ const RoleLayout = ({
               ${classes.scrollBg}
             `}
             style={{
-              paddingHorizontal: isMobile ? 7 : 24,
-              paddingTop: isMobile ? 7 : 20,
-              paddingBottom: isMobile ? 30 : 24,
+              paddingHorizontal: isMobile
+                ? ROLE_LAYOUT_PADDING.mobile.horizontal
+                : ROLE_LAYOUT_PADDING.desktop.horizontal,
+              paddingTop: isMobile
+                ? ROLE_LAYOUT_PADDING.mobile.top
+                : ROLE_LAYOUT_PADDING.desktop.top,
+              paddingBottom: isMobile
+                ? mobileBottomPadding
+                : ROLE_LAYOUT_PADDING.desktop.bottom,
             }}
           >
             {/* FULL WIDTH CHILD CONTAINER */}
@@ -235,11 +142,9 @@ const RoleLayout = ({
       </View>
 
       {isMobile && (
-        <RoleBottomNav
-          items={bottomNavItems}
-        />
+        <RoleBottomNav items={bottomNavItems} badges={notificationBadges} />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

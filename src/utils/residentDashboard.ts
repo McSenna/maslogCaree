@@ -1,5 +1,6 @@
 import type { NotificationItem } from "@/services/notifications";
 import type { AppointmentRecord } from "@/services/appointments";
+import { SERVICE_TYPES } from "@/config/appointmentServices";
 
 export function getTimeGreeting(date = new Date()): string {
   const h = date.getHours();
@@ -9,6 +10,9 @@ export function getTimeGreeting(date = new Date()): string {
 }
 
 export function formatConsultationTypeLabel(key: string): string {
+  const known = SERVICE_TYPES.find((service) => service.id === key);
+  if (known) return known.label;
+
   return String(key || "")
     .replace(/_/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());

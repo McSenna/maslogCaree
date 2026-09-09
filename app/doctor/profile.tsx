@@ -1,1 +1,1 @@
-export { default } from "@/features/profile/screens/DoctorProfileScreen";
+export { default } from "@/features/profile/screens/UserProfileScreen";

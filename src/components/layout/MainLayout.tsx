@@ -7,13 +7,13 @@ import LoginModal from "../ui/LoginModal";
 import RegistrationModal from "../ui/RegistrationModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
 import { useAppForegroundLayout } from "@/hooks/useAppForegroundLayout";
 
 type MainLayoutProps = {
   children: React.ReactNode;
 };
 
-const MOBILE_BOTTOM_NAV_RESERVED_PX = 68;
 const MainLayout = ({ children }: MainLayoutProps) => {
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const [isRegistrationVisible, setIsRegistrationVisible] = useState(false);
@@ -28,8 +28,10 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     setResumeTick((t) => t + 1);
   });
 
+  const bottomNav = useBottomNavMetrics();
+
   const contentBottomPadding = isMobile
-    ? insets.bottom + MOBILE_BOTTOM_NAV_RESERVED_PX
+    ? bottomNav.contentPadding
     : insets.bottom;
 
   return (

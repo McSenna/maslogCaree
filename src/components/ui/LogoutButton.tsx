@@ -1,8 +1,9 @@
-import { Alert, Platform, Pressable, Text } from "react-native";
+import { Platform, Pressable, Text } from "react-native";
 import { useRouter } from "expo-router";
 
 import { useAuth } from "@/contexts/AuthContext";
 
+import { showAlert } from "@/utils/notify";
 export type LogoutButtonProps = {
   label?: string;
   confirm?: boolean;
@@ -33,7 +34,7 @@ const LogoutButton = ({
       return;
     }
 
-    Alert.alert("Logout", "Are you sure you want to logout?", [
+    showAlert("Logout", "Are you sure you want to logout?", [
       { text: "Cancel", style: "cancel" },
       { text: label, style: "destructive", onPress: doLogout },
     ]);

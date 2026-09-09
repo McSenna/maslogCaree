@@ -1,91 +1,93 @@
-import { Pressable, Text, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { Text, View } from "react-native";
+import type { UserAction } from "@/components/dashboard/admin/UserActionsMenu";
 import type { AdminUser } from "@/services/userService";
-import { useTheme } from "@/contexts/ThemeContext";
+import Checkbox from "./Checkbox";
 import UserTableRow from "./UserTableRow";
+import { USER_COLUMNS } from "./usersTableColumns";
+import { useUsersPalette } from "./usersTheme";
 
-export type SortField =
-  | "fullname"
-  | "role"
-  | "dateOfBirth"
-  | "createdAt"
-  | "updatedAt";
-
-export type SortDir = "asc" | "desc";
-
-// Column order that matches UserTableRow cell order:
-// fullname | gender | address | role | dateOfBirth | createdAt | updatedAt
-const HEADER_ORDER: Array<{
-  key: SortField | null;
-  label: string;
-  flex: number;
-}> = [
-  { key: "fullname", label: "Full Name", flex: 3 },
-  { key: null, label: "Gender", flex: 1.5 },
-  { key: null, label: "Address", flex: 3 },
-  { key: "role", label: "Role", flex: 2 },
-  { key: "dateOfBirth", label: "Date of Birth", flex: 2 },
-  { key: "createdAt", label: "Created At", flex: 2 },
-  { key: "updatedAt", label: "Updated At", flex: 2 },
+const HEADERS: { label: string; flex?: number; width?: number }[] = [
+  { label: "User", flex: USER_COLUMNS.user },
+  { label: "Email", flex: USER_COLUMNS.email },
+  { label: "Role", flex: USER_COLUMNS.role },
+  { label: "Platform Access", flex: USER_COLUMNS.platform },
+  { label: "Location / Department", flex: USER_COLUMNS.location },
+  { label: "Status", flex: USER_COLUMNS.status },
+  { label: "Last Login", flex: USER_COLUMNS.lastLogin },
 ];
 
 type UsersTableProps = {
   users: AdminUser[];
-  sortField: SortField;
-  sortDir: SortDir;
-  onSort: (field: SortField) => void;
+  selectedUserId: string | null;
+  onSelectUser: (user: AdminUser) => void;
+  checkedIds: ReadonlySet<string>;
+  onToggleUser: (userId: string, next: boolean) => void;
+  onToggleAll: (next: boolean) => void;
+  buildActions: (user: AdminUser) => UserAction[];
 };
 
 export default function UsersTable({
   users,
-  sortField,
-  sortDir,
-  onSort,
+  selectedUserId,
+  onSelectUser,
+  checkedIds,
+  onToggleUser,
+  onToggleAll,
+  buildActions,
 }: UsersTableProps) {
-  const { classes, resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const palette = useUsersPalette();
+
+  const checkedOnPage = users.filter((u) => checkedIds.has(u._id)).length;
+  const allChecked = users.length > 0 && checkedOnPage === users.length;
+  const someChecked = checkedOnPage > 0 && !allChecked;
 
   return (
-    <View
-      className={`overflow-hidden rounded-2xl border ${classes.border}`}
-    >
-      {/* Header */}
+    <View className="w-full">
+      {/* Header — deliberately light: a dark strip would fight the metric cards
+          for attention on a page that is mostly table. */}
       <View
-        className={`flex-row border-b ${classes.border} ${
-          isDark ? "bg-slate-800/90" : "bg-slate-50"
-        }`}
+        className="w-full flex-row items-center"
+        style={{
+          height: 44,
+          borderBottomWidth: 1,
+          borderBottomColor: palette.divider,
+        }}
       >
-        {HEADER_ORDER.map((col, idx) => (
-          <Pressable
-            key={`${col.key ?? col.label}-${idx}`}
-            style={{ flex: col.flex }}
-            className="flex-row items-center gap-1 px-3 py-2.5"
-            onPress={col.key ? () => onSort(col.key as SortField) : undefined}
-            disabled={!col.key}
-          >
-            <Text
-              className={`text-[10px] font-bold uppercase tracking-wide ${
-                col.key && col.key === sortField
-                  ? "text-mc-primary"
-                  : classes.textMuted
-              }`}
-            >
+        <View className="items-center justify-center px-3" style={{ width: USER_COLUMNS.checkbox }}>
+          <Checkbox
+            checked={allChecked}
+            indeterminate={someChecked}
+            onChange={onToggleAll}
+            accessibilityLabel="Select all users on this page"
+          />
+        </View>
+
+        {HEADERS.map((col) => (
+          <View key={col.label} className="justify-center px-3" style={{ flex: col.flex, minWidth: 0 }}>
+            <Text className="text-[12px] font-semibold" numberOfLines={1} style={{ color: palette.muted }}>
               {col.label}
             </Text>
-            {col.key && col.key === sortField && (
-              <Feather
-                name={sortDir === "asc" ? "chevron-up" : "chevron-down"}
-                size={10}
-                color="#2A7DE1"
-              />
-            )}
-          </Pressable>
+          </View>
         ))}
+
+        <View className="justify-center px-3" style={{ width: USER_COLUMNS.actions }}>
+          <Text className="text-[12px] font-semibold" style={{ color: palette.muted }}>
+            Actions
+          </Text>
+        </View>
       </View>
 
-      {/* Rows */}
-      {users.map((user, idx) => (
-        <UserTableRow key={user._id} user={user} isEven={idx % 2 === 0} />
+      {users.map((user, index) => (
+        <UserTableRow
+          key={user._id}
+          user={user}
+          isSelected={selectedUserId === user._id}
+          isChecked={checkedIds.has(user._id)}
+          onToggleCheck={(next) => onToggleUser(user._id, next)}
+          onSelect={() => onSelectUser(user)}
+          actions={buildActions(user)}
+          isLast={index === users.length - 1}
+        />
       ))}
     </View>
   );

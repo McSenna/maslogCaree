@@ -1,109 +1,114 @@
 import { View } from "react-native";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { useTheme } from "@/contexts/ThemeContext";
+import { CARD_SHADOW, RADIUS, useUsersPalette } from "./usersTheme";
+import { USER_COLUMNS } from "./usersTableColumns";
 
-function UserCardSkeleton() {
-  const { classes, resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+function Bar({ width, height = 10 }: { width: number | `${number}%`; height?: number }) {
+  const palette = useUsersPalette();
+  return <View style={{ width, height, borderRadius: 6, backgroundColor: palette.skeleton }} />;
+}
+
+function MobileCardSkeleton({ dense }: { dense: boolean }) {
+  const palette = useUsersPalette();
 
   return (
     <View
-      className={[
-        "rounded-2xl border p-4 gap-3",
-        classes.border,
-        isDark ? "bg-slate-900/80" : "bg-white",
-      ].join(" ")}
+      className="w-full flex-row items-center gap-3 border p-3"
+      style={{
+        borderRadius: RADIUS.card,
+        backgroundColor: palette.cardBg,
+        borderColor: palette.cardBorder,
+        ...CARD_SHADOW,
+      }}
     >
-      <View className="flex-row items-center justify-between gap-2">
-        <View className="flex-1 gap-1.5">
-          <Skeleton className="h-3.5 w-40" />
-          <Skeleton className="h-2.5 w-28" />
+      <View
+        style={{
+          width: dense ? 52 : 60,
+          height: dense ? 52 : 60,
+          borderRadius: 999,
+          backgroundColor: palette.skeleton,
+        }}
+      />
+      <View className="min-w-0 flex-1 gap-2">
+        <Bar width="55%" height={13} />
+        <Bar width="80%" height={10} />
+        <View className="flex-row gap-1.5">
+          <Bar width={62} height={18} />
+          <Bar width={58} height={18} />
         </View>
-        <Skeleton className="h-5 w-16 rounded-full" />
+        <Bar width="50%" height={10} />
       </View>
-      <View className="gap-2">
-        <Skeleton className="h-2.5 w-full" />
-        <Skeleton className="h-2.5 w-5/6" />
-        <Skeleton className="h-2.5 w-4/5" />
-        <Skeleton className="h-2.5 w-3/4" />
-        <Skeleton className="h-2.5 w-2/3" />
-      </View>
-      <Skeleton className="h-2.5 w-16" />
     </View>
   );
 }
 
-function UserTableRowSkeleton() {
-  const { classes } = useTheme();
+function TableRowSkeleton({ isLast }: { isLast: boolean }) {
+  const palette = useUsersPalette();
+
   return (
-    <View className={`flex-row border-b ${classes.border} py-3`}>
-      <View className="flex-[3] px-3 gap-1.5">
-        <Skeleton className="h-3 w-36" />
-        <Skeleton className="h-2.5 w-28" />
+    <View
+      className="w-full flex-row items-center"
+      style={{
+        minHeight: 68,
+        borderBottomWidth: isLast ? 0 : 1,
+        borderBottomColor: palette.divider,
+      }}
+    >
+      <View className="items-center px-3" style={{ width: USER_COLUMNS.checkbox }}>
+        <Bar width={18} height={18} />
       </View>
-      <View className="flex-[1.5] px-3 justify-center">
-        <Skeleton className="h-2.5 w-12" />
+      <View className="flex-row items-center gap-2.5 px-3" style={{ flex: USER_COLUMNS.user, minWidth: 0 }}>
+        <View style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: palette.skeleton }} />
+        <Bar width="70%" height={12} />
       </View>
-      <View className="flex-[3] px-3 gap-1">
-        <Skeleton className="h-2.5 w-full" />
-        <Skeleton className="h-2.5 w-2/3" />
+      <View className="px-3" style={{ flex: USER_COLUMNS.email, minWidth: 0 }}>
+        <Bar width="85%" />
       </View>
-      <View className="flex-[2] px-3 justify-center">
-        <Skeleton className="h-5 w-16 rounded-full" />
+      <View className="px-3" style={{ flex: USER_COLUMNS.role, minWidth: 0 }}>
+        <Bar width={72} height={22} />
       </View>
-      <View className="flex-[2] px-3 justify-center">
-        <Skeleton className="h-2.5 w-24" />
+      <View className="px-3" style={{ flex: USER_COLUMNS.location, minWidth: 0 }}>
+        <Bar width="75%" />
       </View>
-      <View className="flex-[2] px-3 gap-1">
-        <Skeleton className="h-2.5 w-20" />
-        <Skeleton className="h-2.5 w-16" />
+      <View className="px-3" style={{ flex: USER_COLUMNS.status, minWidth: 0 }}>
+        <Bar width={64} height={22} />
       </View>
-      <View className="flex-[2] px-3 gap-1">
-        <Skeleton className="h-2.5 w-20" />
-        <Skeleton className="h-2.5 w-16" />
+      <View className="gap-1.5 px-3" style={{ flex: USER_COLUMNS.lastLogin, minWidth: 0 }}>
+        <Bar width="70%" />
+        <Bar width="45%" height={9} />
+      </View>
+      <View className="items-center px-3" style={{ width: USER_COLUMNS.actions }}>
+        <Bar width={20} height={20} />
       </View>
     </View>
   );
 }
 
 type UsersSkeletonListProps = {
-  /** Number of skeleton rows/cards to show */
   count?: number;
-  /** true = show card skeletons (mobile), false = show row skeletons (desktop) */
+  /** true = cards (phone), false = table rows (desktop). */
   isMobile?: boolean;
+  dense?: boolean;
 };
 
 export default function UsersSkeletonList({
-  count = 5,
+  count = 8,
   isMobile = false,
+  dense = false,
 }: UsersSkeletonListProps) {
-  const { classes, resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
   if (isMobile) {
     return (
-      <View className="gap-3">
+      <View className="w-full gap-2.5">
         {Array.from({ length: count }).map((_, i) => (
-          <UserCardSkeleton key={i} />
+          <MobileCardSkeleton key={i} dense={dense} />
         ))}
       </View>
     );
   }
 
   return (
-    <View className={`overflow-hidden rounded-2xl border ${classes.border}`}>
-      {/* Fake header */}
-      <View
-        className={`flex-row py-2.5 ${isDark ? "bg-slate-800/90" : "bg-slate-50"}`}
-      >
-        {[3, 1.5, 3, 2, 2, 2, 2].map((flex, i) => (
-          <View key={i} className="px-3" style={{ flex }}>
-            <Skeleton className="h-2 w-16" />
-          </View>
-        ))}
-      </View>
+    <View className="w-full">
       {Array.from({ length: count }).map((_, i) => (
-        <UserTableRowSkeleton key={i} />
+        <TableRowSkeleton key={i} isLast={i === count - 1} />
       ))}
     </View>
   );

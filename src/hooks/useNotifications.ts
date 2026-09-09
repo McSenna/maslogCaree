@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { fetchNotifications, markAllNotificationsRead, markNotificationRead, type NotificationItem } from "@/services/notifications";
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 type UseNotificationsOptions = {
   pollIntervalMs?: number;
@@ -37,8 +38,7 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
         setNotifications(res.notifications);
         setUnreadCount(res.unreadCount);
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : "Failed to load notifications";
-        setError(msg);
+        setError(getApiErrorMessage(e, "Unable to load notifications."));
       }
     })();
 
@@ -75,8 +75,7 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
       try {
         await markNotificationRead(id);
       } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : "Failed to mark notification as read";
-        setError(msg);
+        setError(getApiErrorMessage(e, "Unable to mark the notification as read."));
       } finally {
         void refresh();
       }
@@ -91,8 +90,7 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
     try {
       await markAllNotificationsRead();
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Failed to mark all notifications as read";
-      setError(msg);
+      setError(getApiErrorMessage(e, "Unable to mark all notifications as read."));
     } finally {
       void refresh();
     }

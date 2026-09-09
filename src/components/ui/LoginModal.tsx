@@ -1,6 +1,5 @@
 import { useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -14,6 +13,9 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPath } from "@/data/mockUsers";
 
+import { showAlert } from "@/utils/notify";
+import PlatformAccessModal from "@/components/ui/PlatformAccessModal";
+import { PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
 type LoginModalProps = {
   visible: boolean;
   onClose: () => void;
@@ -26,11 +28,22 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState<"email" | "password" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPlatformNotice, setShowPlatformNotice] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
 
   const handleSubmit = async () => {
     if (isSubmitting) return;
+
+    if (!email.trim()) {
+      showAlert("Validation", "Please enter your email address.");
+      return;
+    }
+    if (!password) {
+      showAlert("Validation", "Please enter your password.");
+      return;
+    }
+
     setIsSubmitting(true);
     const result = await login(email.trim(), password);
     setIsSubmitting(false);
@@ -38,9 +51,19 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
     if (result.success && result.role) {
       onClose();
       router.replace(getDashboardPath(result.role) as any);
-    } else {
-      Alert.alert("Login Failed", result.error ?? "Invalid credentials. Please try again.");
+      return;
     }
+
+    // Correct credentials on a client this role may not use — the same policy
+    // outcome the landing page's login card handles, shown the same way rather
+    // than as a login failure.
+    if (result.code && PLATFORM_DENIED_CODES.includes(result.code)) {
+      setPassword("");
+      setShowPlatformNotice(true);
+      return;
+    }
+
+    showAlert("Login Failed", result.error ?? "Invalid email or password.");
   };
 
   return (
@@ -217,6 +240,11 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
           </View>
         </View>
       </KeyboardAvoidingView>
+
+      <PlatformAccessModal
+        visible={showPlatformNotice}
+        onClose={() => setShowPlatformNotice(false)}
+      />
     </Modal>
   );
 }

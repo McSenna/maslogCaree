@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -15,36 +14,45 @@ import { resendOtp, verifyOtp } from "@/services/auth";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPath } from "@/data/mockUsers";
 
+import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
+import { showAlert } from "@/utils/notify";
+import PlatformAccessModal from "@/components/ui/PlatformAccessModal";
 const MC_PRIMARY = "#2A7DE1";
 const OTP_LENGTH = 6;
 const RESEND_COOLDOWN_SEC = 60;
+
+const emptyOtp = () => Array(OTP_LENGTH).fill("");
 
 export type OtpVerificationModalProps = {
   visible: boolean;
   email: string;
   onClose: () => void;
-  /** If set, called after successful verify instead of `onClose` (e.g. close parent registration UI). */
   onVerified?: () => void;
 };
 
-export default function OtpVerificationModal({
+const OtpVerificationModal = ({
   visible,
   email,
   onClose,
   onVerified,
-}: OtpVerificationModalProps) {
+}: OtpVerificationModalProps) => {
   const router = useRouter();
   const { logout, applyAuthUser } = useAuth();
-  const [otpDigits, setOtpDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const [otpDigits, setOtpDigits] = useState<string[]>(emptyOtp());
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [verificationError, setVerificationError] = useState("");
+  const [showPlatformNotice, setShowPlatformNotice] = useState(false);
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   const otp = otpDigits.join("");
+  const otpComplete = otp.length === OTP_LENGTH;
+  const resendDisabled = isResending || resendTimer > 0;
+  const resendColor = resendDisabled ? "#94A3B8" : MC_PRIMARY;
 
-  // Resend countdown with cleanup
+  const finishVerification = () => (onVerified ? onVerified() : onClose());
+
   useEffect(() => {
     if (resendTimer <= 0) return;
     const id = setInterval(() => {
@@ -80,10 +88,10 @@ export default function OtpVerificationModal({
   const handleVerify = async () => {
     if (isVerifying) return;
     if (!email?.trim()) {
-      Alert.alert("Error", "Email not found. Please try registering again.");
+      showAlert("Error", "Email not found. Please try registering again.");
       return;
     }
-    if (otp.length !== OTP_LENGTH) {
+    if (!otpComplete) {
       setVerificationError("Please enter all 6 digits");
       return;
     }
@@ -92,56 +100,53 @@ export default function OtpVerificationModal({
       setIsVerifying(true);
       setVerificationError("");
       const { token, user } = await verifyOtp(email.trim(), otp);
+
+      if (!token) {
+        setOtpDigits(emptyOtp());
+        setShowPlatformNotice(true);
+        return;
+      }
+
       applyAuthUser(user, token);
-      Alert.alert("Success!", "Your email has been verified. Registration complete!");
-      setOtpDigits(Array(OTP_LENGTH).fill(""));
-      if (onVerified) {
-        onVerified();
-      } else {
-        onClose();
-      }
+      showAlert("Success!", "Your email has been verified. Registration complete!");
+      setOtpDigits(emptyOtp());
+      finishVerification();
       router.replace(getDashboardPath(user.role as any) as any);
-    } catch (error: any) {
-      const code = error?.code || error?.response?.data?.code;
-      let msg = error?.message ?? error?.response?.data?.message ?? "Unable to verify code. Please check and try again.";
-      if (code === "OTP_INVALID") {
-        msg = error?.message || "Incorrect verification code.";
-      } else if (code === "OTP_MAX_ATTEMPTS") {
-        msg = "Maximum verification attempts exceeded. Please close this window and register again.";
-      } else if (code === "OTP_EXPIRED") {
-        msg = "Verification code has expired. Please request a new code below.";
-      }
-      setVerificationError(msg);
+    } catch (error: unknown) {
+      const { message } = getAuthErrorPresentation(
+        error,
+        "Verification Failed",
+        "Unable to verify the code. Please check and try again."
+      );
+      setVerificationError(message);
     } finally {
       setIsVerifying(false);
     }
   };
 
   const handleResend = async () => {
-    if (isResending || resendTimer > 0 || !email?.trim()) return;
+    if (resendDisabled || !email?.trim()) return;
     try {
       setIsResending(true);
       const result = await resendOtp(email.trim());
-      Alert.alert("Code Sent", result.message);
-      setOtpDigits(Array(OTP_LENGTH).fill(""));
+      showAlert("Code Sent", result.message);
+      setOtpDigits(emptyOtp());
       setVerificationError("");
       startResendTimer();
-    } catch (error: any) {
-      const code = error?.code || error?.response?.data?.code;
-      let msg = error?.message ?? error?.response?.data?.message ?? "Unable to resend code. Please try again.";
-      if (code === "EMAIL_SERVICE_LIMIT" || code === "EMAIL_QUOTA_EXCEEDED") {
-        msg = "Verification emails are temporarily unavailable. Please try again later.";
-      } else if (code === "OTP_RATE_LIMITED" || code === "OTP_COOLDOWN") {
-        msg = error?.message || "Please wait before requesting another verification code.";
-      }
-      Alert.alert("Resend Failed", msg);
+    } catch (error: unknown) {
+      const { title, message } = getAuthErrorPresentation(
+        error,
+        "Resend Failed",
+        "Unable to resend the code. Please try again."
+      );
+      showAlert(title, message);
     } finally {
       setIsResending(false);
     }
   };
 
   const handleClose = () => {
-    setOtpDigits(Array(OTP_LENGTH).fill(""));
+    setOtpDigits(emptyOtp());
     setVerificationError("");
     setResendTimer(0);
     onClose();
@@ -167,7 +172,6 @@ export default function OtpVerificationModal({
             elevation: 12,
           }}
         >
-          {/* Header */}
           <View className="bg-mc-primary px-5 pt-5 pb-5 overflow-hidden">
             <View
               className="absolute -right-10 -top-10 rounded-full bg-white/10"
@@ -207,7 +211,6 @@ export default function OtpVerificationModal({
             </Text>
           </View>
 
-          {/* Body */}
           <View className="px-5 py-5 gap-4">
             <View>
               <Text className="mb-2 text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400">
@@ -265,24 +268,15 @@ export default function OtpVerificationModal({
             <View className="flex-row items-center justify-between">
               <Pressable
                 onPress={handleResend}
-                disabled={isResending || resendTimer > 0}
+                disabled={resendDisabled}
                 accessibilityRole="button"
                 accessibilityLabel={
                   resendTimer > 0 ? `Resend code in ${resendTimer}s` : "Resend code"
                 }
               >
                 <View className="flex-row items-center gap-2">
-                  <Feather
-                    name="refresh-ccw"
-                    size={12}
-                    color={isResending || resendTimer > 0 ? "#94A3B8" : MC_PRIMARY}
-                  />
-                  <Text
-                    className="text-[11px] font-semibold"
-                    style={{
-                      color: isResending || resendTimer > 0 ? "#94A3B8" : MC_PRIMARY,
-                    }}
-                  >
+                  <Feather name="refresh-ccw" size={12} color={resendColor} />
+                  <Text className="text-[11px] font-semibold" style={{ color: resendColor }}>
                     {isResending
                       ? "Sending…"
                       : resendTimer > 0
@@ -300,11 +294,11 @@ export default function OtpVerificationModal({
 
             <Pressable
               onPress={handleVerify}
-              disabled={isVerifying || otp.length !== OTP_LENGTH}
+              disabled={isVerifying || !otpComplete}
               className="rounded-xl bg-mc-primary items-center justify-center w-full"
               style={({ pressed }) => ({
                 height: 50,
-                opacity: pressed || isVerifying || otp.length !== OTP_LENGTH ? 0.7 : 1,
+                opacity: pressed || isVerifying || !otpComplete ? 0.7 : 1,
                 transform: [{ scale: pressed ? 0.98 : 1 }],
                 boxShadow: "0px 4px 10px rgba(42,125,225,0.35)",
                 elevation: 4,
@@ -334,6 +328,21 @@ export default function OtpVerificationModal({
           </View>
         </View>
       </KeyboardAvoidingView>
+
+      <PlatformAccessModal
+        visible={showPlatformNotice}
+        title="Account Created — Mobile App Required"
+        message={
+          "Your email has been verified and your MaslogCare account is ready.\n\n" +
+          "Resident accounts sign in through the MaslogCare mobile application."
+        }
+        onClose={() => {
+          setShowPlatformNotice(false);
+          finishVerification();
+        }}
+      />
     </Modal>
   );
-}
+};
+
+export default OtpVerificationModal;

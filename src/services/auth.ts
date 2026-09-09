@@ -1,4 +1,9 @@
 import api from "@/services/api";
+import {
+  CLIENT_PLATFORM,
+  type ClientPlatform,
+  type PlatformAccessSummary,
+} from "@/config/platformAccess";
 import { setStoredUser, clearStoredUser, type StoredUser } from "@/utils/storage";
 
 export interface AuthUser {
@@ -10,7 +15,10 @@ export interface AuthUser {
   dateOfBirth?: string;
   gender?: string;
   address?: string;
+  phone?: string;
   avatarUrl?: string | null;
+  /** Which clients this account may sign in from, as computed by the server. */
+  platformAccess?: PlatformAccessSummary;
 }
 
 function toStoredUser(user: AuthUser, token: string): StoredUser {
@@ -30,6 +38,7 @@ function toStoredUser(user: AuthUser, token: string): StoredUser {
     dateOfBirth: dob,
     gender: user.gender,
     address: user.address,
+    phone: user.phone,
     verified: user.verified,
   };
 }
@@ -54,8 +63,15 @@ interface RegisterResponse {
 interface VerifyOtpResponse {
   success: true;
   message: string;
-  token: string;
+  /**
+   * Null when the account was created but this client may not hold a session
+   * for it — a resident completing registration on the web. The account is
+   * real; the session is simply not issued here.
+   */
+  token: string | null;
   user: AuthUser;
+  code?: string;
+  platform?: ClientPlatform;
 }
 
 interface LoginResponse {
@@ -63,6 +79,7 @@ interface LoginResponse {
   message: string;
   token: string;
   user: AuthUser;
+  platform?: ClientPlatform;
 }
 
 interface ResendOtpResponse {
@@ -93,10 +110,6 @@ export async function registerResident(
     profilePhoto: payload.profilePhoto ?? undefined,
   });
 
-  if (!data.success) {
-    throw new Error((data as any).message || "Registration failed");
-  }
-
   return { message: data.message, email: data.email };
 }
 
@@ -107,31 +120,29 @@ export async function resendOtp(
     email: email.trim().toLowerCase(),
   });
 
-  if (!data.success) {
-    throw new Error((data as any).message || "Failed to resend OTP");
-  }
-
   return { message: data.message };
 }
 
 export async function verifyOtp(
   email: string,
   otp: string
-): Promise<{ message: string; token: string; user: AuthUser }> {
+): Promise<{ message: string; token: string | null; user: AuthUser; code?: string }> {
   const data = await postJson<VerifyOtpResponse>("/verify-otp", {
     email: email.trim().toLowerCase(),
     otp: otp.trim(),
+    clientPlatform: CLIENT_PLATFORM,
   });
-
-  if (!data.success) {
-    throw new Error((data as any).message || "OTP verification failed");
-  }
 
   if (data.token) {
     setStoredUser(toStoredUser(data.user, data.token));
   }
 
-  return { message: data.message, token: data.token, user: data.user };
+  return {
+    message: data.message,
+    token: data.token,
+    user: data.user,
+    code: data.code,
+  };
 }
 
 export async function loginWithEmail(
@@ -141,11 +152,8 @@ export async function loginWithEmail(
   const data = await postJson<LoginResponse>("/login", {
     email: email.trim().toLowerCase(),
     password,
+    clientPlatform: CLIENT_PLATFORM,
   });
-
-  if (!data.success) {
-    throw new Error((data as any).message || "Login failed");
-  }
 
   if (data.token) {
     setStoredUser(toStoredUser(data.user, data.token));
@@ -154,17 +162,41 @@ export async function loginWithEmail(
   return { token: data.token, user: data.user };
 }
 
+/**
+ * The platform a token was minted for, read from its payload.
+ *
+ * Used only to notice that a stored session does not belong on this client —
+ * a mobile token carried over to the web build, say — so the app can drop it
+ * instead of making requests the server will reject. The signed claim is
+ * verified on the server; this read is unverified by definition and is never
+ * treated as permission.
+ */
+export function getTokenPlatform(token: string): ClientPlatform | null {
+  const payload = decodeJwtPayload(token);
+  const platform = typeof payload?.platform === "string" ? payload.platform : null;
+  return platform === "web" || platform === "mobile" ? platform : null;
+}
+
 export function logout(): boolean {
   try {
     clearStoredUser();
     return true;
   } catch (error) {
-    console.error("❌ Logout error:", error);
+    // Storage failures are non-fatal here: the caller clears in-memory state
+    // regardless, so the user is signed out of this session either way.
+    console.warn("Failed to clear stored session", error);
     return false;
   }
 }
 
-function decodeJwtExp(token: string): number | null {
+interface JwtPayload {
+  exp?: number;
+  platform?: string;
+  role?: string;
+  sessionId?: string;
+}
+
+function decodeJwtPayload(token: string): JwtPayload | null {
   try {
     const part = token.split(".")[1];
     if (!part) return null;
@@ -173,9 +205,7 @@ function decodeJwtExp(token: string): number | null {
     const padded = b64 + "=".repeat(pad);
     const atobFn = typeof globalThis.atob === "function" ? globalThis.atob.bind(globalThis) : null;
     if (!atobFn) return null;
-    const json = atobFn(padded);
-    const payload = JSON.parse(json) as { exp?: number };
-    return typeof payload.exp === "number" ? payload.exp : null;
+    return JSON.parse(atobFn(padded)) as JwtPayload;
   } catch {
     return null;
   }
@@ -183,7 +213,7 @@ function decodeJwtExp(token: string): number | null {
 
 export function isTokenValid(token: string): boolean {
   if (!token || token.split(".").length !== 3) return false;
-  const exp = decodeJwtExp(token);
+  const exp = decodeJwtPayload(token)?.exp;
   if (exp == null) return false;
   return Date.now() < exp * 1000;
 }

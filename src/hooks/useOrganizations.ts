@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import type { OrganizationMember } from "@/types/organization";
 import { fetchOrganizationMembers } from "@/services/organizations";
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 export const useOrganizations = () => {
   const [orgMembers, setOrgMembers] = useState<OrganizationMember[]>([]);
@@ -16,9 +17,9 @@ export const useOrganizations = () => {
         setLoading(true);
         const members = await fetchOrganizationMembers();
         if (isMounted) setOrgMembers(members);
-      } catch (e: any) {
+      } catch (e: unknown) {
         if (isMounted) {
-          setError(e?.message ?? "Failed to load organization data.");
+          setError(getApiErrorMessage(e, "Unable to load organization data."));
         }
       } finally {
         if (isMounted) setLoading(false);

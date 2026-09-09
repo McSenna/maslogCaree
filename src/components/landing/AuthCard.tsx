@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Platform,
   Pressable,
   StyleSheet,
@@ -18,6 +17,10 @@ import AuthInput from "./AuthInput";
 import AuthDivider from "./AuthDivider";
 import SecurityNotice from "./SecurityNotice";
 
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { showAlert } from "@/utils/notify";
+import PlatformAccessModal from "@/components/ui/PlatformAccessModal";
+import { PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
 const FONT_FAMILY = Platform.select({
   ios: "System",
   android: "sans-serif",
@@ -52,6 +55,7 @@ export default function AuthCard({
   const [pressedButton, setPressedButton] = useState<"login" | "create" | null>(
     null
   );
+  const [showPlatformNotice, setShowPlatformNotice] = useState(false);
 
   const { login } = useAuth();
   const router = useRouter();
@@ -60,11 +64,11 @@ export default function AuthCard({
     if (isSubmitting) return;
 
     if (!email.trim()) {
-      Alert.alert("Validation", "Please enter your email address or phone number.");
+      showAlert("Validation", "Please enter your email address or phone number.");
       return;
     }
     if (!password) {
-      Alert.alert("Validation", "Please enter your password.");
+      showAlert("Validation", "Please enter your password.");
       return;
     }
 
@@ -73,21 +77,34 @@ export default function AuthCard({
       const result = await login(email.trim(), password);
       if (result.success && result.role) {
         router.replace(getDashboardPath(result.role) as any);
-      } else {
-        Alert.alert(
-          "Login Failed",
-          result.error ?? "Invalid credentials. Please try again."
-        );
+        return;
       }
-    } catch (error: any) {
-      Alert.alert("Error", "An unexpected error occurred. Please try again.");
+
+      // Right credentials, wrong client. This is a policy outcome rather than
+      // a failure, so it gets the MaslogCare dialog explaining where to go
+      // instead of a "Login Failed" alert — and the user stays on this page,
+      // since no session was created to navigate away with.
+      if (result.code && PLATFORM_DENIED_CODES.includes(result.code)) {
+        setPassword("");
+        setShowPlatformNotice(true);
+        return;
+      }
+
+      showAlert("Login Failed", result.error ?? "Invalid email or password.");
+    } catch (error: unknown) {
+      // login() already returns failures in `result`; reaching here means an
+      // unexpected client-side fault rather than a rejected credential.
+      showAlert(
+        "Login Failed",
+        getApiErrorMessage(error, "An unexpected error occurred. Please try again.")
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleForgotPassword = () => {
-    Alert.alert(
+    showAlert(
       "Forgot Password",
       "Password reset functionality will be available soon."
     );
@@ -212,6 +229,11 @@ export default function AuthCard({
       <View style={styles.securityWrapper}>
         <SecurityNotice />
       </View>
+
+      <PlatformAccessModal
+        visible={showPlatformNotice}
+        onClose={() => setShowPlatformNotice(false)}
+      />
     </View>
   );
 }

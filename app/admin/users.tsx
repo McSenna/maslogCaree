@@ -1,4 +1,6 @@
-import { useCallback, useMemo, useState } from "react";
+import { Feather } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FlatList,
   Platform,
@@ -9,308 +11,597 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { useTheme } from "@/contexts/ThemeContext";
-import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
+import { ROLE_LAYOUT_PADDING } from "@/components/layout/RoleLayout";
+import type { UserAction } from "@/components/dashboard/admin/UserActionsMenu";
+import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import Toast, { useToast } from "@/components/ui/Toast";
+import {
+  CARD_SHADOW,
+  RADIUS,
+  ROLE_FULL_LABELS,
+  TABLE_MIN_WIDTH,
+  UserDetails,
+  UserMetricCards,
+  UserMobileCard,
+  UserSearchFilters,
+  UsersPagination,
+  UsersSkeletonList,
+  UsersTable,
+  computeUserMetrics,
+  useUsersPalette,
+  type RoleFilter,
+  type SortKey,
+  type StatusFilter,
+} from "@/components/users";
 import { useUsers } from "@/hooks/useUsers";
-import type { AdminUser } from "@/services/userService";
+import {
+  STATUS_ACTIONS,
+  USER_STATUS_LABELS,
+  updateUserStatus,
+  type AdminUser,
+} from "@/services/userService";
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { parseToDate } from "@/utils/dateFormatter";
-import UserSearch from "@/components/users/UserSearch";
-import UserFilters, { type RoleFilter } from "@/components/users/UserFilters";
-import UsersTable, {
-  type SortDir,
-  type SortField,
-} from "@/components/users/UsersTable";
-import UserCard from "@/components/users/UserCard";
-import UsersSkeletonList from "@/components/users/UsersSkeletonList";
-import Screen from "@/components/layout/Screen";
 
-const TABLE_BREAKPOINT = 768;
+const PAGE_SIZE = 8;
 
-const GENDER_LABELS: Record<string, string> = {
-  male: "male",
-  female: "female",
-  other: "other",
-};
+/** Content-area widths, measured rather than taken from the window: the admin
+ *  sidebar owns a fixed slice of the viewport, so the window width alone would
+ *  put the table into a layout the page does not actually have room for. */
+const LAYOUT = {
+  /** Four metric cards across instead of a 2x2 grid. */
+  fourMetrics: 1000,
+  /** The table replaces the card list. */
+  table: 820,
+} as const;
+
+/** Narrowest phones (320–360px) — trims the avatar and type, keeps the grid. */
+const DENSE_WINDOW_WIDTH = 380;
 
 function searchMatches(user: AdminUser, query: string): boolean {
   const q = query.toLowerCase();
   return (
     user.fullname.toLowerCase().includes(q) ||
-    (GENDER_LABELS[user.gender] ?? user.gender).toLowerCase().includes(q) ||
+    user.email.toLowerCase().includes(q) ||
     user.address.toLowerCase().includes(q) ||
-    user.role.toLowerCase().includes(q)
+    (ROLE_FULL_LABELS[user.role] ?? user.role).toLowerCase().includes(q)
   );
 }
 
-function sortUsers(
-  users: AdminUser[],
-  field: SortField,
-  dir: SortDir
-): AdminUser[] {
+function sortUsers(users: AdminUser[], sort: SortKey): AdminUser[] {
+  const byTime = (value: string | null | undefined) =>
+    value ? parseToDate(value).getTime() : 0;
+
   return [...users].sort((a, b) => {
-    let cmp = 0;
-    switch (field) {
-      case "fullname":
-        cmp = a.fullname.localeCompare(b.fullname);
-        break;
-      case "role":
-        cmp = a.role.localeCompare(b.role);
-        break;
-      case "dateOfBirth":
-        cmp =
-          parseToDate(a.dateOfBirth).getTime() -
-          parseToDate(b.dateOfBirth).getTime();
-        break;
-      case "createdAt":
-        cmp =
-          parseToDate(a.createdAt).getTime() -
-          parseToDate(b.createdAt).getTime();
-        break;
-      case "updatedAt":
-        cmp =
-          parseToDate(a.updatedAt).getTime() -
-          parseToDate(b.updatedAt).getTime();
-        break;
+    switch (sort) {
+      case "lastLogin_desc":
+        return byTime(b.lastLogin) - byTime(a.lastLogin);
+      case "lastLogin_asc":
+        return byTime(a.lastLogin) - byTime(b.lastLogin);
+      case "name_asc":
+        return a.fullname.localeCompare(b.fullname);
+      case "name_desc":
+        return b.fullname.localeCompare(a.fullname);
+      case "created_asc":
+        return byTime(a.createdAt) - byTime(b.createdAt);
+      case "created_desc":
+      default:
+        return byTime(b.createdAt) - byTime(a.createdAt);
     }
-    return dir === "asc" ? cmp : -cmp;
   });
 }
 
-function ErrorState({
-  message,
-  onRetry,
+function StateBlock({
+  icon,
+  tone,
+  title,
+  body,
+  action,
 }: {
-  message: string;
-  onRetry: () => void;
+  icon: keyof typeof Feather.glyphMap;
+  tone: "neutral" | "error";
+  title: string;
+  body: string;
+  action?: { label: string; onPress: () => void };
 }) {
-  const { classes, resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const palette = useUsersPalette();
+  const iconBg = tone === "error" ? "#FEE2E2" : palette.divider;
+  const iconColor = tone === "error" ? "#EF4444" : palette.subtle;
 
   return (
-    <View
-      className={[
-        "items-center rounded-2xl border p-8 gap-4",
-        classes.border,
-        isDark ? "bg-slate-900/80" : "bg-white",
-      ].join(" ")}
-    >
-      <View className="h-12 w-12 items-center justify-center rounded-full bg-rose-100">
-        <Feather name="alert-circle" size={22} color="#f43f5e" />
-      </View>
-      <View className="items-center gap-1">
-        <Text className={`text-sm font-semibold ${classes.textPrimary}`}>
-          Unable to load users.
-        </Text>
-        <Text className={`text-center text-xs ${classes.textMuted}`}>
-          Please check your connection and try again.
-        </Text>
-      </View>
-      <Pressable
-        onPress={onRetry}
-        className="rounded-xl bg-mc-primary px-5 py-2.5"
-        style={({ pressed }) => ({ opacity: pressed ? 0.8 : 1 })}
+    <View className="w-full items-center gap-3 px-6 py-14">
+      <View
+        className="h-12 w-12 items-center justify-center rounded-full"
+        style={{ backgroundColor: iconBg }}
       >
-        <Text className="text-sm font-semibold text-white">Retry</Text>
-      </Pressable>
-    </View>
-  );
-}
-
-function EmptyState({ hasFilters }: { hasFilters: boolean }) {
-  const { classes, resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
-  return (
-    <View
-      className={[
-        "items-center rounded-2xl border p-8 gap-3",
-        classes.border,
-        isDark ? "bg-slate-900/80" : "bg-white",
-      ].join(" ")}
-    >
-      <View className="h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-        <Feather name="users" size={22} color="#94a3b8" />
+        <Feather name={icon} size={20} color={iconColor} />
       </View>
       <View className="items-center gap-1">
-        <Text className={`text-sm font-semibold ${classes.textPrimary}`}>
-          {hasFilters ? "No users match your search" : "No users found"}
+        <Text className="text-[14px] font-semibold" style={{ color: palette.heading }}>
+          {title}
         </Text>
-        <Text className={`text-xs ${classes.textMuted}`}>
-          {hasFilters
-            ? "Try adjusting your search or filter."
-            : "The database contains no registered users yet."}
+        <Text className="text-center text-[12.5px]" style={{ color: palette.muted }}>
+          {body}
         </Text>
       </View>
+      {action ? (
+        <Pressable
+          onPress={action.onPress}
+          accessibilityRole="button"
+          className="h-11 justify-center px-5"
+          style={{ borderRadius: RADIUS.control, backgroundColor: palette.primary }}
+        >
+          <Text className="text-[14px] font-semibold text-white">{action.label}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
-
 
 export default function AdminUsers() {
-  const { classes, resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-  const { width } = useWindowDimensions();
-  const isDesktop = width >= TABLE_BREAKPOINT;
+  const palette = useUsersPalette();
+  const router = useRouter();
+  const { width: windowWidth } = useWindowDimensions();
 
-  const { users, loading, error, refreshing, fetchUsers, refreshUsers } =
-    useUsers();
+  // Spacing this page wants from the edge of the content area, minus what the
+  // shell already applies — mirrors the admin dashboard and System Logs so the
+  // three pages line up under the header and against the sidebar.
+  const isPhone = windowWidth < 768;
+  const layoutPadding = isPhone ? ROLE_LAYOUT_PADDING.mobile : ROLE_LAYOUT_PADDING.desktop;
+  const gutter = Math.max(0, (isPhone ? 16 : windowWidth >= 1024 ? 32 : 24) - layoutPadding.horizontal);
+  const paddingTop = Math.max(0, (isPhone ? 16 : 24) - layoutPadding.top);
+  const paddingBottom = Math.max(0, (isPhone ? 28 : 32) - layoutPadding.bottom);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState<RoleFilter>("all");
-  const [sortField, setSortField] = useState<SortField>("createdAt");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
+  // Measured content width. Seeded from the window so the first paint is not a
+  // phone layout on a desktop; replaced by the real figure on layout.
+  const [contentWidth, setContentWidth] = useState(windowWidth);
+  // The table's own box, measured separately: the card sits inside the page
+  // gutter and its border, so deriving it from contentWidth would leave the
+  // table a couple of pixels wide and scrolling when it should sit flush.
+  const [tableAreaWidth, setTableAreaWidth] = useState(0);
+  const showTable = contentWidth >= LAYOUT.table;
+  const fourMetrics = contentWidth >= LAYOUT.fourMetrics;
+  const dense = windowWidth < DENSE_WINDOW_WIDTH;
 
-  const handleSort = useCallback(
-    (field: SortField) => {
-      if (field === sortField) {
-        setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
-      } else {
-        setSortField(field);
-        setSortDir("asc");
-      }
-    },
-    [sortField]
-  );
+  const { users, loading, error, refreshing, fetchUsers, refreshUsers, applyUserUpdate } = useUsers();
+
+  const [search, setSearch] = useState("");
+  const [role, setRole] = useState<RoleFilter>("all");
+  const [status, setStatus] = useState<StatusFilter>("all");
+  const [sort, setSort] = useState<SortKey>("lastLogin_desc");
+  const [page, setPage] = useState(1);
+
+  const [checkedIds, setCheckedIds] = useState<ReadonlySet<string>>(new Set());
+  const [detailsUserId, setDetailsUserId] = useState<string | null>(null);
+  const [pendingStatusUser, setPendingStatusUser] = useState<AdminUser | null>(null);
+  const [statusSaving, setStatusSaving] = useState(false);
+  const { toast, showToast, hideToast } = useToast();
+
+  const metrics = useMemo(() => computeUserMetrics(users), [users]);
 
   const filteredUsers = useMemo(() => {
     let result = users;
+    if (role !== "all") result = result.filter((u) => u.role === role);
+    if (status !== "all") result = result.filter((u) => u.status === status);
+    const query = search.trim();
+    if (query) result = result.filter((u) => searchMatches(u, query));
+    return sortUsers(result, sort);
+  }, [users, role, status, search, sort]);
 
-    if (activeFilter !== "all") {
-      result = result.filter((u) => u.role === activeFilter);
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
+
+  // Narrowing the results can leave the current page past the end of the list.
+  useEffect(() => {
+    setPage((current) => Math.min(current, totalPages));
+  }, [totalPages]);
+
+  const pageUsers = useMemo(
+    () => filteredUsers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [filteredUsers, page]
+  );
+
+  const hasActiveFilters = search.trim().length > 0 || role !== "all" || status !== "all";
+
+  // Derived from the list rather than held as its own copy, so the dialog shows
+  // the updated record immediately after a status change.
+  const detailsUser = useMemo(
+    () => users.find((u) => u._id === detailsUserId) ?? null,
+    [users, detailsUserId]
+  );
+
+  // The dialog reads the record the table already holds, so there is no second
+  // request to fail — the only way it can come up empty is the list failing to
+  // load, or the account disappearing from a refresh while the dialog is open.
+  const detailsError =
+    detailsUserId !== null && !detailsUser && !loading
+      ? error ?? "This account is no longer in the user list."
+      : null;
+
+  const handleViewActivity = useCallback(
+    (user: AdminUser) => {
+      // System Logs is the activity trail this app already keeps; sending the
+      // admin there pre-filtered beats a second log viewer that would drift
+      // from it. Email rather than name — it is the unique field the log search
+      // matches on.
+      setDetailsUserId(null);
+      router.push({ pathname: "/admin/system-logs", params: { search: user.email } });
+    },
+    [router]
+  );
+
+  const resetToFirstPage = useCallback(() => setPage(1), []);
+
+  const toggleUser = useCallback((userId: string, next: boolean) => {
+    setCheckedIds((prev) => {
+      const draft = new Set(prev);
+      if (next) draft.add(userId);
+      else draft.delete(userId);
+      return draft;
+    });
+  }, []);
+
+  const toggleAllOnPage = useCallback(
+    (next: boolean) => {
+      setCheckedIds((prev) => {
+        const draft = new Set(prev);
+        pageUsers.forEach((user) => (next ? draft.add(user._id) : draft.delete(user._id)));
+        return draft;
+      });
+    },
+    [pageUsers]
+  );
+
+  const confirmStatusChange = useCallback(async () => {
+    if (!pendingStatusUser) return;
+
+    const action = STATUS_ACTIONS[pendingStatusUser.status];
+    setStatusSaving(true);
+    try {
+      const { user: updated, message } = await updateUserStatus(pendingStatusUser._id, action.next);
+      applyUserUpdate(updated);
+      setPendingStatusUser(null);
+      showToast(message || `User ${USER_STATUS_LABELS[action.next].toLowerCase()}.`, "success");
+    } catch (e: unknown) {
+      // The dialog stays open on failure so the admin can retry without
+      // hunting for the row again.
+      showToast(getApiErrorMessage(e, "Unable to update this user. Please try again."), "error");
+    } finally {
+      setStatusSaving(false);
     }
+  }, [pendingStatusUser, applyUserUpdate, showToast]);
 
-    if (searchQuery.trim()) {
-      result = result.filter((u) => searchMatches(u, searchQuery.trim()));
-    }
+  const buildActions = useCallback(
+    (user: AdminUser): UserAction[] => {
+      const statusAction = STATUS_ACTIONS[user.status];
+      return [
+        { label: "View Details", icon: "eye", onPress: () => setDetailsUserId(user._id) },
+        {
+          label: statusAction.label,
+          icon: statusAction.destructive ? "user-x" : "user-check",
+          onPress: () => setPendingStatusUser(user),
+        },
+      ];
+    },
+    []
+  );
 
-    return sortUsers(result, sortField, sortDir);
-  }, [users, activeFilter, searchQuery, sortField, sortDir]);
-
-  const hasActiveFilters =
-    searchQuery.trim().length > 0 || activeFilter !== "all";
+  const handleAddUser = useCallback(() => {
+    // No admin-side create endpoint exists yet; accounts are created through
+    // the public registration + OTP flow. Say so rather than opening a form
+    // that has nothing to submit to.
+    showToast(
+      "Creating a user from here isn't available yet — accounts are added through registration."
+    );
+  }, [showToast]);
 
   const refreshControl = (
     <RefreshControl
       refreshing={refreshing}
       onRefresh={refreshUsers}
-      tintColor={isDark ? "#38bdf8" : "#2A7DE1"}
-      colors={["#2A7DE1"]}
+      tintColor={palette.primary}
+      colors={[palette.primary]}
     />
   );
 
-  const ListHeader = (
-    <View className="gap-5 pb-4">
-      <View>
-        <PageTitle>User Management</PageTitle>
-        <PageSubtitle>
-          {loading
-            ? "Loading users…"
-            : `${users.length} user${users.length !== 1 ? "s" : ""} in total`}
-        </PageSubtitle>
+  const toolbar = (
+    <UserSearchFilters
+      search={search}
+      onSearchChange={(value) => {
+        setSearch(value);
+        resetToFirstPage();
+      }}
+      role={role}
+      onRoleChange={(value) => {
+        setRole(value);
+        resetToFirstPage();
+      }}
+      status={status}
+      onStatusChange={(value) => {
+        setStatus(value);
+        resetToFirstPage();
+      }}
+      sort={sort}
+      onSortChange={(value) => {
+        setSort(value);
+        resetToFirstPage();
+      }}
+      onAddUser={handleAddUser}
+      isDesktop={showTable}
+      resultCount={filteredUsers.length}
+    />
+  );
+
+  const emptyOrError = error ? (
+    <StateBlock
+      icon="alert-circle"
+      tone="error"
+      title="Unable to load users."
+      body={error}
+      action={{ label: "Try again", onPress: fetchUsers }}
+    />
+  ) : (
+    <StateBlock
+      icon="users"
+      tone="neutral"
+      title={hasActiveFilters ? "No users match your search." : "No users found."}
+      body={
+        hasActiveFilters
+          ? "Try adjusting your search or filters."
+          : "The database contains no registered users yet."
+      }
+    />
+  );
+
+  /** Desktop: filters, table and pagination inside one white section. */
+  const tableCard = (
+    <View
+      className="w-full overflow-hidden border"
+      style={{
+        borderRadius: RADIUS.card,
+        backgroundColor: palette.cardBg,
+        borderColor: palette.cardBorder,
+        ...CARD_SHADOW,
+      }}
+    >
+      <View className="w-full p-4" style={{ borderBottomWidth: 1, borderBottomColor: palette.divider }}>
+        {toolbar}
       </View>
 
-      <UserSearch value={searchQuery} onChangeText={setSearchQuery} />
-
-      <UserFilters
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-      />
-
-      {!loading && !error && (
-        <View className="flex-row items-center justify-between gap-2">
-          <Text className={`text-xs ${classes.textMuted}`}>
-            Showing{" "}
-            <Text className={`font-semibold ${classes.textSecondary}`}>
-              {filteredUsers.length}
-            </Text>{" "}
-            {filteredUsers.length !== 1 ? "users" : "user"}
-            {hasActiveFilters ? " (filtered)" : ""}
-          </Text>
-          {isDesktop && (
-            <Text className={`text-[10px] ${classes.textMuted}`}>
-              Sorted by {sortField} · {sortDir === "asc" ? "↑ ascending" : "↓ descending"}
-            </Text>
-          )}
+      {loading ? (
+        <UsersSkeletonList count={PAGE_SIZE} />
+      ) : error || pageUsers.length === 0 ? (
+        emptyOrError
+      ) : (
+        // Below TABLE_MIN_WIDTH the nine columns cramp, so the table keeps its
+        // proportions and scrolls sideways instead of squeezing. At or above it
+        // the table takes the full card width and the scroll never engages.
+        <View
+          className="w-full"
+          onLayout={(event) => {
+            const next = Math.round(event.nativeEvent.layout.width);
+            if (next > 0 && next !== tableAreaWidth) setTableAreaWidth(next);
+          }}
+        >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={{ width: Math.max(tableAreaWidth, TABLE_MIN_WIDTH) }}>
+              <UsersTable
+                users={pageUsers}
+                selectedUserId={detailsUserId}
+                onSelectUser={(user) => setDetailsUserId(user._id)}
+                checkedIds={checkedIds}
+                onToggleUser={toggleUser}
+                onToggleAll={toggleAllOnPage}
+                buildActions={buildActions}
+              />
+            </View>
+          </ScrollView>
         </View>
       )}
+
+      {!loading && !error && filteredUsers.length > 0 ? (
+        <View className="w-full p-4" style={{ borderTopWidth: 1, borderTopColor: palette.divider }}>
+          <UsersPagination
+            page={page}
+            totalPages={totalPages}
+            total={filteredUsers.length}
+            pageSize={PAGE_SIZE}
+            isDesktop
+            onPageChange={setPage}
+          />
+        </View>
+      ) : null}
     </View>
   );
 
-  const renderContent = () => {
-    if (loading) {
-      return (
-        <UsersSkeletonList count={6} isMobile={!isDesktop} />
-      );
-    }
+  const mobileHeader = (
+    <View className="w-full gap-4 pb-3">
+      <UserMetricCards metrics={metrics} isWide={false} />
+      {toolbar}
+    </View>
+  );
 
-    if (error) {
-      return <ErrorState message={error} onRetry={fetchUsers} />;
-    }
+  const mobileFooter =
+    !loading && !error && filteredUsers.length > 0 ? (
+      <View className="w-full pt-4">
+        <UsersPagination
+          page={page}
+          totalPages={totalPages}
+          total={filteredUsers.length}
+          pageSize={PAGE_SIZE}
+          isDesktop={false}
+          onPageChange={setPage}
+        />
+      </View>
+    ) : null;
 
-    if (filteredUsers.length === 0) {
-      return <EmptyState hasFilters={hasActiveFilters} />;
-    }
+  const mobileEmpty = loading ? (
+    <UsersSkeletonList count={6} isMobile dense={dense} />
+  ) : (
+    <View
+      className="w-full border"
+      style={{
+        borderRadius: RADIUS.card,
+        backgroundColor: palette.cardBg,
+        borderColor: palette.cardBorder,
+      }}
+    >
+      {emptyOrError}
+    </View>
+  );
 
-    if (isDesktop) {
-      return (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={{ minWidth: width - 48 }}>
-            <UsersTable
-              users={filteredUsers}
-              sortField={sortField}
-              sortDir={sortDir}
-              onSort={handleSort}
-            />
-          </View>
-        </ScrollView>
-      );
-    }
+  const overlays = (
+    <>
+      <UserDetails
+        visible={detailsUserId !== null}
+        user={detailsUser}
+        loading={loading}
+        error={detailsError}
+        onRetry={fetchUsers}
+        onClose={() => setDetailsUserId(null)}
+        onChangeStatus={setPendingStatusUser}
+        onViewActivity={handleViewActivity}
+        busy={statusSaving}
+      />
+      <ConfirmationModal
+        visible={pendingStatusUser !== null}
+        // Named rather than "Deactivate User?": the dialog can be reached from
+        // a row menu as well as from the details panel, and the admin has to be
+        // able to check whose account this is without dismissing it first.
+        title={
+          pendingStatusUser
+            ? `${STATUS_ACTIONS[pendingStatusUser.status].label.replace(/ (User|Account)$/, "")} ${pendingStatusUser.fullname}?`
+            : ""
+        }
+        message={
+          pendingStatusUser
+            ? STATUS_ACTIONS[pendingStatusUser.status].destructive
+              ? "This user will no longer be able to access their MaslogCare account until the account is reactivated."
+              : `${pendingStatusUser.fullname} will be able to sign in to MaslogCare again.`
+            : ""
+        }
+        confirmLabel={
+          pendingStatusUser
+            ? statusSaving
+              ? STATUS_ACTIONS[pendingStatusUser.status].pendingLabel
+              : STATUS_ACTIONS[pendingStatusUser.status].label
+            : ""
+        }
+        destructive={pendingStatusUser ? STATUS_ACTIONS[pendingStatusUser.status].destructive : false}
+        loading={statusSaving}
+        onConfirm={confirmStatusChange}
+        onCancel={() => setPendingStatusUser(null)}
+      />
+      <Toast toast={toast} onDismiss={hideToast} />
+    </>
+  );
 
-    return null;
+  const pageTint = (
+    // The page tint runs edge to edge behind the shell's padding, the same way
+    // the admin dashboard paints it, so the sidebar and header meet this page
+    // without a seam. Positioned rather than negatively margined so it cannot
+    // feed back into the shell's flex row.
+    <View
+      style={{
+        position: "absolute",
+        top: -layoutPadding.top,
+        bottom: -layoutPadding.bottom,
+        left: -layoutPadding.horizontal,
+        right: -layoutPadding.horizontal,
+        backgroundColor: palette.pageBg,
+      }}
+    />
+  );
+
+  const onLayout = (event: { nativeEvent: { layout: { width: number } } }) => {
+    const next = Math.round(event.nativeEvent.layout.width);
+    if (next > 0 && next !== contentWidth) setContentWidth(next);
   };
 
-  if (isDesktop || Platform.OS === "web") {
+  if (showTable) {
     return (
-      <ScrollView
-        className={`flex-1 ${classes.scrollBg}`}
-        showsVerticalScrollIndicator={false}
-        refreshControl={refreshControl}
-      >
-        <Screen className="py-5 md:py-8">
-          <View className="gap-5">
-            {ListHeader}
-            {renderContent()}
+      <View className="flex-1" onLayout={onLayout}>
+        {pageTint}
+        <ScrollView
+          className="flex-1"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: gutter, paddingTop, paddingBottom }}
+          refreshControl={refreshControl}
+        >
+          <View className="w-full gap-5">
+            <UserMetricCards metrics={metrics} isWide={fourMetrics} />
+            {tableCard}
           </View>
-        </Screen>
-      </ScrollView>
+        </ScrollView>
+        {overlays}
+      </View>
     );
   }
 
-  // Mobile path: FlatList with UserCard items for pull-to-refresh + virtualization
+  const listContentStyle = {
+    paddingHorizontal: gutter,
+    paddingTop,
+    paddingBottom,
+    flexGrow: 1,
+  };
+
+  // react-native-web has no virtualization to gain here — the list is already
+  // capped at one page — and a FlatList there interferes with page scrolling,
+  // so the same cards render inside a ScrollView on web.
+  if (Platform.OS === "web") {
+    return (
+      <View className="flex-1" onLayout={onLayout}>
+        {pageTint}
+        <ScrollView
+          className="flex-1"
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={listContentStyle}
+          refreshControl={refreshControl}
+        >
+          {mobileHeader}
+          {pageUsers.length === 0 ? (
+            mobileEmpty
+          ) : (
+            <View className="w-full gap-2.5">
+              {pageUsers.map((user) => (
+                <UserMobileCard
+                  key={user._id}
+                  user={user}
+                  dense={dense}
+                  onPress={() => setDetailsUserId(user._id)}
+                />
+              ))}
+            </View>
+          )}
+          {mobileFooter}
+        </ScrollView>
+        {overlays}
+      </View>
+    );
+  }
+
   return (
-    <FlatList
-      className={`flex-1 ${classes.scrollBg}`}
-      contentContainerStyle={{ flexGrow: 1 }}
-      contentContainerClassName="px-4 py-5 gap-3"
-      data={loading || error ? [] : filteredUsers}
-      keyExtractor={(item) => item._id}
-      refreshControl={refreshControl}
-      ListHeaderComponent={
-        <View className="gap-5 pb-2">{ListHeader}</View>
-      }
-      ListEmptyComponent={
-        loading ? (
-          <UsersSkeletonList count={6} isMobile />
-        ) : error ? (
-          <ErrorState message={error} onRetry={fetchUsers} />
-        ) : (
-          <EmptyState hasFilters={hasActiveFilters} />
-        )
-      }
-      renderItem={({ item }) => <UserCard user={item} />}
-      ItemSeparatorComponent={() => <View className="h-3" />}
-      showsVerticalScrollIndicator={false}
-    />
+    <View className="flex-1" onLayout={onLayout}>
+      {pageTint}
+      <FlatList
+        className="flex-1"
+        data={loading || error ? [] : pageUsers}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={listContentStyle}
+        refreshControl={refreshControl}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={mobileHeader}
+        ListEmptyComponent={mobileEmpty}
+        ListFooterComponent={mobileFooter}
+        ItemSeparatorComponent={() => <View className="h-2.5" />}
+        renderItem={({ item }) => (
+          <UserMobileCard
+            user={item}
+            dense={dense}
+            onPress={() => setDetailsUserId(item._id)}
+          />
+        )}
+      />
+      {overlays}
+    </View>
   );
 }

@@ -7,6 +7,11 @@ import type { NotificationItem as NotificationItemType } from "./notification.ty
 type NotificationItemProps = {
   item: NotificationItemType;
   onPress: (id: string) => void;
+  /**
+   * "row" is the dropdown panel's divided list; "card" is the standalone
+   * notifications screen, where each entry is its own rounded surface.
+   */
+  variant?: "row" | "card";
 };
 
 // ── Icon & color mapping by tone ──────────────────────────────────────
@@ -41,7 +46,11 @@ function getToneConfig(tone?: string) {
 
 // ── Component ─────────────────────────────────────────────────────────
 
-const NotificationItem = ({ item, onPress }: NotificationItemProps) => {
+const NotificationItem = ({
+  item,
+  onPress,
+  variant = "row",
+}: NotificationItemProps) => {
   const { resolvedTheme, classes } = useTheme();
   const isDark = resolvedTheme === "dark";
   const config = getToneConfig(item.tone);
@@ -61,19 +70,22 @@ const NotificationItem = ({ item, onPress }: NotificationItemProps) => {
     ? "border-slate-800"
     : "border-slate-100";
 
+  const isCard = variant === "card";
+
+  // Press feedback rides on the class, not on a style callback: a function-form
+  // `style` on Pressable is dropped here, taking the surface with it.
+  const shape = isCard
+    ? `rounded-2xl border px-4 py-3.5 ${borderClass} ${rowBg || (isDark ? "bg-slate-900" : "bg-white")}`
+    : `border-b px-4 py-3 ${borderClass} ${rowBg}`;
+
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`Notification: ${item.title}`}
+      accessibilityHint={item.isRead ? "Read" : "Unread"}
+      accessibilityState={{ selected: !item.isRead }}
       onPress={handlePress}
-      className={`flex-row items-start gap-3 border-b px-4 py-3 ${borderClass} ${rowBg}`}
-      style={({ pressed }) => ({
-        backgroundColor: pressed
-          ? isDark
-            ? "rgba(30,41,59,0.5)"
-            : "rgba(241,245,249,1)"
-          : undefined,
-      })}
+      className={`flex-row items-start gap-3 active:opacity-80 ${shape}`}
     >
       {/* Icon container */}
       <View
@@ -90,14 +102,14 @@ const NotificationItem = ({ item, onPress }: NotificationItemProps) => {
           className={`text-sm ${
             !item.isRead ? "font-bold" : "font-semibold"
           } ${classes.textPrimary}`}
-          numberOfLines={1}
+          numberOfLines={isCard ? 2 : 1}
         >
           {item.title}
         </Text>
 
         <Text
           className={`mt-0.5 text-xs leading-relaxed ${classes.textMuted}`}
-          numberOfLines={2}
+          numberOfLines={isCard ? undefined : 2}
         >
           {item.body}
         </Text>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getAllUsers, type AdminUser } from "@/services/userService";
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 export interface UseUsersReturn {
   users: AdminUser[];
@@ -8,6 +9,8 @@ export interface UseUsersReturn {
   refreshing: boolean;
   fetchUsers: () => Promise<void>;
   refreshUsers: () => Promise<void>;
+  /** Replaces one user in place — used after a mutation returns the updated record. */
+  applyUserUpdate: (user: AdminUser) => void;
 }
 
 /**
@@ -36,9 +39,7 @@ export function useUsers(): UseUsersReturn {
         const { users: fetched } = await getAllUsers();
         setUsers(fetched);
       } catch (e: unknown) {
-        const msg =
-          e instanceof Error ? e.message : "Unable to load users. Please try again.";
-        setError(msg);
+        setError(getApiErrorMessage(e, "Unable to load users. Please try again."));
       }
     })();
 
@@ -66,9 +67,7 @@ export function useUsers(): UseUsersReturn {
         const { users: fetched } = await getAllUsers();
         setUsers(fetched);
       } catch (e: unknown) {
-        const msg =
-          e instanceof Error ? e.message : "Unable to load users. Please try again.";
-        setError(msg);
+        setError(getApiErrorMessage(e, "Unable to load users. Please try again."));
       }
     })();
 
@@ -81,10 +80,14 @@ export function useUsers(): UseUsersReturn {
     }
   }, []);
 
+  const applyUserUpdate = useCallback((updated: AdminUser) => {
+    setUsers((prev) => prev.map((user) => (user._id === updated._id ? updated : user)));
+  }, []);
+
   // Fetch once on mount.
   useEffect(() => {
     void fetchUsers();
   }, [fetchUsers]);
 
-  return { users, loading, error, refreshing, fetchUsers, refreshUsers };
+  return { users, loading, error, refreshing, fetchUsers, refreshUsers, applyUserUpdate };
 }

@@ -43,6 +43,7 @@ export interface StoredUser {
   dateOfBirth?: string;
   gender?: string;
   address?: string;
+  phone?: string;
   verified?: boolean;
 }
 

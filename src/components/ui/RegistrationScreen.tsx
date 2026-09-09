@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -19,6 +18,8 @@ import { registerResident } from "@/services/auth";
 import OtpVerificationModal from "./OtpVerificationModal";
 
 
+import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
+import { showAlert } from "@/utils/notify";
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -217,7 +218,7 @@ const RegistrationScreen = ({
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission needed', 'Please grant camera roll permissions to upload a profile photo.');
+        showAlert('Permission needed', 'Please grant camera roll permissions to upload a profile photo.');
         return;
       }
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -231,7 +232,7 @@ const RegistrationScreen = ({
         const asset = result.assets[0];
         // `base64` is required so we can store the image in the database (no filesystem/local paths).
         if (!asset.base64) {
-          Alert.alert("Error", "Could not read image data. Please try a different photo.");
+          showAlert("Error", "Could not read image data. Please try a different photo.");
           return;
         }
         const mime = asset.mimeType || (asset.type ? (String(asset.type).includes("/") ? asset.type : `image/${asset.type}`) : "image/jpeg");
@@ -240,7 +241,7 @@ const RegistrationScreen = ({
         clearError("profileImage");
       }
     } catch {
-      Alert.alert('Error', 'Failed to pick image. Please try again.');
+      showAlert("Photo Error", "Failed to pick the image. Please try again.");
     }
   };
 
@@ -248,7 +249,7 @@ const RegistrationScreen = ({
     try {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== 'granted') {
-        Alert.alert('Permission needed', 'Please grant camera permissions to take a photo.');
+        showAlert('Permission needed', 'Please grant camera permissions to take a photo.');
         return;
       }
       const result = await ImagePicker.launchCameraAsync({
@@ -260,7 +261,7 @@ const RegistrationScreen = ({
       if (!result.canceled && result.assets[0]) {
         const asset = result.assets[0];
         if (!asset.base64) {
-          Alert.alert("Error", "Could not read image data. Please try a different photo.");
+          showAlert("Error", "Could not read image data. Please try a different photo.");
           return;
         }
         const mime = asset.mimeType || (asset.type ? (String(asset.type).includes("/") ? asset.type : `image/${asset.type}`) : "image/jpeg");
@@ -269,12 +270,12 @@ const RegistrationScreen = ({
         clearError("profileImage");
       }
     } catch {
-      Alert.alert('Error', 'Failed to take photo. Please try again.');
+      showAlert("Camera Error", "Failed to take the photo. Please try again.");
     }
   };
 
   const showImagePickerOptions = () => {
-    Alert.alert(
+    showAlert(
       'Profile Photo',
       'Choose a photo for your profile',
       [
@@ -344,28 +345,13 @@ const RegistrationScreen = ({
       const result = await registerResident(registrationData);
       setRegisteredEmail(result.email);
       setShowOtpModal(true);
-    } catch (error: any) {
-      const code = error?.code || error?.response?.data?.code;
-      let title = "Registration Failed";
-      let userMessage =
-        error?.message ||
-        error?.response?.data?.message ||
-        error?.response?.data?.errors?.join(", ") ||
-        "Registration failed. Please try again.";
-
-      if (code === "EMAIL_SERVICE_LIMIT" || code === "EMAIL_QUOTA_EXCEEDED") {
-        title = "Email Service Unavailable";
-        userMessage =
-          "Verification emails are temporarily unavailable due to server mail limits. Your registration has been saved. Please wait a moment and try resending the verification code.";
-      } else if (code === "OTP_RATE_LIMITED") {
-        title = "Rate Limit Reached";
-        userMessage = "Please wait before requesting another verification code.";
-      } else if (code === "EMAIL_CONFIGURATION_ERROR") {
-        title = "Service Unavailable";
-        userMessage = "Email verification is temporarily unavailable. Please contact the health center.";
-      }
-
-      Alert.alert(title, userMessage);
+    } catch (error: unknown) {
+      const { title, message } = getAuthErrorPresentation(
+        error,
+        "Registration Failed",
+        "Registration failed. Please try again."
+      );
+      showAlert(title, message);
     } finally {
       setIsLoading(false);
     }

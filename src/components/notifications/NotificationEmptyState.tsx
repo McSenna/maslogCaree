@@ -3,7 +3,15 @@ import React from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 
-const NotificationEmptyState = () => {
+type NotificationEmptyStateProps = {
+  title?: string;
+  message?: string;
+};
+
+const NotificationEmptyState = ({
+  title = "You're all caught up",
+  message,
+}: NotificationEmptyStateProps) => {
   const { resolvedTheme, classes } = useTheme();
 
   const iconBg =
@@ -22,13 +30,13 @@ const NotificationEmptyState = () => {
       <Text
         className={`mb-1 text-base font-bold ${classes.textPrimary}`}
       >
-        You&apos;re all caught up
+        {title}
       </Text>
 
       <Text
         className={`text-center text-sm leading-relaxed ${classes.textMuted}`}
       >
-        There are no notifications{"\n"}right now.
+        {message ?? `There are no notifications\nright now.`}
       </Text>
     </View>
   );

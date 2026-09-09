@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { fetchMyAppointments, type AppointmentRecord } from "@/services/appointments";
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 const POLL_MS = 90_000;
 
@@ -18,8 +19,7 @@ export function useResidentAppointments() {
       setAppointments(rows);
       everLoadedRef.current = true;
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Failed to load appointments";
-      setError(msg);
+      setError(getApiErrorMessage(e, "Unable to load your appointments."));
       if (mode === "full") setAppointments([]);
     } finally {
       if (mode === "full") setLoading(false);
@@ -41,8 +41,7 @@ export function useResidentAppointments() {
           }
         } catch (e: unknown) {
           if (!cancelled) {
-            const msg = e instanceof Error ? e.message : "Failed to load appointments";
-            setError(msg);
+            setError(getApiErrorMessage(e, "Unable to load your appointments."));
             if (mode === "full") setAppointments([]);
           }
         } finally {
@@ -58,8 +57,15 @@ export function useResidentAppointments() {
   useEffect(() => {
     const id = setInterval(() => {
       void fetchMyAppointments()
-        .then((rows) => setAppointments(rows))
-        .catch(() => {});
+        .then((rows) => {
+          setAppointments(rows);
+          setError(null);
+        })
+        .catch((e: unknown) => {
+          // A background refresh must not replace what is on screen, but the
+          // failure is still surfaced rather than silently discarded.
+          setError(getApiErrorMessage(e, "Unable to refresh your appointments."));
+        });
     }, POLL_MS);
     return () => clearInterval(id);
   }, []);

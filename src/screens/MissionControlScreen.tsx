@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -9,6 +7,7 @@ import {
   TextInput,
   Platform,
   View,
+  useWindowDimensions,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Feather } from "@expo/vector-icons";
@@ -29,8 +28,26 @@ import {
   type AppointmentRecord,
   type ConsultationCategory,
   type MissionScheduleRecord,
+  fetchAppointmentsByStatus,
+  fetchQueueOverview,
+  type QueueOverview,
 } from "@/services/appointments";
 
+import { useAuth } from "@/contexts/AuthContext";
+import { canAssignAppointments, canCreateMission } from "@/config/healthcareRoles";
+import AppointmentsPanel from "@/components/appointmentQueue/AppointmentsPanel";
+import QueueStatCards from "@/components/appointmentQueue/QueueStatCards";
+import ServiceBreakdownPanel from "@/components/appointmentQueue/ServiceBreakdownPanel";
+import TodaySchedulePanel from "@/components/appointmentQueue/TodaySchedulePanel";
+import {
+  FOUR_CARD_WIDTH,
+  TABLE_WIDTH,
+  TWO_COLUMN_WIDTH,
+  useQueuePalette,
+  type AppointmentStatus,
+} from "@/components/appointmentQueue/queueTheme";
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { showAlert } from "@/utils/notify";
 const defaultTime = { start: "08:00", end: "12:00" };
 
 function formatSlotLabel(iso: string) {
@@ -85,7 +102,6 @@ export default function MissionControlScreen() {
   const [analytics, setAnalytics] = useState<
     { _id: { category: string; status: string }; count: number }[]
   >([]);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   const [newDate, setNewDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -116,13 +132,76 @@ export default function MissionControlScreen() {
   const [assignSelectedSlot, setAssignSelectedSlot] = useState<string | null>(null);
   const [assignLoadingSlots, setAssignLoadingSlots] = useState(false);
 
+  const palette = useQueuePalette();
+  const { user } = useAuth();
+  const { width } = useWindowDimensions();
+
+  const isPhone = width < 768;
+  const twoColumn = width >= TWO_COLUMN_WIDTH;
+  const asTable = width >= TABLE_WIDTH;
+  const fourCards = width >= FOUR_CARD_WIDTH;
+
+  /**
+   * Whether to draw the Add Mission control.
+   *
+   * Presentation only — `POST /mission-schedule` refuses a midwife or a BHW
+   * with a 403 whether or not the button was ever rendered.
+   */
+  const showAddMission = canCreateMission(user?.role);
+
+  /**
+   * Whether this role may act on a row.
+   *
+   * A BHW reads their own BP Checking queue but cannot schedule or decline it,
+   * so their rows carry no controls — the same rule the API applies.
+   */
+  const canAct = canAssignAppointments(user?.role);
+
+  const [overview, setOverview] = useState<QueueOverview | null>(null);
+  const [overviewLoading, setOverviewLoading] = useState(true);
+  const [activeStatus, setActiveStatus] = useState<AppointmentStatus>("pending");
+  const [statusList, setStatusList] = useState<AppointmentRecord[]>([]);
+  const [listLoading, setListLoading] = useState(true);
+  const [listError, setListError] = useState<string | null>(null);
+  const [missionToolsOpen, setMissionToolsOpen] = useState(false);
+
+  /** Service key → approved display name, straight from the server catalogue. */
+  const serviceLabels = useMemo(
+    () => Object.fromEntries(categories.map((c) => [c.key, c.label])),
+    [categories]
+  );
+
+  /**
+   * What this role is responsible for, in their own words.
+   *
+   * Read from the catalogue the server sent rather than a local list, so the
+   * sentence can never name a service the API would not actually return.
+   */
+  const scopeDescription = useMemo(() => {
+    const names = (overview?.breakdown ?? []).map((row) => row.label);
+    if (!names.length) return "Appointments assigned to your services.";
+    return `Your services: ${names.join(" · ")}`;
+  }, [overview]);
+
+  const scopeEmptyMessage = useMemo(() => {
+    const names = (overview?.breakdown ?? []).map((row) => row.label);
+    if (!names.length) return "Nothing is assigned to your services yet.";
+    return `No ${names.join(" or ")} appointments to show.`;
+  }, [overview]);
+
+  const todayLabel = useMemo(
+    () => new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }),
+    []
+  );
+
+  const visibleAppointments = statusList;
+
   const selectedMission = useMemo(
     () => missions.find((m) => m._id === selectedMissionId) ?? null,
     [missions, selectedMissionId]
   );
 
   const refreshLists = useCallback(async () => {
-    setLoading(true);
     try {
       const [cats, ms, pend] = await Promise.all([
         fetchConsultationCategories(),
@@ -142,10 +221,7 @@ export default function MissionControlScreen() {
       setEnabledCatKeys((prev) => ({ ...nextEnabled, ...prev }));
       setCatDurations((prev) => ({ ...nextDurations, ...prev }));
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Failed to load";
-      Alert.alert("Error", msg);
-    } finally {
-      setLoading(false);
+      showAlert("Unable to Load", getApiErrorMessage(e, "Could not load mission data."));
     }
   }, []);
 
@@ -156,14 +232,62 @@ export default function MissionControlScreen() {
       const an = await fetchCategoryAnalytics(id);
       setAnalytics(an);
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Failed to load mission";
-      Alert.alert("Error", msg);
+      showAlert(
+        "Unable to Load",
+        getApiErrorMessage(e, "Could not load this mission schedule.")
+      );
     }
   }, []);
 
   useEffect(() => {
     void refreshLists();
   }, [refreshLists]);
+
+  /**
+   * The header figures, today's schedule and the breakdown.
+   *
+   * One request, all of it counted server-side against this role's own
+   * services — the client never sees another queue's records to filter out.
+   */
+  const loadOverview = useCallback(async () => {
+    setOverviewLoading(true);
+    try {
+      setOverview(await fetchQueueOverview());
+    } catch {
+      // The panels fall back to their empty states; the appointments list
+      // carries the visible error so the screen reports one problem, not three.
+      setOverview(null);
+    } finally {
+      setOverviewLoading(false);
+    }
+  }, []);
+
+  /** The table's rows for whichever tab is selected. */
+  const loadStatusList = useCallback(async (status: AppointmentStatus) => {
+    setListLoading(true);
+    setListError(null);
+    try {
+      setStatusList(await fetchAppointmentsByStatus(status));
+    } catch (e: unknown) {
+      setStatusList([]);
+      setListError(getApiErrorMessage(e, "The appointment list could not be loaded."));
+    } finally {
+      setListLoading(false);
+    }
+  }, []);
+
+  /** Re-reads everything the dashboard shows, after an appointment changes. */
+  const refreshDashboard = useCallback(async () => {
+    await Promise.all([loadOverview(), loadStatusList(activeStatus)]);
+  }, [loadOverview, loadStatusList, activeStatus]);
+
+  useEffect(() => {
+    void loadOverview();
+  }, [loadOverview]);
+
+  useEffect(() => {
+    void loadStatusList(activeStatus);
+  }, [activeStatus, loadStatusList]);
 
   useEffect(() => {
     if (selectedMissionId) {
@@ -186,7 +310,7 @@ export default function MissionControlScreen() {
 
   const loadSlotsForAssign = async () => {
     if (!selectedMissionId || !assignCategory) {
-      Alert.alert("Select mission", "Choose a mission schedule first, then a category.");
+      showAlert("Select mission", "Choose a mission schedule first, then a category.");
       return;
     }
     const cat = categories.find((c) => c.key === assignCategory);
@@ -219,8 +343,7 @@ export default function MissionControlScreen() {
         setAssignDuration(String(pack.durationMinutes));
       }
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Could not load slots";
-      Alert.alert("Slots", msg);
+      showAlert("Slots", getApiErrorMessage(e, "Could not load available time slots."));
     } finally {
       setAssignLoadingSlots(false);
     }
@@ -228,7 +351,7 @@ export default function MissionControlScreen() {
 
   const submitAssign = async () => {
     if (!assignTarget || !selectedMissionId || !assignSelectedSlot || !assignCategory) {
-      Alert.alert("Incomplete", "Choose category and time slot.");
+      showAlert("Incomplete", "Choose category and time slot.");
       return;
     }
     setSaving(true);
@@ -246,11 +369,14 @@ export default function MissionControlScreen() {
       }
       setAssignOpen(false);
       await refreshLists();
+      await refreshDashboard();
       await loadMissionDetail(selectedMissionId);
-      Alert.alert("Saved", assignMode === "assign" ? "Appointment confirmed." : "Appointment rescheduled.");
+      showAlert("Saved", assignMode === "assign" ? "Appointment confirmed." : "Appointment rescheduled.");
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Save failed";
-      Alert.alert("Error", msg);
+      showAlert(
+        "Could Not Save",
+        getApiErrorMessage(e, "The appointment could not be scheduled.")
+      );
     } finally {
       setSaving(false);
     }
@@ -264,7 +390,7 @@ export default function MissionControlScreen() {
         durationMinutes: catDurations[c.key] ?? (typeof c.durationMinutes === "number" ? c.durationMinutes : c.durationMinutesMin ?? 15),
       }));
     if (!catsPayload.length) {
-      Alert.alert("Categories", "Enable at least one category.");
+      showAlert("Categories", "Enable at least one category.");
       return;
     }
 
@@ -273,14 +399,14 @@ export default function MissionControlScreen() {
       return mDay === newDate;
     });
     if (hasDuplicateForDay) {
-      Alert.alert("Error", "A mission schedule already exists for this date.");
+      showAlert("Error", "A mission schedule already exists for this date.");
       return;
     }
 
     const sMin = hhmmToMinutes(startTime);
     const eMin = hhmmToMinutes(endTime);
     if (Number.isFinite(sMin) && Number.isFinite(eMin) && eMin <= sMin) {
-      Alert.alert("Invalid time range", "End time must be after start time.");
+      showAlert("Invalid time range", "End time must be after start time.");
       return;
     }
 
@@ -293,15 +419,18 @@ export default function MissionControlScreen() {
         categories: catsPayload,
       });
       await refreshLists();
+      await refreshDashboard();
       // Auto-select newly created schedule for a faster edit/assign workflow.
       if (created?._id) {
         setSelectedMissionId(created._id);
         await loadMissionDetail(created._id);
       }
-      Alert.alert("Created", "Mission schedule saved. You can assign patients from the queue.");
+      showAlert("Created", "Mission schedule saved. You can assign patients from the queue.");
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Create failed";
-      Alert.alert("Error", msg);
+      showAlert(
+        "Could Not Create",
+        getApiErrorMessage(e, "The mission schedule could not be created.")
+      );
     } finally {
       setSaving(false);
     }
@@ -345,14 +474,14 @@ export default function MissionControlScreen() {
       }));
 
     if (!catsPayload.length) {
-      Alert.alert("Categories", "Enable at least one category.");
+      showAlert("Categories", "Enable at least one category.");
       return;
     }
 
     const sMin = hhmmToMinutes(editStartTime);
     const eMin = hhmmToMinutes(editEndTime);
     if (Number.isFinite(sMin) && Number.isFinite(eMin) && eMin <= sMin) {
-      Alert.alert("Invalid time range", "End time must be after start time.");
+      showAlert("Invalid time range", "End time must be after start time.");
       return;
     }
 
@@ -362,7 +491,7 @@ export default function MissionControlScreen() {
       return mDay === editDate && m._id !== editMissionId;
     });
     if (hasDuplicateForDay) {
-      Alert.alert("Error", "A mission schedule already exists for this date.");
+      showAlert("Error", "A mission schedule already exists for this date.");
       return;
     }
 
@@ -376,19 +505,22 @@ export default function MissionControlScreen() {
       });
       setEditOpen(false);
       await refreshLists();
+      await refreshDashboard();
       setSelectedMissionId(editMissionId);
       await loadMissionDetail(editMissionId);
-      Alert.alert("Saved", "Mission schedule updated.");
+      showAlert("Saved", "Mission schedule updated.");
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Update failed";
-      Alert.alert("Error", msg);
+      showAlert(
+        "Could Not Update",
+        getApiErrorMessage(e, "The mission schedule could not be updated.")
+      );
     } finally {
       setSaving(false);
     }
   };
 
   const handleDeleteMission = async (missionId: string) => {
-    Alert.alert("Delete schedule", "This will move any booked appointments back to Pending.", [
+    showAlert("Delete schedule", "This will move any booked appointments back to Pending.", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",
@@ -398,6 +530,8 @@ export default function MissionControlScreen() {
           try {
             await deleteMissionSchedule(missionId);
             await refreshLists();
+            await refreshDashboard();
+      await refreshDashboard();
 
             if (selectedMissionId === missionId) {
               setSelectedMissionId(null);
@@ -406,10 +540,12 @@ export default function MissionControlScreen() {
             }
 
             setEditOpen(false);
-            Alert.alert("Deleted", "Mission schedule removed.");
+            showAlert("Deleted", "Mission schedule removed.");
           } catch (e: unknown) {
-            const msg = e instanceof Error ? e.message : "Delete failed";
-            Alert.alert("Error", msg);
+            showAlert(
+              "Could Not Delete",
+              getApiErrorMessage(e, "The mission schedule could not be deleted.")
+            );
           } finally {
             setSaving(false);
           }
@@ -419,7 +555,7 @@ export default function MissionControlScreen() {
   };
 
   const handleReject = (appt: AppointmentRecord) => {
-    Alert.alert("Decline appointment", "Reject this queued request?", [
+    showAlert("Decline appointment", "Reject this queued request?", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Decline",
@@ -428,9 +564,14 @@ export default function MissionControlScreen() {
           try {
             await rejectAppointment(appt._id, "Declined by medical staff");
             await refreshLists();
+            await refreshDashboard();
+      await refreshDashboard();
             if (selectedMissionId) await loadMissionDetail(selectedMissionId);
           } catch (e: unknown) {
-            Alert.alert("Error", e instanceof Error ? e.message : "Failed");
+            showAlert(
+              "Could Not Decline",
+              getApiErrorMessage(e, "The appointment could not be declined.")
+            );
           }
         },
       },
@@ -446,18 +587,135 @@ export default function MissionControlScreen() {
     });
   }, [missionDetail]);
 
-  if (loading && !missions.length) {
-    return (
-      <View className="flex-1 items-center justify-center py-20">
-        <ActivityIndicator size="large" color="#2D5BFF" />
-        <Text className="mt-3 text-slate-600">Loading mission data…</Text>
-      </View>
-    );
-  }
-
   return (
-    <ScrollView className="flex-1 bg-white" showsVerticalScrollIndicator={false}>
-      <View className="gap-6 pb-24">
+    <View className="flex-1" style={{ backgroundColor: palette.pageBg }}>
+      <ScrollView
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: isPhone ? 14 : 20, paddingBottom: 40, gap: 16 }}
+      >
+        <View>
+          <Text className="text-[22px] font-bold" style={{ color: palette.heading }}>
+            Appointment &amp; Queue Management
+          </Text>
+          <Text className="mt-1 text-[13px]" style={{ color: palette.muted }}>
+            {scopeDescription}
+          </Text>
+        </View>
+
+        <QueueStatCards overview={overview} loading={overviewLoading} wide={fourCards} />
+
+        {/* Two columns where there is room: the work on the left, the day and
+            the caseload on the right. Below that they stack in the same order. */}
+        <View className={`w-full gap-4 ${twoColumn ? "flex-row items-start" : "flex-col"}`}>
+          <View className="min-w-0" style={twoColumn ? { flex: 2 } : undefined}>
+            <AppointmentsPanel
+              appointments={visibleAppointments}
+              statusCounts={overview?.statusCounts ?? {}}
+              activeStatus={activeStatus}
+              onStatusChange={setActiveStatus}
+              serviceLabels={serviceLabels}
+              headerAction={
+                showAddMission ? (
+                  <Pressable
+                    onPress={() => setMissionToolsOpen(true)}
+                    accessibilityRole="button"
+                    accessibilityLabel="Add mission"
+                    className="h-10 flex-row items-center gap-2 px-4"
+                    style={{ borderRadius: 12, backgroundColor: palette.primary }}
+                  >
+                    <Feather name="plus" size={16} color="#FFFFFF" />
+                    <Text className="text-[13.5px] font-semibold text-white">Add Mission</Text>
+                  </Pressable>
+                ) : null
+              }
+              onApprove={(appt) => openAssign(appt, "assign")}
+              onMore={(appt) => openAssign(appt, appt.status === "pending" ? "assign" : "reassign")}
+              busyId={saving ? assignTarget?._id ?? null : null}
+              canAct={canAct}
+              loading={listLoading}
+              error={listError}
+              onRetry={() => void refreshLists()}
+              emptyMessage={scopeEmptyMessage}
+            asTable={asTable}
+            />
+          </View>
+
+          <View className="min-w-0 gap-4" style={twoColumn ? { flex: 1 } : undefined}>
+            <TodaySchedulePanel
+              schedule={overview?.schedule ?? []}
+              serviceLabels={serviceLabels}
+              loading={overviewLoading}
+              emptyMessage={scopeEmptyMessage}
+              dateLabel={todayLabel}
+            />
+            <ServiceBreakdownPanel rows={overview?.breakdown ?? []} loading={overviewLoading} />
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* The mission workspace, unchanged and intact — creating a schedule,
+          editing one, and assigning the priority queue into its slots. It moved
+          behind the Add Mission control rather than being rebuilt, so none of
+          the scheduling logic changed. Only roles that may manage a mission can
+          open it, and the API refuses the rest regardless. */}
+      <Modal
+        visible={missionToolsOpen}
+        transparent
+        animationType={isPhone ? "slide" : "fade"}
+        onRequestClose={() => setMissionToolsOpen(false)}
+        statusBarTranslucent
+      >
+        <View
+          className={`flex-1 ${isPhone ? "justify-end" : "items-center justify-center p-4"}`}
+          style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
+        >
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Close mission scheduling"
+            onPress={() => setMissionToolsOpen(false)}
+            style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+          />
+
+          <View
+            className="w-full overflow-hidden"
+            style={{
+              maxWidth: isPhone ? undefined : 640,
+              maxHeight: "92%",
+              borderTopLeftRadius: 24,
+              borderTopRightRadius: 24,
+              borderBottomLeftRadius: isPhone ? 0 : 24,
+              borderBottomRightRadius: isPhone ? 0 : 24,
+              backgroundColor: palette.panelBg,
+            }}
+          >
+            {isPhone ? (
+              <View className="items-center pb-1 pt-2.5">
+                <View style={{ width: 44, height: 4.5, borderRadius: 3, backgroundColor: palette.divider }} />
+              </View>
+            ) : null}
+
+            <View
+              className="flex-row items-center justify-between px-5 py-4"
+              style={{ borderBottomWidth: 1, borderBottomColor: palette.divider }}
+            >
+              <Text accessibilityRole="header" className="text-[17px] font-bold" style={{ color: palette.heading }}>
+                Mission Scheduling
+              </Text>
+              <Pressable
+                onPress={() => setMissionToolsOpen(false)}
+                accessibilityRole="button"
+                accessibilityLabel="Close mission scheduling"
+                hitSlop={12}
+                className="h-9 w-9 items-center justify-center rounded-full"
+                style={{ backgroundColor: palette.skeleton }}
+              >
+                <Feather name="x" size={17} color={palette.muted} />
+              </Pressable>
+            </View>
+
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 16, gap: 20 }}>
+
         <View>
           <Text className="text-2xl font-bold text-slate-900">Mission & queue</Text>
           <Text className="mt-1 text-sm text-slate-600">
@@ -689,7 +947,11 @@ export default function MissionControlScreen() {
         >
           <Text className="font-medium text-slate-700">Refresh data</Text>
         </Pressable>
-      </View>
+
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
 
       {pickerTarget ? (
         <DateTimePicker
@@ -957,6 +1219,6 @@ export default function MissionControlScreen() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 }

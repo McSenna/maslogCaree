@@ -1,12 +1,6 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+import MissionControlScreen from "@/screens/MissionControlScreen";
 
-export default class mission extends Component {
-  render() {
-    return (
-      <View>
-        <Text>mission</Text>
-      </View>
-    )
-  }
-}
+// The same screen the doctor uses. What differs is the data and the controls,
+// both decided by the signed-in role: a midwife sees only Prenatal and
+// Immunization, and no Add Mission control.
+export default MissionControlScreen;
