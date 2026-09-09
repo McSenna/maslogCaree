@@ -76,9 +76,6 @@ function TableRowSkeleton({ isLast }: { isLast: boolean }) {
         <Bar width="70%" />
         <Bar width="45%" height={9} />
       </View>
-      <View className="items-center px-3" style={{ width: USER_COLUMNS.actions }}>
-        <Bar width={20} height={20} />
-      </View>
     </View>
   );
 }

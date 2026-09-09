@@ -1,6 +1,7 @@
 import type { Feather } from "@expo/vector-icons";
 import { usePathname } from "expo-router";
 import { View } from "react-native";
+import SidebarBrand from "./sidebar/SidebarBrand";
 import SidebarBranding from "./sidebar/SidebarBranding";
 import SidebarDecorations from "./sidebar/SidebarDecorations";
 import SidebarHeader from "./sidebar/SidebarHeader";
@@ -37,10 +38,14 @@ function isCurrentRoute(pathname: string, href: string): boolean {
 /**
  * The desktop workspace sidebar.
  *
- * A calm rail rather than a dense control panel: four destinations, a lot of
- * quiet in the middle, and the barangay's own seal at the foot. The empty space
- * is the design — a health worker glances here to move between four places, and
- * anything else added to it would be read every time and needed almost never.
+ * A calm rail rather than a dense control panel: the barangay's identity at the
+ * head, the signed-in role's destinations beneath it, and a lot of quiet before
+ * the closing line. The empty space is the design — a health worker glances
+ * here to move between a handful of places, and anything else added to it would
+ * be read every time and needed almost never.
+ *
+ * Because the identity lives here, the header beside it is free to be a thin
+ * bar of controls rather than repeating the branding on every page.
  *
  * Part of the page rather than a card floating on it: square corners, one
  * hairline on the inside edge, no shadow.
@@ -68,13 +73,17 @@ const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
         className="flex-1"
         style={{
           paddingHorizontal: SIDEBAR_METRICS.paddingX,
-          paddingTop: 28,
+          paddingTop: 24,
           paddingBottom: 34,
         }}
       >
-        <SidebarHeader roleLabel={roleLabel} palette={palette} />
+        <SidebarBrand palette={palette} />
 
-        <View className="w-full" style={{ marginTop: 32, gap: SIDEBAR_METRICS.itemGap }}>
+        <View style={{ marginTop: 26 }}>
+          <SidebarHeader roleLabel={roleLabel} palette={palette} />
+        </View>
+
+        <View className="w-full" style={{ marginTop: 12, gap: SIDEBAR_METRICS.itemGap }}>
           {items.map((item) => (
             <SidebarNavItem
               key={item.href}

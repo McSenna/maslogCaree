@@ -9,7 +9,7 @@ export const adminNavItems: NavItem[] = [
 
 export const doctorNavItems: NavItem[] = [
   { label: "Dashboard", href: "/doctor/dashboard", icon: "layout" },
-  { label: "Mission & Queue", href: "/doctor/mission", icon: "calendar" },
+  { label: "Appointment & Queue", href: "/doctor/mission", icon: "calendar" },
   { label: "Patients", href: "/doctor/patients", icon: "users" },
   { label: "Inventory", href: "/doctor/inventory", icon: "box" },
 ];
@@ -48,7 +48,7 @@ export const adminBottomNavItems: NavItem[] = [
 
 export const doctorBottomNavItems: NavItem[] = [
   { label: "Dashboard", href: "/doctor/dashboard", icon: "layout" },
-  { label: "Mission", href: "/doctor/mission", icon: "calendar" },
+  { label: "Queue", href: "/doctor/mission", icon: "calendar" },
   { label: "Patients", href: "/doctor/patients", icon: "users" },
   { label: "Inventory", href: "/doctor/inventory", icon: "box" },
   { label: "Notifications", href: "/doctor/notifications", icon: "bell" },

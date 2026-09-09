@@ -1,5 +1,4 @@
 import { Text, View } from "react-native";
-import type { UserAction } from "@/components/dashboard/admin/UserActionsMenu";
 import type { AdminUser } from "@/services/userService";
 import Checkbox from "./Checkbox";
 import UserTableRow from "./UserTableRow";
@@ -23,7 +22,6 @@ type UsersTableProps = {
   checkedIds: ReadonlySet<string>;
   onToggleUser: (userId: string, next: boolean) => void;
   onToggleAll: (next: boolean) => void;
-  buildActions: (user: AdminUser) => UserAction[];
 };
 
 export default function UsersTable({
@@ -33,7 +31,6 @@ export default function UsersTable({
   checkedIds,
   onToggleUser,
   onToggleAll,
-  buildActions,
 }: UsersTableProps) {
   const palette = useUsersPalette();
 
@@ -69,12 +66,6 @@ export default function UsersTable({
             </Text>
           </View>
         ))}
-
-        <View className="justify-center px-3" style={{ width: USER_COLUMNS.actions }}>
-          <Text className="text-[12px] font-semibold" style={{ color: palette.muted }}>
-            Actions
-          </Text>
-        </View>
       </View>
 
       {users.map((user, index) => (
@@ -85,7 +76,6 @@ export default function UsersTable({
           isChecked={checkedIds.has(user._id)}
           onToggleCheck={(next) => onToggleUser(user._id, next)}
           onSelect={() => onSelectUser(user)}
-          actions={buildActions(user)}
           isLast={index === users.length - 1}
         />
       ))}

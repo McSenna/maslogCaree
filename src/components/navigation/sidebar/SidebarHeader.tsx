@@ -2,12 +2,11 @@ import { Text, View } from "react-native";
 import { SIDEBAR_METRICS, type SidebarPalette } from "./sidebarTheme";
 
 /**
- * Whose workspace this is.
+ * Whose workspace the navigation below belongs to.
  *
- * The role is the small line and "Workspace" is the large one, rather than the
- * reverse: a signed-in doctor already knows they are a doctor, so the role is
- * the qualifier and the workspace is the place. Left-aligned with the nav below
- * it, so the eye runs down a single edge.
+ * A section label rather than a title: the branding above already says what
+ * the system is, so this only has to say which role's menu follows. Comes from
+ * the signed-in user, never a constant — the same sidebar serves all five.
  */
 export default function SidebarHeader({
   roleLabel,
@@ -19,17 +18,11 @@ export default function SidebarHeader({
   return (
     <View style={{ paddingHorizontal: SIDEBAR_METRICS.itemPaddingX }}>
       <Text
+        accessibilityRole="header"
         className="text-[11.5px] font-semibold uppercase"
-        style={{ color: palette.eyebrow, letterSpacing: 2.2 }}
+        style={{ color: palette.eyebrow, letterSpacing: 2 }}
       >
         {roleLabel}
-      </Text>
-      <Text
-        accessibilityRole="header"
-        className="mt-1 text-[25px] font-bold"
-        style={{ color: palette.heading, letterSpacing: -0.4 }}
-      >
-        Workspace
       </Text>
     </View>
   );

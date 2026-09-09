@@ -78,11 +78,15 @@ const AppHeader = ({ onPressBrand }: AppHeaderProps) => {
           paddingVertical: isMobile ? 10 : 8,
         }}
       >
-        <HeaderBrand
-          compact={isMobile}
-          isDark={isDark}
-          onPress={onPressBrand}
-        />
+        {/* The desktop sidebar carries the barangay seal, the wordmark and the
+            motto at its head, so repeating them here would state the same
+            identity twice on every page. A phone has no rail, so there the
+            brand block is the only thing naming the app and it stays. */}
+        {isMobile ? (
+          <HeaderBrand compact={isMobile} isDark={isDark} onPress={onPressBrand} />
+        ) : (
+          <View style={{ flex: 1 }} />
+        )}
 
         <View
           style={{

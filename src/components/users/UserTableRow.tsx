@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import UserAvatar from "@/components/ui/UserAvatar";
-import UserActionsMenu, { type UserAction } from "@/components/dashboard/admin/UserActionsMenu";
 import type { AdminUser } from "@/services/userService";
 import { formatDateTime } from "@/utils/dateFormatter";
 import Checkbox from "./Checkbox";
@@ -17,7 +16,6 @@ type UserTableRowProps = {
   isChecked: boolean;
   onToggleCheck: (next: boolean) => void;
   onSelect: () => void;
-  actions: UserAction[];
   /** The last row drops its divider so it cannot double up with the card edge. */
   isLast: boolean;
 };
@@ -49,7 +47,6 @@ export default function UserTableRow({
   isChecked,
   onToggleCheck,
   onSelect,
-  actions,
   isLast,
 }: UserTableRowProps) {
   const palette = useUsersPalette();
@@ -169,14 +166,6 @@ export default function UserTableRow({
         )}
       </Cell>
 
-      {/* Actions */}
-      <Cell width={USER_COLUMNS.actions} align="center">
-        <UserActionsMenu
-          palette={palette}
-          actions={actions}
-          accessibilityLabel={`Actions for ${user.fullname}`}
-        />
-      </Cell>
     </Pressable>
   );
 }

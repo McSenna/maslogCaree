@@ -3,15 +3,16 @@ import Svg, { Path } from "react-native-svg";
 import type { SidebarPalette } from "./sidebarTheme";
 
 const WIDTH = 288;
-const HEIGHT = 130;
+const HEIGHT = 150;
 
 /**
- * The pale wave band along the very bottom of the sidebar.
+ * The pale mountain range along the foot of the rail.
  *
- * Kept at a whisper on purpose. The seal and its tagline sit above it, and the
- * moment the waves are legible in their own right they start competing with the
- * mark they are meant to settle. Decorative only, and hidden from assistive
- * technology.
+ * Mayon is what Legazpi looks up at, so it is the one piece of scenery that
+ * belongs in this barangay's sidebar rather than generic decoration. Kept at a
+ * whisper: the community line sits on top of it, and the moment the ridge is
+ * legible in its own right it competes with the words. Decorative only, and
+ * hidden from assistive technology.
  */
 export default function SidebarDecorations({ palette }: { palette: SidebarPalette }) {
   return (
@@ -33,21 +34,19 @@ export default function SidebarDecorations({ palette }: { palette: SidebarPalett
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         preserveAspectRatio="xMidYMax slice"
       >
+        {/* Far ridge, then the near peak in front of it. */}
         <Path
-          d={`M0 54c48-22 92 12 142 4s102-30 146-8v${HEIGHT}H0Z`}
+          d={`M0 108 L54 66 L96 96 L150 44 L214 100 L288 62 V${HEIGHT} H0 Z`}
           fill={palette.waveSoft}
-          opacity={0.85}
+          opacity={0.9}
         />
         <Path
-          d={`M0 82c56-18 90 12 140 6s98-24 148-6v${HEIGHT}H0Z`}
+          d={`M0 ${HEIGHT} L44 104 L92 128 L140 72 L196 122 L246 96 L288 124 V${HEIGHT} Z`}
           fill={palette.wave}
-          opacity={0.6}
+          opacity={0.55}
         />
-        <Path
-          d={`M0 104c60-14 96 10 148 4s92-16 140-2v${HEIGHT}H0Z`}
-          fill={palette.waveSoft}
-          opacity={0.95}
-        />
+        {/* The snow-line notch on the near peak, echoing Mayon's cone. */}
+        <Path d="M126 88 L140 72 L154 88 L140 82 Z" fill={palette.surface} opacity={0.75} />
       </Svg>
     </View>
   );

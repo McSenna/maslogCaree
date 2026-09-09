@@ -97,14 +97,16 @@ const RoleLayout = ({
 
       {/* ROOT LAYOUT */}
       <View className={`flex-1 w-full min-w-0 ${classes.screenBg}`}>
-        {/* ===================================================
-            HEADER — spans the full width above the sidebar
-        ==================================================== */}
-        <AppHeader />
+        {/* On a phone there is no rail, so the header is simply the top of the
+            screen — the existing mobile header, unchanged. */}
+        {isMobile ? <AppHeader /> : null}
 
         <View className="flex-1 flex-row w-full min-w-0">
           {/* =================================================
-              DESKTOP SIDEBAR
+              DESKTOP SIDEBAR — full height, beside the header
+              rather than beneath it, so the barangay identity
+              at its head reads as the identity of the whole
+              application and not of one column.
           ================================================== */}
           {!isMobile && (
             <SidebarNavigation
@@ -112,6 +114,10 @@ const RoleLayout = ({
               roleLabel={roleLabel}
             />
           )}
+
+          {/* The application area: header on top, page under it. */}
+          <View className="flex-1 min-w-0">
+            {!isMobile ? <AppHeader /> : null}
 
           <View
             key={layoutEpoch}
@@ -137,6 +143,7 @@ const RoleLayout = ({
             <View className="flex-1 w-full min-w-0">
               {children}
             </View>
+          </View>
           </View>
         </View>
       </View>

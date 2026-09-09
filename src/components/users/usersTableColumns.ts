@@ -15,15 +15,14 @@ export const USER_COLUMNS = {
   location: 1.7,
   status: 1.15,
   lastLogin: 1.4,
-  actions: 72,
 } as const;
 
 /**
  * Below this the columns cramp, so the table scrolls horizontally instead.
  *
- * Raised when Platform Access joined the table: nine columns need more room
- * than eight before the role, status and platform pills start truncating, and
- * a sideways scroll reads better than three clipped badges. Narrow desktops
- * scroll; a full-width 1920 layout never engages it.
+ * The role, status and platform pills start truncating before the text columns
+ * do, and a sideways scroll reads better than three clipped badges. Narrow
+ * desktops scroll; a full-width 1920 layout never engages it. Lowered by the
+ * width of the actions column when that column was removed.
  */
-export const TABLE_MIN_WIDTH = 1180;
+export const TABLE_MIN_WIDTH = 1108;

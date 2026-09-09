@@ -32,11 +32,6 @@ type HeaderProfileProps = {
   showDetails: boolean;
 };
 
-/** Roles that own a dedicated settings screen. */
-const SETTINGS_PATHS: Partial<Record<UserRole, string>> = {
-  admin: "/admin/settings",
-};
-
 const HeaderProfile = ({
   compact,
   isDark,
@@ -67,7 +62,6 @@ const HeaderProfile = ({
   const avatarSize = compact ? 32 : 40;
   const role = (user?.role ?? "resident") as UserRole;
   const roleLabel = formatRoleLabel(user?.role);
-  const settingsPath = SETTINGS_PATHS[role];
 
   const animateChevron = useCallback(
     (toValue: number) => {
@@ -102,35 +96,24 @@ const HeaderProfile = ({
     router.push(getProfilePath(role) as any);
   }, [role, router, useProfileModal]);
 
-  const menuItems = useMemo<ProfileMenuItem[]>(() => {
-    const items: ProfileMenuItem[] = [
+  const menuItems = useMemo<ProfileMenuItem[]>(
+    () => [
       {
         key: "profile",
         label: "My Profile",
         icon: "user",
         onPress: openProfile,
       },
-    ];
-
-    if (settingsPath) {
-      items.push({
-        key: "settings",
-        label: "Account Settings",
-        icon: "settings",
-        onPress: () => router.push(settingsPath as any),
-      });
-    }
-
-    items.push({
-      key: "logout",
-      label: "Logout",
-      icon: "log-out",
-      danger: true,
-      onPress: handleLogout,
-    });
-
-    return items;
-  }, [handleLogout, openProfile, router, settingsPath]);
+      {
+        key: "logout",
+        label: "Logout",
+        icon: "log-out",
+        danger: true,
+        onPress: handleLogout,
+      },
+    ],
+    [handleLogout, openProfile]
+  );
 
   const handlePress = useCallback(() => {
     if (!user) return;

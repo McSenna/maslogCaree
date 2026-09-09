@@ -23,14 +23,16 @@ export const SIDEBAR_METRICS = {
   itemPaddingX: 16,
   itemGap: 10,
   /**
-   * Deliberately smaller than the label's 16px. The icon is a landmark for a
-   * destination the reader already knows by name; sized level with the text it
-   * competes with the word instead of pointing at it.
+   * Sized to sit level with the label rather than under it.
+   *
+   * Feather's strokes are light, so a glyph nominally the same height as the
+   * text still reads smaller than it — the nav needs the icon a few points
+   * larger before the two look like one row.
    */
-  iconSize: 19,
-  iconGap: 15,
-  /** The official barangay seal, framed by the footer's decorations. */
-  sealSize: 88,
+  iconSize: 22,
+  iconGap: 14,
+  /** The official barangay seal, at the head of the rail. */
+  sealSize: 89,
 } as const;
 
 /**
@@ -67,8 +69,14 @@ export function useSidebarPalette() {
       decorSoft: isDark ? "#1E3A5F" : "#CBE5FF",
       wave: isDark ? "#16304D" : "#DCEBFB",
       waveSoft: isDark ? "#111F35" : "#EFF6FE",
-      /** "SERVING THE COMMUNITY" and the heart rule beneath it. */
-      community: isDark ? "#7C8DA6" : "#5B7196",
+      /** The community line at the foot of the rail. */
+      community: isDark ? "#94A3B8" : "#41618F",
+      /** The leaf beside it — the one green note in an otherwise blue rail. */
+      leaf: isDark ? "#4ADE80" : "#22A45D",
+      /** Wordmark and motto in the brand block. */
+      brandNavy: isDark ? "#E2E8F0" : "#102A56",
+      brandBlue: isDark ? "#60A5FA" : "#1683F8",
+      tagline: isDark ? "#64748B" : "#8A9BB4",
     };
   }, [resolvedTheme]);
 }

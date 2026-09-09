@@ -63,12 +63,16 @@ export default function LandingBackground({ variant }: LandingBackgroundProps) {
       <View style={[StyleSheet.absoluteFill, { backgroundColor: "#EFF6FD" }]} />
 
       {/* Layer 1: Barangay photograph, softened so it reads as atmosphere
-          rather than as a competing hero image. */}
+          rather than as a competing hero image.
+
+          Held well back: on a desktop the sign-in card and the feature column
+          sit directly on top of it across the full width, and every step the
+          photo gains in presence it takes out of their legibility. */}
       {backgroundSource && (
         <Image
           source={backgroundSource}
           resizeMode="cover"
-          style={[StyleSheet.absoluteFill, styles.fillImage, { opacity: 0.42 }]}
+          style={[StyleSheet.absoluteFill, styles.fillImage, { opacity: 0.26 }]}
           accessibilityIgnoresInvertColors
         />
       )}

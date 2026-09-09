@@ -12,7 +12,6 @@ import {
   View,
 } from "react-native";
 import { ROLE_LAYOUT_PADDING } from "@/components/layout/RoleLayout";
-import type { UserAction } from "@/components/dashboard/admin/UserActionsMenu";
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import Toast, { useToast } from "@/components/ui/Toast";
 import {
@@ -270,21 +269,6 @@ export default function AdminUsers() {
     }
   }, [pendingStatusUser, applyUserUpdate, showToast]);
 
-  const buildActions = useCallback(
-    (user: AdminUser): UserAction[] => {
-      const statusAction = STATUS_ACTIONS[user.status];
-      return [
-        { label: "View Details", icon: "eye", onPress: () => setDetailsUserId(user._id) },
-        {
-          label: statusAction.label,
-          icon: statusAction.destructive ? "user-x" : "user-check",
-          onPress: () => setPendingStatusUser(user),
-        },
-      ];
-    },
-    []
-  );
-
   const handleAddUser = useCallback(() => {
     // No admin-side create endpoint exists yet; accounts are created through
     // the public registration + OTP flow. Say so rather than opening a form
@@ -391,7 +375,6 @@ export default function AdminUsers() {
                 checkedIds={checkedIds}
                 onToggleUser={toggleUser}
                 onToggleAll={toggleAllOnPage}
-                buildActions={buildActions}
               />
             </View>
           </ScrollView>

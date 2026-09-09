@@ -16,13 +16,23 @@ type RoleDonutChartProps = {
 
 /**
  * Ring thickness as a share of the diameter, so the donut keeps the same
- * proportions at every size instead of looking thin as it grows. At 180px it
- * gives a ~90 outer / ~60 inner radius, which leaves the centre statistic room
- * to breathe.
+ * proportions at every size instead of looking thin as it grows.
+ *
+ * A thin band rather than a heavy one: the ring's job is to show proportion,
+ * and past a certain weight the extra ink adds nothing to that while crowding
+ * the total it surrounds.
  */
-const STROKE_RATIO = 1 / 6;
-/** Arc length removed from every segment so neighbours read as separate bands. */
-const GAP = 3;
+const STROKE_RATIO = 1 / 8;
+
+/**
+ * Arc length removed from every segment so neighbours read as separate bands.
+ *
+ * The gap is the card showing through, not a drawn divider — a stroke between
+ * segments would be a border around the marks, which reads as a third colour
+ * and thickens with the ring. Nothing is painted behind the segments, so this
+ * is literally the surface.
+ */
+const GAP = 4;
 
 export default function RoleDonutChart({
   palette,
@@ -83,14 +93,6 @@ export default function RoleDonutChart({
   const chart = (
     <View style={{ width: size, height: size }} className="items-center justify-center">
       <Svg width={size} height={size}>
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={palette.divider}
-          strokeWidth={stroke}
-          fill="none"
-        />
         {segments.map((segment) => (
           <Circle
             key={segment.role}
@@ -101,6 +103,9 @@ export default function RoleDonutChart({
             strokeWidth={stroke}
             strokeDasharray={segment.dash}
             strokeDashoffset={segment.offset}
+            // Butt, never round: a rounded cap adds half the stroke width to
+            // each end, which would make the smallest roles look materially
+            // larger than their share. The gap already separates them.
             strokeLinecap="butt"
             fill="none"
           />
@@ -120,14 +125,32 @@ export default function RoleDonutChart({
     </View>
   );
 
+  /**
+   * The legend carries identity, so the ring never has to.
+   *
+   * It is also the relief the palette's two lightest hues require: green and
+   * amber sit under 3:1 against the card, which is legible as a band but not as
+   * a lone signal, so every role is named in text beside its swatch rather than
+   * left to colour alone.
+   *
+   * Share leads and the headcount follows it. The question this panel answers is
+   * how the barangay's accounts divide, and at these totals a single account is
+   * already fourteen per cent — so the share is the shape and the count is the
+   * audit trail behind it.
+   */
   const legend = (
-    <View className={horizontal ? "min-w-0 flex-1 gap-3" : "w-full gap-3"}>
+    <View className={horizontal ? "min-w-0 flex-1 gap-2.5" : "w-full gap-2.5"}>
       {distribution.map((entry) => {
         const percent = total > 0 ? Math.round((entry.count / total) * 100) : 0;
         return (
-          <View key={entry.role} className="flex-row items-center gap-2">
+          <View
+            key={entry.role}
+            accessibilityRole="text"
+            accessibilityLabel={`${entry.label}: ${entry.count}, ${percent} percent`}
+            className="flex-row items-center gap-2.5"
+          >
             <View
-              className="h-2.5 w-2.5 rounded-full"
+              className="h-2 w-2 rounded-full"
               style={{ backgroundColor: ROLE_COLORS[entry.role] ?? palette.primary }}
             />
             <Text
@@ -137,11 +160,17 @@ export default function RoleDonutChart({
             >
               {entry.label}
             </Text>
-            <Text className="text-[13px] font-semibold" style={{ color: palette.heading }}>
-              {entry.count}{" "}
-              <Text className="text-[12px] font-medium" style={{ color: palette.muted }}>
-                ({percent}%)
-              </Text>
+            <Text
+              className="text-[13px] font-semibold tabular-nums"
+              style={{ color: palette.heading }}
+            >
+              {percent}%
+            </Text>
+            <Text
+              className="w-6 text-right text-[12px] font-medium tabular-nums"
+              style={{ color: palette.subtle }}
+            >
+              {entry.count}
             </Text>
           </View>
         );
@@ -150,7 +179,7 @@ export default function RoleDonutChart({
   );
 
   return (
-    <View className={horizontal ? "flex-row items-center gap-4" : "items-center gap-4"}>
+    <View className={horizontal ? "flex-row items-center gap-6" : "items-center gap-5"}>
       {chart}
       {legend}
     </View>
