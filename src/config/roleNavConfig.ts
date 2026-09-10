@@ -10,7 +10,6 @@ export const adminNavItems: NavItem[] = [
 export const doctorNavItems: NavItem[] = [
   { label: "Dashboard", href: "/doctor/dashboard", icon: "layout" },
   { label: "Appointment & Queue", href: "/doctor/mission", icon: "calendar" },
-  { label: "Patients", href: "/doctor/patients", icon: "users" },
   { label: "Inventory", href: "/doctor/inventory", icon: "box" },
 ];
 
@@ -25,9 +24,7 @@ export const bhwNavItems: NavItem[] = [
   { label: "Dashboard", href: "/bhw/dashboard", icon: "layout" },
   { label: "Appointments & Queue", href: "/bhw/mission", icon: "calendar" },
   { label: "Residents", href: "/bhw/residents", icon: "users" },
-  { label: "Community Visits", href: "/bhw/visits", icon: "map-pin" },
   { label: "Inventory", href: "/bhw/inventory", icon: "box" },
-  { label: "Reports", href: "/bhw/reports", icon: "bar-chart-2" },
 ];
 
 export const residentNavItems: NavItem[] = [
@@ -49,7 +46,6 @@ export const adminBottomNavItems: NavItem[] = [
 export const doctorBottomNavItems: NavItem[] = [
   { label: "Dashboard", href: "/doctor/dashboard", icon: "layout" },
   { label: "Queue", href: "/doctor/mission", icon: "calendar" },
-  { label: "Patients", href: "/doctor/patients", icon: "users" },
   { label: "Inventory", href: "/doctor/inventory", icon: "box" },
   { label: "Notifications", href: "/doctor/notifications", icon: "bell" },
   { label: "Profile", href: "/doctor/profile", icon: "user" },

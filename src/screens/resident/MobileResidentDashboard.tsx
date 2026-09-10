@@ -110,7 +110,6 @@ const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
         onServicePress={model.handlers.onService}
         stacked
       />
-
     </View>
   </ScrollView>
   );

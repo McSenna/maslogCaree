@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
-import AppointmentModal from "@/components/ui/AppointmentModal";
+import AppointmentModal from "@/features/appointments/components/AppointmentModal";
 import InfoCard from "@/components/ui/InfoCard";
 import { Skeleton, StatCardSkeleton } from "@/components/ui/Skeleton";
 import { PageSubtitle, PageTitle } from "@/components/ui/Typography";

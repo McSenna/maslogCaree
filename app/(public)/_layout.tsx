@@ -1,5 +1,4 @@
-import { usePathname } from "expo-router";
-import { Slot } from "expo-router";
+import { Slot, usePathname } from "expo-router";
 import MainLayout from "@/components/layout/MainLayout";
 
 /**

@@ -13,27 +13,40 @@ export const FOUR_CARD_WIDTH = 900;
 
 export const QUEUE_RADIUS = { panel: 16, card: 14, control: 12, pill: 999 } as const;
 
-/**
- * The four statuses this system actually stores.
- *
- * Deliberately the schema's own words rather than a friendlier set: the API
- * only ever returns these four, and inventing "Processing" or "Completed" tabs
- * would promise a workflow nothing writes to.
- */
+/** Every status the API stores. */
 export type AppointmentStatus = AppointmentRecord["status"];
 
-export const STATUS_ORDER: AppointmentStatus[] = [
-  "pending",
-  "confirmed",
-  "rescheduled",
-  "declined",
-];
+/**
+ * The tabs on the Appointments panel.
+ *
+ * Approved is deliberately absent. An approved appointment needs no management
+ * screen — it is scheduled, and the next thing that happens to it is being
+ * served — so it flows straight into the queue panel above instead of sitting
+ * in a tab waiting for somebody to look at it. What is left are the three
+ * standings a health worker actually goes looking for: what still needs a
+ * slot, what is finished, and what was turned down.
+ *
+ * `confirmed`, `rescheduled` and `processing` are still first-class statuses
+ * and still reachable — through the queue, which is where work on them happens.
+ */
+export const STATUS_ORDER: AppointmentStatus[] = ["pending", "completed", "declined"];
+
+/**
+ * The statuses that put an appointment in a provider's active queue.
+ *
+ * A mirror of the server's `QUEUE_ACTIVE_STATUSES`. Completing removes an
+ * appointment from this set, which is the whole mechanism by which a served
+ * patient leaves the queue.
+ */
+export const ACTIVE_QUEUE_STATUSES: AppointmentStatus[] = ["confirmed", "rescheduled", "processing"];
 
 export const STATUS_LABELS: Record<AppointmentStatus, string> = {
   pending: "Pending",
   confirmed: "Approved",
   rescheduled: "Rescheduled",
-  declined: "Declined",
+  processing: "In Progress",
+  completed: "Completed",
+  declined: "Cancelled",
 };
 
 export type StatTone = "blue" | "green" | "purple" | "amber";
@@ -102,6 +115,10 @@ export function useQueuePalette() {
         confirmed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },
         rescheduled: { bg: isDark ? "rgba(37,99,235,0.16)" : "#EAF2FF", fg: isDark ? "#93C5FD" : "#1D4ED8", dot: "#1F7AF8" },
         declined: { bg: isDark ? "rgba(239,68,68,0.14)" : "#FEF1F1", fg: isDark ? "#FCA5A5" : "#B91C1C", dot: "#EF4444" },
+        /** Being served now — the one status that is actively moving. */
+        processing: { bg: isDark ? "rgba(139,92,246,0.16)" : "#F1ECFF", fg: isDark ? "#C4B5FD" : "#6D28D9", dot: "#8B5CF6" },
+        /** Finished. A quiet success green, not a second call to action. */
+        completed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },
       } as Record<AppointmentStatus, { bg: string; fg: string; dot: string }>,
       skeleton: isDark ? "#1E293B" : "#EDF2F9",
     };

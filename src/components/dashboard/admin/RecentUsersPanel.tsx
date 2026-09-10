@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Text, View } from "react-native";
 import UserAvatar from "@/components/ui/UserAvatar";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
@@ -7,8 +6,6 @@ import DashboardRoleBadge from "./DashboardRoleBadge";
 import EmptyPanelState from "./EmptyPanelState";
 import PanelCard from "./PanelCard";
 import StatusDot from "./StatusDot";
-import UserActionsMenu from "./UserActionsMenu";
-import UserDetailModal from "./UserDetailModal";
 
 type RecentUsersPanelProps = {
   palette: AdminDashboardPalette;
@@ -24,6 +21,15 @@ type RecentUsersPanelProps = {
   fill?: boolean;
 };
 
+/**
+ * The five most recent sign-ups, at a glance.
+ *
+ * Read-only. There is no per-row action: everything that can be *done* to a
+ * user — viewing them in full, changing status, changing role — lives in User
+ * Management, which the panel header links to. A row menu here would be a
+ * second, thinner place to do the same things, and the one this panel offered
+ * only ever led back to User Management anyway.
+ */
 export default function RecentUsersPanel({
   palette,
   isDark,
@@ -32,8 +38,6 @@ export default function RecentUsersPanel({
   onViewAll,
   fill = false,
 }: RecentUsersPanelProps) {
-  const [selected, setSelected] = useState<DashboardUser | null>(null);
-
   return (
     <PanelCard
       palette={palette}
@@ -97,39 +101,11 @@ export default function RecentUsersPanel({
                     </View>
                   </>
                 ) : null}
-
-                <UserActionsMenu
-                  palette={palette}
-                  accessibilityLabel={`Actions for ${user.fullname}`}
-                  actions={[
-                    {
-                      label: "View user",
-                      icon: "eye",
-                      onPress: () => setSelected(user),
-                    },
-                    {
-                      label: "Open User Management",
-                      icon: "external-link",
-                      onPress: onViewAll,
-                    },
-                  ]}
-                />
               </View>
             </View>
           ))}
         </View>
       )}
-
-      <UserDetailModal
-        user={selected}
-        palette={palette}
-        isDark={isDark}
-        onClose={() => setSelected(null)}
-        onOpenUserManagement={() => {
-          setSelected(null);
-          onViewAll();
-        }}
-      />
     </PanelCard>
   );
 }

@@ -1,11 +1,14 @@
 import { Feather } from "@expo/vector-icons";
 import { useMemo, type ComponentProps } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import InfoCard from "@/components/ui/InfoCard";
 import { Skeleton, StatCardSkeleton } from "@/components/ui/Skeleton";
 import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
+import { useResidentMedicalRecords } from "@/hooks/useResidentMedicalRecords";
+import MedicalRecordDetails from "@/components/medicalRecord/MedicalRecordDetails";
+import type { MedicalRecord } from "@/services/medicalRecords";
 import { getAssignedStaffName, statusLabel } from "@/utils/appointmentDisplay";
 import { formatConsultationTypeLabel } from "@/utils/residentDashboard";
 
@@ -29,6 +32,8 @@ const STATUS_ICON: Record<string, IconName> = {
   confirmed: "check-circle",
   rescheduled: "rotate-ccw",
   declined: "x-circle",
+  processing: "activity",
+  completed: "check-circle",
 };
 
 const STATUS_TONE: Record<string, { bg: string; text: string; icon: string }> = {
@@ -36,6 +41,8 @@ const STATUS_TONE: Record<string, { bg: string; text: string; icon: string }> = 
   confirmed: { bg: "bg-teal-50", text: "text-teal-700", icon: "#0D9488" },
   rescheduled: { bg: "bg-violet-50", text: "text-violet-700", icon: "#7C3AED" },
   declined: { bg: "bg-rose-50", text: "text-rose-700", icon: "#E11D48" },
+  processing: { bg: "bg-violet-50", text: "text-violet-700", icon: "#7C3AED" },
+  completed: { bg: "bg-emerald-50", text: "text-emerald-700", icon: "#059669" },
   default: { bg: "bg-slate-100", text: "text-slate-700", icon: "#475569" },
 };
 
@@ -125,9 +132,85 @@ function RecordCard({ typeLabel, status, when, staff, description, declineReason
   );
 }
 
+/**
+ * One completed visit's record.
+ *
+ * Distinct from `RecordCard` below, which is an appointment. This is what came
+ * out of one — the thing a resident actually wants when they open this screen,
+ * so it leads. It shows what the visit was and who saw them; the findings are
+ * one tap away rather than on the card, because a clinical summary is not
+ * something to leave open on a phone in a waiting room.
+ */
+function MedicalRecordCard({
+  record,
+  onOpen,
+}: {
+  record: MedicalRecord;
+  onOpen: (record: MedicalRecord) => void;
+}) {
+  const provider = typeof record.provider === "object" ? record.provider?.fullname : undefined;
+  const when = record.completedAt
+    ? new Date(record.completedAt).toLocaleDateString(undefined, {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "—";
+
+  return (
+    <View
+      className="gap-3 rounded-2xl border border-slate-200 bg-white p-4"
+      accessible
+      accessibilityRole="summary"
+      accessibilityLabel={`${formatConsultationTypeLabel(record.serviceType)}, completed ${when}${provider ? `, ${provider}` : ""}`}
+    >
+      <View className="flex-row items-center gap-3">
+        <View className="h-10 w-10 items-center justify-center rounded-full bg-emerald-50">
+          <Feather name="file-text" size={16} color="#059669" />
+        </View>
+        <View className="flex-1 gap-0.5">
+          <Text className="text-sm font-semibold text-slate-900" numberOfLines={1}>
+            {formatConsultationTypeLabel(record.serviceType)}
+          </Text>
+          <Text className="text-xs text-slate-500" numberOfLines={1}>
+            {when}
+            {provider ? ` · ${provider}` : ""}
+          </Text>
+        </View>
+        <View className="rounded-full bg-emerald-50 px-2.5 py-1">
+          <Text className="text-xs font-semibold text-emerald-700">Completed</Text>
+        </View>
+      </View>
+
+      {record.followUpRequired ? (
+        <View className="flex-row items-center gap-2 rounded-xl bg-amber-50 px-3 py-2">
+          <Feather name="calendar" size={13} color="#D97706" />
+          <Text className="flex-1 text-xs font-medium text-amber-700">
+            Follow-up
+            {record.followUpDate
+              ? ` on ${new Date(record.followUpDate).toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}`
+              : " to be arranged"}
+          </Text>
+        </View>
+      ) : null}
+
+      <Pressable
+        onPress={() => onOpen(record)}
+        accessibilityRole="button"
+        accessibilityLabel={`View the medical record for ${formatConsultationTypeLabel(record.serviceType)} on ${when}`}
+        className="h-10 flex-row items-center justify-center gap-2 rounded-xl border border-slate-200"
+      >
+        <Feather name="eye" size={14} color="#2D5BFF" />
+        <Text className="text-sm font-semibold text-blue-600">View Medical Record</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 export default function ResidentRecords() {
   const { classes } = useTheme();
   const { appointments, loading, error } = useResidentAppointments();
+  const medical = useResidentMedicalRecords();
 
   const sorted = useMemo(() => {
     return [...appointments].sort((a, b) => {
@@ -140,19 +223,39 @@ export default function ResidentRecords() {
   const stats = useMemo(() => {
     const total = appointments.length;
     const pending = appointments.filter((a) => a.status === "pending").length;
-    const confirmed = appointments.filter((a) => a.status === "confirmed").length;
-    return { total, pending, confirmed };
+    // Completed is the figure worth showing beside the total now that a
+    // completed visit produces something to read. Approved is a step on the
+    // way, and the timeline below already shows which are still to come.
+    const completed = appointments.filter((a) => a.status === "completed").length;
+    return { total, pending, completed };
   }, [appointments]);
 
   return (
+    <>
     <ScrollView className={`flex-1 ${classes.scrollBg}`} showsVerticalScrollIndicator={false}>
       <View className="gap-6 pb-8">
         <View className="gap-1">
           <PageTitle>Medical records</PageTitle>
           <PageSubtitle>
-            Your care timeline from MaslogCare — each appointment request and visit appears here.
+            Your care history from MaslogCare — what your health worker recorded, and every appointment you
+            have booked.
           </PageSubtitle>
         </View>
+
+        {/* The clinical history leads: these are the visits that produced
+            something to read. Loading is quiet — the appointment timeline
+            below carries the screen's own loading and error states, and two
+            spinners for one page would say less, not more. */}
+        {medical.records.length ? (
+          <View className="gap-3">
+            <Text className="text-xs font-bold uppercase tracking-wide text-slate-500">
+              Medical records
+            </Text>
+            {medical.records.map((record) => (
+              <MedicalRecordCard key={record._id} record={record} onOpen={(r) => void medical.openRecord(r)} />
+            ))}
+          </View>
+        ) : null}
 
         {loading ? (
           <View className="gap-3">
@@ -177,10 +280,13 @@ export default function ResidentRecords() {
             <View className="flex-row gap-3">
               <StatCard label="Total" value={stats.total} icon="calendar" tone="blue" />
               <StatCard label="Pending" value={stats.pending} icon="clock" tone="amber" />
-              <StatCard label="Confirmed" value={stats.confirmed} icon="check-circle" tone="teal" />
+              <StatCard label="Completed" value={stats.completed} icon="check-circle" tone="teal" />
             </View>
 
             <View className="gap-3">
+              <Text className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                Appointment history
+              </Text>
               {sorted.map((appt) => {
                 const typeLabel = formatConsultationTypeLabel(appt.consultationType);
                 const staff = getAssignedStaffName(appt.assignedBy);
@@ -201,5 +307,17 @@ export default function ResidentRecords() {
         )}
       </View>
     </ScrollView>
+
+    {/* Read-only, and with the health worker's own notes withheld — the
+        server already leaves that column out of a resident's endpoint, so
+        this is the second of two locks rather than the only one. */}
+    <MedicalRecordDetails
+      visible={Boolean(medical.viewing)}
+      record={medical.viewing?.record ?? null}
+      form={medical.viewing?.form ?? null}
+      onClose={medical.closeRecord}
+      showProviderNotes={false}
+    />
+    </>
   );
 }

@@ -1,4 +1,4 @@
-import InventoryScreen from "@/screens/InventoryScreen";
+import InventoryScreen from "@/features/inventory/screens/InventoryScreen";
 
 /**
  * Inventory Management.

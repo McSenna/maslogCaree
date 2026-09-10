@@ -1,6 +1,8 @@
-import MissionControlScreen from "@/screens/MissionControlScreen";
+import BhwQueueScreen from "@/features/bhwQueue/screens/BhwQueueScreen";
 
-// The same screen the doctor uses, scoped by the signed-in role: a BHW sees
-// only BP Checking, with no Add Mission control and no row actions, since the
-// API does not let them schedule or decline.
-export default MissionControlScreen;
+// The BHW's own queue, not the shared mission screen. That one opens by
+// reading `GET /mission-schedule`, which the API restricts to doctor, admin
+// and midwife, so a BHW was met with a 403 alert before the page had drawn
+// anything. This screen shows BP Checking — the one service routed to a BHW —
+// and asks only for endpoints their role may call.
+export default BhwQueueScreen;

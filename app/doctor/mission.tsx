@@ -1,3 +1,3 @@
-import MissionControlScreen from "@/screens/MissionControlScreen";
+import MissionControlScreen from "@/features/missionControl/screens/MissionControlScreen";
 
 export default MissionControlScreen;

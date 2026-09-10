@@ -72,7 +72,14 @@ export type AppointmentRecord = {
   additionalNotes?: string;
   /** Who the resident asked for — a preference, not the assignment. */
   preferredProvider?: { _id?: string; fullname?: string; role?: string } | null;
-  status: "pending" | "confirmed" | "declined" | "rescheduled";
+  /**
+   * Where the appointment stands.
+   *
+   * `confirmed` and `rescheduled` are both "Approved" — the server's own
+   * vocabulary predates the completion flow and the UI has always displayed
+   * them that way. `processing` is being served now; `declined` is cancelled.
+   */
+  status: "pending" | "confirmed" | "declined" | "rescheduled" | "processing" | "completed";
   isUrgent?: boolean;
   ageTier?: number;
   prioritySortKey?: number;
@@ -96,6 +103,20 @@ export type AppointmentRecord = {
   slotEnd?: string | null;
   declineReason?: string;
   assignedBy?: { _id?: string; fullname?: string; role?: string } | null;
+
+  /** First scheduled at. Written once and never overwritten by a reschedule. */
+  approvedAt?: string | null;
+  processingAt?: string | null;
+  completedAt?: string | null;
+  completedBy?: { _id?: string; fullname?: string; role?: string } | null;
+  /** The record filed at completion. Present exactly when status is completed. */
+  medicalRecord?: string | null;
+  statusHistory?: {
+    status: AppointmentRecord["status"];
+    timestamp: string;
+    changedBy?: { _id?: string; fullname?: string } | string | null;
+    note?: string;
+  }[];
 };
 
 export type MissionScheduleRecord = {
@@ -157,10 +178,17 @@ export async function fetchMyAppointments(): Promise<AppointmentRecord[]> {
  * One call rather than three: the server counts all of it in the database, so
  * asking separately would be three round trips for numbers that must agree
  * with each other anyway.
+ *
+ * `categoryKey` narrows the figures to one service. It is intersected server-
+ * side with the signed-in role's own scope, so it can only ever subtract — a
+ * screen naming a service it does not own gets nothing, never another queue.
  */
-export async function fetchQueueOverview(): Promise<QueueOverview> {
+export async function fetchQueueOverview(
+  options?: { categoryKey?: string }
+): Promise<QueueOverview> {
   const { data } = await api.get<{ success: boolean } & QueueOverview>(
-    "/appointments/overview"
+    "/appointments/overview",
+    { params: options?.categoryKey ? { categoryKey: options.categoryKey } : undefined }
   );
   return {
     queueRole: data.queueRole,
@@ -177,13 +205,22 @@ export async function fetchQueueOverview(): Promise<QueueOverview> {
  * The server scopes the result to the signed-in role's own services, so this
  * never has to filter by service on the client — and could not, since records
  * outside that scope are never sent.
+ *
+ * `categoryKey` narrows within that scope, for a screen that covers one
+ * service and wants to say so rather than rely on its role happening to own
+ * exactly one. It cannot widen the result.
  */
 export async function fetchAppointmentsByStatus(
-  status: AppointmentRecord["status"]
+  status: AppointmentRecord["status"],
+  options?: { categoryKey?: string }
 ): Promise<AppointmentRecord[]> {
   const { data } = await api.get<{ success: boolean; appointments: AppointmentRecord[] }>(
     "/appointments",
-    { params: { status } }
+    {
+      params: options?.categoryKey
+        ? { status, categoryKey: options.categoryKey }
+        : { status },
+    }
   );
   return data.appointments ?? [];
 }

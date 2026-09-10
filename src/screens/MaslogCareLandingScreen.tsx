@@ -13,15 +13,14 @@ import { BREAKPOINTS } from "@/constants/breakpoints";
 import {
   desktopWaveHeight,
   WAVE_HEIGHT_MOBILE,
+  default as WaveDecoration,
 } from "@/components/landing/WaveDecoration";
-import { LANDING_COLORS } from "@/config/landingAssets";
 
 import LandingBackground from "@/components/landing/LandingBackground";
-import WaveDecoration from "@/components/landing/WaveDecoration";
 import MaslogCareBrand from "@/components/landing/MaslogCareBrand";
 import DesktopInfoPanel from "@/components/landing/DesktopInfoPanel";
-import AuthCard from "@/components/landing/AuthCard";
-import RegistrationModal from "@/components/ui/RegistrationModal";
+import AuthCard from "@/features/auth/components/AuthCard";
+import RegistrationModal from "@/features/auth/components/RegistrationModal";
 
 /**
  * Full-screen landing & login page for MaslogCare.

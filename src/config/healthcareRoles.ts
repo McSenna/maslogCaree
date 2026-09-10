@@ -31,3 +31,14 @@ const APPOINTMENT_ACTOR_ROLES: readonly string[] = ["doctor", "admin", "midwife"
 export const canAssignAppointments = (
   role: UserRole | string | null | undefined
 ): boolean => APPOINTMENT_ACTOR_ROLES.includes(String(role ?? "").trim().toLowerCase());
+
+/**
+ * The one service a BHW's queue covers.
+ *
+ * BP Checking is the only entry in the server catalogue whose `queueRole` is
+ * `bhw`, so this is a mirror of that fact, not a second decision. The BHW queue
+ * screen passes it as `?categoryKey=` to say plainly what it is showing; the
+ * server intersects it with the signed-in role's own services, so naming a key
+ * here can only ever narrow the result, never reach another queue's records.
+ */
+export const BHW_QUEUE_SERVICE_KEY = "bp_checking";

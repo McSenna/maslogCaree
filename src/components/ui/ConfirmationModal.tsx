@@ -18,6 +18,26 @@ type ConfirmationModalProps = {
  * The app's confirmation dialog, used instead of Alert.alert so destructive
  * actions read as part of MaslogCare rather than an OS popup, and so the
  * confirm button can show its own pending state.
+ *
+ * ## Why this unmounts instead of staying mounted and hidden
+ *
+ * On web, every React Native modal is portalled into its own `<div>` appended
+ * to `document.body`, and react-native-web gives all of them the same
+ * `z-index: 9999`. Equal z-index means the last node in the document wins, and
+ * a portal is appended when its component *first renders* — not when it
+ * becomes visible.
+ *
+ * That is a trap for a confirmation dialog. The modals it confirms for —
+ * Release Stock, Add Stock, User Details — all bail out with `if (!item)
+ * return null` until something is selected, so their portals are appended
+ * later than a confirmation that mounted with the screen. The dialog then
+ * opens *underneath* the modal that asked for it: present, focus-trapping, and
+ * completely invisible.
+ *
+ * Returning null while closed means this mounts at the moment it opens, which
+ * is always after whatever opened it, so it is always on top. It costs the
+ * fade-out on close — the component is gone before the animation can run — and
+ * a dialog that cannot be seen is the worse of the two.
  */
 export default function ConfirmationModal({
   visible,
@@ -33,6 +53,11 @@ export default function ConfirmationModal({
   const { classes, resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const confirmBg = destructive ? "#EF4444" : "#2563EB";
+
+  // See the note above: mounting only while open is what keeps this above the
+  // modal that opened it. `visible` is still passed through so the entry
+  // animation and the native back-button handling work unchanged.
+  if (!visible) return null;
 
   return (
     <Modal
