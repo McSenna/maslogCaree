@@ -11,14 +11,14 @@ type SectionProps = {
   className?: string;
 };
 
-export default function Section({
+const Section = ({
   eyebrow,
   title,
   subtitle,
   right,
   children,
   className = "",
-}: SectionProps) {
+}: SectionProps) => {
   const { classes } = useTheme();
 
   return (
@@ -38,4 +38,6 @@ export default function Section({
       {children}
     </View>
   );
-}
+};
+
+export default Section;

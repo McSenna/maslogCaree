@@ -1,25 +1,15 @@
 import type { Feather } from "@expo/vector-icons";
 
-/** One community health event. */
 export type Announcement = {
   title: string;
   date: string;
   description: string;
   icon: keyof typeof Feather.glyphMap;
-  /** The accent this event is drawn in. */
   color: string;
-  /** The soft fill behind its icon and tag. */
   bg: string;
   tag: string;
 };
 
-/**
- * The published health announcements.
- *
- * Static for now — there is no announcements endpoint yet, and the barangay
- * publishes these on a fixed schedule. Kept as data rather than markup so the
- * page needs no change when it moves behind an API.
- */
 export const ANNOUNCEMENTS: Announcement[] = [
   {
     title: "Free Medical Checkup",

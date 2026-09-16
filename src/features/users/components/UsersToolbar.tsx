@@ -5,8 +5,7 @@ type UsersToolbarProps = {
   controller: UserManagementController;
 };
 
-/** Search, role, status and sort — the same controls in both layouts. */
-export default function UsersToolbar({ controller }: UsersToolbarProps) {
+const UsersToolbar = ({ controller }: UsersToolbarProps) => {
   const { filters } = controller;
 
   return (
@@ -24,4 +23,6 @@ export default function UsersToolbar({ controller }: UsersToolbarProps) {
       resultCount={filters.filteredUsers.length}
     />
   );
-}
+};
+
+export default UsersToolbar;

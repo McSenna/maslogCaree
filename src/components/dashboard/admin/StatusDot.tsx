@@ -6,8 +6,7 @@ type StatusDotProps = {
   palette: AdminDashboardPalette;
 };
 
-/** Account state comes straight from the stored `verified` flag. */
-export default function StatusDot({ active, palette }: StatusDotProps) {
+const StatusDot = ({ active, palette }: StatusDotProps) => {
   const color = active ? palette.statusActive : palette.statusInactive;
 
   return (
@@ -18,4 +17,6 @@ export default function StatusDot({ active, palette }: StatusDotProps) {
       </Text>
     </View>
   );
-}
+};
+
+export default StatusDot;

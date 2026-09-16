@@ -8,25 +8,17 @@ type SearchFieldProps = {
   value: string;
   onChangeText: (value: string) => void;
   placeholder: string;
-  /** Announced to screen readers — the placeholder is not a label. */
   accessibilityLabel: string;
-  /** `minWidth` lets a wrapping toolbar break the row instead of crushing the input. */
   style?: { flex?: number; width?: `${number}%`; minWidth?: number };
 };
 
-/**
- * The admin toolbar search input.
- *
- * Shared by User Management and System Logs so the two toolbars cannot drift:
- * one height, one radius, one icon size, one focus treatment.
- */
-export default function SearchField({
+const SearchField = ({
   value,
   onChangeText,
   placeholder,
   accessibilityLabel,
   style,
-}: SearchFieldProps) {
+}: SearchFieldProps) => {
   const palette = useAdminSurfacePalette();
   const [focused, setFocused] = useState(false);
 
@@ -37,9 +29,6 @@ export default function SearchField({
         height: CONTROL_HEIGHT,
         borderRadius: RADIUS.control,
         backgroundColor: palette.cardBg,
-        // The focus border is the only affordance a text field gets here — the
-        // browser outline is suppressed below, so removing this would leave
-        // keyboard users with no focus indication at all.
         borderColor: focused ? palette.primary : palette.cardBorder,
         ...style,
       }}
@@ -61,4 +50,6 @@ export default function SearchField({
       />
     </View>
   );
-}
+};
+
+export default SearchField;

@@ -3,14 +3,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { LOG_COLUMNS } from "./logsTableColumns";
 import { useSystemLogsPalette } from "./systemLogsTheme";
 
-/**
- * Placeholder for the desktop logs table.
- *
- * Bare, and built on the same column weights and row height as LogsTable, so it
- * occupies exactly the space the real table will and the card it sits in does
- * not resize when the data lands.
- */
-export function LogsTableSkeleton({ rows = 8 }: { rows?: number }) {
+export const LogsTableSkeleton = ({ rows = 8 }: { rows?: number }) => {
   const palette = useSystemLogsPalette();
 
   const columns = [
@@ -62,9 +55,9 @@ export function LogsTableSkeleton({ rows = 8 }: { rows?: number }) {
       ))}
     </View>
   );
-}
+};
 
-export function MobileLogCardSkeleton({ count = 5 }: { count?: number }) {
+export const MobileLogCardSkeleton = ({ count = 5 }: { count?: number }) => {
   const palette = useSystemLogsPalette();
 
   return (
@@ -85,4 +78,4 @@ export function MobileLogCardSkeleton({ count = 5 }: { count?: number }) {
       ))}
     </View>
   );
-}
+};

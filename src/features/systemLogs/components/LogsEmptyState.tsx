@@ -4,12 +4,10 @@ import { useSystemLogsPalette } from "./systemLogsTheme";
 
 type LogsEmptyStateProps = {
   hasFilters: boolean;
-  /** True inside the table card, which already draws the border. */
   bare?: boolean;
 };
 
-/** Nothing to show: either the filters excluded everything, or there are no logs. */
-export default function LogsEmptyState({ hasFilters, bare = false }: LogsEmptyStateProps) {
+const LogsEmptyState = ({ hasFilters, bare = false }: LogsEmptyStateProps) => {
   const palette = useSystemLogsPalette();
 
   return (
@@ -35,4 +33,6 @@ export default function LogsEmptyState({ hasFilters, bare = false }: LogsEmptySt
       </View>
     </View>
   );
-}
+};
+
+export default LogsEmptyState;

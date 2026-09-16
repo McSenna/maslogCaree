@@ -5,12 +5,10 @@ import { useSystemLogsPalette } from "./systemLogsTheme";
 type LogsErrorStateProps = {
   message: string;
   onRetry: () => void;
-  /** True inside the table card, which already draws the border. */
   bare?: boolean;
 };
 
-/** The audit trail could not be read, with the one thing that resolves it. */
-export default function LogsErrorState({ message, onRetry, bare = false }: LogsErrorStateProps) {
+const LogsErrorState = ({ message, onRetry, bare = false }: LogsErrorStateProps) => {
   const palette = useSystemLogsPalette();
   const errorTone = palette.severity.error;
 
@@ -44,4 +42,6 @@ export default function LogsErrorState({ message, onRetry, bare = false }: LogsE
       </Pressable>
     </View>
   );
-}
+};
+
+export default LogsErrorState;

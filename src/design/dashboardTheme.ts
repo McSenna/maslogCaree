@@ -31,7 +31,7 @@ export type DashboardThemeClasses = {
   toolbarIcon: string;
 };
 
-export function getDashboardThemeClasses(theme: StoredTheme): DashboardThemeClasses {
+export const getDashboardThemeClasses = (theme: StoredTheme): DashboardThemeClasses => {
   const dark: DashboardThemeClasses = {
     screenBg: "bg-slate-950",
     scrollBg: "bg-slate-950",
@@ -97,7 +97,7 @@ export function getDashboardThemeClasses(theme: StoredTheme): DashboardThemeClas
   };
 
   return theme === "dark" ? dark : light;
-}
+};
 
 export const chartColors = {
   primary: "#38BDF8",

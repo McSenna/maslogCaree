@@ -9,21 +9,14 @@ type InventoryEmptyStateProps = {
   onAddItem: () => void;
 };
 
-/**
- * Why the list is empty, and what to do about it.
- *
- * Three different situations that all render as one block: the request failed,
- * the filters excluded everything, or there is genuinely nothing yet. Each
- * offers the action that actually resolves it.
- */
-export default function InventoryEmptyState({
+const InventoryEmptyState = ({
   error,
   hasActiveFilters,
   canCreate,
   onRetry,
   onClearFilters,
   onAddItem,
-}: InventoryEmptyStateProps) {
+}: InventoryEmptyStateProps) => {
   if (error) {
     return (
       <InventoryStateBlock
@@ -57,4 +50,6 @@ export default function InventoryEmptyState({
       action={canCreate ? { label: "Add Item", onPress: onAddItem } : undefined}
     />
   );
-}
+};
+
+export default InventoryEmptyState;

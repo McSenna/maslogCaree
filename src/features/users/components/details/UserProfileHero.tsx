@@ -9,14 +9,7 @@ import RoleBadge from "../RoleBadge";
 import UserStatusBadge from "../UserStatusBadge";
 import { DETAIL_RADIUS, HERO_TAGLINE, useUserDetailsPalette } from "./detailsTheme";
 
-/**
- * The healthcare motif behind the hero: a pale hill line and a faint heart.
- *
- * Kept at a whisper — the name, badges and branding all sit on top of it, and
- * the moment the artwork competes with them the card stops being a header and
- * starts being a picture.
- */
-function HeroDecor({ tint, soft }: { tint: string; soft: string }) {
+const HeroDecor = ({ tint, soft }: { tint: string; soft: string }) => {
   return (
     <View
       accessibilityElementsHidden
@@ -35,22 +28,14 @@ function HeroDecor({ tint, soft }: { tint: string; soft: string }) {
       </Svg>
     </View>
   );
-}
+};
 
 type UserProfileHeroProps = {
   user: AdminUser;
-  /** Below this the hero stacks: branding drops under the identity block. */
   compact: boolean;
 };
 
-/**
- * Who this account belongs to, answered before anything else on the dialog.
- *
- * Everything an administrator needs in the first two seconds lives here —
- * face, name, role, standing and which clients the account can sign in from —
- * so the cards underneath are detail rather than discovery.
- */
-export default function UserProfileHero({ user, compact }: UserProfileHeroProps) {
+const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
   const palette = useUserDetailsPalette();
   const avatarSize = compact ? 96 : 120;
   const isActive = user.status === "active";
@@ -72,7 +57,6 @@ export default function UserProfileHero({ user, compact }: UserProfileHeroProps)
       <View
         className={`${compact ? "flex-col items-center gap-5" : "flex-row items-center"} p-6`}
       >
-        {/* Identity */}
         <View
           className={`${compact ? "flex-col items-center gap-4" : "min-w-0 flex-1 flex-row items-center gap-5"}`}
         >
@@ -98,8 +82,6 @@ export default function UserProfileHero({ user, compact }: UserProfileHeroProps)
               />
             </View>
 
-            {/* Standing, repeated as a dot on the portrait itself — the badge
-                below carries the wording, this only makes it glanceable. */}
             {isActive ? (
               <View
                 accessibilityElementsHidden
@@ -145,7 +127,6 @@ export default function UserProfileHero({ user, compact }: UserProfileHeroProps)
           </View>
         </View>
 
-        {/* Branding — present, never louder than the person it sits beside. */}
         <View className={`flex-row items-center gap-2.5 ${compact ? "" : "pl-6"}`}>
           <MaslogCareLogo size={44} color={palette.isDark ? "#7DB8FF" : "#8FC4F5"} />
           <View>
@@ -161,4 +142,6 @@ export default function UserProfileHero({ user, compact }: UserProfileHeroProps)
 
     </LinearGradient>
   );
-}
+};
+
+export default UserProfileHero;

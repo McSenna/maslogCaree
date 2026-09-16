@@ -16,11 +16,10 @@ type InventoryMobileLayoutProps = {
   emptyState: ReactNode;
 };
 
-/** Phone: a card list with the heading, metrics and toolbar riding above it. */
-export default function InventoryMobileLayout({
+const InventoryMobileLayout = ({
   controller,
   emptyState,
-}: InventoryMobileLayoutProps) {
+}: InventoryMobileLayoutProps) => {
   const palette = useInventoryPalette();
   const { query, data, selection, mutations, dense } = controller;
 
@@ -86,9 +85,6 @@ export default function InventoryMobileLayout({
 
   const listContentStyle = { ...controller.contentPadding, flexGrow: 1 };
 
-  // react-native-web has no virtualization to gain here — the list is already
-  // capped at one page — and a FlatList there interferes with page scrolling,
-  // so the same cards render inside a ScrollView on web.
   if (Platform.OS === "web") {
     return (
       <ScrollView
@@ -138,4 +134,6 @@ export default function InventoryMobileLayout({
       )}
     />
   );
-}
+};
+
+export default InventoryMobileLayout;

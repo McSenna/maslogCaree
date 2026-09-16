@@ -7,19 +7,10 @@ import { CATEGORY_ICONS, useInventoryPalette } from "./inventoryTheme";
 
 type InventoryItemSummaryProps = {
   item: InventoryItem;
-  /** The sheet gives the name more room than the desktop panel's narrow column. */
   size?: "sm" | "md";
 };
 
-/**
- * The identity block at the top of Item Details: icon, name, category, status
- * and the dosage/packaging line.
- *
- * Both status badges are shown where they apply — an item can be low on stock
- * and close to expiry at once, and the summary is where there is room to say
- * so, unlike the table's single Status column.
- */
-export default function InventoryItemSummary({ item, size = "md" }: InventoryItemSummaryProps) {
+const InventoryItemSummary = ({ item, size = "md" }: InventoryItemSummaryProps) => {
   const palette = useInventoryPalette();
   const tone = palette.categories[item.category] ?? palette.categories.other;
   const badges = resolveStatusBadges(item);
@@ -65,4 +56,6 @@ export default function InventoryItemSummary({ item, size = "md" }: InventoryIte
       </View>
     </View>
   );
-}
+};
+
+export default InventoryItemSummary;

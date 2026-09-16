@@ -1,3 +1,4 @@
+import { Feather } from "@expo/vector-icons";
 import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
@@ -5,40 +6,28 @@ import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 type PanelCardProps = {
   palette: AdminDashboardPalette;
   title: string;
-  /** Renders the "View All" affordance when provided. */
+  icon?: keyof typeof Feather.glyphMap;
+  subtitle?: string;
   onViewAll?: () => void;
   viewAllLabel?: string;
-  /**
-   * Trailing header content — a trend badge, say. Sits on the header's
-   * baseline opposite the title, so a panel never has to position it against
-   * the card body with offsets of its own.
-   */
   headerRight?: ReactNode;
   children: ReactNode;
-  /** Stretch to the height of the tallest panel in the row. */
   fill?: boolean;
-  /**
-   * Let the body take the height `fill` gained and centre its content in it.
-   *
-   * A stretched panel whose content is shorter than the row otherwise pins
-   * that content to the top and drops the surplus underneath as dead space.
-   * Panels with a single visual (the donut) opt in; list panels do not, since
-   * their rows should start at the top.
-   */
   centerContent?: boolean;
 };
 
-/** The white panel shell shared by the chart, users and activities cards. */
-export default function PanelCard({
+const PanelCard = ({
   palette,
   title,
+  icon,
+  subtitle,
   onViewAll,
   viewAllLabel = "View All",
   headerRight,
   children,
   fill = false,
   centerContent = false,
-}: PanelCardProps) {
+}: PanelCardProps) => {
   return (
     <View
       className="rounded-2xl border p-4"
@@ -48,25 +37,52 @@ export default function PanelCard({
         borderColor: palette.cardBorder,
       }}
     >
-      <View className="mb-3 flex-row items-center justify-between gap-3">
-        <Text className="min-w-0 flex-1 text-[15px] font-bold" numberOfLines={1} style={{ color: palette.heading }}>
-          {title}
-        </Text>
-        {headerRight ? <View className="shrink-0">{headerRight}</View> : null}
-        {onViewAll ? (
-          <Pressable
-            onPress={onViewAll}
-            accessibilityRole="link"
-            accessibilityLabel={`${viewAllLabel} — ${title}`}
-            // 44px minimum touch target without pushing the header taller.
-            hitSlop={{ top: 12, bottom: 12, left: 12, right: 8 }}
-            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-          >
-            <Text className="text-[12.5px] font-semibold" style={{ color: palette.primary }}>
-              {viewAllLabel}
+      <View className="mb-3 flex-row items-start justify-between gap-3">
+        <View className="min-w-0 flex-1 flex-row items-center gap-2.5">
+          {icon ? (
+            <View
+              className="h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+              style={{ backgroundColor: palette.tones.blue.iconBg }}
+            >
+              <Feather name={icon} size={17} color={palette.tones.blue.icon} />
+            </View>
+          ) : null}
+          <View className="min-w-0 flex-1">
+            <Text
+              className="min-w-0 text-[15px] font-bold"
+              numberOfLines={1}
+              style={{ color: palette.heading }}
+            >
+              {title}
             </Text>
-          </Pressable>
-        ) : null}
+            {subtitle ? (
+              <Text
+                className="mt-0.5 text-[12px] font-medium"
+                numberOfLines={1}
+                style={{ color: palette.muted }}
+              >
+                {subtitle}
+              </Text>
+            ) : null}
+          </View>
+        </View>
+
+        <View className="shrink-0 flex-row items-center gap-2.5">
+          {headerRight}
+          {onViewAll ? (
+            <Pressable
+              onPress={onViewAll}
+              accessibilityRole="link"
+              accessibilityLabel={`${viewAllLabel} — ${title}`}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 8 }}
+              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+            >
+              <Text className="text-[12.5px] font-semibold" style={{ color: palette.primary }}>
+                {viewAllLabel}
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
       </View>
       <View
         style={{
@@ -78,4 +94,6 @@ export default function PanelCard({
       </View>
     </View>
   );
-}
+};
+
+export default PanelCard;

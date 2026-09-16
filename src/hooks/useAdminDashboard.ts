@@ -17,25 +17,15 @@ export interface UseAdminDashboardReturn {
 
 const DEFAULT_QUERY: AdminDashboardQuery = { usersLimit: 5, activitiesLimit: 5 };
 
-/**
- * Owns the single dashboard request.
- *
- * Mirrors useUsers: fetch once on mount, an in-flight guard so a retry tap or a
- * remount cannot fire duplicate requests, and refresh() kept separate from
- * reload() so pull-to-refresh does not swap the populated dashboard for
- * skeletons.
- */
-export function useAdminDashboard(
+export const useAdminDashboard = (
   query: AdminDashboardQuery = DEFAULT_QUERY
-): UseAdminDashboardReturn {
+): UseAdminDashboardReturn => {
   const [data, setData] = useState<AdminDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const inFlightRef = useRef<Promise<void> | null>(null);
-  // Held in a ref so a caller passing an inline object literal does not
-  // re-trigger the mount effect on every render.
   const queryRef = useRef(query);
 
   const load = useCallback(async (mode: "initial" | "refresh") => {
@@ -71,4 +61,4 @@ export function useAdminDashboard(
   }, [load]);
 
   return { data, loading, refreshing, error, reload, refresh };
-}
+};

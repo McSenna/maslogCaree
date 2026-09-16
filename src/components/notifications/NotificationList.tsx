@@ -30,17 +30,14 @@ const NotificationList = ({
     [onPressItem]
   );
 
-  // Loading state
   if (loading && items.length === 0) {
     return <NotificationSkeleton />;
   }
 
-  // Error state
   if (error && items.length === 0) {
     return <NotificationErrorState message={error} onRetry={onRetry} />;
   }
 
-  // Empty state
   if (items.length === 0) {
     return <NotificationEmptyState />;
   }

@@ -6,7 +6,7 @@ import {
   Platform,
 } from "react-native";
 
-export function useAppForegroundLayout(onForeground?: () => void) {
+export const useAppForegroundLayout = (onForeground?: () => void) => {
   const onForegroundRef = useRef(onForeground);
   onForegroundRef.current = onForeground;
 
@@ -38,4 +38,4 @@ export function useAppForegroundLayout(onForeground?: () => void) {
     document.addEventListener("visibilitychange", onVisibility);
     return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
-}
+};

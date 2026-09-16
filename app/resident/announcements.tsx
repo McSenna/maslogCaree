@@ -2,12 +2,6 @@ import { ScrollView, View } from "react-native";
 import AnnouncementsList from "@/features/resident/AnnouncementsList";
 import { useResidentDashboard } from "@/screens/resident/useResidentDashboard";
 
-/**
- * Announcements.
- *
- * Reuses the dashboard's section and its data, so the list here and the preview
- * on the dashboard are the same resident-scoped rows.
- */
 const ResidentAnnouncementsRoute = () => {
   const { announcements, handlers } = useResidentDashboard();
 

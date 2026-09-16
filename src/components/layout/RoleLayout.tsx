@@ -1,5 +1,5 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
-import { AppState, useWindowDimensions, View } from "react-native";
+import { useMemo, type ReactNode } from "react";
+import { useWindowDimensions, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
@@ -11,16 +11,11 @@ import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
 import { AppHeader } from "@/components/header";
 import { getHeaderPalette } from "@/components/header/headerTokens";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
+import ScreenTransition from "./ScreenTransition";
 import RoleBottomNav from "../navigation/RoleBottomNav";
 import SidebarNavigation from "../navigation/SidebarNavigation";
 import type { NavItem } from "../navigation/SidebarNavigation";
 
-/**
- * Padding applied to the routed screen inside this layout.
- *
- * Exported so a full-bleed screen (the admin dashboard paints its own page
- * background) can cancel it out instead of hard-coding the same numbers.
- */
 export const ROLE_LAYOUT_PADDING = {
   mobile: { horizontal: 7, top: 7, bottom: getBottomContentPadding(0) },
   desktop: { horizontal: 24, top: 20, bottom: 24 },
@@ -43,13 +38,12 @@ const RoleLayout = ({
   const { width } = useWindowDimensions();
   const bottomNav = useBottomNavMetrics();
 
-  // The bottom-nav badge and the web header bell read the same shared count,
-  // so opening one notification updates both at once.
   const { user } = useAuth();
   const { unreadCount } = useNotificationsContext();
-  const notificationBadges = user
-    ? { [getNotificationsPath(user.role as UserRole)]: unreadCount }
-    : undefined;
+  const notificationBadges = useMemo(
+    () => (user ? { [getNotificationsPath(user.role as UserRole)]: unreadCount } : undefined),
+    [user, unreadCount]
+  );
 
   const isMobile = width < BREAKPOINTS.tablet;
 
@@ -57,45 +51,10 @@ const RoleLayout = ({
   const isDark = resolvedTheme === "dark";
   const headerPalette = getHeaderPalette(isDark);
 
-  /**
-   * The page surface every routed screen sits on.
-   *
-   * Painted here rather than per screen: the tint belongs to the shell, and
-   * leaving it to each page meant a screen that forgot it fell through to a
-   * different white. Applied outside this column's own padding, so it meets the
-   * sidebar and the header without a seam and no screen has to bleed a layer
-   * back out under the gutter to fake it.
-   */
   const pageSurface = getAdminDashboardPalette(isDark ? "dark" : "light").pageBg;
 
-  const [layoutEpoch, setLayoutEpoch] = useState(0);
-  const appStateRef = useRef(AppState.currentState);
-
-  useEffect(() => {
-    const sub = AppState.addEventListener("change", (next) => {
-      if (
-        appStateRef.current.match(/inactive|background/) &&
-        next === "active"
-      ) {
-        setLayoutEpoch((n) => n + 1);
-      }
-
-      appStateRef.current = next;
-    });
-
-    return () => sub.remove();
-  }, []);
-
-  /**
-   * Root background matches the application header so the status-bar strip the
-   * header pads out reads as one continuous surface.
-   */
   const safeBg = headerPalette.background;
 
-  /**
-   * Safe-area aware bottom clearance for scrollable screens — sourced from the
-   * bottom bar itself so the two can never drift apart.
-   */
   const mobileBottomPadding = bottomNav.contentPadding;
 
   return (
@@ -107,62 +66,45 @@ const RoleLayout = ({
     >
       <StatusBar style={isDark ? "light" : "dark"} />
 
-      {/* ROOT LAYOUT
-          Painted with the page surface rather than a plain white: react-native
-          -web's own root sits at #F2F2F2, and any strip this shell does not
-          cover shows that grey through. Stating the surface here means the
-          fallback is the page colour, never the framework's. */}
       <View className="flex-1 w-full min-w-0" style={{ backgroundColor: pageSurface }}>
-        {/* On a phone there is no rail, so the header is simply the top of the
-            screen — the existing mobile header, unchanged. */}
-        {isMobile ? <AppHeader /> : null}
+
+        <View className="w-full md:hidden">
+          <AppHeader variant="mobile" />
+        </View>
 
         <View className="flex-1 flex-row w-full min-w-0">
-          {/* =================================================
-              DESKTOP SIDEBAR — full height, beside the header
-              rather than beneath it, so the barangay identity
-              at its head reads as the identity of the whole
-              application and not of one column.
-          ================================================== */}
-          {!isMobile && (
+
+          <View className="hidden md:flex">
             <SidebarNavigation
               items={sidebarItems}
               roleLabel={roleLabel}
             />
-          )}
+          </View>
 
-          {/* The application area: header on top, page under it. */}
           <View className="flex-1 min-w-0">
-            {!isMobile ? <AppHeader /> : null}
+            <View className="hidden w-full md:flex">
+              <AppHeader variant="desktop" />
+            </View>
 
           <View
-            key={layoutEpoch}
-            className="flex-1 w-full min-w-0"
+            className="w-full min-w-0 flex-1 px-[7px] pt-[7px] md:px-6 md:pt-5"
             style={{
               backgroundColor: pageSurface,
-              paddingHorizontal: isMobile
-                ? ROLE_LAYOUT_PADDING.mobile.horizontal
-                : ROLE_LAYOUT_PADDING.desktop.horizontal,
-              paddingTop: isMobile
-                ? ROLE_LAYOUT_PADDING.mobile.top
-                : ROLE_LAYOUT_PADDING.desktop.top,
               paddingBottom: isMobile
                 ? mobileBottomPadding
                 : ROLE_LAYOUT_PADDING.desktop.bottom,
             }}
           >
-            {/* FULL WIDTH CHILD CONTAINER */}
-            <View className="flex-1 w-full min-w-0">
-              {children}
-            </View>
+ 
+            <ScreenTransition>{children}</ScreenTransition>
           </View>
           </View>
         </View>
       </View>
 
-      {isMobile && (
+      <View className="w-full md:hidden">
         <RoleBottomNav items={bottomNavItems} badges={notificationBadges} />
-      )}
+      </View>
     </View>
   );
 };

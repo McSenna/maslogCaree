@@ -6,16 +6,11 @@ type ProfileInfoRowProps = {
   label: string;
   value: string;
   icon: keyof typeof Feather.glyphMap;
-  /** Dims the value when the account has nothing stored for this field. */
   provided?: boolean;
   showDivider?: boolean;
-  /** Stacks label above value — used at narrow widths so long emails fit. */
   stacked?: boolean;
 };
 
-/**
- * Icon | Label | Value, the unit the Personal Information card is built from.
- */
 const ProfileInfoRow = ({
   label,
   value,
@@ -63,7 +58,6 @@ const ProfileInfoRow = ({
       </Text>
 
       <Text
-        // Long values (emails, addresses) wrap rather than overflow the card.
         maxFontSizeMultiplier={1.3}
         style={{
           flex: stacked ? undefined : 1,

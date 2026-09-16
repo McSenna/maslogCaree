@@ -4,17 +4,6 @@ import type { BadgeTone } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import type { InventoryCategory, StockStatus } from "@/features/inventory/services/inventoryService";
 
-/**
- * Colours for Inventory Management.
- *
- * Built on the same admin dashboard palette as User Management and System Logs
- * rather than a fourth one: the admin area is specified against a cool
- * near-white page with blue-tinted borders, and a screen assembled from
- * Tailwind's neutral greys reads as a foreign page dropped into the shell.
- * Only the inventory-specific tints are added here.
- */
-
-/** The badge shown in the Status column, once expiry and stock are reconciled. */
 export type DisplayStatus = StockStatus | "expiring-soon" | "expired";
 
 const CATEGORY_TONES_LIGHT: Record<InventoryCategory, BadgeTone> = {
@@ -69,11 +58,6 @@ const METRIC_TONES_DARK: Record<InventoryMetricKey, MetricTone> = {
   expiringSoon: { iconBg: "rgba(239,68,68,0.20)", icon: "#F87171" },
 };
 
-/**
- * Metric card icons, matching the design: a box for the catalogue, a filled box
- * for what is available, a warning triangle for the reorder threshold and a
- * "no entry" glyph for stock going out of date.
- */
 export const METRIC_ICONS: Record<InventoryMetricKey, keyof typeof Feather.glyphMap> = {
   total: "box",
   inStock: "package",
@@ -81,7 +65,6 @@ export const METRIC_ICONS: Record<InventoryMetricKey, keyof typeof Feather.glyph
   expiringSoon: "slash",
 };
 
-/** One icon per category, so a row is scannable before its badge is read. */
 export const CATEGORY_ICONS: Record<
   InventoryCategory,
   keyof typeof MaterialCommunityIcons.glyphMap
@@ -106,7 +89,7 @@ const TREND_TONES_DARK = {
 
 export type InventoryPalette = ReturnType<typeof useInventoryPalette>;
 
-export function useInventoryPalette() {
+export const useInventoryPalette = () => {
   const surface = useAdminSurfacePalette();
 
   return useMemo(() => {
@@ -114,7 +97,6 @@ export function useInventoryPalette() {
 
     return {
       ...surface,
-      /** Expiry dates in the table that are past or nearly past. */
       danger: isDark ? "#F87171" : "#DC2626",
       categories: isDark ? CATEGORY_TONES_DARK : CATEGORY_TONES_LIGHT,
       statuses: isDark ? STATUS_TONES_DARK : STATUS_TONES_LIGHT,
@@ -122,10 +104,8 @@ export function useInventoryPalette() {
       trends: isDark ? TREND_TONES_DARK : TREND_TONES_LIGHT,
     };
   }, [surface]);
-}
+};
 
-// Geometry is shared with User Management and System Logs deliberately: the
-// admin tables sit under the same shell and any drift between them is visible.
 export { CARD_SHADOW, CONTROL_HEIGHT, RADIUS } from "@/design/adminSurfaces";
 
 const SHORT_DATE_OPTS: Intl.DateTimeFormatOptions = {
@@ -134,16 +114,9 @@ const SHORT_DATE_OPTS: Intl.DateTimeFormatOptions = {
   day: "numeric",
 };
 
-/**
- * "Dec 15, 2026" — the form the design uses in the table and on the cards.
- *
- * The shared `formatDate` is long-form ("December 15, 2026") and is what the
- * details panel and other screens use; a full month name does not fit the
- * Expiry column at the width the table is specified at.
- */
-export function formatShortDate(value: string | Date | null | undefined): string {
+export const formatShortDate = (value: string | Date | null | undefined): string => {
   if (!value) return "—";
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return "—";
   return date.toLocaleDateString(undefined, SHORT_DATE_OPTS);
-}
+};

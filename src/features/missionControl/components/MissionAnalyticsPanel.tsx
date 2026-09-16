@@ -5,8 +5,7 @@ type MissionAnalyticsPanelProps = {
   rows: CategoryAnalyticsRow[];
 };
 
-/** Per-service counts for the selected mission, as aggregated by the server. */
-export default function MissionAnalyticsPanel({ rows }: MissionAnalyticsPanelProps) {
+const MissionAnalyticsPanel = ({ rows }: MissionAnalyticsPanelProps) => {
   return (
     <View className="rounded-2xl border border-slate-200 bg-white p-4">
       <Text className="text-lg font-semibold text-slate-900">Analytics (this mission)</Text>
@@ -21,3 +20,5 @@ export default function MissionAnalyticsPanel({ rows }: MissionAnalyticsPanelPro
     </View>
   );
 }
+
+export default MissionAnalyticsPanel;

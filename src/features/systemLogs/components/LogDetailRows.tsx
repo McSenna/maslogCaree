@@ -8,7 +8,7 @@ import {
 } from "@/features/systemLogs/services/systemLogService";
 import { useSystemLogsPalette } from "./systemLogsTheme";
 
-function DetailRow({
+const DetailRow = ({
   icon,
   label,
   children,
@@ -16,7 +16,7 @@ function DetailRow({
   icon: keyof typeof Feather.glyphMap;
   label: string;
   children: React.ReactNode;
-}) {
+}) => {
   const palette = useSystemLogsPalette();
 
   return (
@@ -35,9 +35,9 @@ function DetailRow({
       </View>
     </View>
   );
-}
+};
 
-function RowText({
+const RowText = ({
   children,
   muted = false,
   mono = false,
@@ -45,7 +45,7 @@ function RowText({
   children: React.ReactNode;
   muted?: boolean;
   mono?: boolean;
-}) {
+}) => {
   const palette = useSystemLogsPalette();
   return (
     <Text
@@ -55,14 +55,9 @@ function RowText({
       {children}
     </Text>
   );
-}
+};
 
-/**
- * The field list shared by the desktop Log Details panel and the mobile
- * bottom sheet — same information, same order, so the two surfaces never
- * drift apart.
- */
-export default function LogDetailRows({ log }: { log: SystemLog }) {
+const LogDetailRows = ({ log }: { log: SystemLog }) => {
   const relative = formatRelativeTime(log.createdAt);
 
   return (
@@ -77,12 +72,10 @@ export default function LogDetailRows({ log }: { log: SystemLog }) {
         {log.userEmail ? <RowText muted>{log.userEmail}</RowText> : null}
       </DetailRow>
 
-
       <DetailRow icon="monitor" label="Device / Browser">
         <RowText>{log.device}</RowText>
         <RowText muted>{log.browser}</RowText>
       </DetailRow>
-
 
       <DetailRow icon="activity" label="Action">
         <RowText>{formatSystemLogActionLabel(log)}</RowText>
@@ -94,4 +87,6 @@ export default function LogDetailRows({ log }: { log: SystemLog }) {
 
     </View>
   );
-}
+};
+
+export default LogDetailRows;

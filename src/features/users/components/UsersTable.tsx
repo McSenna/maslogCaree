@@ -24,14 +24,14 @@ type UsersTableProps = {
   onToggleAll: (next: boolean) => void;
 };
 
-export default function UsersTable({
+const UsersTable = ({
   users,
   selectedUserId,
   onSelectUser,
   checkedIds,
   onToggleUser,
   onToggleAll,
-}: UsersTableProps) {
+}: UsersTableProps) => {
   const palette = useUsersPalette();
 
   const checkedOnPage = users.filter((u) => checkedIds.has(u._id)).length;
@@ -40,8 +40,6 @@ export default function UsersTable({
 
   return (
     <View className="w-full">
-      {/* Header — deliberately light: a dark strip would fight the metric cards
-          for attention on a page that is mostly table. */}
       <View
         className="w-full flex-row items-center"
         style={{
@@ -81,4 +79,6 @@ export default function UsersTable({
       ))}
     </View>
   );
-}
+};
+
+export default UsersTable;

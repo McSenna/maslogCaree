@@ -19,32 +19,20 @@ type AppointmentsPanelProps = {
   activeStatus: AppointmentStatus;
   onStatusChange: (status: AppointmentStatus) => void;
   serviceLabels: Record<string, string>;
-  /** Rendered in the header — the doctor's Add Mission control, or nothing. */
   headerAction?: ReactNode;
-  /** Omitted by a read-only queue — see `RowActionProps`. */
   onApprove?: (appointment: AppointmentRecord) => void;
   onMore?: (appointment: AppointmentRecord) => void;
   busyId: string | null;
-  /** False for a role that may read this queue but not act on it. */
   canAct: boolean;
-  /** Set to make rows openable — used for completed rows, which have a record. */
   onRowPress?: (appointment: AppointmentRecord) => void;
   loading: boolean;
   error: string | null;
   onRetry: () => void;
   emptyMessage: string;
-  /** Table above this width, cards below it. */
   asTable: boolean;
 };
 
-/**
- * The requests this role is responsible for, filtered by standing.
- *
- * A table where there is room for seven columns and cards where there is not —
- * a phone gets a card per appointment rather than a table it has to drag
- * sideways to read.
- */
-export default function AppointmentsPanel({
+const AppointmentsPanel = ({
   appointments,
   statusCounts,
   activeStatus,
@@ -61,7 +49,7 @@ export default function AppointmentsPanel({
   onRetry,
   emptyMessage,
   asTable,
-}: AppointmentsPanelProps) {
+}: AppointmentsPanelProps) => {
   const palette = useQueuePalette();
   const actions = { onApprove, onMore, busyId, canAct, onRowPress };
 
@@ -126,4 +114,6 @@ export default function AppointmentsPanel({
       {renderBody()}
     </QueuePanel>
   );
-}
+};
+
+export default AppointmentsPanel;

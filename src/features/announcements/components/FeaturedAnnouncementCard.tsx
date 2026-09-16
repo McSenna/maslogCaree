@@ -10,12 +10,11 @@ type FeaturedAnnouncementCardProps = {
   onViewDetails?: () => void;
 };
 
-/** The next event, given a full-width card and its own accent stripe. */
-export default function FeaturedAnnouncementCard({
+const FeaturedAnnouncementCard = ({
   announcement,
   isTablet,
   onViewDetails,
-}: FeaturedAnnouncementCardProps) {
+}: FeaturedAnnouncementCardProps) => {
   const { title, date, description, icon, color, bg, tag } = announcement;
 
   return (
@@ -106,4 +105,6 @@ export default function FeaturedAnnouncementCard({
       </View>
     </View>
   );
-}
+};
+
+export default FeaturedAnnouncementCard;

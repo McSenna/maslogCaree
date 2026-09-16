@@ -23,25 +23,13 @@ export const authCardStyles = StyleSheet.create({
   cardDesktop: {
     width: "100%",
     maxWidth: 446,
-    borderRadius: 24,
-    paddingHorizontal: 40,
-    paddingTop: 54,
-    paddingBottom: 44,
   },
   cardDesktopCompact: {
     width: "100%",
     maxWidth: 404,
-    borderRadius: 20,
-    paddingHorizontal: 32,
-    paddingTop: 34,
-    paddingBottom: 30,
   },
   cardMobile: {
     width: "100%",
-    borderRadius: 24,
-    paddingHorizontal: 22,
-    paddingTop: 28,
-    paddingBottom: 24,
   },
 
   form: {

@@ -7,14 +7,8 @@ import type { NotificationItem as NotificationItemType } from "./notification.ty
 type NotificationItemProps = {
   item: NotificationItemType;
   onPress: (id: string) => void;
-  /**
-   * "row" is the dropdown panel's divided list; "card" is the standalone
-   * notifications screen, where each entry is its own rounded surface.
-   */
   variant?: "row" | "card";
 };
-
-// ── Icon & color mapping by tone ──────────────────────────────────────
 
 const TONE_CONFIG = {
   info: {
@@ -37,14 +31,12 @@ const TONE_CONFIG = {
   },
 } as const;
 
-function getToneConfig(tone?: string) {
+const getToneConfig = (tone?: string) => {
   if (tone && tone in TONE_CONFIG) {
     return TONE_CONFIG[tone as keyof typeof TONE_CONFIG];
   }
   return TONE_CONFIG.info;
-}
-
-// ── Component ─────────────────────────────────────────────────────────
+};
 
 const NotificationItem = ({
   item,
@@ -59,7 +51,6 @@ const NotificationItem = ({
     onPress(item.id);
   }, [item.id, onPress]);
 
-  // Unread styling
   const rowBg = !item.isRead
     ? isDark
       ? "bg-sky-500/5"
@@ -72,8 +63,6 @@ const NotificationItem = ({
 
   const isCard = variant === "card";
 
-  // Press feedback rides on the class, not on a style callback: a function-form
-  // `style` on Pressable is dropped here, taking the surface with it.
   const shape = isCard
     ? `rounded-2xl border px-4 py-3.5 ${borderClass} ${rowBg || (isDark ? "bg-slate-900" : "bg-white")}`
     : `border-b px-4 py-3 ${borderClass} ${rowBg}`;
@@ -87,7 +76,6 @@ const NotificationItem = ({
       onPress={handlePress}
       className={`flex-row items-start gap-3 active:opacity-80 ${shape}`}
     >
-      {/* Icon container */}
       <View
         className={`h-10 w-10 items-center justify-center rounded-full ${
           isDark ? config.bgDark : config.bgLight
@@ -96,7 +84,6 @@ const NotificationItem = ({
         <Feather name={config.icon} size={18} color={config.color} />
       </View>
 
-      {/* Text content */}
       <View className="min-w-0 flex-1">
         <Text
           className={`text-sm ${
@@ -121,7 +108,6 @@ const NotificationItem = ({
         </Text>
       </View>
 
-      {/* Unread dot indicator */}
       {!item.isRead && (
         <View className="mt-2 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
       )}

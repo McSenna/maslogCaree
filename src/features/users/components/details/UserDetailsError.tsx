@@ -2,20 +2,13 @@ import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import { DETAIL_RADIUS, useUserDetailsPalette } from "./detailsTheme";
 
-/**
- * The record could not be read.
- *
- * Shared by the desktop dialog and the phone sheet: the surface stays open and
- * explains itself rather than closing, so the admin does not lose their place
- * in the list and can retry from where they are.
- */
-export default function UserDetailsError({
+const UserDetailsError = ({
   onRetry,
   message,
 }: {
   onRetry?: () => void;
   message?: string;
-}) {
+}) => {
   const palette = useUserDetailsPalette();
 
   return (
@@ -45,4 +38,6 @@ export default function UserDetailsError({
       ) : null}
     </View>
   );
-}
+};
+
+export default UserDetailsError;

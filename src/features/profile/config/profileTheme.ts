@@ -1,9 +1,3 @@
-/**
- * MaslogCare profile design tokens.
- *
- * One palette for the web modal and the mobile screen, so the two surfaces are
- * the same product rather than two lookalikes that drift apart.
- */
 export const PROFILE_COLORS = {
   primary: "#2563EB",
   primarySoft: "#EFF6FF",
@@ -14,7 +8,6 @@ export const PROFILE_COLORS = {
   background: "#F8FAFC",
   surface: "#FFFFFF",
   heading: "#0F172A",
-  /** Deep navy used for names and section titles in the reference design. */
   navy: "#12275C",
   body: "#334155",
   muted: "#64748B",
@@ -34,7 +27,6 @@ export const PROFILE_RADIUS = {
   pill: 999,
 } as const;
 
-/** Type scale from §48, expressed in the sizes this app actually renders at. */
 export const PROFILE_TYPE = {
   modalTitle: 27,
   screenTitle: 22,
@@ -46,10 +38,6 @@ export const PROFILE_TYPE = {
   meta: 12.5,
 } as const;
 
-/**
- * Cross-platform soft shadow. `boxShadow` is what react-native-web honours and
- * RN 0.76+ accepts natively; `elevation` covers Android.
- */
 export const PROFILE_SHADOW = {
   card: {
     boxShadow: "0px 1px 3px rgba(15, 23, 42, 0.05)",

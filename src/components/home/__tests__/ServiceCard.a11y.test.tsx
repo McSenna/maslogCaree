@@ -42,13 +42,11 @@ describe("ServiceCard Accessibility", () => {
 
   it("should have proper icon accessibility", async () => {
     const { getByRole } = render(<ServiceCard {...mockService} />);
-    // Icon should be decorative or have accessible label
     const elements = getByRole("presentation", { hidden: true });
     expect(elements).toBeDefined();
   });
 
   it("should meet WCAG AA color contrast standards", async () => {
-    // This test ensures the component uses compliant color combinations
     const { container } = render(<ServiceCard {...mockService} />);
     const results = await axe(container, {
       rules: {
@@ -64,7 +62,6 @@ describe("ServiceCard Accessibility", () => {
     );
     const card = getByTestId("service-card");
     expect(card).toBeDefined();
-    // Actual dimension validation requires measurement tools
   });
 
   it("should render all service variants accessibly", async () => {

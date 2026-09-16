@@ -14,8 +14,6 @@ type MobileResidentDashboardProps = {
 };
 
 const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
-  // The first load shows a spinner rather than zeros, so a resident never sees
-  // a figure that is about to change under them.
   if (model.loading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
@@ -63,7 +61,6 @@ const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
     <View className="w-full gap-3.5">
       <WelcomeBanner greeting={model.greeting} firstName={model.firstName} stacked />
 
-      {/* Statistics — 2x2 */}
       <View className="w-full gap-2.5">
         <View className="w-full flex-row gap-2.5">
           {model.stats.slice(0, 2).map((stat) => (

@@ -1,7 +1,22 @@
 import api from "@/services/api";
 import type { PlatformAccessSummary } from "@/config/platformAccess";
 
-export type UserStatus = "active" | "inactive" | "pending" | "suspended";
+export type UserStatus =
+  | "active"
+  | "inactive"
+  | "pending"
+  | "suspended"
+  | "approved"
+  | "rejected"
+  | "deactivated";
+
+export const SIGN_IN_READY_STATUSES: readonly UserStatus[] = ["active", "approved"];
+
+export const DISABLED_STATUSES: readonly UserStatus[] = [
+  "inactive",
+  "deactivated",
+  "suspended",
+];
 
 export interface AdminUser {
   _id: string;
@@ -13,24 +28,9 @@ export interface AdminUser {
   dateOfBirth: string;
   address: string;
   verified: boolean;
-  /**
-   * Account standing set by an administrator — distinct from `verified`,
-   * which only means the email address was confirmed. Always present: the
-   * server resolves it for accounts created before the field existed.
-   */
   status: UserStatus;
   role: "admin" | "doctor" | "midwife" | "bhw" | "resident";
-  /**
-   * Last successful sign-in. Absent for accounts that have never signed in,
-   * and for accounts that last signed in before the field was recorded — the
-   * UI shows "Never" rather than guessing from `updatedAt`.
-   */
   lastLogin?: string | null;
-  /**
-   * Which clients this account may sign in from, computed by the server from
-   * the role. Present on every user the API returns; the local policy mirror
-   * is the fallback for a payload written before this field existed.
-   */
   platformAccess?: PlatformAccessSummary;
   createdAt: string;
   updatedAt: string;
@@ -56,7 +56,6 @@ export const getAllUsers = async (): Promise<{ count: number; users: AdminUser[]
   };
 };
 
-/** Admin-only. The server refuses a self-targeted disable and audit-logs the change. */
 export const updateUserStatus = async (
   userId: string,
   status: UserStatus
@@ -70,39 +69,59 @@ export const USER_STATUS_LABELS: Record<UserStatus, string> = {
   inactive: "Inactive",
   pending: "Pending",
   suspended: "Suspended",
+  approved: "Approved",
+  rejected: "Rejected",
+  deactivated: "Deactivated",
 };
 
-/**
- * The status an action moves an account to, plus the copy the confirmation
- * modal shows. Kept beside the type so a new status can't be added without
- * deciding how it is presented.
- */
-export const STATUS_ACTIONS: Record<
-  UserStatus,
-  { next: UserStatus; label: string; pendingLabel: string; destructive: boolean }
-> = {
-  active: {
-    next: "inactive",
-    label: "Deactivate User",
-    pendingLabel: "Deactivating…",
-    destructive: true,
-  },
-  inactive: {
-    next: "active",
-    label: "Activate User",
-    pendingLabel: "Activating…",
-    destructive: false,
-  },
-  pending: {
-    next: "active",
-    label: "Approve User",
-    pendingLabel: "Approving…",
-    destructive: false,
-  },
-  suspended: {
-    next: "active",
-    label: "Restore Account",
-    pendingLabel: "Restoring…",
-    destructive: false,
-  },
+export type StatusAction = {
+  next: UserStatus;
+  label: string;
+  pendingLabel: string;
+  destructive: boolean;
+};
+
+const readyStatusFor = (role: AdminUser["role"]): UserStatus =>
+  role === "resident" ? "approved" : "active";
+
+export const statusActionFor = (user: Pick<AdminUser, "status" | "role">): StatusAction => {
+  const ready = readyStatusFor(user.role);
+
+  switch (user.status) {
+    case "active":
+    case "approved":
+      return {
+        next: user.role === "resident" ? "deactivated" : "inactive",
+        label: "Deactivate User",
+        pendingLabel: "Deactivating…",
+        destructive: true,
+      };
+
+    case "inactive":
+    case "deactivated":
+      return {
+        next: ready,
+        label: "Activate User",
+        pendingLabel: "Activating…",
+        destructive: false,
+      };
+
+    case "suspended":
+      return {
+        next: ready,
+        label: "Restore Account",
+        pendingLabel: "Restoring…",
+        destructive: false,
+      };
+
+    case "pending":
+    case "rejected":
+    default:
+      return {
+        next: ready,
+        label: "Approve User",
+        pendingLabel: "Approving…",
+        destructive: false,
+      };
+  }
 };

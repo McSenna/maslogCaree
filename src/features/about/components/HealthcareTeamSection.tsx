@@ -12,13 +12,12 @@ type HealthcareTeamSectionProps = {
   isTablet: boolean;
 };
 
-/** The org chart, with its own loading and failure states. */
-export default function HealthcareTeamSection({
+const HealthcareTeamSection = ({
   members,
   loading,
   error,
   isTablet,
-}: HealthcareTeamSectionProps) {
+}: HealthcareTeamSectionProps) => {
   return (
     <View>
       <AboutSectionHeader eyebrow="Our People" title="Healthcare Team" isTablet={isTablet} />
@@ -63,4 +62,6 @@ export default function HealthcareTeamSection({
       </View>
     </View>
   );
-}
+};
+
+export default HealthcareTeamSection;

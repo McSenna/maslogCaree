@@ -1,15 +1,5 @@
 import type { HealthService, HealthTip, QuickAction } from "@/types/residentDashboard";
 
-/**
- * Static dashboard configuration.
- *
- * Everything resident-specific — the profile, the counts, the appointments and
- * the announcements — comes from the API, scoped to the signed-in resident.
- * What remains here is UI configuration that is the same for every resident:
- * which shortcuts the dashboard offers, which services the barangay lists, and
- * the standing health message.
- */
-
 export const quickActions: QuickAction[] = [
   {
     id: "book",
@@ -79,7 +69,6 @@ export const bannerQuote = {
   line2: "A stronger Maslog.”",
 };
 
-/** "2024-10-28" → "Oct 28, 2024". */
 export const formatAppointmentDate = (iso: string): string => {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return iso;
@@ -90,7 +79,6 @@ export const formatAppointmentDate = (iso: string): string => {
   });
 };
 
-/** The stacked MON / DD / YYYY block on the upcoming-appointment card. */
 export const splitAppointmentDate = (
   iso: string
 ): { month: string; day: string; year: string } => {

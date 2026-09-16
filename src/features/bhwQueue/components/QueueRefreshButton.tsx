@@ -8,12 +8,11 @@ type QueueRefreshButtonProps = {
   accessibilityLabel: string;
 };
 
-/** Re-reads the queue by hand, for a screen with no write actions of its own. */
-export default function QueueRefreshButton({
+const QueueRefreshButton = ({
   onPress,
   busy,
   accessibilityLabel,
-}: QueueRefreshButtonProps) {
+}: QueueRefreshButtonProps) => {
   const palette = useQueuePalette();
 
   return (
@@ -36,4 +35,6 @@ export default function QueueRefreshButton({
       </Text>
     </Pressable>
   );
-}
+};
+
+export default QueueRefreshButton;

@@ -6,13 +6,10 @@ export type HelpSupportHandlers = {
   onHelpCenter?: () => void;
   onContactSupport?: () => void;
   onAbout?: () => void;
-  /** Rendered beside "About MaslogCare" when the build reports a version. */
   appVersion?: string;
-  /** "large" is the mobile treatment. */
   size?: SettingsRowSize;
 };
 
-/** Help & Support card — Help Center, Contact Support, About (§23). */
 const HelpSupportCard = ({
   onHelpCenter,
   onContactSupport,

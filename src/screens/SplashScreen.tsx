@@ -5,29 +5,12 @@ import LoadingDots from "@/components/splash/LoadingDots";
 import SplashBackdrop from "@/components/splash/SplashBackdrop";
 import { SPLASH_COLORS, SPLASH_TIMING } from "@/components/splash/splashTheme";
 
-/**
- * The Barangay 61 Maslog seal, as supplied with the project.
- *
- * Rendered from the real asset at its native 1:1 with `resizeMode="contain"`,
- * so it is never stretched, cropped or stood in for.
- */
 const MASLOG_SEAL = require("../../assets/images/maslogicon.png");
 
 type SplashScreenProps = {
-  /** Drives the cross-fade out once startup has finished. */
   visible: boolean;
 };
 
-/**
- * MaslogCare startup screen.
- *
- * Shown while the app resolves its stored session, then cross-faded away. It is
- * an overlay rather than a route: there is no screen to navigate back to, which
- * is what guarantees Android Back can never return here.
- *
- * Every animation runs on the native driver so the entrance stays smooth while
- * the JS thread is busy with initialisation.
- */
 const SplashScreen = ({ visible }: SplashScreenProps) => {
   const { width } = useWindowDimensions();
 
@@ -36,8 +19,6 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const wordmarkOpacity = useRef(new Animated.Value(0)).current;
 
-  // Sized from the viewport so a small phone does not get a seal that crowds
-  // the wordmark, kept inside the brief's 150–190px band.
   const sealSize = Math.min(190, Math.max(150, width * 0.46));
 
   useEffect(() => {
@@ -72,8 +53,6 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
     ]).start();
   }, [screenOpacity, logoOpacity, logoScale, wordmarkOpacity]);
 
-  // Fade the whole screen out once the app is ready, so the landing page
-  // appears through it instead of replacing it in one frame.
   useEffect(() => {
     if (visible) return;
     Animated.timing(screenOpacity, {
@@ -86,7 +65,6 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
 
   return (
     <Animated.View
-      // Sits above the routed content until it has faded out.
       style={{ ...StyleSheetAbsolute, opacity: screenOpacity }}
       pointerEvents={visible ? "auto" : "none"}
     >
@@ -94,8 +72,6 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
         <SplashBackdrop />
 
         <SafeAreaView className="flex-1" edges={["top", "bottom"]}>
-          {/* Centred as a block, so the composition holds on any screen height
-              instead of being pinned with fixed offsets. */}
           <View className="flex-[3] items-center justify-center px-8">
             <Animated.View className="items-center" style={{ opacity: wordmarkOpacity }}>
               <Text
@@ -119,6 +95,7 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
                 accessibilityRole="image"
                 accessibilityLabel="Barangay 61 Maslog, Legazpi City official seal"
                 resizeMode="contain"
+                resizeMethod="resize"
                 style={{ width: sealSize, height: sealSize }}
               />
             </Animated.View>
@@ -138,8 +115,6 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
             </Animated.View>
           </View>
 
-          {/* Anchored low rather than centred, matching the design, but inside
-              the safe area so it clears the Android navigation bar. */}
           <View className="flex-1 items-center justify-start pb-8">
             <LoadingDots />
             <Text
@@ -155,7 +130,6 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
   );
 };
 
-/** Full-bleed overlay geometry — the one thing NativeWind cannot express here. */
 const StyleSheetAbsolute = {
   position: "absolute" as const,
   top: 0,

@@ -5,26 +5,12 @@ import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { DASHBOARD_BREAKPOINTS } from "@/design/adminDashboardTheme";
 import { DENSE_METRIC_MAX_WIDTH, PANEL_FLEX } from "../constants/dashboardLayout";
 
-/**
- * How many columns the dashboard has room for, and how wide each panel will be.
- *
- * Driven by the width the dashboard actually has, not the window: on desktop
- * the sidebar takes its own slice, and deciding from window width alone would
- * squeeze three panels into a space that fits two.
- */
-export function useAdminDashboardLayout() {
+export const useAdminDashboardLayout = () => {
   const { width: windowWidth } = useWindowDimensions();
   const insets = useRoleScreenInsets();
 
-  /**
-   * The measuring wrapper is a plain View with an explicit width: NativeWind's
-   * styled wrapper consumes onLayout, and an explicit width stops a child that
-   * overflows mid-layout from widening the very box being measured.
-   */
   const [measuredWidth, setMeasuredWidth] = useState(0);
 
-  // The mobile content order is tied to the same breakpoint the shell uses to
-  // swap the sidebar for the bottom nav, so the two never disagree.
   const isMobile = windowWidth < DASHBOARD_BREAKPOINTS.mobile;
   const gap = isMobile ? 12 : 16;
 
@@ -49,11 +35,6 @@ export function useAdminDashboardLayout() {
         ? 2
         : 1;
 
-  /**
-   * Widths the panels will actually get from the flex row, derived from the
-   * same weights the layout uses. They only pick a row style — flexbox still
-   * does the sizing — so being a few pixels out is harmless.
-   */
   const panelRowWidth = availableWidth - gap * (panelColumns - 1);
   const panelWeightTotal =
     panelColumns === 3
@@ -81,7 +62,6 @@ export function useAdminDashboardLayout() {
     chartPanelWidth,
     usersPanelWidth,
     denseMetrics: windowWidth <= DENSE_METRIC_MAX_WIDTH,
-    /** True where the panels sit side by side and must stretch to match. */
     inColumns: !isMobile && panelColumns > 1,
     measuredWidth,
     measure: (event: { nativeEvent: { layout: { width: number } } }) => {
@@ -89,6 +69,6 @@ export function useAdminDashboardLayout() {
       if (next > 0 && next !== measuredWidth) setMeasuredWidth(next);
     },
   };
-}
+};
 
 export type AdminDashboardLayout = ReturnType<typeof useAdminDashboardLayout>;

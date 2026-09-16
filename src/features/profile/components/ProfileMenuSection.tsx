@@ -10,10 +10,10 @@ type ProfileMenuSectionProps = {
 };
 
 
-export default function ProfileMenuSection({
+const ProfileMenuSection = ({
   title,
   items,
-}: ProfileMenuSectionProps) {
+}: ProfileMenuSectionProps) => {
   return (
     <View className="gap-1.5">
       <Text className="px-1 text-[11px] font-semibold uppercase tracking-widest text-slate-400">
@@ -31,4 +31,6 @@ export default function ProfileMenuSection({
       </View>
     </View>
   );
-}
+};
+
+export default ProfileMenuSection;

@@ -13,7 +13,7 @@ const STATS = [
   { value: "Free", label: "For Residents", icon: "shield" as const },
 ] as const;
 
-export default function HeroCard() {
+const HeroCard = () => {
   const { width } = useWindowDimensions();
   const isTablet = width >= BREAKPOINTS.tablet;
 
@@ -115,4 +115,6 @@ export default function HeroCard() {
       </Animated.View>
     </Animated.View>
   );
-}
+};
+
+export default HeroCard;

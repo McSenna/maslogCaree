@@ -8,15 +8,10 @@ type Role = AdminUser["role"];
 type RoleBadgeProps = {
   role: Role;
   size?: "sm" | "md";
-  /** The icon is decorative; drop it where the pill has to stay very narrow. */
   showIcon?: boolean;
 };
 
-/**
- * Role identity pill. The same colours and icon are used by the desktop table,
- * the mobile cards and the details panel so a role reads the same everywhere.
- */
-export default function RoleBadge({ role, size = "md", showIcon = true }: RoleBadgeProps) {
+const RoleBadge = ({ role, size = "md", showIcon = true }: RoleBadgeProps) => {
   const palette = useUsersPalette();
   const tone = palette.roles[role] ?? {
     label: role,
@@ -49,4 +44,6 @@ export default function RoleBadge({ role, size = "md", showIcon = true }: RoleBa
       </Text>
     </View>
   );
-}
+};
+
+export default RoleBadge;

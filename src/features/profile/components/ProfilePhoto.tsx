@@ -8,18 +8,10 @@ type ProfilePhotoProps = {
   imageUrl?: string | null;
   initials: string;
   name: string;
-  /** Circular by default; a soft-cornered square matches the web hero. */
   shape?: "circle" | "rounded";
-  /** Shows the camera affordance when photo updates are available. */
   onChangePhoto?: () => void;
 };
 
-/**
- * Profile photo with an initials fallback.
- *
- * A failed load falls back to the same initials as a missing URL, so a broken
- * image can never reach the screen (§46).
- */
 const ProfilePhoto = ({
   size,
   imageUrl,
@@ -33,7 +25,6 @@ const ProfilePhoto = ({
   const uri = imageUrl?.trim() ? imageUrl.trim() : null;
   const showFallback = !uri || failed;
   const radius = shape === "circle" ? size / 2 : Math.round(size * 0.22);
-  // 32–38px: big enough to hit, small enough not to eat the portrait.
   const badge = Math.min(38, Math.max(32, Math.round(size * 0.3)));
 
   return (

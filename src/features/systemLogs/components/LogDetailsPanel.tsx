@@ -10,7 +10,7 @@ type LogDetailsPanelProps = {
   onClose: () => void;
 };
 
-export default function LogDetailsPanel({ log, onClose }: LogDetailsPanelProps) {
+const LogDetailsPanel = ({ log, onClose }: LogDetailsPanelProps) => {
   const palette = useSystemLogsPalette();
   const severityTone = log ? palette.severity[log.severity] : palette.severity.info;
 
@@ -73,4 +73,6 @@ export default function LogDetailsPanel({ log, onClose }: LogDetailsPanelProps) 
       )}
     </View>
   );
-}
+};
+
+export default LogDetailsPanel;

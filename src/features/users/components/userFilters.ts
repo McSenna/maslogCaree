@@ -24,8 +24,10 @@ export const ROLE_FILTER_OPTIONS: readonly SelectOption<RoleFilter>[] = [
 export const STATUS_FILTER_OPTIONS: readonly SelectOption<StatusFilter>[] = [
   { value: "all", label: "All Statuses" },
   { value: "active", label: "Active" },
+  { value: "approved", label: "Approved" },
   { value: "pending", label: "Pending" },
   { value: "inactive", label: "Inactive" },
+  { value: "deactivated", label: "Deactivated" },
   { value: "suspended", label: "Suspended" },
 ];
 

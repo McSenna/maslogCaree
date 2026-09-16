@@ -6,13 +6,7 @@ type StockStatusBadgeProps = {
   compact?: boolean;
 };
 
-/**
- * Stock / expiry status pill.
- *
- * The dot is decorative and the label carries the meaning, so status is never
- * communicated by colour alone.
- */
-export default function StockStatusBadge({ status, compact = false }: StockStatusBadgeProps) {
+const StockStatusBadge = ({ status, compact = false }: StockStatusBadgeProps) => {
   const palette = useInventoryPalette();
   const tone = palette.statuses[status] ?? palette.statuses["in-stock"];
 
@@ -33,4 +27,6 @@ export default function StockStatusBadge({ status, compact = false }: StockStatu
       </Text>
     </View>
   );
-}
+};
+
+export default StockStatusBadge;

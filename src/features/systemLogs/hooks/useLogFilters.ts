@@ -5,29 +5,14 @@ import {
   formatDateRangeLabel,
   type DatePreset,
 } from "../components/LogToolbar";
+import { endOfLocalDay, startOfLocalDay } from "@/utils/dateFormatter";
 import { PAGE_SIZE, SEARCH_DEBOUNCE_MS } from "../constants/logsLayout";
 
-/** `all` means the filter is off, and is dropped from the request entirely. */
 const asParam = (value: string): string | undefined => (value === "all" ? undefined : value);
 
-/**
- * Everything narrowing the audit trail: the search box, the date range, and
- * the three category filters.
- *
- * All of it is server-side — the log table can hold far more than one client
- * should ever load — so this hook's real output is `params`, the query the
- * fetching hook runs.
- */
-export function useLogFilters(initialSearch: string) {
-  // Seeded from the route so "View Activity Logs" on a user can land here
-  // already narrowed to that account. Read once, as the initial value: the
-  // search box stays the admin's to clear, and re-applying the parameter on
-  // every render would fight them for it.
+export const useLogFilters = (initialSearch: string) => {
   const [searchInput, setSearchInput] = useState(initialSearch);
   const [search, setSearch] = useState(initialSearch);
-  // The date filter opens on "All Time": an audit trail is most useful when it
-  // starts by showing everything it holds, and any narrower default silently
-  // hides older entries from an admin who never opened the filter.
   const [datePreset, setDatePreset] = useState<DatePreset>(DEFAULT_DATE_PRESET);
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
@@ -36,7 +21,6 @@ export function useLogFilters(initialSearch: string) {
   const [severity, setSeverity] = useState("all");
   const [page, setPage] = useState(1);
 
-  // Debounce free-text search so it doesn't fire a request per keystroke.
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearch(searchInput.trim());
@@ -51,11 +35,18 @@ export function useLogFilters(initialSearch: string) {
   );
 
   const dateRangeLabel = useMemo(
-    () => formatDateRangeLabel(datePreset, dateRange.fromDate, dateRange.toDate),
+    () => formatDateRangeLabel(datePreset, dateRange.fromDay, dateRange.toDay),
     [datePreset, dateRange]
   );
 
-  /** Narrowing the results always returns to the first page. */
+  const dateParams = useMemo(
+    () => ({
+      fromDate: dateRange.fromDay ? startOfLocalDay(dateRange.fromDay) : undefined,
+      toDate: dateRange.toDay ? endOfLocalDay(dateRange.toDay) : undefined,
+    }),
+    [dateRange]
+  );
+
   const setAndResetPage =
     <T,>(apply: (value: T) => void) =>
     (value: T) => {
@@ -72,12 +63,11 @@ export function useLogFilters(initialSearch: string) {
       logType: asParam(logType),
       severity: asParam(severity),
       sort: "desc" as const,
-      ...dateRange,
+      ...dateParams,
     }),
-    [page, search, role, logType, severity, dateRange]
+    [page, search, role, logType, severity, dateParams]
   );
 
-  /** The same filters without paging, for an export of the whole result set. */
   const exportParams = useMemo(
     () => ({
       search: search || undefined,
@@ -85,9 +75,9 @@ export function useLogFilters(initialSearch: string) {
       logType: asParam(logType),
       severity: asParam(severity),
       sort: "desc" as const,
-      ...dateRange,
+      ...dateParams,
     }),
-    [search, role, logType, severity, dateRange]
+    [search, role, logType, severity, dateParams]
   );
 
   return {
@@ -118,4 +108,4 @@ export function useLogFilters(initialSearch: string) {
       severity !== "all" ||
       datePreset !== DEFAULT_DATE_PRESET,
   };
-}
+};

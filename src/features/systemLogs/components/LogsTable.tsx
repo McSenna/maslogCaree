@@ -23,14 +23,7 @@ type LogsTableProps = {
   onSelect: (log: SystemLog) => void;
 };
 
-/**
- * Desktop System Logs table.
- *
- * Deliberately a bare table, not a card: the page wraps it in the same white
- * container User Management uses, with the pagination as that container's
- * footer, so the two admin tables are one design rather than two lookalikes.
- */
-export default function LogsTable({ logs, selectedId, onSelect }: LogsTableProps) {
+const LogsTable = ({ logs, selectedId, onSelect }: LogsTableProps) => {
   const palette = useSystemLogsPalette();
   const [checkedIds, setCheckedIds] = useState<Set<string>>(new Set());
 
@@ -53,8 +46,6 @@ export default function LogsTable({ logs, selectedId, onSelect }: LogsTableProps
 
   return (
     <View className="w-full" accessibilityLabel="System logs table">
-      {/* Header — deliberately light: a dark strip would fight the summary
-          cards for attention on a page that is mostly table. */}
       <View
         className="w-full flex-row items-center"
         style={{
@@ -94,4 +85,6 @@ export default function LogsTable({ logs, selectedId, onSelect }: LogsTableProps
       ))}
     </View>
   );
-}
+};
+
+export default LogsTable;

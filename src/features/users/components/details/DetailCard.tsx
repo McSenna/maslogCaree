@@ -8,18 +8,10 @@ type DetailCardProps = {
   icon: keyof typeof Feather.glyphMap;
   title: string;
   children: ReactNode;
-  /** Lets a card fill the height of a two-card column beside a taller one. */
   grow?: boolean;
 };
 
-/**
- * The bordered white card the dialog's three sections share.
- *
- * Extracted only because the header — tinted icon tile, title, hairline under
- * both — has to be pixel-identical across the three; the bodies have nothing in
- * common and stay with their own components.
- */
-export default function DetailCard({ icon, title, children, grow = false }: DetailCardProps) {
+const DetailCard = ({ icon, title, children, grow = false }: DetailCardProps) => {
   const palette = useUserDetailsPalette();
 
   return (
@@ -50,4 +42,6 @@ export default function DetailCard({ icon, title, children, grow = false }: Deta
       <View className="px-5 py-2">{children}</View>
     </View>
   );
-}
+};
+
+export default DetailCard;

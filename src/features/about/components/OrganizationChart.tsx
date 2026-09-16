@@ -12,8 +12,7 @@ type OrganizationChartProps = {
   isTablet: boolean;
 };
 
-/** The health team, from the captain down to the health workers. */
-export default function OrganizationChart({ members, isTablet }: OrganizationChartProps) {
+const OrganizationChart = ({ members, isTablet }: OrganizationChartProps) => {
   const workers = healthWorkers(members);
 
   return (
@@ -96,4 +95,6 @@ export default function OrganizationChart({ members, isTablet }: OrganizationCha
       <BhwGrid members={workers} isTablet={isTablet} />
     </View>
   );
-}
+};
+
+export default OrganizationChart;

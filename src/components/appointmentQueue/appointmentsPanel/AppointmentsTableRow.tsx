@@ -16,21 +16,18 @@ type AppointmentsTableRowProps = RowActionProps & {
   palette: QueuePalette;
 };
 
-/** One appointment as a table row. */
-export default function AppointmentsTableRow({
+const AppointmentsTableRow = ({
   appointment,
   index,
   serviceLabel,
   isLast,
   palette,
   ...actions
-}: AppointmentsTableRowProps) {
+}: AppointmentsTableRowProps) => {
   const [hovered, setHovered] = useState(false);
   const when = scheduleFor(appointment);
   const open = actions.onRowPress;
 
-  // Pressable only where there is something to open, so a row never offers a
-  // press that does nothing.
   const Row = open ? Pressable : View;
 
   return (
@@ -109,4 +106,6 @@ export default function AppointmentsTableRow({
       ) : null}
     </Row>
   );
-}
+};
+
+export default AppointmentsTableRow;

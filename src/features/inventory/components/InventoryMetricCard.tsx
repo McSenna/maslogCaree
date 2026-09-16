@@ -13,17 +13,11 @@ export type InventoryMetricCardProps = {
   label: string;
   value: number;
   description: string;
-  /**
-   * Percentage change against a month ago. Null where the data cannot support
-   * one, in which case the pill is simply not drawn rather than showing a
-   * figure the records do not carry.
-   */
   growth?: number | null;
-  /** Phone layout: 2x2 grid, so the card stacks instead of running in a row. */
   compact?: boolean;
 };
 
-function TrendPill({ growth, compact }: { growth: number; compact: boolean }) {
+const TrendPill = ({ growth, compact }: { growth: number; compact: boolean }) => {
   const palette = useInventoryPalette();
   const isUp = growth >= 0;
   const tone = isUp ? palette.trends.up : palette.trends.down;
@@ -44,16 +38,16 @@ function TrendPill({ growth, compact }: { growth: number; compact: boolean }) {
       </Text>
     </View>
   );
-}
+};
 
-export default function InventoryMetricCard({
+const InventoryMetricCard = ({
   metric,
   label,
   value,
   description,
   growth,
   compact = false,
-}: InventoryMetricCardProps) {
+}: InventoryMetricCardProps) => {
   const palette = useInventoryPalette();
   const tone = palette.metrics[metric];
   const showTrend = typeof growth === "number" && Number.isFinite(growth);
@@ -68,9 +62,6 @@ export default function InventoryMetricCard({
   const accessibilityLabel = [label, String(value), description].filter(Boolean).join(", ");
 
   if (compact) {
-    // Two cards to a 360–430px row leave roughly 100px beside the icon, which
-    // is not enough for "Expiring Soon" and its caption to sit there. The icon
-    // and trend pill take the top line so each text line gets the full width.
     return (
       <View
         accessible
@@ -150,4 +141,6 @@ export default function InventoryMetricCard({
       </View>
     </View>
   );
-}
+};
+
+export default InventoryMetricCard;

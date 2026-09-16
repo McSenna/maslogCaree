@@ -2,8 +2,7 @@ import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { HC } from "../constants/aboutTheme";
 
-/** The closing reassurance that this is a private, local service. */
-export default function AboutSecurityNote({ isTablet }: { isTablet: boolean }) {
+const AboutSecurityNote = ({ isTablet }: { isTablet: boolean }) => {
   return (
     <View
       style={{
@@ -22,4 +21,6 @@ export default function AboutSecurityNote({ isTablet }: { isTablet: boolean }) {
       </Text>
     </View>
   );
-}
+};
+
+export default AboutSecurityNote;

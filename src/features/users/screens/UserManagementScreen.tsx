@@ -8,18 +8,7 @@ import UsersToolbar from "../components/UsersToolbar";
 import { useUsersPalette } from "../components/usersTheme";
 import { useUserManagementScreen } from "../hooks/useUserManagementScreen";
 
-/**
- * User Management.
- *
- * Every account in the barangay system, with the admin's two powers over them:
- * seeing the full record, and suspending or reactivating access. Accounts are
- * created through public registration, not here.
- *
- * The table and card layouts are chosen by measured content width rather than
- * window width — the admin sidebar owns a fixed slice of the viewport, so the
- * window alone would put the table into a layout the page has no room for.
- */
-export default function UserManagementScreen() {
+const UserManagementScreen = () => {
   const palette = useUsersPalette();
   const controller = useUserManagementScreen();
 
@@ -45,4 +34,6 @@ export default function UserManagementScreen() {
       <UsersOverlays controller={controller} />
     </View>
   );
-}
+};
+
+export default UserManagementScreen;

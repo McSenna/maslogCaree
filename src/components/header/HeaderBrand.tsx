@@ -11,7 +11,6 @@ type HeaderBrandProps = {
 const TAGLINE = "Healthy Communities, Brighter Tomorrow";
 const TAGLINE_COMPACT = "Healthy Community, Brighter Tomorrow";
 
-/** Logo + wordmark + tagline, pinned to the left edge of the header. */
 const HeaderBrand = ({ compact, isDark, onPress }: HeaderBrandProps) => {
   const palette = getHeaderPalette(isDark);
 

@@ -12,14 +12,12 @@ type InventoryTableCardProps = {
   items: InventoryItem[];
   loading: boolean;
   error: string | null;
-  /** Shown in place of the table when there is nothing to draw. */
   fallback: ReactNode;
   selectedId: string | null;
   onSelectItem: (item: InventoryItem) => void;
   checkedIds: ReadonlySet<string>;
   onToggleItem: (itemId: string, next: boolean) => void;
   onToggleAll: (next: boolean) => void;
-  /** Measured width of the table area, so the columns can keep their proportions. */
   tableAreaWidth: number;
   onTableAreaWidth: (width: number) => void;
   page: number;
@@ -28,8 +26,7 @@ type InventoryTableCardProps = {
   onPageChange: (page: number) => void;
 };
 
-/** Desktop: the table and its pagination inside one white section. */
-export default function InventoryTableCard({
+const InventoryTableCard = ({
   items,
   loading,
   error,
@@ -45,7 +42,7 @@ export default function InventoryTableCard({
   totalPages,
   total,
   onPageChange,
-}: InventoryTableCardProps) {
+}: InventoryTableCardProps) => {
   const palette = useInventoryPalette();
 
   return (
@@ -63,8 +60,6 @@ export default function InventoryTableCard({
       ) : error || items.length === 0 ? (
         fallback
       ) : (
-        // Below TABLE_MIN_WIDTH the ten columns cramp, so the table keeps its
-        // proportions and scrolls sideways instead of squeezing.
         <View
           className="w-full"
           onLayout={(event) => {
@@ -102,4 +97,6 @@ export default function InventoryTableCard({
       ) : null}
     </View>
   );
-}
+};
+
+export default InventoryTableCard;

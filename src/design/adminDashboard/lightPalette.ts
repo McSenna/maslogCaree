@@ -1,0 +1,58 @@
+import type { AdminDashboardPalette } from "./paletteTypes";
+
+export const light: AdminDashboardPalette = {
+  pageBg: "#F8FBFF",
+  cardBg: "#FFFFFF",
+  cardBorder: "#E7EEF7",
+  divider: "#EEF3FA",
+  heading: "#0F2557",
+  body: "#334155",
+  muted: "#64748B",
+  subtle: "#94A3B8",
+  primary: "#1677FF",
+  positive: "#22C55E",
+  negative: "#F43F5E",
+  bannerBg: "#EAF3FF",
+  bannerBorder: "#D7E7FC",
+  bannerArt: "#B6D4F5",
+  bannerArtSoft: "#D3E6FB",
+  skeleton: "#E8EFF8",
+  menuBg: "#FFFFFF",
+  menuBorder: "#E7EEF7",
+  statusActive: "#22C55E",
+  statusInactive: "#94A3B8",
+  tones: {
+    blue: {
+      cardBg: "#F1F7FF",
+      cardBorder: "#DCEAFD",
+      iconBg: "#DBEAFE",
+      icon: "#1677FF",
+      label: "#1677FF",
+    },
+    green: {
+      cardBg: "#F1FBF5",
+      cardBorder: "#D6F2E1",
+      iconBg: "#DCFCE7",
+      icon: "#16A34A",
+      label: "#16A34A",
+    },
+    pink: {
+      cardBg: "#FFF3F5",
+      cardBorder: "#FBDCE3",
+      iconBg: "#FFE4E9",
+      icon: "#F43F5E",
+      label: "#F43F5E",
+    },
+    purple: {
+      cardBg: "#F6F4FF",
+      cardBorder: "#E5DEFB",
+      iconBg: "#EDE9FE",
+      icon: "#8B5CF6",
+      label: "#8B5CF6",
+    },
+  },
+  trends: {
+    up: { text: "#15803D", bg: "#DCFCE7" },
+    down: { text: "#BE123C", bg: "#FFE4E6" },
+  },
+};

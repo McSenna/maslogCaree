@@ -4,40 +4,16 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { AppointmentRecord } from "@/services/appointments";
 
-/** Below this the two content columns stack. */
 export const TWO_COLUMN_WIDTH = 1100;
-/** Below this the appointments table becomes cards. */
 export const TABLE_WIDTH = 820;
-/** Below this the four stat cards become a 2 x 2 grid. */
 export const FOUR_CARD_WIDTH = 900;
 
 export const QUEUE_RADIUS = { panel: 16, card: 14, control: 12, pill: 999 } as const;
 
-/** Every status the API stores. */
 export type AppointmentStatus = AppointmentRecord["status"];
 
-/**
- * The tabs on the Appointments panel.
- *
- * Approved is deliberately absent. An approved appointment needs no management
- * screen — it is scheduled, and the next thing that happens to it is being
- * served — so it flows straight into the queue panel above instead of sitting
- * in a tab waiting for somebody to look at it. What is left are the three
- * standings a health worker actually goes looking for: what still needs a
- * slot, what is finished, and what was turned down.
- *
- * `confirmed`, `rescheduled` and `processing` are still first-class statuses
- * and still reachable — through the queue, which is where work on them happens.
- */
 export const STATUS_ORDER: AppointmentStatus[] = ["pending", "completed", "declined"];
 
-/**
- * The statuses that put an appointment in a provider's active queue.
- *
- * A mirror of the server's `QUEUE_ACTIVE_STATUSES`. Completing removes an
- * appointment from this set, which is the whole mechanism by which a served
- * patient leaves the queue.
- */
 export const ACTIVE_QUEUE_STATUSES: AppointmentStatus[] = ["confirmed", "rescheduled", "processing"];
 
 export const STATUS_LABELS: Record<AppointmentStatus, string> = {
@@ -56,18 +32,9 @@ export type StatCardSpec = {
   label: string;
   tone: StatTone;
   icon: keyof typeof Feather.glyphMap;
-  /** The quiet line under the figure. */
   caption: string;
 };
 
-/**
- * The four figures on the header row.
- *
- * Each is countable from the appointment record itself. "Current Queue" and
- * "Completed Today" from the original design are absent on purpose — this
- * system has no queue subsystem and no completed state, and a card showing a
- * number nothing computes is worse than no card.
- */
 export const STAT_CARDS: StatCardSpec[] = [
   { key: "today", label: "Today's Appointments", tone: "blue", icon: "calendar", caption: "booked for today" },
   { key: "pending", label: "Pending Requests", tone: "amber", icon: "clock", caption: "awaiting a slot" },
@@ -75,7 +42,7 @@ export const STAT_CARDS: StatCardSpec[] = [
   { key: "declined", label: "Declined", tone: "purple", icon: "x-circle", caption: "not scheduled" },
 ];
 
-export function useQueuePalette() {
+export const useQueuePalette = () => {
   const { resolvedTheme } = useTheme();
 
   return useMemo(() => {
@@ -83,15 +50,7 @@ export function useQueuePalette() {
 
     return {
       isDark,
-      /**
-       * The page ground behind the panels.
-       *
-       * Taken from the admin dashboard palette rather than named here, so this
-       * page sits on the same cool near-white as Inventory and User Management
-       * instead of the navigator's plain white.
-       */
       pageBg: getAdminDashboardPalette(resolvedTheme).pageBg,
-      /** The faint wash a table row takes on hover. Never the page. */
       rowHover: isDark ? "#0B1220" : "#F5F9FF",
       panelBg: isDark ? "#0F172A" : "#FFFFFF",
       panelBorder: isDark ? "#1E293B" : "#E4ECF5",
@@ -102,40 +61,28 @@ export function useQueuePalette() {
       subtle: isDark ? "#64748B" : "#94A3B8",
       primary: isDark ? "#60A5FA" : "#1F7AF8",
       primarySoft: isDark ? "rgba(37,99,235,0.16)" : "#EAF4FF",
-      /** Stat-card icon wells. */
       tones: {
         blue: { bg: isDark ? "rgba(37,99,235,0.16)" : "#EAF2FF", fg: isDark ? "#93C5FD" : "#1F7AF8" },
         green: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#10B981" },
         purple: { bg: isDark ? "rgba(139,92,246,0.16)" : "#F1ECFF", fg: isDark ? "#C4B5FD" : "#8B5CF6" },
         amber: { bg: isDark ? "rgba(245,158,11,0.14)" : "#FFF4E0", fg: isDark ? "#FCD34D" : "#F59E0B" },
       } as Record<StatTone, { bg: string; fg: string }>,
-      /** Status pills — soft fills, never saturated blocks. */
       statuses: {
         pending: { bg: isDark ? "rgba(245,158,11,0.16)" : "#FFF4E0", fg: isDark ? "#FCD34D" : "#B45309", dot: "#F59E0B" },
         confirmed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },
         rescheduled: { bg: isDark ? "rgba(37,99,235,0.16)" : "#EAF2FF", fg: isDark ? "#93C5FD" : "#1D4ED8", dot: "#1F7AF8" },
         declined: { bg: isDark ? "rgba(239,68,68,0.14)" : "#FEF1F1", fg: isDark ? "#FCA5A5" : "#B91C1C", dot: "#EF4444" },
-        /** Being served now — the one status that is actively moving. */
         processing: { bg: isDark ? "rgba(139,92,246,0.16)" : "#F1ECFF", fg: isDark ? "#C4B5FD" : "#6D28D9", dot: "#8B5CF6" },
-        /** Finished. A quiet success green, not a second call to action. */
         completed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },
       } as Record<AppointmentStatus, { bg: string; fg: string; dot: string }>,
       skeleton: isDark ? "#1E293B" : "#EDF2F9",
     };
   }, [resolvedTheme]);
-}
+};
 
 export type QueuePalette = ReturnType<typeof useQueuePalette>;
 
-/**
- * "Maria Teresa Dela Cruz" → "MT".
- *
- * The first two given names rather than first-and-surname: Filipino names
- * routinely carry a compound surname ("Dela Cruz"), so taking the last word
- * picks up "Cruz" and two patients in the same family become indistinguishable
- * in the avatar. The forenames separate them.
- */
-export function initialsOf(name: string | null | undefined): string {
+export const initialsOf = (name: string | null | undefined): string => {
   const words = (name ?? "").trim().split(/\s+/).filter(Boolean);
   if (!words.length) return "?";
   return words
@@ -143,4 +90,4 @@ export function initialsOf(name: string | null | undefined): string {
     .map((word) => word[0] ?? "")
     .join("")
     .toUpperCase();
-}
+};

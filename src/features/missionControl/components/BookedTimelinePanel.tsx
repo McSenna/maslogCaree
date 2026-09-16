@@ -7,11 +7,10 @@ type BookedTimelinePanelProps = {
   onReschedule: (appointment: AppointmentRecord) => void;
 };
 
-/** The selected mission's confirmed slots, in the order the day runs. */
-export default function BookedTimelinePanel({
+const BookedTimelinePanel = ({
   timeline,
   onReschedule,
-}: BookedTimelinePanelProps) {
+}: BookedTimelinePanelProps) => {
   return (
     <View className="rounded-2xl border border-slate-200 bg-white p-4">
       <Text className="text-lg font-semibold text-slate-900">Booked timeline</Text>
@@ -41,4 +40,6 @@ export default function BookedTimelinePanel({
       )}
     </View>
   );
-}
+};
+
+export default BookedTimelinePanel;

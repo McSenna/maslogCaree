@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
+import { useNavLinkPress } from "../useNavLinkPress";
 import { useEffect, useRef } from "react";
 import { Animated, Pressable, View } from "react-native";
 import { BOTTOM_NAV_ROW_HEIGHT } from "@/constants/layout";
@@ -15,18 +16,9 @@ type BottomNavItemProps = {
   item: BottomNavEntry;
   isActive: boolean;
   palette: BottomNavPalette;
-  /** Replace the history entry instead of pushing (public marketing tabs). */
   replace?: boolean;
 };
 
-/**
- * A single tab: soft blue pill behind the icon when active, muted slate when
- * not. Every tab is `flex: 1`, so 3 through 6 of them stay evenly balanced —
- * six is the most any role carries, and at 360px that still leaves each tab
- * wider than the active pill it has to hold.
- *
- * Icon-only by design — `item.label` is still what a screen reader announces.
- */
 const BottomNavItem = ({
   item,
   isActive,
@@ -52,7 +44,6 @@ const BottomNavItem = ({
     }).start();
   };
 
-  // A single restrained lift on selection — no bounce, no oversized scaling.
   const iconScale = activeAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [1, 1.06],
@@ -60,8 +51,10 @@ const BottomNavItem = ({
 
   const color = isActive ? palette.active : palette.inactive;
 
+  const handlePress = useNavLinkPress(item.href, replace);
+
   return (
-    <Link href={item.href as never} asChild replace={replace}>
+    <Link href={item.href as never} asChild replace={replace} onPress={handlePress}>
       <Pressable
         accessibilityRole="tab"
         accessibilityLabel={item.accessibilityLabel ?? `${item.label} tab`}
@@ -73,15 +66,12 @@ const BottomNavItem = ({
         }
         onPressIn={() => animatePress(0.94)}
         onPressOut={() => animatePress(1)}
-        // Ripple stays inside the pill radius instead of flooding the tab.
         android_ripple={{
           color: `${palette.active}14`,
           borderless: true,
           radius: 32,
         }}
         style={{
-          // Equal width for every tab, and a row taller than the 48px minimum
-          // touch target — the whole cell is tappable, not just the glyph.
           flex: 1,
           minHeight: Math.max(
             BOTTOM_NAV_ROW_HEIGHT,

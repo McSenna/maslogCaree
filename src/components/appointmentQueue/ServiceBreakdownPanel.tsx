@@ -4,7 +4,6 @@ import type { ServiceBreakdownRow } from "@/services/appointments";
 import QueuePanel from "./QueuePanel";
 import { useQueuePalette } from "./queueTheme";
 
-/** One icon per service, so a row is recognisable before it is read. */
 const SERVICE_ICONS: Record<string, keyof typeof Feather.glyphMap> = {
   consultation: "message-circle",
   general_checkup: "clipboard",
@@ -13,21 +12,13 @@ const SERVICE_ICONS: Record<string, keyof typeof Feather.glyphMap> = {
   bp_checking: "activity",
 };
 
-/**
- * How the caller's own caseload divides across their services.
- *
- * Only the signed-in role's services are listed — a BHW sees BP Checking and
- * nothing else, not four zero rows for work that will never reach them. A
- * service the role does own is shown even at zero, because "none today" is
- * itself the answer to the question the panel asks.
- */
-export default function ServiceBreakdownPanel({
+const ServiceBreakdownPanel = ({
   rows,
   loading,
 }: {
   rows: ServiceBreakdownRow[];
   loading: boolean;
-}) {
+}) => {
   const palette = useQueuePalette();
   const max = Math.max(1, ...rows.map((row) => row.count));
 
@@ -64,8 +55,6 @@ export default function ServiceBreakdownPanel({
                 {row.label}
               </Text>
 
-              {/* Bars are scaled against the busiest service, not a fixed
-                  ceiling, so the shape stays readable at any volume. */}
               <View
                 className="min-w-0 flex-1 overflow-hidden"
                 style={{ height: 8, borderRadius: 999, backgroundColor: palette.skeleton }}
@@ -92,4 +81,6 @@ export default function ServiceBreakdownPanel({
       )}
     </QueuePanel>
   );
-}
+};
+
+export default ServiceBreakdownPanel;

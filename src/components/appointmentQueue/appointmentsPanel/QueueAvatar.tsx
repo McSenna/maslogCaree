@@ -1,14 +1,13 @@
 import { Text, View } from "react-native";
 import { initialsOf, type QueuePalette } from "../queueTheme";
 
-/** A patient's initials, where a photo would go. */
-export default function QueueAvatar({
+const QueueAvatar = ({
   name,
   palette,
 }: {
   name: string;
   palette: QueuePalette;
-}) {
+}) => {
   return (
     <View
       className="h-9 w-9 items-center justify-center rounded-full"
@@ -19,4 +18,6 @@ export default function QueueAvatar({
       </Text>
     </View>
   );
-}
+};
+
+export default QueueAvatar;

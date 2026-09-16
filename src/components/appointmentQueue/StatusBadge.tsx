@@ -6,13 +6,7 @@ import {
   type AppointmentStatus,
 } from "./queueTheme";
 
-/**
- * An appointment's standing, as a soft pill.
- *
- * The wording carries the meaning and the colour only reinforces it, so the
- * status is never communicated by hue alone.
- */
-export default function StatusBadge({ status }: { status: AppointmentStatus }) {
+const StatusBadge = ({ status }: { status: AppointmentStatus }) => {
   const palette = useQueuePalette();
   const tone = palette.statuses[status] ?? palette.statuses.pending;
 
@@ -29,4 +23,6 @@ export default function StatusBadge({ status }: { status: AppointmentStatus }) {
       </Text>
     </View>
   );
-}
+};
+
+export default StatusBadge;

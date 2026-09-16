@@ -1,6 +1,5 @@
 import { Platform } from "react-native";
 
-/** The system face on each platform; Inter where the web can load it. */
 export const FONT_FAMILY = Platform.select({
   ios: "System",
   android: "sans-serif",

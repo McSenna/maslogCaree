@@ -5,17 +5,9 @@ import { CARD, CARD_SHADOW, RESIDENT_COLORS, TONES } from "./residentTheme";
 
 type StatCardProps = {
   stat: StatItem;
-  /** Phone layout: the icon sits above the text instead of beside it. */
   compact?: boolean;
 };
 
-/**
- * One summary figure.
- *
- * Desktop lays the pastel icon tile beside the text, as the design does; the
- * phone's 2-column grid has roughly half the width, so it stacks instead of
- * squeezing the label to two words.
- */
 const StatCard = ({ stat, compact = false }: StatCardProps) => {
   const tone = TONES[stat.tone];
 

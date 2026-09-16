@@ -22,37 +22,19 @@ type AssignSlotModalProps = {
   onSubmit: () => void;
 };
 
-/**
- * Whether this service lets the health worker set the slot length.
- *
- * A category with a minimum is a range. The two named keys are grandfathered:
- * they predate the catalogue carrying its own bounds and are still open-ended
- * on the server, so the field stays available for them.
- */
-function allowsCustomDuration(
+const allowsCustomDuration = (
   categories: ConsultationCategory[],
   categoryKey: string
-): boolean {
+): boolean => {
   const category = categories.find((entry) => entry.key === categoryKey);
   return (
     category?.durationMinutesMin != null ||
     categoryKey === "general_checkup" ||
     categoryKey === "consultation"
   );
-}
+};
 
-/**
- * Placing a patient into a mission's slot, or moving one already placed.
- *
- * Every offered time comes from the server: it owns the mission's capacity and
- * the no-overlap rule, so this sheet loads what is free rather than computing
- * it from the timeline it happens to be showing.
- *
- * Deliberately carries no `onRequestClose`, matching the screen this was
- * extracted from: the Android back button does not dismiss this sheet. Worth
- * revisiting, but changing it here would change behaviour.
- */
-export default function AssignSlotModal({
+const AssignSlotModal = ({
   visible,
   mode,
   mission,
@@ -69,7 +51,7 @@ export default function AssignSlotModal({
   onLoadSlots,
   onClose,
   onSubmit,
-}: AssignSlotModalProps) {
+}: AssignSlotModalProps) => {
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View className="flex-1 justify-end bg-black/40">
@@ -161,4 +143,6 @@ export default function AssignSlotModal({
       </View>
     </Modal>
   );
-}
+};
+
+export default AssignSlotModal;

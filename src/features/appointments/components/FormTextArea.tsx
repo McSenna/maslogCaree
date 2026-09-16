@@ -17,14 +17,7 @@ type FormTextAreaProps = {
   minHeight?: number;
 };
 
-/**
- * Multi-line field with a live character count.
- *
- * The counter sits inside the box, bottom-right, and the input's own
- * `maxLength` enforces the ceiling — so the count describes what the field
- * will accept rather than warning about something it already let through.
- */
-export default function FormTextArea({
+const FormTextArea = ({
   label,
   required = false,
   optional = false,
@@ -35,7 +28,7 @@ export default function FormTextArea({
   error = null,
   maxLength = TEXT_LIMIT,
   minHeight = 96,
-}: FormTextAreaProps) {
+}: FormTextAreaProps) => {
   const [focused, setFocused] = useState(false);
   const hasError = Boolean(error);
 
@@ -112,4 +105,6 @@ export default function FormTextArea({
       ) : null}
     </View>
   );
-}
+};
+
+export default FormTextArea;

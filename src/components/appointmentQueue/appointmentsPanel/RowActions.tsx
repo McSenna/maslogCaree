@@ -6,27 +6,14 @@ import { QUEUE_RADIUS, useQueuePalette, type QueuePalette } from "../queueTheme"
 
 export type RowActionProps = {
   appointment: AppointmentRecord;
-  /**
-   * Omitted by a read-only queue.
-   *
-   * Optional rather than a no-op the caller has to invent: a screen whose
-   * `canAct` is false never draws a control that could call these, so
-   * requiring the handlers would only ask it to supply functions that can
-   * never run.
-   */
   onApprove?: (appointment: AppointmentRecord) => void;
   onMore?: (appointment: AppointmentRecord) => void;
   busyId: string | null;
-  /** False for a role that may read this queue but not act on it. */
   canAct: boolean;
-  /**
-   * Opening the row itself. Set for a completed row, whose record is the
-   * point of it; unset elsewhere, where a row has nothing behind it to show.
-   */
   onRowPress?: (appointment: AppointmentRecord) => void;
 };
 
-function ApproveButton({
+const ApproveButton = ({
   onPress,
   palette,
   busy,
@@ -34,7 +21,7 @@ function ApproveButton({
   onPress: () => void;
   palette: QueuePalette;
   busy: boolean;
-}) {
+}) => {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -55,9 +42,9 @@ function ApproveButton({
       <Text className="text-[13px] font-semibold text-white">Approve</Text>
     </Pressable>
   );
-}
+};
 
-function MoreButton({
+const MoreButton = ({
   onPress,
   palette,
   label,
@@ -65,13 +52,12 @@ function MoreButton({
   onPress: () => void;
   palette: QueuePalette;
   label: string;
-}) {
+}) => {
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label}
-      // A 20px glyph carried to a 44px touch target.
       hitSlop={12}
       className="h-9 w-9 items-center justify-center"
       style={{
@@ -83,27 +69,21 @@ function MoreButton({
       <Feather name="more-horizontal" size={18} color={palette.muted} />
     </Pressable>
   );
-}
+};
 
-/** The controls on one appointment row, in a table or on a card. */
-export default function RowActions({
+const RowActions = ({
   appointment,
   onApprove,
   onMore,
   busyId,
   canAct,
-}: RowActionProps) {
+}: RowActionProps) => {
   const palette = useQueuePalette();
 
-  // A read-only queue shows no controls at all, rather than controls the API
-  // would refuse.
   if (!canAct) return null;
 
   return (
     <View className="flex-row items-center gap-2">
-      {/* Approve only where it means something: a request that has not yet
-          been given a slot. Anything already scheduled is changed through the
-          menu, not re-approved. */}
       {appointment.status === "pending" ? (
         <ApproveButton
           onPress={() => onApprove?.(appointment)}
@@ -118,4 +98,6 @@ export default function RowActions({
       />
     </View>
   );
-}
+};
+
+export default RowActions;

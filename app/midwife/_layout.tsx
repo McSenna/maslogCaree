@@ -1,21 +1,26 @@
 import { Stack } from "expo-router";
 import RoleLayout from "@/components/layout/RoleLayout";
+import { screenTransition, useReducedMotion } from "@/design/motion";
 import RouteGuard from "@/components/layout/RouteGuard";
 import {
   midwifeNavItems,
   midwifeBottomNavItems,
 } from "@/config/roleNavConfig";
 
-export default function MidwifeLayout() {
+const MidwifeLayout = () => {
+  const reducedMotion = useReducedMotion();
+
   return (
-    <RouteGuard role="midwife">
-      <RoleLayout
-        sidebarItems={midwifeNavItems}
-        bottomNavItems={midwifeBottomNavItems}
-        roleLabel="MidWife"
-      >
-        <Stack screenOptions={{ headerShown: false, animation: "none" }} />
-      </RoleLayout>
-    </RouteGuard>
+    <RoleLayout
+      sidebarItems={midwifeNavItems}
+      bottomNavItems={midwifeBottomNavItems}
+      roleLabel="MidWife"
+    >
+      <RouteGuard role="midwife">
+        <Stack screenOptions={{ headerShown: false, ...screenTransition(reducedMotion) }} />
+      </RouteGuard>
+    </RoleLayout>
   );
-}
+};
+
+export default MidwifeLayout;

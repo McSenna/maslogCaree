@@ -4,15 +4,7 @@ import RoleBadge from "../RoleBadge";
 import DetailCard from "./DetailCard";
 import { DETAIL_RADIUS, ROLE_PERMISSIONS, useUserDetailsPalette } from "./detailsTheme";
 
-/**
- * What this role is allowed to reach.
- *
- * The copy is per-role and describes only the surface that role actually has —
- * an administrator reading this is often deciding whether to change the role,
- * and a generic "full access" line would make every account look the same at
- * the exact moment the difference matters.
- */
-export default function UserPermissionsCard({ user }: { user: AdminUser }) {
+const UserPermissionsCard = ({ user }: { user: AdminUser }) => {
   const palette = useUserDetailsPalette();
 
   return (
@@ -32,4 +24,6 @@ export default function UserPermissionsCard({ user }: { user: AdminUser }) {
       </View>
     </DetailCard>
   );
-}
+};
+
+export default UserPermissionsCard;

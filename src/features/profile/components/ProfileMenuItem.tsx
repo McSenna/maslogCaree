@@ -16,7 +16,7 @@ export type ProfileMenuItemProps = {
 };
 
 
-export default function ProfileMenuItem({
+const ProfileMenuItem = ({
   label,
   icon,
   value,
@@ -24,7 +24,7 @@ export default function ProfileMenuItem({
   onPress,
   variant = "default",
   showBorder = false,
-}: ProfileMenuItemProps) {
+}: ProfileMenuItemProps) => {
   const isDanger = variant === "danger";
 
   const rowClass = `flex-row items-center justify-between px-4 py-3 ${
@@ -80,4 +80,6 @@ export default function ProfileMenuItem({
       {inner}
     </Pressable>
   );
-}
+};
+
+export default ProfileMenuItem;

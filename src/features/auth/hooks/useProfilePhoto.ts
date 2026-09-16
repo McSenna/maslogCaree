@@ -2,20 +2,13 @@ import { useCallback, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { showAlert } from "@/utils/notify";
 
-/**
- * The chosen photo, as a base64 data URI.
- *
- * Stored inline rather than as a file path because the record is kept in
- * MongoDB: a local filesystem URI would be meaningless to the server and
- * unreadable from any other device.
- */
-function toDataUri(asset: ImagePicker.ImagePickerAsset): string | null {
+const toDataUri = (asset: ImagePicker.ImagePickerAsset): string | null => {
   if (!asset.base64) return null;
   const rawType = asset.type ? String(asset.type) : "";
   const mime =
     asset.mimeType || (rawType ? (rawType.includes("/") ? rawType : `image/${rawType}`) : "image/jpeg");
   return `data:${mime};base64,${asset.base64}`;
-}
+};
 
 const PICKER_OPTIONS = {
   allowsEditing: true,
@@ -24,13 +17,7 @@ const PICKER_OPTIONS = {
   base64: true,
 };
 
-/**
- * Choosing a profile photo from the camera or the gallery.
- *
- * Both routes end the same way — permission, pick, encode — so they share
- * everything but the permission request and the picker they call.
- */
-export function useProfilePhoto(onPicked?: () => void) {
+export const useProfilePhoto = (onPicked?: () => void) => {
   const [photo, setPhoto] = useState<string | null>(null);
 
   const applyResult = useCallback(
@@ -92,4 +79,4 @@ export function useProfilePhoto(onPicked?: () => void) {
   }, [takePhoto, pickFromGallery]);
 
   return { photo, setPhoto, choosePhoto };
-}
+};

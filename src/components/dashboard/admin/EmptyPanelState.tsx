@@ -8,8 +8,7 @@ type EmptyPanelStateProps = {
   message: string;
 };
 
-/** Keeps a panel readable when its query came back empty. */
-export default function EmptyPanelState({ palette, icon, message }: EmptyPanelStateProps) {
+const EmptyPanelState = ({ palette, icon, message }: EmptyPanelStateProps) => {
   return (
     <View className="items-center gap-2 py-8">
       <View
@@ -23,4 +22,6 @@ export default function EmptyPanelState({ palette, icon, message }: EmptyPanelSt
       </Text>
     </View>
   );
-}
+};
+
+export default EmptyPanelState;

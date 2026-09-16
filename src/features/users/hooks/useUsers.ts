@@ -9,17 +9,10 @@ export interface UseUsersReturn {
   refreshing: boolean;
   fetchUsers: () => Promise<void>;
   refreshUsers: () => Promise<void>;
-  /** Replaces one user in place — used after a mutation returns the updated record. */
   applyUserUpdate: (user: AdminUser) => void;
 }
 
-/**
- * Manages all Users API state.
- * - Fetches once on mount.
- * - Exposes fetchUsers() for retry and refreshUsers() for pull-to-refresh.
- * - Guards against duplicate in-flight requests.
- */
-export function useUsers(): UseUsersReturn {
+export const useUsers = (): UseUsersReturn => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +21,6 @@ export function useUsers(): UseUsersReturn {
   const fetchInFlightRef = useRef<Promise<void> | null>(null);
 
   const fetchUsers = useCallback(async () => {
-    // Prevent duplicate concurrent requests.
     if (fetchInFlightRef.current) return;
 
     setLoading(true);
@@ -52,10 +44,6 @@ export function useUsers(): UseUsersReturn {
     }
   }, []);
 
-  /**
-   * Triggered by pull-to-refresh — sets refreshing instead of loading
-   * so the native indicator shows instead of the full skeleton.
-   */
   const refreshUsers = useCallback(async () => {
     if (fetchInFlightRef.current) return;
 
@@ -84,10 +72,9 @@ export function useUsers(): UseUsersReturn {
     setUsers((prev) => prev.map((user) => (user._id === updated._id ? updated : user)));
   }, []);
 
-  // Fetch once on mount.
   useEffect(() => {
     void fetchUsers();
   }, [fetchUsers]);
 
   return { users, loading, error, refreshing, fetchUsers, refreshUsers, applyUserUpdate };
-}
+};

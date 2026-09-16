@@ -1,5 +1,7 @@
 import { Redirect, type Href } from "expo-router";
 
-export default function MidwifeIndex() {
+const MidwifeIndex = () => {
   return <Redirect href={"/midwife/dashboard" as Href} />;
-}
+};
+
+export default MidwifeIndex;

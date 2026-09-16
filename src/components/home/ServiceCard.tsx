@@ -16,16 +16,16 @@ export type ServiceCardItem = {
 
 type ServiceCardProps = ServiceCardItem;
 
-function hexToRgba(hex: string, alpha: number) {
+const hexToRgba = (hex: string, alpha: number) => {
   const normalized = hex.replace("#", "").trim();
   if (normalized.length !== 6) return `rgba(0,0,0,${alpha})`;
   const r = parseInt(normalized.slice(0, 2), 16);
   const g = parseInt(normalized.slice(2, 4), 16);
   const b = parseInt(normalized.slice(4, 6), 16);
   return `rgba(${r},${g},${b},${alpha})`;
-}
+};
 
-export default function ServiceCard({
+const ServiceCard = ({
   icon,
   label,
   desc,
@@ -34,7 +34,7 @@ export default function ServiceCard({
   iconBg,
   border,
   shadow,
-}: ServiceCardProps) {
+}: ServiceCardProps) => {
   const { width } = useWindowDimensions();
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -94,4 +94,6 @@ export default function ServiceCard({
       </Pressable>
     </Animated.View>
   );
-}
+};
+
+export default ServiceCard;

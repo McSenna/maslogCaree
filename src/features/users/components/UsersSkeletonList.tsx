@@ -2,12 +2,12 @@ import { View } from "react-native";
 import { CARD_SHADOW, RADIUS, useUsersPalette } from "./usersTheme";
 import { USER_COLUMNS } from "./usersTableColumns";
 
-function Bar({ width, height = 10 }: { width: number | `${number}%`; height?: number }) {
+const Bar = ({ width, height = 10 }: { width: number | `${number}%`; height?: number }) => {
   const palette = useUsersPalette();
   return <View style={{ width, height, borderRadius: 6, backgroundColor: palette.skeleton }} />;
-}
+};
 
-function MobileCardSkeleton({ dense }: { dense: boolean }) {
+const MobileCardSkeleton = ({ dense }: { dense: boolean }) => {
   const palette = useUsersPalette();
 
   return (
@@ -39,9 +39,9 @@ function MobileCardSkeleton({ dense }: { dense: boolean }) {
       </View>
     </View>
   );
-}
+};
 
-function TableRowSkeleton({ isLast }: { isLast: boolean }) {
+const TableRowSkeleton = ({ isLast }: { isLast: boolean }) => {
   const palette = useUsersPalette();
 
   return (
@@ -78,20 +78,19 @@ function TableRowSkeleton({ isLast }: { isLast: boolean }) {
       </View>
     </View>
   );
-}
+};
 
 type UsersSkeletonListProps = {
   count?: number;
-  /** true = cards (phone), false = table rows (desktop). */
   isMobile?: boolean;
   dense?: boolean;
 };
 
-export default function UsersSkeletonList({
+const UsersSkeletonList = ({
   count = 8,
   isMobile = false,
   dense = false,
-}: UsersSkeletonListProps) {
+}: UsersSkeletonListProps) => {
   if (isMobile) {
     return (
       <View className="w-full gap-2.5">
@@ -109,4 +108,6 @@ export default function UsersSkeletonList({
       ))}
     </View>
   );
-}
+};
+
+export default UsersSkeletonList;

@@ -2,13 +2,11 @@ import { Text, View } from "react-native";
 import type { SystemLogSeverity } from "@/features/systemLogs/services/systemLogService";
 import { useSystemLogsPalette } from "./systemLogsTheme";
 
-export default function SeverityIndicator({ severity }: { severity: SystemLogSeverity }) {
+const SeverityIndicator = ({ severity }: { severity: SystemLogSeverity }) => {
   const palette = useSystemLogsPalette();
   const tone = palette.severity[severity] ?? palette.severity.info;
 
   return (
-    // The dot is decorative — the label carries the meaning so severity is
-    // never conveyed by colour alone.
     <View
       accessibilityRole="text"
       accessibilityLabel={`Severity: ${tone.label}`}
@@ -20,4 +18,6 @@ export default function SeverityIndicator({ severity }: { severity: SystemLogSev
       </Text>
     </View>
   );
-}
+};
+
+export default SeverityIndicator;

@@ -11,15 +11,13 @@ import { useInventoryPalette } from "./inventoryTheme";
 
 type InventoryDesktopLayoutProps = {
   controller: InventoryScreenController;
-  /** The block shown in place of the table when there is nothing to draw. */
   emptyState: ReactNode;
 };
 
-/** Tablet and desktop: metric cards, a full-width toolbar, then table and details. */
-export default function InventoryDesktopLayout({
+const InventoryDesktopLayout = ({
   controller,
   emptyState,
-}: InventoryDesktopLayoutProps) {
+}: InventoryDesktopLayoutProps) => {
   const palette = useInventoryPalette();
   const { query, data, selection, mutations, detailsActions, sideBySide } = controller;
   const { filters } = query;
@@ -71,9 +69,6 @@ export default function InventoryDesktopLayout({
       <View className="w-full gap-5">
         <InventoryMetricCards summary={data.summary} isWide={controller.fourMetrics} />
 
-        {/* The toolbar sits above the split so the filters keep the full
-            content width, and its controls float on the page tint rather than
-            on a card — each one carries its own border in the design. */}
         <InventoryToolbar
           search={query.searchInput}
           onSearchChange={query.setSearchInput}
@@ -97,8 +92,6 @@ export default function InventoryDesktopLayout({
             <View style={{ width: PANEL_WIDTH }}>{detailsPanel}</View>
           </View>
         ) : (
-          // Between 820 and 1180px the table needs its full width, so the panel
-          // drops underneath it rather than squeezing the columns.
           <View className="w-full gap-4">
             {tableCard}
             {selection.panelItem ? detailsPanel : null}
@@ -107,4 +100,6 @@ export default function InventoryDesktopLayout({
       </View>
     </ScrollView>
   );
-}
+};
+
+export default InventoryDesktopLayout;

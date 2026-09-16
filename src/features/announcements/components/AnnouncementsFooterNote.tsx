@@ -1,8 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
-/** The closing note that everything listed is free to residents. */
-export default function AnnouncementsFooterNote({ isTablet }: { isTablet: boolean }) {
+const AnnouncementsFooterNote = ({ isTablet }: { isTablet: boolean }) => {
   return (
     <View className="flex-row items-center justify-center gap-2 py-3">
       <View className="rounded-full p-1.5" style={{ backgroundColor: "#F1F5F9" }}>
@@ -13,4 +12,6 @@ export default function AnnouncementsFooterNote({ isTablet }: { isTablet: boolea
       </Text>
     </View>
   );
-}
+};
+
+export default AnnouncementsFooterNote;

@@ -1,24 +1,9 @@
 import { Image, Text, View } from "react-native";
 import { SIDEBAR_METRICS, type SidebarPalette } from "./sidebarTheme";
 
-/**
- * The official Barangay 61 Maslog seal.
- *
- * The real artwork from the app's own assets, never redrawn — a government
- * seal is a mark of authority, and an approximation of one is worse than none.
- * `contain` on a square box so it cannot be stretched out of round.
- */
 const BARANGAY_SEAL = require("../../../../assets/images/maslogicon.png");
 
-/**
- * Whose system this is, at the head of the sidebar.
- *
- * The seal, the product name and the barangay's motto — the identity block the
- * header used to carry. Moving it here is what lets the header become a thin
- * bar of controls: the branding is stated once, at the top of the rail, rather
- * than repeated across the top of every page.
- */
-export default function SidebarBrand({ palette }: { palette: SidebarPalette }) {
+const SidebarBrand = ({ palette }: { palette: SidebarPalette }) => {
   return (
     <View className="w-full items-center">
       <Image
@@ -49,4 +34,6 @@ export default function SidebarBrand({ palette }: { palette: SidebarPalette }) {
       </Text>
     </View>
   );
-}
+};
+
+export default SidebarBrand;

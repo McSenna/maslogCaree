@@ -8,14 +8,7 @@ export type ToastState = { message: string; tone: ToastTone } | null;
 
 const AUTO_DISMISS_MS = 3500;
 
-/**
- * Local toast state for a screen.
- *
- * Deliberately not an app-wide provider: only this feature needs feedback so
- * far, and wrapping the root layout would touch navigation for every other
- * screen.
- */
-export function useToast() {
+export const useToast = () => {
   const [toast, setToast] = useState<ToastState>(null);
 
   const showToast = useCallback((message: string, tone: ToastTone = "success") => {
@@ -25,17 +18,15 @@ export function useToast() {
   const hideToast = useCallback(() => setToast(null), []);
 
   return { toast, showToast, hideToast };
-}
+};
 
 const TONES: Record<ToastTone, { bg: string; icon: keyof typeof Feather.glyphMap }> = {
   success: { bg: "#16A34A", icon: "check-circle" },
   error: { bg: "#EF4444", icon: "alert-circle" },
 };
 
-export default function Toast({ toast, onDismiss }: { toast: ToastState; onDismiss: () => void }) {
+const Toast = ({ toast, onDismiss }: { toast: ToastState; onDismiss: () => void }) => {
   const opacity = useRef(new Animated.Value(0)).current;
-  // Held in a ref so the auto-dismiss effect doesn't re-run when the parent
-  // re-renders with a new callback identity.
   const dismissRef = useRef(onDismiss);
   dismissRef.current = onDismiss;
 
@@ -74,4 +65,6 @@ export default function Toast({ toast, onDismiss }: { toast: ToastState; onDismi
       </Pressable>
     </Animated.View>
   );
-}
+};
+
+export default Toast;

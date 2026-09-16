@@ -1,12 +1,12 @@
 import { View } from "react-native";
 import { DETAIL_RADIUS, useUserDetailsPalette } from "./detailsTheme";
 
-function Block({ h, w, r = 7 }: { h: number; w: number | "100%"; r?: number }) {
+const Block = ({ h, w, r = 7 }: { h: number; w: number | "100%"; r?: number }) => {
   const palette = useUserDetailsPalette();
   return <View style={{ height: h, width: w, borderRadius: r, backgroundColor: palette.skeleton }} />;
-}
+};
 
-function RowSkeleton() {
+const RowSkeleton = () => {
   return (
     <View className="flex-row items-center gap-3 py-3">
       <Block h={34} w={34} r={DETAIL_RADIUS.well} />
@@ -16,16 +16,9 @@ function RowSkeleton() {
       </View>
     </View>
   );
-}
+};
 
-/**
- * The sheet's shape while the record loads.
- *
- * Mirrors the real running order — summary, then sections — so the content
- * lands in place instead of pushing the sections around under the admin's
- * thumb, and so the sheet reads as opening rather than as broken.
- */
-export default function UserSheetSkeleton() {
+const UserSheetSkeleton = () => {
   return (
     <View accessibilityLabel="Loading user details" className="w-full pb-4" style={{ opacity: 0.8 }}>
       <View className="items-center gap-2.5 px-4 pb-4 pt-2">
@@ -48,4 +41,6 @@ export default function UserSheetSkeleton() {
       ))}
     </View>
   );
-}
+};
+
+export default UserSheetSkeleton;

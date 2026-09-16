@@ -2,17 +2,15 @@ import { Text, View } from "react-native";
 
 type AnnouncementSectionLabelProps = {
   label: string;
-  /** Blue marks the next event; slate marks the rest. */
   accent: "blue" | "slate";
   isTablet: boolean;
 };
 
-/** A small ruled heading above a group of announcements. */
-export default function AnnouncementSectionLabel({
+const AnnouncementSectionLabel = ({
   label,
   accent,
   isTablet,
-}: AnnouncementSectionLabelProps) {
+}: AnnouncementSectionLabelProps) => {
   return (
     <View className="flex-row items-center gap-2 px-1">
       <View
@@ -28,4 +26,6 @@ export default function AnnouncementSectionLabel({
       </Text>
     </View>
   );
-}
+};
+
+export default AnnouncementSectionLabel;

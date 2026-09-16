@@ -14,19 +14,7 @@ export type DetailField = {
   emphasis?: boolean;
 };
 
-/**
- * The rows Item Details shows, in order.
- *
- * The seven core rows are always present because every item has them. Anything
- * category-specific is appended only when the record actually carries a value —
- * an empty "Generic Name" line tells the reader nothing and costs a row of
- * vertical space on a phone.
- *
- * Equipment's serial number, maintenance dates and assigned location are not
- * modelled by the inventory schema, so they are deliberately absent rather than
- * rendered as blanks; adding them is a backend change, not a display one.
- */
-export function buildDetailFields(item: InventoryItem): DetailField[] {
+export const buildDetailFields = (item: InventoryItem): DetailField[] => {
   const storageLabel =
     STORAGE_CONDITION_LABELS[item.storageCondition as StorageCondition] ||
     item.storageCondition ||
@@ -78,8 +66,6 @@ export function buildDetailFields(item: InventoryItem): DetailField[] {
     },
   ];
 
-  // Medicines and vaccines are ordered and substituted by generic name, so it
-  // earns a row wherever it is recorded.
   if (item.genericName && ["medicine", "vaccine", "maternal"].includes(item.category)) {
     fields.push({
       key: "generic",
@@ -89,8 +75,6 @@ export function buildDetailFields(item: InventoryItem): DetailField[] {
     });
   }
 
-  // Cold chain is a consequence of the storage condition rather than a second
-  // stored field, so it is stated only where it actually applies.
   if (
     item.category === "vaccine" &&
     (item.storageCondition === "refrigerated" || item.storageCondition === "frozen")
@@ -104,4 +88,4 @@ export function buildDetailFields(item: InventoryItem): DetailField[] {
   }
 
   return fields;
-}
+};

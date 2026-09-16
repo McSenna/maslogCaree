@@ -18,7 +18,7 @@ type StatCardProps = {
   onPress?: () => void;
 };
 
-export default function StatCard({
+const StatCard = ({
   label,
   value,
   helperText,
@@ -26,7 +26,7 @@ export default function StatCard({
   tone = "neutral",
   trend,
   onPress,
-}: StatCardProps) {
+}: StatCardProps) => {
   const { resolvedTheme, classes } = useTheme();
 
   const toneClasses =
@@ -88,4 +88,6 @@ export default function StatCard({
       ) : null}
     </Pressable>
   );
-}
+};
+
+export default StatCard;

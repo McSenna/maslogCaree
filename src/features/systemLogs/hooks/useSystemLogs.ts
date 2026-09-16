@@ -16,7 +16,7 @@ export interface UseSystemLogsReturn {
   setPage: (nextPage: number) => void;
 }
 
-export function useSystemLogs(initialParams: SystemLogsQuery = {}): UseSystemLogsReturn {
+export const useSystemLogs = (initialParams: SystemLogsQuery = {}): UseSystemLogsReturn => {
   const [logs, setLogs] = useState<SystemLog[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -92,4 +92,4 @@ export function useSystemLogs(initialParams: SystemLogsQuery = {}): UseSystemLog
       void fetchLogs({ ...lastParamsRef.current, page: nextPage });
     },
   };
-}
+};

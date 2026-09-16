@@ -6,7 +6,6 @@ type BookingActionButtonProps = {
   label: string;
   accessibilityLabel: string;
   onPress: () => void;
-  /** `primary` is the green action; `neutral` is the quiet one beside it. */
   variant: "primary" | "neutral";
   disabled?: boolean;
   busy?: boolean;
@@ -14,8 +13,7 @@ type BookingActionButtonProps = {
   icon?: ReactNode;
 };
 
-/** A full-width action at the bottom of a booking step. */
-export default function BookingActionButton({
+const BookingActionButton = ({
   label,
   accessibilityLabel,
   onPress,
@@ -24,7 +22,7 @@ export default function BookingActionButton({
   busy = false,
   opacity = 1,
   icon,
-}: BookingActionButtonProps) {
+}: BookingActionButtonProps) => {
   const isPrimary = variant === "primary";
 
   return (
@@ -62,4 +60,6 @@ export default function BookingActionButton({
       </Text>
     </Pressable>
   );
-}
+};
+
+export default BookingActionButton;

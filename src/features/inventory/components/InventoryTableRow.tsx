@@ -1,12 +1,13 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, Text } from "react-native";
 import Checkbox from "@/components/ui/Checkbox";
 import { resolveDisplayStatus, type InventoryItem } from "@/features/inventory/services/inventoryService";
 import CategoryBadge from "./CategoryBadge";
 import StockStatusBadge from "./StockStatusBadge";
+import Cell from "./tableRow/Cell";
+import ItemIdentityCell from "./tableRow/ItemIdentityCell";
 import { INVENTORY_COLUMNS } from "./inventoryFilters";
-import { CATEGORY_ICONS, formatShortDate, useInventoryPalette } from "./inventoryTheme";
+import { formatShortDate, useInventoryPalette } from "./inventoryTheme";
 
 type InventoryTableRowProps = {
   item: InventoryItem;
@@ -14,44 +15,21 @@ type InventoryTableRowProps = {
   isChecked: boolean;
   onToggleCheck: (next: boolean) => void;
   onSelect: () => void;
-  /** The last row drops its divider so it cannot double up with the card edge. */
   isLast: boolean;
 };
 
-function Cell({
-  children,
-  flex,
-  width,
-  align = "flex-start",
-}: {
-  children: React.ReactNode;
-  flex?: number;
-  width?: number;
-  align?: "flex-start" | "center";
-}) {
-  return (
-    <View
-      className="justify-center px-2.5"
-      style={{ flex, width, minWidth: 0, alignItems: align === "center" ? "center" : undefined }}
-    >
-      {children}
-    </View>
-  );
-}
-
-export default function InventoryTableRow({
+const InventoryTableRow = ({
   item,
   isSelected,
   isChecked,
   onToggleCheck,
   onSelect,
   isLast,
-}: InventoryTableRowProps) {
+}: InventoryTableRowProps) => {
   const palette = useInventoryPalette();
   const [hovered, setHovered] = useState(false);
 
   const status = resolveDisplayStatus(item);
-  const tone = palette.categories[item.category] ?? palette.categories.other;
 
   const background = isSelected
     ? palette.rowSelected
@@ -59,9 +37,6 @@ export default function InventoryTableRow({
       ? palette.subtleSurface
       : palette.cardBg;
 
-  // A date that has passed, or is inside the urgent window, is called out in
-  // red — the same fact the Status badge carries, so colour is never the only
-  // signal, but it is what makes the column scannable.
   const expiryUrgent = item.expiryStatus === "expired" || item.expiryStatus === "urgent";
 
   return (
@@ -88,34 +63,8 @@ export default function InventoryTableRow({
         />
       </Cell>
 
-      {/* Item — icon, name, and the dosage or packaging underneath. */}
       <Cell flex={INVENTORY_COLUMNS.item}>
-        <View className="flex-row items-center gap-2.5">
-          <View
-            className="h-8 w-8 shrink-0 items-center justify-center"
-            style={{ backgroundColor: tone.bg, borderRadius: 9 }}
-          >
-            <MaterialCommunityIcons
-              name={CATEGORY_ICONS[item.category] ?? "package-variant-closed"}
-              size={17}
-              color={tone.text}
-            />
-          </View>
-          <View className="min-w-0 flex-1">
-            <Text
-              className="text-[14px] font-bold"
-              numberOfLines={1}
-              style={{ color: palette.heading }}
-            >
-              {item.name}
-            </Text>
-            {item.specification ? (
-              <Text className="mt-0.5 text-[12px]" numberOfLines={1} style={{ color: palette.muted }}>
-                {item.specification}
-              </Text>
-            ) : null}
-          </View>
-        </View>
+        <ItemIdentityCell item={item} />
       </Cell>
 
       <Cell flex={INVENTORY_COLUMNS.category}>
@@ -161,4 +110,6 @@ export default function InventoryTableRow({
       </Cell>
     </Pressable>
   );
-}
+};
+
+export default InventoryTableRow;

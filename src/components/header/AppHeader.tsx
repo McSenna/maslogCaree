@@ -12,38 +12,26 @@ import {
 import { HEADER_TOP_GAP, useHeaderTopInset } from "./useHeaderTopInset";
 
 type AppHeaderProps = {
-  /** Optional tap target on the branding (e.g. back to dashboard). */
   onPressBrand?: () => void;
+  variant: "mobile" | "desktop";
 };
 
-/**
- * Application header.
- *
- * Desktop  →  [logo + tagline] ......... [bell | avatar  name / role  ▾]
- * Mobile   →  [logo + tagline] ......... [bell  avatar]
- */
-const AppHeader = ({ onPressBrand }: AppHeaderProps) => {
+const AppHeader = ({ onPressBrand, variant }: AppHeaderProps) => {
   const { width } = useWindowDimensions();
   const { resolvedTheme } = useTheme();
 
-  // The header owns the status-bar inset. RoleLayout deliberately does not wrap
-  // it in a top-edge SafeAreaView, so this is applied exactly once.
   const topInset = useHeaderTopInset();
 
   const isDark = resolvedTheme === "dark";
   const palette = getHeaderPalette(isDark);
 
-  const isMobile = width < BREAKPOINTS.tablet; // 0 – 767
-  const isDesktop = width >= BREAKPOINTS.desktop; // 1024 +
+  const isMobile = variant === "mobile";
 
-  // Tablets show the name only when there is room for it; the role line and
-  // chevron are reserved for desktop.
-  const showIdentity = width >= IDENTITY_MIN_WIDTH;
+  const widthKnown = width > 0;
+  const isDesktop = !isMobile && (!widthKnown || width >= BREAKPOINTS.desktop);
 
-  // Phones let the row size to the brand block plus its padding. A minimum
-  // taller than the content is not padding — it is a floor, and `alignItems:
-  // "center"` splits the surplus above and below, which is where the last of
-  // the gap above the logo was coming from. Desktop keeps its roomier bar.
+  const showIdentity = !isMobile && (!widthKnown || width >= IDENTITY_MIN_WIDTH);
+
   const minHeight = isMobile ? undefined : HEADER_HEIGHT.desktop;
   const paddingHorizontal = isMobile ? 14 : isDesktop ? 32 : 24;
 
@@ -56,8 +44,6 @@ const AppHeader = ({ onPressBrand }: AppHeaderProps) => {
           backgroundColor: palette.background,
           borderBottomWidth: 1,
           borderBottomColor: palette.border,
-          // Padding sits inside the header's own background, so the status-bar
-          // area is painted by the header rather than by the layout above it.
           paddingTop: topInset + HEADER_TOP_GAP,
         },
         Platform.OS === "web"
@@ -67,9 +53,6 @@ const AppHeader = ({ onPressBrand }: AppHeaderProps) => {
     >
       <View
         style={{
-          // minHeight rather than a fixed height: the row is only ever as tall
-          // as the brand block plus its own padding, so it can never hold open
-          // space its content does not need.
           minHeight,
           flexDirection: "row",
           alignItems: "center",
@@ -78,10 +61,6 @@ const AppHeader = ({ onPressBrand }: AppHeaderProps) => {
           paddingVertical: isMobile ? 10 : 8,
         }}
       >
-        {/* The desktop sidebar carries the barangay seal, the wordmark and the
-            motto at its head, so repeating them here would state the same
-            identity twice on every page. A phone has no rail, so there the
-            brand block is the only thing naming the app and it stays. */}
         {isMobile ? (
           <HeaderBrand compact={isMobile} isDark={isDark} onPress={onPressBrand} />
         ) : (
@@ -96,9 +75,6 @@ const AppHeader = ({ onPressBrand }: AppHeaderProps) => {
             flexShrink: 0,
           }}
         >
-          {/* Phones reach notifications from the bottom navigation instead, so
-              the bell would be a second entry point crowding a small header.
-              The web header keeps it — there is no bottom bar there. */}
           {!isMobile && <HeaderNotifications compact={isMobile} isDark={isDark} />}
 
           {!isMobile && (

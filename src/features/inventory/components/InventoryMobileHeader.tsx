@@ -9,18 +9,10 @@ type InventoryMobileHeaderProps = {
   toolbar: ReactNode;
 };
 
-/**
- * The phone list's heading, metrics and toolbar.
- *
- * The title is phone-only: the desktop shell already names the page in its
- * sidebar and chrome, so repeating it above the metric cards would spend a
- * band of vertical space saying what the surrounding frame has said. A phone
- * has no sidebar to carry that.
- */
-export default function InventoryMobileHeader({
+const InventoryMobileHeader = ({
   summary,
   toolbar,
-}: InventoryMobileHeaderProps) {
+}: InventoryMobileHeaderProps) => {
   const palette = useInventoryPalette();
 
   return (
@@ -42,4 +34,6 @@ export default function InventoryMobileHeader({
       {toolbar}
     </View>
   );
-}
+};
+
+export default InventoryMobileHeader;

@@ -10,23 +10,14 @@ import StepProgress from "./StepProgress";
 export type AppointmentModalProps = {
   visible: boolean;
   onClose: () => void;
-  /** Called once the request is accepted, so the caller can revalidate its list. */
   onBooked?: () => void;
 };
 
-/**
- * Book an Appointment — the resident's request form.
- *
- * Step 1 collects the request; step 2 is the result the queue returns. The
- * resident never picks a date: MaslogCare assigns the slot from the mission
- * schedule, which is why the form asks what is needed to triage the request
- * and nothing more.
- */
-export default function AppointmentModal({
+const AppointmentModal = ({
   visible,
   onClose,
   onBooked,
-}: AppointmentModalProps) {
+}: AppointmentModalProps) => {
   const insets = useSafeAreaInsets();
   const booking = useAppointmentBooking(visible, onBooked);
 
@@ -63,4 +54,6 @@ export default function AppointmentModal({
       </View>
     </Modal>
   );
-}
+};
+
+export default AppointmentModal;

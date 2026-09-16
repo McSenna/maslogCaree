@@ -4,7 +4,6 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 const SKELETON_ROWS = 4;
 
-/** Skeleton loading placeholder for the notification list. */
 const NotificationSkeleton = () => {
   return (
     <View className="px-4 py-2">
@@ -18,10 +17,8 @@ const NotificationSkeleton = () => {
               : undefined
           }
         >
-          {/* Icon circle */}
           <Skeleton className="h-10 w-10 rounded-full" />
 
-          {/* Text lines */}
           <View className="flex-1 gap-2 pt-0.5">
             <Skeleton className="h-3 w-3/4 rounded-md" />
             <Skeleton className="h-2.5 w-full rounded-md" />

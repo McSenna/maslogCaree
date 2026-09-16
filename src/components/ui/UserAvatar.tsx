@@ -7,34 +7,26 @@ export type UserAvatarProps = {
   imageUrl?: string | null;
   accessibilityLabel?: string;
   style?: StyleProp<ImageStyle>;
-  /** Placeholder colors — override when the avatar sits on a light surface. */
   fallbackBackgroundColor?: string;
   fallbackIconColor?: string;
-  /**
-   * Shown instead of the generic person icon when there is no photo. Give it
-   * where the avatar is large enough to read — at 36px in a table row the icon
-   * is the clearer mark, but a 120px hero circle with "JV" identifies the
-   * account rather than just marking the space.
-   */
   initials?: string;
 };
 
-/** "Justin Valladolid" → "JV". Falls back to one letter for a single word. */
-export function initialsFrom(name: string | null | undefined): string {
+export const initialsFrom = (name: string | null | undefined): string => {
   const words = (name ?? "").trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) return "";
   const first = words[0][0] ?? "";
   const last = words.length > 1 ? (words[words.length - 1][0] ?? "") : "";
   return (first + last).toUpperCase();
-}
+};
 
-function normalizeImageUrl(url?: string | null) {
+const normalizeImageUrl = (url?: string | null) => {
   if (!url) return null;
   const trimmed = url.trim();
   return trimmed.length > 0 ? trimmed : null;
-}
+};
 
-export default function UserAvatar({
+const UserAvatar = ({
   size = 36,
   imageUrl,
   accessibilityLabel = "User avatar",
@@ -42,7 +34,7 @@ export default function UserAvatar({
   fallbackBackgroundColor,
   fallbackIconColor = "rgba(255,255,255,0.95)",
   initials,
-}: UserAvatarProps) {
+}: UserAvatarProps) => {
   const uri = useMemo(() => normalizeImageUrl(imageUrl), [imageUrl]);
   const [hasError, setHasError] = useState(false);
   const radius = size / 2;
@@ -90,5 +82,6 @@ export default function UserAvatar({
       )}
     </View>
   );
-}
+};
 
+export default UserAvatar;

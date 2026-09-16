@@ -4,14 +4,7 @@ import type { RoleFilter, SortKey, StatusFilter } from "../components/userFilter
 import { PAGE_SIZE } from "../constants/usersLayout";
 import { filterAndSortUsers } from "../utils/userSearch";
 
-/**
- * The search, filters, sort and page over an already-loaded list.
- *
- * All client-side: the accounts endpoint returns every user in one request, so
- * narrowing them is a local operation and a round trip per keystroke would buy
- * nothing.
- */
-export function useUserFilters(users: AdminUser[]) {
+export const useUserFilters = (users: AdminUser[]) => {
   const [search, setSearch] = useState("");
   const [role, setRole] = useState<RoleFilter>("all");
   const [status, setStatus] = useState<StatusFilter>("all");
@@ -25,7 +18,6 @@ export function useUserFilters(users: AdminUser[]) {
 
   const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
 
-  // Narrowing the results can leave the current page past the end of the list.
   useEffect(() => {
     setPage((current) => Math.min(current, totalPages));
   }, [totalPages]);
@@ -35,7 +27,6 @@ export function useUserFilters(users: AdminUser[]) {
     [filteredUsers, page]
   );
 
-  /** Any change to what is being looked for returns to the first page. */
   const withPageReset = useCallback(
     <T,>(apply: (value: T) => void) =>
       (value: T) => {
@@ -61,4 +52,4 @@ export function useUserFilters(users: AdminUser[]) {
     pageUsers,
     hasActiveFilters: search.trim().length > 0 || role !== "all" || status !== "all",
   };
-}
+};

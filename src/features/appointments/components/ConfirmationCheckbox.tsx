@@ -8,12 +8,11 @@ type ConfirmationCheckboxProps = {
   error?: string;
 };
 
-/** The resident's confirmation that the details are right, and its complaint. */
-export default function ConfirmationCheckbox({
+const ConfirmationCheckbox = ({
   checked,
   onToggle,
   error,
-}: ConfirmationCheckboxProps) {
+}: ConfirmationCheckboxProps) => {
   return (
     <View>
       <Pressable
@@ -61,4 +60,6 @@ export default function ConfirmationCheckbox({
       ) : null}
     </View>
   );
-}
+};
+
+export default ConfirmationCheckbox;

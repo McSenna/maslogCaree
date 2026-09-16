@@ -15,24 +15,13 @@ type InventoryDetailsPanelProps = {
   handlers: InventoryActionHandlers;
 };
 
-/**
- * Inventory Item Details — the desktop presentation.
- *
- * A column beside the table, as the design specifies: the row and its details
- * are read together when deciding whether to restock, so the panel does not
- * cover the row it describes.
- *
- * Every part of the body — summary, alerts, fields, actions — is the same
- * component the phone's bottom sheet uses, so the two presentations cannot
- * drift in content, ordering or permission handling. Only the chrome differs.
- */
-export default function InventoryDetailsPanel({
+const InventoryDetailsPanel = ({
   item,
   permissions,
   loading = false,
   onClose,
   handlers,
-}: InventoryDetailsPanelProps) {
+}: InventoryDetailsPanelProps) => {
   const palette = useInventoryPalette();
 
   const surface = {
@@ -108,4 +97,6 @@ export default function InventoryDetailsPanel({
       </ScrollView>
     </View>
   );
-}
+};
+
+export default InventoryDetailsPanel;

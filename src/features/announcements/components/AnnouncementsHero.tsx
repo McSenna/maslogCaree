@@ -6,11 +6,10 @@ type AnnouncementsHeroProps = {
   isTablet: boolean;
 };
 
-/** The page's opening banner and its event count. */
-export default function AnnouncementsHero({
+const AnnouncementsHero = ({
   eventCount,
   isTablet,
-}: AnnouncementsHeroProps) {
+}: AnnouncementsHeroProps) => {
   return (
     <View
       className="overflow-hidden rounded-3xl"
@@ -87,4 +86,6 @@ export default function AnnouncementsHero({
       </View>
     </View>
   );
-}
+};
+
+export default AnnouncementsHero;

@@ -1,4 +1,4 @@
-export function statusLabel(status?: string): string {
+export const statusLabel = (status?: string): string => {
   const normalized = (status ?? "").toLowerCase();
 
   const statusLabels: Record<string, string> = {
@@ -6,12 +6,14 @@ export function statusLabel(status?: string): string {
     confirmed: "Confirmed",
     rescheduled: "Rescheduled",
     declined: "Declined",
+    processing: "In Progress",
+    completed: "Completed",
   };
 
   return statusLabels[normalized] ?? (normalized || "Unknown");
-}
+};
 
-export function getAssignedStaffName(assignedBy: unknown): string {
+export const getAssignedStaffName = (assignedBy: unknown): string => {
   if (!assignedBy || typeof assignedBy !== "object") {
     return "";
   }
@@ -25,4 +27,4 @@ export function getAssignedStaffName(assignedBy: unknown): string {
         : "";
 
   return field.trim();
-}
+};

@@ -4,13 +4,6 @@ import { healthServices } from "@/data/residentDashboardData";
 import { useResidentDashboard } from "@/screens/resident/useResidentDashboard";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 
-/**
- * Health Services.
- *
- * Reuses the dashboard's services section rather than a second implementation,
- * so the cards a resident taps here look and behave exactly like the ones on
- * the dashboard.
- */
 const ResidentServicesRoute = () => {
   const { width } = useWindowDimensions();
   const { handlers } = useResidentDashboard();

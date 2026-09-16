@@ -10,7 +10,7 @@ type ChartCardProps = {
   className?: string;
 };
 
-export default function ChartCard({ title, right, children, className = "" }: ChartCardProps) {
+const ChartCard = ({ title, right, children, className = "" }: ChartCardProps) => {
   const { classes } = useTheme();
 
   return (
@@ -24,4 +24,6 @@ export default function ChartCard({ title, right, children, className = "" }: Ch
       {children}
     </Card>
   );
-}
+};
+
+export default ChartCard;

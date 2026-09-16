@@ -8,14 +8,7 @@ import AnnouncementsHero from "../components/AnnouncementsHero";
 import FeaturedAnnouncementCard from "../components/FeaturedAnnouncementCard";
 import { ANNOUNCEMENTS } from "../data/announcements";
 
-/**
- * Health Announcements — the public noticeboard.
- *
- * The soonest event is featured and the rest follow, which is why the list is
- * split rather than rendered uniformly: a resident opening this page is
- * usually looking for what is next.
- */
-export default function AnnouncementsScreen() {
+const AnnouncementsScreen = () => {
   const { width } = useWindowDimensions();
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -60,4 +53,6 @@ export default function AnnouncementsScreen() {
       </View>
     </ScreenScroll>
   );
-}
+};
+
+export default AnnouncementsScreen;

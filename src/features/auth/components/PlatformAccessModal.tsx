@@ -1,15 +1,9 @@
 import { useEffect, useRef } from "react";
-import {
-  Modal,
-  Platform,
-  Pressable,
-  Text,
-  View,
-  useWindowDimensions,
-} from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Modal, Platform, Pressable, View, useWindowDimensions } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { MOBILE_ONLY_NOTICE } from "@/config/platformAccess";
+import PlatformAccessAction from "./platformAccess/PlatformAccessAction";
+import PlatformAccessBody from "./platformAccess/PlatformAccessBody";
 
 type PlatformAccessModalProps = {
   visible: boolean;
@@ -20,33 +14,18 @@ type PlatformAccessModalProps = {
   actionLabel?: string;
 };
 
-/**
- * "Mobile App Required" — the dialog a resident sees after a correct password
- * on the web.
- *
- * It is a real MaslogCare surface rather than `window.alert`, which
- * react-native-web would either swallow or render as a browser chrome popup
- * with no branding, no styling and no keyboard handling. The copy explains the
- * policy instead of reporting a failure: the credentials were right, and the
- * only thing wrong is the client they were used from.
- *
- * Dismissal is intentionally single-purpose. There is no "continue anyway",
- * because there is nothing to continue to: the server issued no session.
- */
-export default function PlatformAccessModal({
+const PlatformAccessModal = ({
   visible,
   onClose,
   title = MOBILE_ONLY_NOTICE.title,
   message = MOBILE_ONLY_NOTICE.message,
   supporting = MOBILE_ONLY_NOTICE.supporting,
   actionLabel = MOBILE_ONLY_NOTICE.action,
-}: PlatformAccessModalProps) {
+}: PlatformAccessModalProps) => {
   const { width } = useWindowDimensions();
   const isNarrow = width < 420;
   const actionRef = useRef<View | null>(null);
 
-  // Move focus to the only action when the dialog opens, so keyboard and
-  // screen-reader users land inside it rather than behind it on the login form.
   useEffect(() => {
     if (!visible || Platform.OS !== "web") return;
     const node = actionRef.current as unknown as { focus?: () => void } | null;
@@ -55,13 +34,7 @@ export default function PlatformAccessModal({
   }, [visible]);
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}
-      accessibilityViewIsModal
-    >
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} accessibilityViewIsModal>
       <View
         className="flex-1 items-center justify-center px-5"
         style={{ backgroundColor: "rgba(8, 21, 47, 0.45)" }}
@@ -99,91 +72,12 @@ export default function PlatformAccessModal({
             }),
           }}
         >
-          <View
-            className="items-center justify-center"
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: 32,
-              backgroundColor: LANDING_COLORS.softBlue,
-            }}
-          >
-            <MaterialCommunityIcons
-              name="cellphone-check"
-              size={30}
-              color={LANDING_COLORS.primaryBlue}
-            />
-          </View>
-
-          <Text
-            accessibilityRole="header"
-            className="text-center font-bold"
-            style={{
-              marginTop: 18,
-              fontSize: isNarrow ? 19 : 21,
-              color: LANDING_COLORS.navy,
-              letterSpacing: -0.2,
-            }}
-          >
-            {title}
-          </Text>
-
-          <Text
-            className="text-center"
-            style={{
-              marginTop: 10,
-              fontSize: isNarrow ? 14 : 14.5,
-              lineHeight: isNarrow ? 21 : 22,
-              color: LANDING_COLORS.mutedText,
-            }}
-          >
-            {message}
-          </Text>
-
-          {supporting ? (
-            <View
-              className="w-full"
-              style={{
-                marginTop: 18,
-                borderRadius: 14,
-                borderWidth: 1,
-                borderColor: "#DDEBFF",
-                backgroundColor: "#F4F9FF",
-                paddingHorizontal: 14,
-                paddingVertical: 12,
-              }}
-            >
-              <Text
-                className="text-center"
-                style={{ fontSize: 12.5, lineHeight: 18.5, color: "#3B5375" }}
-              >
-                {supporting}
-              </Text>
-            </View>
-          ) : null}
-
-          <Pressable
-            ref={actionRef}
-            accessibilityRole="button"
-            accessibilityLabel={actionLabel}
-            focusable
-            onPress={onClose}
-            android_ripple={{ color: "rgba(255,255,255,0.24)" }}
-            className="w-full items-center justify-center active:opacity-90"
-            style={{
-              marginTop: 22,
-              height: 50,
-              borderRadius: 12,
-              backgroundColor: LANDING_COLORS.primaryBlue,
-              ...Platform.select({ web: { cursor: "pointer" } as any }),
-            }}
-          >
-            <Text style={{ color: "#FFFFFF", fontSize: 15.5, fontWeight: "700" }}>
-              {actionLabel}
-            </Text>
-          </Pressable>
+          <PlatformAccessBody title={title} message={message} supporting={supporting} isNarrow={isNarrow} />
+          <PlatformAccessAction ref={actionRef} label={actionLabel} onPress={onClose} />
         </View>
       </View>
     </Modal>
   );
-}
+};
+
+export default PlatformAccessModal;

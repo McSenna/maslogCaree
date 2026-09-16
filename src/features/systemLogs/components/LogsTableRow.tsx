@@ -19,11 +19,10 @@ type LogsTableRowProps = {
   isChecked: boolean;
   onSelect: () => void;
   onToggleCheck: () => void;
-  /** The last row drops its divider so it cannot double up with the card edge. */
   isLast: boolean;
 };
 
-function Cell({
+const Cell = ({
   children,
   flex,
   width,
@@ -33,7 +32,7 @@ function Cell({
   flex?: number;
   width?: number;
   align?: "flex-start" | "center";
-}) {
+}) => {
   return (
     <View
       className="justify-center px-3"
@@ -42,16 +41,16 @@ function Cell({
       {children}
     </View>
   );
-}
+};
 
-export default function LogsTableRow({
+const LogsTableRow = ({
   log,
   isSelected,
   isChecked,
   onSelect,
   onToggleCheck,
   isLast,
-}: LogsTableRowProps) {
+}: LogsTableRowProps) => {
   const palette = useSystemLogsPalette();
   const [hovered, setHovered] = useState(false);
 
@@ -85,21 +84,18 @@ export default function LogsTableRow({
         />
       </Cell>
 
-      {/* Timestamp */}
       <Cell flex={LOG_COLUMNS.timestamp}>
         <Text className="text-[13px] font-medium" numberOfLines={2} style={{ color: palette.body }}>
           {formatSystemLogDate(log.createdAt)}
         </Text>
       </Cell>
 
-      {/* User — the strongest text in the row, matching the User column opposite. */}
       <Cell flex={LOG_COLUMNS.user}>
         <Text className="text-[14px] font-bold" numberOfLines={1} style={{ color: palette.heading }}>
           {log.userName}
         </Text>
       </Cell>
 
-      {/* Role */}
       <Cell flex={LOG_COLUMNS.role}>
         {log.role && log.role !== "unknown" ? (
           <RoleBadge role={log.role} size="sm" />
@@ -110,26 +106,22 @@ export default function LogsTableRow({
         )}
       </Cell>
 
-      {/* Action */}
       <Cell flex={LOG_COLUMNS.action}>
         <Text className="text-[13px] font-medium" numberOfLines={2} style={{ color: palette.heading }}>
           {formatSystemLogActionLabel(log)}
         </Text>
       </Cell>
 
-      {/* Module */}
       <Cell flex={LOG_COLUMNS.module}>
         <Text className="text-[13px] font-medium" numberOfLines={1} style={{ color: palette.body }}>
           {log.module}
         </Text>
       </Cell>
 
-      {/* Severity */}
       <Cell flex={LOG_COLUMNS.severity}>
         <SeverityIndicator severity={log.severity} />
       </Cell>
 
-      {/* IP Address — monospace keeps the octets aligned down the column. */}
       <Cell flex={LOG_COLUMNS.ip}>
         <Text
           className="text-[12.5px]"
@@ -140,10 +132,11 @@ export default function LogsTableRow({
         </Text>
       </Cell>
 
-      {/* Status */}
       <Cell flex={LOG_COLUMNS.status}>
         <StatusBadge status={log.status} />
       </Cell>
     </Pressable>
   );
-}
+};
+
+export default LogsTableRow;

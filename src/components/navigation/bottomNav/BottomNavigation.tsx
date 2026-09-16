@@ -14,18 +14,10 @@ import { BOTTOM_NAV_METRICS, getBottomNavPalette } from "./bottomNavTokens";
 import type { BottomNavEntry } from "./types";
 
 type BottomNavigationProps = {
-  /** 3–5 destinations. More than five stops being a bottom bar. */
   items: BottomNavEntry[];
   replace?: boolean;
 };
 
-/**
- * MaslogCare bottom navigation.
- *
- * Docked to the bottom edge and padded by the device's safe-area inset, so it
- * always clears the Android 3-button bar, the gesture pill and the iOS home
- * indicator without any per-device offsets.
- */
 const BottomNavigation = ({ items, replace = false }: BottomNavigationProps) => {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
@@ -33,7 +25,6 @@ const BottomNavigation = ({ items, replace = false }: BottomNavigationProps) => 
   const palette = getBottomNavPalette(theme?.resolvedTheme ?? "light");
   const keyboardVisible = useKeyboardVisible();
 
-  // Step aside for the keyboard so form controls stay reachable.
   if (items.length === 0 || keyboardVisible) return null;
 
   return (

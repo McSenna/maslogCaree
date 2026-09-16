@@ -1,19 +1,13 @@
-import { Feather } from "@expo/vector-icons";
-import { Link, usePathname, useRouter } from "expo-router";
-import {
-  Pressable,
-  StatusBar,
-  Text,
-  View,
-  useWindowDimensions,
-} from "react-native";
-import MaslogCareLogo from "@/components/landing/MaslogCareLogo";
-import { LANDING_COLORS } from "@/config/landingAssets";
+import { usePathname } from "expo-router";
+import { StatusBar, View, useWindowDimensions } from "react-native";
+
 import { useHeaderTopInset } from "@/components/header/useHeaderTopInset";
-import type { CurrentUser } from "@/contexts/AuthContext";
 import { BREAKPOINTS } from "@/constants/breakpoints";
-import { getDashboardPath, getProfilePath } from "@/data/mockUsers";
-import UserAvatar from "../ui/UserAvatar";
+import type { CurrentUser } from "@/contexts/AuthContext";
+
+import HeaderActions from "./header/HeaderActions";
+import HeaderBrand from "./header/HeaderBrand";
+import HeaderNav from "./header/HeaderNav";
 
 type HeaderProps = {
   isMobile: boolean;
@@ -21,18 +15,9 @@ type HeaderProps = {
   user?: CurrentUser | null;
 };
 
-const navItems = [
-  { label: "Home", href: "/", icon: "home" as const },
-  { label: "About", href: "/about", icon: "info" as const },
-  { label: "Announcements", href: "/announcements", icon: "bell" as const },
-];
-
 const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
   const pathname = usePathname();
-  const router = useRouter();
   const { width } = useWindowDimensions();
-  // Same single-source inset the authenticated header uses, so both bars
-  // clear the status bar by the same amount.
   const topInset = useHeaderTopInset();
 
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -60,257 +45,11 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
             paddingHorizontal: isDesktop ? 48 : isMobile ? 16 : 28,
           }}
         >
-          <View
-            className="flex-row items-center"
-            style={{ flexShrink: 0, gap: 12 }}
-          >
-            <View
-              style={{
-                width: logoSize,
-                height: logoSize,
-                borderRadius: logoSize / 2,
-                backgroundColor: "white",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-                boxShadow: "0px 3px 8px rgba(0,0,0,0.18)",
-                elevation: 6,
-                borderWidth: 2,
-                borderColor: "rgba(255,255,255,0.3)",
-              }}
-            >
-              {/* The vector mark, the same one the authenticated header and the
-                  landing page use. Inset from the circle so it does not sit
-                  flush against the ring. */}
-              <MaslogCareLogo
-                size={Math.round(logoSize * 0.72)}
-                color={LANDING_COLORS.primaryBlue}
-              />
-            </View>
+          <HeaderBrand isMobile={isMobile} logoSize={logoSize} />
 
-            <View>
-              <Text
-                style={{
-                  color: "#FFFFFF",
-                  fontWeight: "600",
-                  fontSize: isMobile ? 15 : 18,
-                  letterSpacing: 0.3,
-                  lineHeight: isMobile ? 22 : 24,
-                }}
-              >
-                MaslogCare
-              </Text>
-              <Text
-                style={{
-                  color: "rgba(255,255,255,0.50)",
-                  fontSize: 9,
-                  fontWeight: "600",
-                  letterSpacing: 1.8,
-                  textTransform: "uppercase",
-                  marginTop: 2,
-                }}
-              >
-                Barangay 61 Maslog
-              </Text>
-            </View>
-          </View>
+          {!isMobile && <HeaderNav pathname={pathname} isDesktop={isDesktop} />}
 
-          {!isMobile && (
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 4,
-                paddingHorizontal: 16,
-              }}
-            >
-              {navItems.map((item, index) => {
-                const isActive =
-                  pathname === item.href ||
-                  (item.href === "/" &&
-                    (pathname === "/index" || pathname === "/"));
-
-                return (
-                  <Link
-                    key={`${item.href}-${index}`}
-                    href={item.href as any}
-                    asChild
-                  >
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={item.label}
-                      style={({ pressed }) => ({
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 7,
-                        borderRadius: 999,
-                        paddingHorizontal: 14,
-                        paddingVertical: 8,
-                        backgroundColor: isActive
-                          ? "rgba(255,255,255,0.12)"
-                          : "transparent",
-                        borderWidth: 1,
-                        borderColor: isActive
-                          ? "rgba(255,255,255,0.15)"
-                          : "transparent",
-                        transform: [{ scale: pressed ? 0.96 : 1 }],
-                        opacity: pressed ? 0.85 : 1,
-                      })}
-                    >
-                      <Feather
-                        name={item.icon}
-                        size={13}
-                        color={
-                          isActive ? "#FFFFFF" : "rgba(255,255,255,0.55)"
-                        }
-                      />
-                      <Text
-                        style={{
-                          fontSize: isDesktop ? 13 : 12,
-                          fontWeight: isActive ? "700" : "500",
-                          color: isActive
-                            ? "#FFFFFF"
-                            : "rgba(255,255,255,0.60)",
-                        }}
-                      >
-                        {item.label}
-                      </Text>
-
-                      {isActive && (
-                        <View
-                          style={{
-                            width: 4,
-                            height: 4,
-                            borderRadius: 2,
-                            backgroundColor: "#10b981",
-                          }}
-                        />
-                      )}
-                    </Pressable>
-                  </Link>
-                );
-              })}
-            </View>
-          )}
-
-          <View
-            style={{
-              flexShrink: 0,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            {user ? (
-              <>
-                <Pressable
-                  onPress={() =>
-                    router.push(getProfilePath(user.role) as any)
-                  }
-                  style={({ pressed }) => ({
-                    width: 40,
-                    height: 40,
-                    borderRadius: 20,
-                    backgroundColor: "rgba(255,255,255,0.2)",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderWidth: 2,
-                    borderColor: "rgba(255,255,255,0.4)",
-                    transform: [{ scale: pressed ? 0.96 : 1 }],
-                    opacity: pressed ? 0.9 : 1,
-                  })}
-                >
-                  <UserAvatar
-                    size={34}
-                    imageUrl={user?.avatarUrl ?? null}
-                    accessibilityLabel="Profile photo"
-                  />
-                </Pressable>
-
-                <Pressable
-                  onPress={() =>
-                    router.push(getDashboardPath(user.role) as any)
-                  }
-                  style={({ pressed }) => ({
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 8,
-                    borderRadius: 999,
-                    paddingHorizontal: isMobile ? 14 : 18,
-                    paddingVertical: isMobile ? 10 : 11,
-                    backgroundColor: "#FFFFFF",
-                    transform: [{ scale: pressed ? 0.97 : 1 }],
-                    opacity: pressed ? 0.9 : 1,
-                  })}
-                >
-                  <View
-                    style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: 14,
-                      backgroundColor: "#EFF6FF",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Feather name="layout" size={15} color="#2D5BFF" />
-                  </View>
-
-                  {!isMobile && (
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontWeight: "700",
-                        color: "#0C1F6E",
-                      }}
-                    >
-                      Dashboard
-                    </Text>
-                  )}
-                </Pressable>
-              </>
-            ) : (
-              <Pressable
-                onPress={onPressLogin}
-                style={({ pressed }) => ({
-                  flexDirection: "row",
-                  alignItems: "center",
-                  gap: 8,
-                  borderRadius: 999,
-                  paddingHorizontal: isMobile ? 14 : 18,
-                  paddingVertical: isMobile ? 10 : 11,
-                  backgroundColor: "#FFFFFF",
-                  transform: [{ scale: pressed ? 0.97 : 1 }],
-                  opacity: pressed ? 0.9 : 1,
-                })}
-              >
-                <View
-                  style={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: 14,
-                    backgroundColor: "#EFF6FF",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Feather name="user" size={15} color="#2D5BFF" />
-                </View>
-
-                <Text
-                  style={{
-                    fontSize: isMobile ? 13 : 14,
-                    fontWeight: "700",
-                    color: "rgba(255,255,255,0.50)",
-                  }}
-                >
-                  Login
-                </Text>
-              </Pressable>
-            )}
-          </View>
+          <HeaderActions isMobile={isMobile} user={user} onPressLogin={onPressLogin} />
         </View>
       </View>
     </>

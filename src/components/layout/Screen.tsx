@@ -9,7 +9,7 @@ type ScreenProps = {
   fullWidth?: boolean;
 };
 
-export default function Screen({ children, className = "", fullWidth = false }: ScreenProps) {
+const Screen = ({ children, className = "", fullWidth = false }: ScreenProps) => {
   const { width } = useWindowDimensions();
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -33,5 +33,6 @@ export default function Screen({ children, className = "", fullWidth = false }: 
       {children}
     </View>
   );
-}
+};
 
+export default Screen;

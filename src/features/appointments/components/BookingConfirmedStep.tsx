@@ -11,13 +11,7 @@ type BookingConfirmedStepProps = {
   onClose: () => void;
 };
 
-/**
- * Step 2 — what the queue returned.
- *
- * A receipt, not a schedule: the slot is assigned later by the health team, so
- * every scheduling line here says so rather than showing a placeholder date.
- */
-export default function BookingConfirmedStep({ booking, onClose }: BookingConfirmedStepProps) {
+const BookingConfirmedStep = ({ booking, onClose }: BookingConfirmedStepProps) => {
   return (
     <View style={{ gap: 16 }}>
       <View
@@ -90,4 +84,6 @@ export default function BookingConfirmedStep({ booking, onClose }: BookingConfir
       />
     </View>
   );
-}
+};
+
+export default BookingConfirmedStep;

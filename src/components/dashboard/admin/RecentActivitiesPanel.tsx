@@ -20,8 +20,7 @@ type RecentActivitiesPanelProps = {
 
 type ActivityVisual = { icon: keyof typeof Feather.glyphMap; color: string; tint: string };
 
-/** Icon + tint per logged action, matching the tone used elsewhere for that event. */
-function activityVisual(action: string): ActivityVisual {
+const activityVisual = (action: string): ActivityVisual => {
   switch (action) {
     case "LOGIN":
       return { icon: "log-in", color: "#22C55E", tint: "#E3FBEC" };
@@ -29,7 +28,6 @@ function activityVisual(action: string): ActivityVisual {
       return { icon: "log-out", color: "#64748B", tint: "#EEF2F7" };
     case "LOGIN_FAILED":
       return { icon: "alert-triangle", color: "#F43F5E", tint: "#FFE4E9" };
-    // A platform block is policy working, not an incident: amber, not red.
     case "RESIDENT_WEB_LOGIN_BLOCKED":
     case "PLATFORM_ACCESS_DENIED":
       return { icon: "smartphone", color: "#F59E0B", tint: "#FEF3C7" };
@@ -56,15 +54,15 @@ function activityVisual(action: string): ActivityVisual {
     default:
       return { icon: "activity", color: "#8B5CF6", tint: "#F0EBFE" };
   }
-}
+};
 
-export default function RecentActivitiesPanel({
+const RecentActivitiesPanel = ({
   palette,
   activities,
   compact,
   onViewAll,
   fill = false,
-}: RecentActivitiesPanelProps) {
+}: RecentActivitiesPanelProps) => {
   return (
     <PanelCard
       palette={palette}
@@ -142,4 +140,6 @@ export default function RecentActivitiesPanel({
       )}
     </PanelCard>
   );
-}
+};
+
+export default RecentActivitiesPanel;

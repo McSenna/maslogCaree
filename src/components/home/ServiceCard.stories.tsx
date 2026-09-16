@@ -37,16 +37,10 @@ const defaultService: ServiceCardItem = {
   shadow: "#0F172A",
 };
 
-/**
- * Default ServiceCard: Appointments
- */
 export const Default: Story = {
   args: defaultService,
 };
 
-/**
- * ServiceCard variant: Announcements
- */
 export const Announcements: Story = {
   args: {
     ...defaultService,
@@ -58,9 +52,6 @@ export const Announcements: Story = {
   },
 };
 
-/**
- * ServiceCard variant: Health Services
- */
 export const HealthServices: Story = {
   args: {
     ...defaultService,
@@ -72,9 +63,6 @@ export const HealthServices: Story = {
   },
 };
 
-/**
- * ServiceCard variant: Health Records
- */
 export const HealthRecords: Story = {
   args: {
     ...defaultService,
@@ -86,9 +74,6 @@ export const HealthRecords: Story = {
   },
 };
 
-/**
- * Mobile viewport (narrow width)
- */
 export const Mobile: Story = {
   args: defaultService,
   parameters: {
@@ -96,9 +81,6 @@ export const Mobile: Story = {
   },
 };
 
-/**
- * Tablet viewport (wider, 2 columns)
- */
 export const Tablet: Story = {
   args: defaultService,
   parameters: {
@@ -106,9 +88,6 @@ export const Tablet: Story = {
   },
 };
 
-/**
- * All services in a grid (for layout testing)
- */
 export const AllServices: Story = {
   render: () => (
     <View style={{ flex: 1, backgroundColor: "#F8FAFC", padding: 16 }}>
@@ -164,9 +143,6 @@ export const AllServices: Story = {
   ),
 };
 
-/**
- * Accessibility: High contrast and proper focus states
- */
 export const Accessible: Story = {
   args: defaultService,
   parameters: {

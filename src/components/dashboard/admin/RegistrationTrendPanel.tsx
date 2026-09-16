@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import SimpleLineChart from "@/components/ui/charts/SimpleLineChart";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { TrendPoint } from "@/services/adminDashboardService";
+import EmptyPanelState from "./EmptyPanelState";
 import PanelCard from "./PanelCard";
 
 type RegistrationTrendPanelProps = {
@@ -12,19 +13,12 @@ type RegistrationTrendPanelProps = {
   fill?: boolean;
 };
 
-/**
- * Registrations per month for the last six months.
- *
- * The window total and its change against the previous month are computed
- * from the same series the chart draws — there is no separate figure to
- * drift out of step.
- */
-export default function RegistrationTrendPanel({
+const RegistrationTrendPanel = ({
   palette,
   trend,
   compact = false,
   fill = false,
-}: RegistrationTrendPanelProps) {
+}: RegistrationTrendPanelProps) => {
   const total = trend.reduce((sum, point) => sum + point.count, 0);
   const latest = trend.length > 0 ? trend[trend.length - 1].count : 0;
   const previous = trend.length > 1 ? trend[trend.length - 2].count : 0;
@@ -43,8 +37,6 @@ export default function RegistrationTrendPanel({
           {isUp ? "+" : ""}
           {delta}
         </Text>
-        {/* The comparison is dropped on narrow cards so the badge never
-            squeezes the title beside it. */}
         {!compact ? (
           <Text className="text-[12px] font-medium" style={{ color: palette.muted }}>
             vs last month
@@ -54,30 +46,45 @@ export default function RegistrationTrendPanel({
     ) : null;
 
   return (
-    <PanelCard palette={palette} title="User Registrations" headerRight={trendBadge} fill={fill}>
+    <PanelCard
+      palette={palette}
+      title="User Registrations"
+      icon="user-plus"
+      subtitle="New accounts · last 6 months"
+      headerRight={trendBadge}
+      fill={fill}
+    >
       <View className="mb-4">
         <Text className="text-[28px] font-bold" style={{ color: palette.heading, lineHeight: 34 }}>
           {total.toLocaleString()}
         </Text>
-        <Text className="mt-0.5 text-[12.5px] font-medium" style={{ color: palette.muted }}>
-          New accounts · last 6 months
-        </Text>
       </View>
 
       {trend.length === 0 ? (
-        <View className="items-center justify-center py-10">
-          <Text className="text-[13px] font-medium" style={{ color: palette.muted }}>
-            No registrations recorded yet.
-          </Text>
-        </View>
+        <EmptyPanelState
+          palette={palette}
+          icon="user-plus"
+          message="No registrations recorded yet."
+        />
       ) : (
         <SimpleLineChart
           labels={trend.map((point) => point.label)}
-          series={[{ values: trend.map((point) => point.count), color: palette.primary, showArea: true }]}
+          series={[
+            { values: trend.map((point) => point.count), color: palette.primary, showArea: true },
+          ]}
           height={compact ? 180 : 210}
           showLegend={false}
+          formatTooltip={(index) => {
+            const point = trend[index];
+            return {
+              title: point.label,
+              meta: `${point.count} ${point.count === 1 ? "registration" : "registrations"}`,
+            };
+          }}
         />
       )}
     </PanelCard>
   );
-}
+};
+
+export default RegistrationTrendPanel;

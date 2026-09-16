@@ -14,14 +14,7 @@ import NotificationFilterTabs, {
 
 const keyExtractor = (item: NotificationItemType) => item.id;
 
-/**
- * The mobile notifications screen — one component for all five roles.
- *
- * Relevance is decided server-side: `GET /notifications` is scoped to the
- * signed-in user, so a resident never receives a staff alert and no role
- * branching is needed here.
- */
-export default function NotificationsScreen() {
+const NotificationsScreen = () => {
   const { notifications, unreadCount, loading, error, refresh, markRead, markAllRead } =
     useNotificationsContext();
 
@@ -45,7 +38,6 @@ export default function NotificationsScreen() {
   const handlePressItem = useCallback(
     (id: string) => {
       const item = notifications.find((n) => n.id === id);
-      // Already-read items would otherwise decrement the unread count again.
       if (item && !item.isRead) void markRead(id);
     },
     [markRead, notifications]
@@ -58,8 +50,6 @@ export default function NotificationsScreen() {
     [handlePressItem]
   );
 
-  // No page title: the app header already names where the user is, and the
-  // filter row is enough to orient them. Mark all moves in beside the tabs.
   const header = (
     <View
       style={{
@@ -129,9 +119,6 @@ export default function NotificationsScreen() {
         contentContainerStyle={{
           padding: 14,
           gap: 10,
-          // RoleLayout already reserves the bottom-navigation and safe-area
-          // clearance on the container this screen fills, so only the list's
-          // own breathing room is added here.
           paddingBottom: 20,
           flexGrow: 1,
         }}
@@ -146,4 +133,6 @@ export default function NotificationsScreen() {
       />
     </View>
   );
-}
+};
+
+export default NotificationsScreen;

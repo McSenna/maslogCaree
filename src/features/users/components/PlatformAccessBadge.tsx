@@ -9,19 +9,7 @@ type PlatformAccessBadgeProps = {
   size?: "sm" | "md";
 };
 
-/**
- * "Web + Mobile" / "Mobile Only" — which clients an account can sign in from.
- *
- * Deliberately informational rather than alarming: a resident being mobile-only
- * is the system working as designed, not an account problem, so it takes the
- * same MaslogCare blue as the rest of the admin surface and never the red the
- * status badge reserves for suspended accounts.
- *
- * The server sends the summary; the local policy table only fills in for a
- * payload that predates the field. Neither is a permission check — both
- * describe a decision the login path has already made.
- */
-export default function PlatformAccessBadge({ user, size = "md" }: PlatformAccessBadgeProps) {
+const PlatformAccessBadge = ({ user, size = "md" }: PlatformAccessBadgeProps) => {
   const palette = useUsersPalette();
   const access = user.platformAccess ?? describePlatformAccess(user.role);
   const isSm = size === "sm";
@@ -51,4 +39,6 @@ export default function PlatformAccessBadge({ user, size = "md" }: PlatformAcces
       </Text>
     </View>
   );
-}
+};
+
+export default PlatformAccessBadge;

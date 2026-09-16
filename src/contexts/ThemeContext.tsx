@@ -14,7 +14,6 @@ import {
 import { getStoredTheme, setStoredTheme, type StoredTheme } from "@/utils/storage";
 
 type ThemeContextValue = {
-  /** User-selected appearance (not used when following system — we use explicit light/dark only for simplicity) */
   theme: StoredTheme;
   resolvedTheme: StoredTheme;
   setTheme: (t: StoredTheme) => void;
@@ -24,7 +23,7 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
+export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setThemeState] = useState<StoredTheme>(
     () => getStoredTheme() ?? "light"
   );
@@ -73,16 +72,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   return (
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
-}
+};
 
-export function useTheme(): ThemeContextValue {
+export const useTheme = (): ThemeContextValue => {
   const ctx = useContext(ThemeContext);
   if (!ctx) {
     throw new Error("useTheme must be used within ThemeProvider");
   }
   return ctx;
-}
+};
 
-export function useOptionalTheme(): ThemeContextValue | null {
+export const useOptionalTheme = (): ThemeContextValue | null => {
   return useContext(ThemeContext);
-}
+};

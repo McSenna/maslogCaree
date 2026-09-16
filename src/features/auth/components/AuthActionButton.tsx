@@ -10,21 +10,12 @@ type AuthActionButtonProps = {
   height: number;
   marginBottom: number;
   backgroundColor: string;
-  /** The button's own base style — `loginButton` or `createButton`. */
   baseStyle: StyleProp<ViewStyle>;
-  /** Held pressed while a request is in flight. */
   forcePressed?: boolean;
   children: ReactNode;
 };
 
-/**
- * A primary action on the login card.
- *
- * Press state is held here rather than read from `Pressable`'s function-style
- * `style` prop: that form rendered as an unstyled view on Android in Expo Go,
- * and the buttons lost their background and height entirely.
- */
-export default function AuthActionButton({
+const AuthActionButton = ({
   accessibilityLabel,
   onPress,
   disabled = false,
@@ -34,7 +25,7 @@ export default function AuthActionButton({
   baseStyle,
   forcePressed = false,
   children,
-}: AuthActionButtonProps) {
+}: AuthActionButtonProps) => {
   const [pressed, setPressed] = useState(false);
 
   return (
@@ -55,4 +46,6 @@ export default function AuthActionButton({
       {children}
     </Pressable>
   );
-}
+};
+
+export default AuthActionButton;

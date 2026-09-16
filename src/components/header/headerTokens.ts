@@ -1,12 +1,5 @@
 import { Platform } from "react-native";
 
-/**
- * Header design tokens.
- *
- * Values come from the approved MaslogCare header reference: a white bar with
- * blue branding on the left and the notification/profile cluster on the right.
- * Dark values keep the same proportions for the app's dark theme.
- */
 export type HeaderPalette = {
   background: string;
   border: string;
@@ -59,23 +52,13 @@ export const HEADER_COLORS: Record<"light" | "dark", HeaderPalette> = {
   },
 };
 
-/** Bright red unread indicator — identical in both themes. */
 export const NOTIFICATION_DOT = "#EF3340";
 
-/**
- * Minimum bar height, excluding the status-bar inset: compact on phones,
- * roomier from tablet up. The row grows past this only if its content needs
- * the space.
- */
 export const HEADER_HEIGHT = {
   mobile: 60,
   desktop: 76,
 } as const;
 
-/**
- * Identity (name + role) needs real estate; below this width the profile
- * collapses to the avatar only so nothing wraps or clips.
- */
 export const IDENTITY_MIN_WIDTH = 900;
 
 export const HEADER_FONT = Platform.select({

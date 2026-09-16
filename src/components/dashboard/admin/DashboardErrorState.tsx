@@ -5,22 +5,14 @@ import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 type DashboardErrorStateProps = {
   palette: AdminDashboardPalette;
   onRetry: () => void;
-  /** Inline banner above still-visible data, vs. the full-panel empty case. */
   variant?: "block" | "banner";
 };
 
-/**
- * The only failure message the dashboard shows.
- *
- * The normalized API error is deliberately not rendered: status codes and
- * transport strings mean nothing to an administrator, and the recovery is the
- * same in every case.
- */
-export default function DashboardErrorState({
+const DashboardErrorState = ({
   palette,
   onRetry,
   variant = "block",
-}: DashboardErrorStateProps) {
+}: DashboardErrorStateProps) => {
   const isBanner = variant === "banner";
 
   return (
@@ -61,4 +53,6 @@ export default function DashboardErrorState({
       </Pressable>
     </View>
   );
-}
+};
+
+export default DashboardErrorState;

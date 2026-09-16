@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
-import { useRouter } from "expo-router";
+import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import {
   AdminDashboardSkeleton,
@@ -14,14 +14,8 @@ import DashboardBody from "../components/DashboardBody";
 import { MOBILE_ACTIVITY_COUNT, MOBILE_USER_COUNT } from "../constants/dashboardLayout";
 import { useAdminDashboardLayout } from "../hooks/useAdminDashboardLayout";
 
-/**
- * The admin's overview: headline figures, trends, and the two recent feeds.
- *
- * Read-only. Every panel links to the page that can act on what it shows,
- * rather than carrying controls of its own.
- */
-export default function AdminDashboardScreen() {
-  const router = useRouter();
+const AdminDashboardScreen = () => {
+  const router = useGuardedNavigation();
   const { resolvedTheme } = useTheme();
   const palette = getAdminDashboardPalette(resolvedTheme);
   const isDark = resolvedTheme === "dark";
@@ -71,8 +65,6 @@ export default function AdminDashboardScreen() {
           <View className={isMobile ? "gap-4" : "gap-5"}>
             <DashboardIntro palette={palette} compact={isMobile} />
 
-            {/* A failed refresh keeps the last good dashboard on screen and
-                explains itself in a banner; only a cold failure takes the page. */}
             {error && data ? (
               <DashboardErrorState palette={palette} onRetry={reload} variant="banner" />
             ) : null}
@@ -102,8 +94,10 @@ export default function AdminDashboardScreen() {
               />
             ) : null}
           </View>
-        </View>
+        </View> 
       </ScrollView>
     </View>
   );
-}
+};
+
+export default AdminDashboardScreen;

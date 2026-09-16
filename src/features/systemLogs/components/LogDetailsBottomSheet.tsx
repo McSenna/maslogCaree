@@ -23,7 +23,7 @@ type LogDetailsBottomSheetProps = {
   onClose: () => void;
 };
 
-export default function LogDetailsBottomSheet({ visible, log, onClose }: LogDetailsBottomSheetProps) {
+const LogDetailsBottomSheet = ({ visible, log, onClose }: LogDetailsBottomSheetProps) => {
   const palette = useSystemLogsPalette();
   const { height: windowHeight } = useWindowDimensions();
   const translateY = useRef(new Animated.Value(0)).current;
@@ -110,4 +110,6 @@ export default function LogDetailsBottomSheet({ visible, log, onClose }: LogDeta
       </View>
     </Modal>
   );
-}
+};
+
+export default LogDetailsBottomSheet;

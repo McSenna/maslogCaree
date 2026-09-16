@@ -12,18 +12,9 @@ import type { ResidentDashboardModel } from "./useResidentDashboard";
 
 type DesktopResidentDashboardProps = {
   model: ResidentDashboardModel;
-  /** Tablet widths keep the two-column grid but tighten the gaps. */
   compact?: boolean;
 };
 
-/**
- * The desktop Resident Dashboard.
- *
- * Follows the target's structure exactly: greeting and quote banner, then the
- * four statistics across one row, then three two-column rows pairing an
- * appointment/history/announcements column on the left with actions/tips/
- * services on the right.
- */
 const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDashboardProps) => {
   const gap = compact ? "gap-3" : "gap-4";
 
@@ -74,14 +65,12 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
       <View className={`w-full ${gap}`}>
         <WelcomeBanner greeting={model.greeting} firstName={model.firstName} />
 
-        {/* Four statistics across one row */}
         <View className={`w-full flex-row ${gap}`}>
           {model.stats.map((stat) => (
             <StatCard key={stat.id} stat={stat} />
           ))}
         </View>
 
-        {/* Row 1 — appointment | quick actions */}
         <View className={`w-full flex-row items-start ${gap}`}>
           <View className="min-w-0 flex-1">
             <UpcomingAppointment
@@ -99,7 +88,6 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
           </View>
         </View>
 
-        {/* Row 2 — history | health tips */}
         <View className={`w-full flex-row items-start ${gap}`}>
           <View className="min-w-0 flex-1">
             <RecentAppointments
@@ -117,7 +105,6 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
           </View>
         </View>
 
-        {/* Row 3 — announcements | services */}
         <View className={`w-full flex-row items-start ${gap}`}>
           <View className="min-w-0 flex-1">
             <AnnouncementsList

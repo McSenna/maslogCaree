@@ -5,7 +5,6 @@ type LeaderAvatarProps = {
   icon: keyof typeof Feather.glyphMap;
   size: number;
   iconColor: string;
-  /** The dashed ring around the avatar. */
   ringColor: string;
   ringWidth: number;
   fill: string;
@@ -14,8 +13,7 @@ type LeaderAvatarProps = {
   marginBottom: number;
 };
 
-/** The dashed ring and filled circle every org-chart card carries. */
-export default function LeaderAvatar({
+const LeaderAvatar = ({
   icon,
   size,
   iconColor,
@@ -25,7 +23,7 @@ export default function LeaderAvatar({
   borderColor,
   borderWidth,
   marginBottom,
-}: LeaderAvatarProps) {
+}: LeaderAvatarProps) => {
   const outerSize = size + 12;
 
   return (
@@ -58,4 +56,6 @@ export default function LeaderAvatar({
       </View>
     </View>
   );
-}
+};
+
+export default LeaderAvatar;

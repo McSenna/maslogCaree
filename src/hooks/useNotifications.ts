@@ -8,7 +8,20 @@ type UseNotificationsOptions = {
   pollIntervalMs?: number;
 };
 
-export function useNotifications(options: UseNotificationsOptions = {}) {
+const sameNotifications = (a: NotificationItem[], b: NotificationItem[]) =>
+  a.length === b.length &&
+  a.every((item, i) => {
+    const next = b[i];
+    return (
+      item.id === next.id &&
+      item.isRead === next.isRead &&
+      item.title === next.title &&
+      item.body === next.body &&
+      item.time === next.time
+    );
+  });
+
+export const useNotifications = (options: UseNotificationsOptions = {}) => {
   const { user } = useAuth();
   const pollIntervalMs = options.pollIntervalMs ?? 15000;
 
@@ -19,54 +32,60 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
 
   const refreshInFlightRef = useRef<Promise<void> | null>(null);
 
-  const refresh = useCallback(async () => {
-    if (!user) {
-      setNotifications([]);
-      setUnreadCount(0);
-      setError(null);
-      return;
-    }
-
-    if (refreshInFlightRef.current) return;
-
-    setLoading(true);
-    setError(null);
-    
-    const p = (async () => {
-      try {
-        const res = await fetchNotifications();
-        setNotifications(res.notifications);
-        setUnreadCount(res.unreadCount);
-      } catch (e: unknown) {
-        setError(getApiErrorMessage(e, "Unable to load notifications."));
+  const load = useCallback(
+    async (announce: boolean) => {
+      if (!user) {
+        setNotifications([]);
+        setUnreadCount(0);
+        setError(null);
+        return;
       }
-    })();
 
-    refreshInFlightRef.current = p;
-    try {
-      await p;
-    } finally {
-      refreshInFlightRef.current = null;
-      setLoading(false);
-    }
-  }, [user]);
+      if (refreshInFlightRef.current) return;
+
+      if (announce) setLoading(true);
+      setError(null);
+
+      const p = (async () => {
+        try {
+          const res = await fetchNotifications();
+          setNotifications((prev) =>
+            sameNotifications(prev, res.notifications) ? prev : res.notifications
+          );
+          setUnreadCount(res.unreadCount);
+        } catch (e: unknown) {
+          setError(getApiErrorMessage(e, "Unable to load notifications."));
+        }
+      })();
+
+      refreshInFlightRef.current = p;
+      try {
+        await p;
+      } finally {
+        refreshInFlightRef.current = null;
+        if (announce) setLoading(false);
+      }
+    },
+    [user]
+  );
+
+  const refresh = useCallback(() => load(true), [load]);
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    void load(true);
+  }, [load]);
 
   useEffect(() => {
     if (!user) return;
     const id = setInterval(() => {
-      void refresh();
+      void load(false);
     }, pollIntervalMs);
 
     return () => clearInterval(id);
-  }, [user, pollIntervalMs, refresh]);
+  }, [user, pollIntervalMs, load]);
 
   const markRead = useCallback(
     async (id: string) => {
-      // Optimistic update — keep item visible but mark as read.
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, isRead: true } : n))
       );
@@ -77,10 +96,10 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
       } catch (e: unknown) {
         setError(getApiErrorMessage(e, "Unable to mark the notification as read."));
       } finally {
-        void refresh();
+        void load(false);
       }
     },
-    [refresh]
+    [load]
   );
 
   const markAllRead = useCallback(async () => {
@@ -92,9 +111,9 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
     } catch (e: unknown) {
       setError(getApiErrorMessage(e, "Unable to mark all notifications as read."));
     } finally {
-      void refresh();
+      void load(false);
     }
-  }, [refresh]);
+  }, [load]);
 
   return {
     notifications,
@@ -105,5 +124,5 @@ export function useNotifications(options: UseNotificationsOptions = {}) {
     markRead,
     markAllRead,
   };
-}
+};
 

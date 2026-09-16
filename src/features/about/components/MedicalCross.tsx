@@ -7,12 +7,11 @@ type MedicalCrossProps = {
   opacity?: number;
 };
 
-/** The health-service cross, drawn from two bars so it scales cleanly. */
-export default function MedicalCross({
+const MedicalCross = ({
   size = 16,
   color = HC.teal,
   opacity = 1,
-}: MedicalCrossProps) {
+}: MedicalCrossProps) => {
   const arm = size * 0.28;
 
   return (
@@ -37,4 +36,6 @@ export default function MedicalCross({
       />
     </View>
   );
-}
+};
+
+export default MedicalCross;

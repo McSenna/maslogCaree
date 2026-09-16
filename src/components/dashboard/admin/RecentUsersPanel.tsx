@@ -11,33 +11,19 @@ type RecentUsersPanelProps = {
   palette: AdminDashboardPalette;
   isDark: boolean;
   users: DashboardUser[];
-  /**
-   * Stack the role badge and status under the name instead of giving them
-   * their own columns — mobile always does, and so does any panel too narrow
-   * to leave the name more than a dozen characters.
-   */
   compact: boolean;
   onViewAll: () => void;
   fill?: boolean;
 };
 
-/**
- * The five most recent sign-ups, at a glance.
- *
- * Read-only. There is no per-row action: everything that can be *done* to a
- * user — viewing them in full, changing status, changing role — lives in User
- * Management, which the panel header links to. A row menu here would be a
- * second, thinner place to do the same things, and the one this panel offered
- * only ever led back to User Management anyway.
- */
-export default function RecentUsersPanel({
+const RecentUsersPanel = ({
   palette,
   isDark,
   users,
   compact,
   onViewAll,
   fill = false,
-}: RecentUsersPanelProps) {
+}: RecentUsersPanelProps) => {
   return (
     <PanelCard
       palette={palette}
@@ -72,8 +58,6 @@ export default function RecentUsersPanel({
                   >
                     {user.fullname}
                   </Text>
-                  {/* numberOfLines + a min-w-0 parent is what truncates long
-                      addresses instead of pushing the row off screen. */}
                   <Text
                     className="text-[11.5px]"
                     numberOfLines={1}
@@ -108,4 +92,6 @@ export default function RecentUsersPanel({
       )}
     </PanelCard>
   );
-}
+};
+
+export default RecentUsersPanel;

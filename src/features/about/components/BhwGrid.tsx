@@ -9,13 +9,7 @@ type BhwGridProps = {
   isTablet: boolean;
 };
 
-/**
- * The health workers, three to a row.
- *
- * A short final row is padded with empty flex boxes rather than left to
- * stretch, so the last card keeps the same width as every card above it.
- */
-export default function BhwGrid({ members, isTablet }: BhwGridProps) {
+const BhwGrid = ({ members, isTablet }: BhwGridProps) => {
   if (members.length === 0) {
     return (
       <Text
@@ -51,4 +45,6 @@ export default function BhwGrid({ members, isTablet }: BhwGridProps) {
       ))}
     </View>
   );
-}
+};
+
+export default BhwGrid;

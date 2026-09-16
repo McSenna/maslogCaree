@@ -11,35 +11,26 @@ import DateWheelColumn from "./DateWheelColumn";
 
 type DateOfBirthSheetProps = {
   visible: boolean;
-  /** The current `YYYY-MM-DD` value, or empty. */
   value: string;
   onConfirm: (date: string) => void;
   onClose: () => void;
 };
 
-/** Splits the stored value into wheel positions, falling back to a sane default. */
-function initialSelection(value: string) {
+const initialSelection = (value: string) => {
   const parts = value ? value.split("-") : [];
   return {
     year: parts[0] ? parseInt(parts[0], 10) : DEFAULT_BIRTH_YEAR,
     monthIndex: parts[1] ? parseInt(parts[1], 10) - 1 : 0,
     day: parts[2] ? parseInt(parts[2], 10) : 1,
   };
-}
+};
 
-/**
- * A three-column date wheel for the birthday.
- *
- * The day column is trimmed to the selected month, and a day past the end of a
- * shorter month is clamped on confirm rather than blocked while scrolling — so
- * moving from the 31st to February still produces a real date.
- */
-export default function DateOfBirthSheet({
+const DateOfBirthSheet = ({
   visible,
   value,
   onConfirm,
   onClose,
-}: DateOfBirthSheetProps) {
+}: DateOfBirthSheetProps) => {
   const initial = initialSelection(value);
   const [year, setYear] = useState(initial.year);
   const [monthIndex, setMonthIndex] = useState(initial.monthIndex);
@@ -107,4 +98,6 @@ export default function DateOfBirthSheet({
       </View>
     </Modal>
   );
-}
+};
+
+export default DateOfBirthSheet;

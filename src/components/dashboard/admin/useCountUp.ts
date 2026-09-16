@@ -2,17 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { AccessibilityInfo, InteractionManager } from "react-native";
 
 const DURATION_MS = 700;
-/** ~30fps is smooth enough for a counter and cheap on a mid-range Android. */
 const FRAME_MS = 33;
 
-/**
- * Counts from 0 up to `value` once, then tracks `value` exactly.
- *
- * Driven by an interval rather than Animated because the result is rendered as
- * formatted text, not a style. Respects "reduce motion" and always lands on the
- * true value, so the number on screen is never a rounded-off approximation.
- */
-export function useCountUp(value: number): number {
+export const useCountUp = (value: number): number => {
   const [display, setDisplay] = useState(value);
   const hasAnimatedRef = useRef(false);
 
@@ -43,7 +35,6 @@ export function useCountUp(value: number): number {
       const startedAt = Date.now();
       timer = setInterval(() => {
         const progress = Math.min(1, (Date.now() - startedAt) / DURATION_MS);
-        // easeOutCubic — fast start, gentle settle.
         const eased = 1 - Math.pow(1 - progress, 3);
         setDisplay(Math.round(value * eased));
         if (progress >= 1 && timer) {
@@ -64,4 +55,4 @@ export function useCountUp(value: number): number {
   }, [value]);
 
   return display;
-}
+};

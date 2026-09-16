@@ -1,36 +1,30 @@
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import Toast from "@/components/ui/Toast";
 import type { UserManagementController } from "../hooks/useUserManagementScreen";
-import { STATUS_ACTIONS, type AdminUser } from "../services/userService";
+import { statusActionFor, type AdminUser } from "../services/userService";
+import ResidentVerificationModal from "./requests/ResidentVerificationModal";
+import ResidentVerificationSheet from "./requests/ResidentVerificationSheet";
 import UserDetails from "./UserDetails";
 
 type UsersOverlaysProps = {
   controller: UserManagementController;
 };
 
-/**
- * The dialog title names the account.
- *
- * The confirmation can be reached from a row menu as well as from the details
- * panel, and the admin has to be able to check whose account this is without
- * dismissing it first — so it reads "Suspend Maria Santos?", not
- * "Deactivate User?".
- */
-function confirmTitle(user: AdminUser): string {
-  const action = STATUS_ACTIONS[user.status];
+const confirmTitle = (user: AdminUser): string => {
+  const action = statusActionFor(user);
   return `${action.label.replace(/ (User|Account)$/, "")} ${user.fullname}?`;
-}
+};
 
-function confirmMessage(user: AdminUser): string {
-  return STATUS_ACTIONS[user.status].destructive
+const confirmMessage = (user: AdminUser): string => {
+  return statusActionFor(user).destructive
     ? "This user will no longer be able to access their MaslogCare account until the account is reactivated."
     : `${user.fullname} will be able to sign in to MaslogCare again.`;
-}
+};
 
-/** The details panel, the status confirmation and the toast. */
-export default function UsersOverlays({ controller }: UsersOverlaysProps) {
-  const { statusChange } = controller;
+const UsersOverlays = ({ controller }: UsersOverlaysProps) => {
+  const { statusChange, requests } = controller;
   const pending = statusChange.pendingUser;
+  const reviewing = requests.reviewRequestId !== null;
 
   return (
     <>
@@ -46,6 +40,37 @@ export default function UsersOverlays({ controller }: UsersOverlaysProps) {
         busy={statusChange.saving}
       />
 
+      {controller.showTable ? (
+        <ResidentVerificationModal
+          visible={reviewing}
+          request={requests.selectedDetail}
+          loading={requests.detailLoading}
+          error={requests.detailError}
+          approving={requests.approving}
+          rejecting={requests.rejecting}
+          onApprove={requests.handleApprove}
+          onReject={requests.handleReject}
+          onClose={requests.closeReview}
+        />
+      ) : (
+        <ResidentVerificationSheet
+          visible={reviewing}
+          request={requests.selectedDetail}
+          loading={requests.detailLoading}
+          error={requests.detailError}
+          approving={requests.approving}
+          rejecting={requests.rejecting}
+          onApprove={requests.handleApprove}
+          onReject={requests.handleReject}
+          onClose={requests.closeReview}
+          onRetry={() =>
+            requests.reviewRequestId
+              ? void requests.openReview(requests.reviewRequestId)
+              : undefined
+          }
+        />
+      )}
+
       <ConfirmationModal
         visible={pending !== null}
         title={pending ? confirmTitle(pending) : ""}
@@ -53,11 +78,11 @@ export default function UsersOverlays({ controller }: UsersOverlaysProps) {
         confirmLabel={
           pending
             ? statusChange.saving
-              ? STATUS_ACTIONS[pending.status].pendingLabel
-              : STATUS_ACTIONS[pending.status].label
+              ? statusActionFor(pending).pendingLabel
+              : statusActionFor(pending).label
             : ""
         }
-        destructive={pending ? STATUS_ACTIONS[pending.status].destructive : false}
+        destructive={pending ? statusActionFor(pending).destructive : false}
         loading={statusChange.saving}
         onConfirm={statusChange.confirm}
         onCancel={statusChange.cancel}
@@ -66,4 +91,6 @@ export default function UsersOverlays({ controller }: UsersOverlaysProps) {
       <Toast toast={controller.toast} onDismiss={controller.hideToast} />
     </>
   );
-}
+};
+
+export default UsersOverlays;

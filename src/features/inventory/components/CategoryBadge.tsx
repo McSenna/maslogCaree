@@ -7,11 +7,7 @@ type CategoryBadgeProps = {
   size?: "sm" | "md";
 };
 
-/**
- * Category identity pill — the same colours in the table, the mobile cards and
- * the details panel, so a category reads the same everywhere.
- */
-export default function CategoryBadge({ category, size = "md" }: CategoryBadgeProps) {
+const CategoryBadge = ({ category, size = "md" }: CategoryBadgeProps) => {
   const palette = useInventoryPalette();
   const tone = palette.categories[category] ?? palette.categories.other;
   const isSm = size === "sm";
@@ -32,4 +28,6 @@ export default function CategoryBadge({ category, size = "md" }: CategoryBadgePr
       </Text>
     </View>
   );
-}
+};
+
+export default CategoryBadge;

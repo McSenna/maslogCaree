@@ -57,7 +57,6 @@ export const getDashboardPath = (role: UserRole): string => {
   return paths[role];
 };
 
-/** Profile screen path per role (for header profile icon and nav links). */
 export const getProfilePath = (role: UserRole): string => {
   const paths: Record<UserRole, string> = {
     admin: "/admin/profile",
@@ -69,7 +68,6 @@ export const getProfilePath = (role: UserRole): string => {
   return paths[role];
 };
 
-/** Notifications screen path per role (for the bottom-nav unread badge). */
 export const getNotificationsPath = (role: UserRole): string => {
   const paths: Record<UserRole, string> = {
     admin: "/admin/notifications",

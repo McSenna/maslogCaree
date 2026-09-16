@@ -16,7 +16,6 @@ export const doctorNavItems: NavItem[] = [
 export const midwifeNavItems: NavItem[] = [
   { label: "Dashboard", href: "/midwife/dashboard", icon: "layout" },
   { label: "Appointments & Queue", href: "/midwife/mission", icon: "calendar" },
-  { label: "Patients", href: "/midwife/patients", icon: "users" },
   { label: "Inventory", href: "/midwife/inventory", icon: "box" },
 ];
 
@@ -30,7 +29,7 @@ export const bhwNavItems: NavItem[] = [
 export const residentNavItems: NavItem[] = [
   { label: "Dashboard", href: "/resident/dashboard", icon: "home" },
   { label: "My Appointments", href: "/resident/appointments", icon: "calendar" },
-  { label: "Health Services", href: "/resident/services", icon: "file-text" },
+  { label: "Medical Records", href: "/resident/medical-records", icon: "file-text" },
   { label: "Announcements", href: "/resident/announcements", icon: "bell" },
   { label: "My Profile", href: "/resident/profile", icon: "user" },
 ];
@@ -63,7 +62,7 @@ export const midwifeBottomNavItems: NavItem[] = [
 export const bhwBottomNavItems: NavItem[] = [
   { label: "Dashboard", href: "/bhw/dashboard", icon: "layout" },
   { label: "Queue", href: "/bhw/mission", icon: "calendar" },
-  { label: "Visits", href: "/bhw/visits", icon: "map-pin" },
+  { label: "Residents", href: "/bhw/residents", icon: "users" },
   { label: "Inventory", href: "/bhw/inventory", icon: "box" },
   { label: "Notifications", href: "/bhw/notifications", icon: "bell" },
   { label: "Profile", href: "/bhw/profile", icon: "user" },
@@ -72,7 +71,7 @@ export const bhwBottomNavItems: NavItem[] = [
 export const residentBottomNavItems: NavItem[] = [
   { label: "Home", href: "/resident/dashboard", icon: "home" },
   { label: "Appointments", href: "/resident/appointments", icon: "calendar" },
-  { label: "Services", href: "/resident/services", icon: "file-text" },
+    { label: "Medical Records", href: "/resident/medical-records", icon: "file-text" },
   { label: "Notifications", href: "/resident/notifications", icon: "bell" },
   { label: "Profile", href: "/resident/profile", icon: "user" },
 ];

@@ -2,18 +2,10 @@ import Svg, { Circle, Ellipse, Path } from "react-native-svg";
 import { View } from "react-native";
 
 type ProfileHeroDecorProps = {
-  /** Draw at the hero's own size so the artwork scales with the card. */
   width: number;
   height: number;
 };
 
-/**
- * The soft healthcare motif behind the hero: a pale blue hill, a leafy sprig
- * and a faint heart.
- *
- * Deliberately low-contrast and non-interactive — decoration must never compete
- * with the name and role sitting on top of it (§8).
- */
 const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
   <View
     pointerEvents="none"
@@ -22,7 +14,6 @@ const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
     style={{ position: "absolute", right: 0, top: 0, bottom: 0, width, height }}
   >
     <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-      {/* Rolling hills along the lower edge */}
       <Path
         d={`M${width * 0.32} ${height} L${width * 0.55} ${height * 0.42} L${width * 0.72} ${height} Z`}
         fill="#BFD9F5"
@@ -34,7 +25,6 @@ const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
         opacity={0.3}
       />
 
-      {/* Faint heart, echoing the MaslogCare mark */}
       <Path
         d={`M${width * 0.86} ${height * 0.2}
             c 0 -${height * 0.06} ${width * 0.05} -${height * 0.09} ${width * 0.075} -${height * 0.03}
@@ -45,7 +35,6 @@ const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
         opacity={0.5}
       />
 
-      {/* Leafy sprig */}
       <Path
         d={`M${width * 0.42} ${height * 0.86} C ${width * 0.46} ${height * 0.6} ${width * 0.5} ${height * 0.44} ${width * 0.54} ${height * 0.3}`}
         stroke="#86C79A"

@@ -4,16 +4,15 @@ import { ScrollView, type ScrollViewProps } from "react-native";
 type ScreenScrollProps = ScrollViewProps & {
   children: ReactNode;
   className?: string;
-  /** Extra bottom padding inside the scroll (MainLayout already reserves space for bottom nav). */
   contentBottomInset?: number;
 };
 
-export default function ScreenScroll({
+const ScreenScroll = ({
   children,
   contentContainerStyle,
   contentBottomInset = 8,
   ...rest
-}: ScreenScrollProps) {
+}: ScreenScrollProps) => {
   return (
     <ScrollView
       className="flex-1"
@@ -31,5 +30,6 @@ export default function ScreenScroll({
       {children}
     </ScrollView>
   );
-}
+};
 
+export default ScreenScroll;

@@ -1,9 +1,8 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [ 
+  content: [
     "./app/**/*.{js,jsx,ts,tsx}",
     "./src/**/*.{js,jsx,ts,tsx}",
-    "./src/components/**/*.{js,jsx,ts,tsx}" 
+    "./src/components/**/*.{js,jsx,ts,tsx}"
   ],
 
   presets: [require("nativewind/preset")],
@@ -16,36 +15,30 @@ module.exports = {
       xl: "1280px",
     },
     extend: {
-      // ========== COLOR PALETTE ==========
       colors: {
-        // Brand colors
         primary: "#3757FF",
         "primary-soft": "#E7EFFF",
         secondary: "#1C9A7F",
         accent: "#F59E0B",
-        
-        // Status colors
+
         success: "#27AE60",
         warning: "#F2994A",
         danger: "#EB5757",
-        
-        // Neutral palette
+
         surface: "#FFFFFF",
         elevated: "#F8FAFC",
         background: "#F0F4F8",
         border: "#E2E8F0",
-        
-        // Text colors
+
         "text-primary": "#121B3B",
         "text-secondary": "#334155",
         "text-tertiary": "#64748B",
         "text-disabled": "#94A3B8",
-        
-        // Legacy brand
+
         mc: {
-          primary: "#2A7DE1", 
-          secondary: "#2ECC71", 
-          accent: "#17A2B8", 
+          primary: "#2A7DE1",
+          secondary: "#2ECC71",
+          accent: "#17A2B8",
           background: "#F5F7FA",
           card: "#FFFFFF",
           text: "#1F2933",
@@ -53,7 +46,6 @@ module.exports = {
         },
       },
 
-      // ========== TYPOGRAPHY ==========
       fontSize: {
         xs: ["11px", { lineHeight: "1.4" }],
         sm: ["12px", { lineHeight: "1.5" }],
@@ -79,7 +71,6 @@ module.exports = {
         black: 900,
       },
 
-      // ========== SPACING ==========
       spacing: {
         0: "0px",
         1: "4px",
@@ -98,7 +89,6 @@ module.exports = {
         20: "80px",
       },
 
-      // ========== BORDER RADIUS ==========
       borderRadius: {
         none: "0px",
         xs: "4px",
@@ -111,7 +101,6 @@ module.exports = {
         full: "9999px",
       },
 
-      // ========== SHADOWS (ELEVATION) ==========
       boxShadow: {
         none: "0 0 0 0 rgba(0, 0, 0, 0)",
         xs: "0 1px 2px 0 rgba(15, 23, 42, 0.04)",
@@ -121,14 +110,12 @@ module.exports = {
         lg: "0 10px 15px -3px rgba(15, 23, 42, 0.1), 0 4px 6px -2px rgba(15, 23, 42, 0.05)",
         xl: "0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04)",
         "2xl": "0 25px 50px -12px rgba(15, 23, 42, 0.15)",
-        
-        // Elevation shadows for cards
+
         elevation1: "0 2px 8px rgba(15, 23, 42, 0.05)",
         elevation2: "0 4px 12px rgba(15, 23, 42, 0.08)",
         elevation3: "0 8px 16px rgba(15, 23, 42, 0.1)",
       },
 
-      // ========== ANIMATION ==========
       animation: {
         "fade-in": "fadeIn 0.3s ease-in-out",
         "slide-up": "slideUp 0.4s ease-out",

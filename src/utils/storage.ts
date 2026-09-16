@@ -8,11 +8,10 @@ export type StoredTheme = "dark" | "light";
 
 let memoryStore: Record<string, string> = {};
 
-// In-memory cache so Axios interceptors can attach tokens synchronously.
 let userCache: StoredUser | null = null;
 let cacheHydrated = Platform.OS === "web";
 
-function getStorage() {
+const getStorage = () => {
   if (Platform.OS === "web" && typeof localStorage !== "undefined") {
     return {
       getItem: (key: string) => localStorage.getItem(key),
@@ -29,7 +28,7 @@ function getStorage() {
       delete memoryStore[key];
     },
   };
-}
+};
 
 const storage = getStorage();
 
@@ -62,10 +61,9 @@ if (cacheHydrated) {
   userCache = readStoredUserSync();
 }
 
-export async function hydrateAuthStorage(): Promise<void> {
+export const hydrateAuthStorage = async (): Promise<void> => {
   if (cacheHydrated) return;
 
-  // For web we use localStorage synchronously; for native we hydrate async from SecureStore.
   if (Platform.OS === "web") {
     userCache = readStoredUserSync();
     cacheHydrated = true;
@@ -80,18 +78,17 @@ export async function hydrateAuthStorage(): Promise<void> {
   } finally {
     cacheHydrated = true;
   }
-}
+};
 
-export function getCachedAccessToken(): string | null {
+export const getCachedAccessToken = (): string | null => {
   return userCache?.token ?? null;
-}
+};
 
-export function getStoredUser(): StoredUser | null {
+export const getStoredUser = (): StoredUser | null => {
   return userCache;
-}
+};
 
-export function setStoredUser(user: StoredUser): void {
-  // Update cache immediately so interceptors can attach it.
+export const setStoredUser = (user: StoredUser): void => {
   userCache = user;
   cacheHydrated = true;
 
@@ -99,24 +96,22 @@ export function setStoredUser(user: StoredUser): void {
 
   if (Platform.OS !== "web") {
     void SecureStore.setItemAsync(AUTH_KEY, JSON.stringify(user)).catch(() => {
-      // If secure persistence fails, still keep in-memory behavior working.
     });
   }
-}
+};
 
-export function clearStoredUser(): void {
+export const clearStoredUser = (): void => {
   userCache = null;
   cacheHydrated = true;
   storage.removeItem(AUTH_KEY);
 
   if (Platform.OS !== "web") {
     void SecureStore.deleteItemAsync(AUTH_KEY).catch(() => {
-      // noop
     });
   }
-}
+};
 
-export function getStoredTheme(): StoredTheme | null {
+export const getStoredTheme = (): StoredTheme | null => {
   try {
     const raw = storage.getItem(THEME_KEY);
     if (raw === "dark" || raw === "light") return raw;
@@ -124,12 +119,11 @@ export function getStoredTheme(): StoredTheme | null {
   } catch {
     return null;
   }
-}
+};
 
-export function setStoredTheme(theme: StoredTheme): void {
+export const setStoredTheme = (theme: StoredTheme): void => {
   try {
     storage.setItem(THEME_KEY, theme);
   } catch {
-    // noop
   }
-}
+};

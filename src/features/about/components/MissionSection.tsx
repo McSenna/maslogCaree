@@ -3,8 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { HC } from "../constants/aboutTheme";
 import AboutSectionHeader from "./AboutSectionHeader";
 
-/** What the service is for, beside its icon. */
-export default function MissionSection({ isTablet }: { isTablet: boolean }) {
+const MissionSection = ({ isTablet }: { isTablet: boolean }) => {
   return (
     <View>
       <AboutSectionHeader eyebrow="Our Purpose" title="Mission & Vision" isTablet={isTablet} />
@@ -48,4 +47,6 @@ export default function MissionSection({ isTablet }: { isTablet: boolean }) {
       </View>
     </View>
   );
-}
+};
+
+export default MissionSection;

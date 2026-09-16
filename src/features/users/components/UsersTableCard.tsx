@@ -15,12 +15,11 @@ type UsersTableCardProps = {
   emptyState: ReactNode;
 };
 
-/** Desktop: filters, table and pagination inside one white section. */
-export default function UsersTableCard({
+const UsersTableCard = ({
   controller,
   toolbar,
   emptyState,
-}: UsersTableCardProps) {
+}: UsersTableCardProps) => {
   const palette = useUsersPalette();
   const { filters, loading, error } = controller;
 
@@ -46,9 +45,6 @@ export default function UsersTableCard({
       ) : error || filters.pageUsers.length === 0 ? (
         emptyState
       ) : (
-        // Below TABLE_MIN_WIDTH the nine columns cramp, so the table keeps its
-        // proportions and scrolls sideways instead of squeezing. At or above it
-        // the table takes the full card width and the scroll never engages.
         <View
           className="w-full"
           onLayout={(event) => {
@@ -85,4 +81,6 @@ export default function UsersTableCard({
       ) : null}
     </View>
   );
-}
+};
+
+export default UsersTableCard;

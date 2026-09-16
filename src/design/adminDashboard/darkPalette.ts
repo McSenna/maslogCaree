@@ -1,0 +1,58 @@
+import type { AdminDashboardPalette } from "./paletteTypes";
+
+export const dark: AdminDashboardPalette = {
+  pageBg: "#020617",
+  cardBg: "#0F172A",
+  cardBorder: "#1E293B",
+  divider: "#1E293B",
+  heading: "#F8FAFC",
+  body: "#CBD5E1",
+  muted: "#94A3B8",
+  subtle: "#64748B",
+  primary: "#60A5FA",
+  positive: "#34D399",
+  negative: "#FB7185",
+  bannerBg: "#0B1F3A",
+  bannerBorder: "#1E3A5F",
+  bannerArt: "#1E3A5F",
+  bannerArtSoft: "#16304D",
+  skeleton: "#1E293B",
+  menuBg: "#111C33",
+  menuBorder: "#1E293B",
+  statusActive: "#34D399",
+  statusInactive: "#64748B",
+  tones: {
+    blue: {
+      cardBg: "rgba(22,119,255,0.12)",
+      cardBorder: "rgba(22,119,255,0.28)",
+      iconBg: "rgba(22,119,255,0.22)",
+      icon: "#60A5FA",
+      label: "#60A5FA",
+    },
+    green: {
+      cardBg: "rgba(34,197,94,0.12)",
+      cardBorder: "rgba(34,197,94,0.28)",
+      iconBg: "rgba(34,197,94,0.22)",
+      icon: "#34D399",
+      label: "#34D399",
+    },
+    pink: {
+      cardBg: "rgba(244,63,94,0.12)",
+      cardBorder: "rgba(244,63,94,0.28)",
+      iconBg: "rgba(244,63,94,0.22)",
+      icon: "#FB7185",
+      label: "#FB7185",
+    },
+    purple: {
+      cardBg: "rgba(139,92,246,0.12)",
+      cardBorder: "rgba(139,92,246,0.28)",
+      iconBg: "rgba(139,92,246,0.22)",
+      icon: "#A78BFA",
+      label: "#A78BFA",
+    },
+  },
+  trends: {
+    up: { text: "#86EFAC", bg: "rgba(34,197,94,0.16)" },
+    down: { text: "#FDA4AF", bg: "rgba(244,63,94,0.16)" },
+  },
+};

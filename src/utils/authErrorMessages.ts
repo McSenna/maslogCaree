@@ -1,14 +1,6 @@
 import { normalizeApiError, type NormalizedApiError } from "@/utils/apiErrorHandler";
 import { ERROR_CODES } from "@/utils/errorCodes";
 
-/**
- * Registration and OTP screens need more specific guidance than the generic
- * API message for a handful of codes — telling the user their account was
- * saved even though the email failed, for instance.
- *
- * This table was previously duplicated across RegistrationScreen and
- * OtpVerificationModal, which let the two screens drift apart.
- */
 type AuthErrorCopy = { title: string; message: string };
 
 const OVERRIDES: Record<string, AuthErrorCopy> = {
@@ -27,6 +19,24 @@ const OVERRIDES: Record<string, AuthErrorCopy> = {
     message:
       "Email verification is temporarily unavailable. Please contact the health center.",
   },
+  [ERROR_CODES.ACCOUNT_PENDING_VERIFICATION]: {
+    title: "Account Pending Verification",
+    message:
+      "Your registration is currently being reviewed by the Barangay Administrator. You will be able to access your account once your registration has been approved.",
+  },
+  [ERROR_CODES.REGISTRATION_REJECTED]: {
+    title: "Registration Rejected",
+    message:
+      "Your registration could not be approved. Please contact the Barangay Health Center or Barangay Administrator for assistance.",
+  },
+  [ERROR_CODES.ACCOUNT_SUSPENDED]: {
+    title: "Account Suspended",
+    message: "This account has been suspended. Please contact your administrator.",
+  },
+  [ERROR_CODES.ACCOUNT_DEACTIVATED]: {
+    title: "Account Deactivated",
+    message: "This account has been deactivated. Please contact your administrator.",
+  },
   [ERROR_CODES.OTP_MAX_ATTEMPTS]: {
     title: "Too Many Attempts",
     message:
@@ -38,11 +48,11 @@ const OVERRIDES: Record<string, AuthErrorCopy> = {
   },
 };
 
-/**
- * Codes whose server message is already specific (it counts down remaining
- * attempts or seconds), so it is kept and only the dialog title is set.
- */
 const TITLE_ONLY: Record<string, string> = {
+  [ERROR_CODES.ACCOUNT_PENDING_VERIFICATION]: "Account Pending Verification",
+  [ERROR_CODES.REGISTRATION_REJECTED]: "Registration Rejected",
+  [ERROR_CODES.ACCOUNT_SUSPENDED]: "Account Suspended",
+  [ERROR_CODES.ACCOUNT_DEACTIVATED]: "Account Deactivated",
   [ERROR_CODES.OTP_INVALID]: "Incorrect Code",
   [ERROR_CODES.OTP_COOLDOWN]: "Please Wait",
   [ERROR_CODES.OTP_RATE_LIMITED]: "Too Many Requests",
@@ -58,11 +68,11 @@ export interface AuthErrorPresentation extends AuthErrorCopy {
   normalized: NormalizedApiError;
 }
 
-export function getAuthErrorPresentation(
+export const getAuthErrorPresentation = (
   error: unknown,
   defaultTitle: string,
   defaultMessage: string
-): AuthErrorPresentation {
+): AuthErrorPresentation => {
   const normalized = normalizeApiError(error);
   const override = OVERRIDES[normalized.code];
 
@@ -70,7 +80,6 @@ export function getAuthErrorPresentation(
     return { ...override, code: normalized.code, normalized };
   }
 
-  // Multiple field errors read better as a list than as a single summary line.
   const message =
     normalized.errors && normalized.errors.length > 1
       ? normalized.errors.join("\n")
@@ -82,4 +91,4 @@ export function getAuthErrorPresentation(
     code: normalized.code,
     normalized,
   };
-}
+};

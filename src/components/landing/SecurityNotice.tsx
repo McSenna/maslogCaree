@@ -9,12 +9,7 @@ const FONT_FAMILY = Platform.select({
   default: "sans-serif",
 });
 
-/**
- * Small security notice at the bottom of the auth card.
- *
- * [Shield Icon] Your data is secure with MaslogCare
- */
-export default function SecurityNotice() {
+const SecurityNotice = () => {
   return (
     <View style={styles.container}>
       <Ionicons
@@ -25,7 +20,7 @@ export default function SecurityNotice() {
       <Text style={styles.text}>Your data is secure with MaslogCare</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -42,3 +37,5 @@ const styles = StyleSheet.create({
     fontFamily: FONT_FAMILY,
   },
 });
+
+export default SecurityNotice;

@@ -2,16 +2,7 @@ import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 import { useUserDetailsPalette } from "./detailsTheme";
 
-/**
- * One titled block of the phone sheet.
- *
- * A heading over a hairline rather than a bordered card per section: the sheet
- * is already a raised surface, and nesting cards inside it would spend the
- * phone's narrow width on borders that say nothing. `quiet` drops the section
- * a step in emphasis, for the account metadata that is reference rather than
- * the reason the admin opened the sheet.
- */
-export default function SheetSection({
+const SheetSection = ({
   title,
   children,
   quiet = false,
@@ -19,7 +10,7 @@ export default function SheetSection({
   title: string;
   children: ReactNode;
   quiet?: boolean;
-}) {
+}) => {
   const palette = useUserDetailsPalette();
 
   return (
@@ -34,4 +25,6 @@ export default function SheetSection({
       <View className="mt-1">{children}</View>
     </View>
   );
-}
+};
+
+export default SheetSection;

@@ -13,12 +13,6 @@ type HeaderNotificationsProps = {
   isDark: boolean;
 };
 
-/**
- * Header bell + the existing notification panel.
- *
- * Owns the notification state so the layouts that render the header do not
- * have to duplicate it.
- */
 const HeaderNotifications = ({ compact, isDark }: HeaderNotificationsProps) => {
   const palette = getHeaderPalette(isDark);
 

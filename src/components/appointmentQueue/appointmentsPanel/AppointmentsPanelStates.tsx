@@ -7,8 +7,7 @@ import {
   type QueuePalette,
 } from "../queueTheme";
 
-/** The list could not be loaded, with the one thing that resolves it. */
-export function AppointmentsError({
+export const AppointmentsError = ({
   error,
   onRetry,
   palette,
@@ -16,7 +15,7 @@ export function AppointmentsError({
   error: string;
   onRetry: () => void;
   palette: QueuePalette;
-}) {
+}) => {
   return (
     <View className="items-center gap-2.5 px-6 py-12">
       <Feather name="alert-circle" size={22} color="#EF4444" />
@@ -37,10 +36,9 @@ export function AppointmentsError({
       </Pressable>
     </View>
   );
-}
+};
 
-/** Four placeholder rows, shaped like the ones that will replace them. */
-export function AppointmentsSkeleton({ palette }: { palette: QueuePalette }) {
+export const AppointmentsSkeleton = ({ palette }: { palette: QueuePalette }) => {
   return (
     <View className="gap-3 px-5 py-5">
       {[0, 1, 2, 3].map((row) => (
@@ -60,10 +58,9 @@ export function AppointmentsSkeleton({ palette }: { palette: QueuePalette }) {
       ))}
     </View>
   );
-}
+};
 
-/** Nothing under this tab — named by the tab, so the reason is obvious. */
-export function AppointmentsEmpty({
+export const AppointmentsEmpty = ({
   activeStatus,
   message,
   palette,
@@ -71,7 +68,7 @@ export function AppointmentsEmpty({
   activeStatus: AppointmentStatus;
   message: string;
   palette: QueuePalette;
-}) {
+}) => {
   return (
     <View className="items-center gap-1.5 px-6 py-14">
       <Text className="text-[14px] font-semibold" style={{ color: palette.heading }}>
@@ -82,4 +79,4 @@ export function AppointmentsEmpty({
       </Text>
     </View>
   );
-}
+};

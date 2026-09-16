@@ -17,10 +17,10 @@ const EXP_GRADIENT_COLORS = [
 ] as const;
 
 
-export default function ProfileExpBar({
+const ProfileExpBar = ({
   progress = 62,
   level = 7,
-}: ProfileExpBarProps) {
+}: ProfileExpBarProps) => {
   return (
     <View className="flex-row items-center gap-2">
       <Text className="w-6 text-[10px] text-slate-400">exp.</Text>
@@ -37,4 +37,6 @@ export default function ProfileExpBar({
       <Text className="text-[10px] text-slate-400">Lv.{level}</Text>
     </View>
   );
-}
+};
+
+export default ProfileExpBar;

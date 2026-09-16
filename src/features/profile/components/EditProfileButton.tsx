@@ -7,7 +7,6 @@ type EditProfileButtonProps = {
   compact?: boolean;
 };
 
-/** Compact outlined "Edit Profile" control sitting in the hero (§14). */
 const EditProfileButton = ({ onPress, compact = false }: EditProfileButtonProps) => (
   <Pressable
     accessibilityRole="button"
@@ -17,8 +16,6 @@ const EditProfileButton = ({ onPress, compact = false }: EditProfileButtonProps)
     className="flex-row items-center justify-center active:opacity-85"
     style={{
       gap: 7,
-      // 44 on mobile, where the button spans the card and is the row's
-      // only touch target; the web hero keeps it inline at 40.
       minHeight: compact ? 44 : 40,
       paddingHorizontal: compact ? 13 : 16,
       borderRadius: PROFILE_RADIUS.pill,

@@ -2,8 +2,7 @@ import { Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 import { SIDEBAR_METRICS, type SidebarPalette } from "./sidebarTheme";
 
-/** A single leaf — the one green note in an otherwise blue rail. */
-function Leaf({ color }: { color: string }) {
+const Leaf = ({ color }: { color: string }) => {
   return (
     <Svg width={17} height={17} viewBox="0 0 17 17" accessibilityElementsHidden>
       <Path
@@ -12,16 +11,9 @@ function Leaf({ color }: { color: string }) {
       />
     </Svg>
   );
-}
+};
 
-/**
- * The closing note at the foot of the rail.
- *
- * Deliberately a sentiment rather than a control: this is the quietest part of
- * the sidebar and anything actionable placed here would be hunted for. It says
- * who the work is for, and nothing else.
- */
-export default function SidebarBranding({ palette }: { palette: SidebarPalette }) {
+const SidebarBranding = ({ palette }: { palette: SidebarPalette }) => {
   return (
     <View
       className="w-full flex-row items-center gap-2.5"
@@ -36,4 +28,6 @@ export default function SidebarBranding({ palette }: { palette: SidebarPalette }
       </Text>
     </View>
   );
-}
+};
+
+export default SidebarBranding;

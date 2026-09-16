@@ -3,7 +3,6 @@ import { Pressable, ScrollView, Text, View } from "react-native";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
-  /** Optional label so a nested boundary can name the area that failed. */
   area?: string;
 }
 
@@ -12,15 +11,6 @@ interface ErrorBoundaryState {
   message: string;
 }
 
-/**
- * Catches render-time exceptions so a bug in one screen shows a recoverable
- * message instead of a blank app.
- *
- * React error boundaries only catch errors thrown while rendering, in
- * lifecycle methods, and in constructors below them — not errors inside event
- * handlers or async callbacks. Those are handled where they occur, via
- * normalizeApiError.
- */
 export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   state: ErrorBoundaryState = { hasError: false, message: "" };
 
@@ -32,7 +22,6 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    // Developer detail only. The user sees the safe copy rendered below.
     console.error("[ErrorBoundary]", this.props.area ?? "app", {
       message: error.message,
       componentStack: info.componentStack,
@@ -77,7 +66,6 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             <Text className="text-sm font-semibold text-white">Try again</Text>
           </Pressable>
 
-          {/* Technical detail is for developers and stays out of production builds. */}
           {isDev && this.state.message ? (
             <Text className="mt-6 text-center text-xs text-slate-400">
               {this.state.message}

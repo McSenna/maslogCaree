@@ -6,15 +6,7 @@ import RoleBadge from "../RoleBadge";
 import UserStatusBadge from "../UserStatusBadge";
 import { useUserDetailsPalette } from "./detailsTheme";
 
-/**
- * Who this account belongs to — the phone presentation.
- *
- * Deliberately not the desktop hero: on a phone the sheet's vertical space is
- * the scarce resource, so the branding, artwork and tagline all come off and
- * what stays is the face, the name and the three badges an admin actually
- * scans for. Roughly a third of the hero's height, for all of its information.
- */
-export default function UserProfileSummary({ user }: { user: AdminUser }) {
+const UserProfileSummary = ({ user }: { user: AdminUser }) => {
   const palette = useUserDetailsPalette();
   const isActive = user.status === "active";
 
@@ -79,4 +71,6 @@ export default function UserProfileSummary({ user }: { user: AdminUser }) {
       </View>
     </View>
   );
-}
+};
+
+export default UserProfileSummary;

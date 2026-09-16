@@ -2,10 +2,6 @@ import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { PROFILE_COLORS, PROFILE_RADIUS } from "../config/profileTheme";
 
-/**
- * The soft green reassurance strip under Personal Information in the reference
- * design — the one healthcare flourish inside the content column.
- */
 const HealthNoteStrip = () => (
   <View
     style={{

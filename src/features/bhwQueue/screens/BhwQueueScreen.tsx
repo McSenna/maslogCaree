@@ -13,29 +13,15 @@ import {
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import CompleteAppointmentModal from "@/components/medicalRecord/CompleteAppointmentModal";
 import MedicalRecordDetails from "@/components/medicalRecord/MedicalRecordDetails";
+import { useAuth } from "@/contexts/AuthContext";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import QueueRefreshButton from "../components/QueueRefreshButton";
 import { useBhwQueue } from "../hooks/useBhwQueue";
 
-/**
- * The BHW's Appointment & Queue screen — BP Checking, and nothing else.
- *
- * Split from the shared mission-control screen rather than gated inside it.
- * That screen is built around a mission schedule: it opens by reading
- * `GET /mission-schedule`, which the API restricts to doctor, admin and
- * midwife, so a BHW landing on it was met with a 403 alert before the page had
- * drawn anything. Missions are not a BHW's instrument, so the fix is a screen
- * that never asks for one — not a flag that hides half of somebody else's.
- *
- * Read-only, deliberately. Scheduling, reassigning and declining act on
- * mission-schedule slots and stay with the roles that manage them, so no row
- * carries a control the API would refuse.
- */
-export default function BhwQueueScreen() {
+const BhwQueueScreen = () => {
   const palette = useQueuePalette();
-  // The same insets the other role pages use, so this page lines up under the
-  // header and against the sidebar rather than sitting at its own.
   const insets = useRoleScreenInsets();
+  const { user } = useAuth();
   const queue = useBhwQueue();
   const { dashboard, completion, serviceLabel, serviceLabels } = queue;
 
@@ -72,13 +58,8 @@ export default function BhwQueueScreen() {
           wide={fourCards}
         />
 
-        {/* Two columns where there is room: the work on the left, the day and
-            the caseload on the right. Below that they stack in the same order. */}
         <View className={`w-full gap-4 ${twoColumn ? "flex-row items-start" : "flex-col"}`}>
           <View className="min-w-0 gap-4" style={twoColumn ? { flex: 2 } : undefined}>
-            {/* The queue sits above the tabs because it is the work: an
-                approved appointment arrives here on its own and the only thing
-                left to do with it is see the patient. */}
             <ActiveQueuePanel
               appointments={dashboard.queue}
               serviceLabels={serviceLabels}
@@ -105,11 +86,7 @@ export default function BhwQueueScreen() {
                 />
               }
               busyId={null}
-              // Scheduling and declining belong to the roles that manage the
-              // mission a slot comes from, so no row here offers them. A BHW
-              // acts on their queue through Complete, in the panel above.
               canAct={false}
-              // A completed row opens its record instead.
               onRowPress={
                 dashboard.activeStatus === "completed"
                   ? (appointment) => void completion.openRecord(appointment)
@@ -143,9 +120,12 @@ export default function BhwQueueScreen() {
         visible={Boolean(completion.target)}
         appointment={completion.target}
         form={completion.targetForm}
+        formError={completion.formsError}
         serviceLabel={serviceLabel}
+        providerName={user?.name ?? null}
         onClose={completion.closeComplete}
         onCompleted={(result) => void completion.handleCompleted(result)}
+        onViewRecord={(appointment) => void completion.openRecord(appointment)}
       />
 
       <MedicalRecordDetails
@@ -156,4 +136,6 @@ export default function BhwQueueScreen() {
       />
     </View>
   );
-}
+};
+
+export default BhwQueueScreen;

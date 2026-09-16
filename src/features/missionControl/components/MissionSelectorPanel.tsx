@@ -10,20 +10,13 @@ type MissionSelectorPanelProps = {
   onEdit: (mission: MissionScheduleRecord) => void;
   onDelete: (missionId: string) => void;
 };
-
-/**
- * The existing schedules, as a horizontal strip of cards.
- *
- * Selecting one is what makes the timeline and the assign sheet meaningful:
- * a patient is assigned into a specific mission's slots, never in the abstract.
- */
-export default function MissionSelectorPanel({
+const MissionSelectorPanel = ({
   missions,
   selectedMissionId,
   onSelect,
   onEdit,
   onDelete,
-}: MissionSelectorPanelProps) {
+}: MissionSelectorPanelProps) => {
   return (
     <View className="rounded-2xl border border-slate-200 bg-white p-4">
       <Text className="text-lg font-semibold text-slate-900">Select mission</Text>
@@ -76,4 +69,6 @@ export default function MissionSelectorPanel({
       ) : null}
     </View>
   );
-}
+};
+
+export default MissionSelectorPanel;

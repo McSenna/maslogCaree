@@ -5,13 +5,11 @@ import { initialsOf } from "../utils/organizationChart";
 
 type BhwCardProps = {
   member: OrganizationMember;
-  /** Position in the grid, which picks the card's tone. */
   index: number;
   isTablet: boolean;
 };
 
-/** One health worker in the grid beneath the leadership tiers. */
-export default function BhwCard({ member, index, isTablet }: BhwCardProps) {
+const BhwCard = ({ member, index, isTablet }: BhwCardProps) => {
   const palette = BHW_PALETTE[index % BHW_PALETTE.length];
   const avatarSize = isTablet ? 46 : 38;
   const outerSize = avatarSize + 8;
@@ -116,4 +114,6 @@ export default function BhwCard({ member, index, isTablet }: BhwCardProps) {
       </View>
     </View>
   );
-}
+};
+
+export default BhwCard;

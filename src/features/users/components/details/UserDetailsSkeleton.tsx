@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { CARD_SHADOW } from "../usersTheme";
 import { DETAIL_RADIUS, useUserDetailsPalette } from "./detailsTheme";
 
-function Block({
+const Block = ({
   height,
   width,
   radius = 8,
@@ -12,7 +12,7 @@ function Block({
   width?: number | string;
   radius?: number;
   className?: string;
-}) {
+}) => {
   const palette = useUserDetailsPalette();
 
   return (
@@ -26,9 +26,9 @@ function Block({
       }}
     />
   );
-}
+};
 
-function CardShell({ rows, compact }: { rows: number; compact: boolean }) {
+const CardShell = ({ rows, compact }: { rows: number; compact: boolean }) => {
   const palette = useUserDetailsPalette();
 
   return (
@@ -62,16 +62,9 @@ function CardShell({ rows, compact }: { rows: number; compact: boolean }) {
       </View>
     </View>
   );
-}
+};
 
-/**
- * The dialog's shape while the record loads.
- *
- * Mirrors the real layout — hero, then the same two columns — so the content
- * lands in place instead of pushing the cards around, and so the admin can see
- * a user is opening rather than reading the word "Loading".
- */
-export default function UserDetailsSkeleton({ compact }: { compact: boolean }) {
+const UserDetailsSkeleton = ({ compact }: { compact: boolean }) => {
   const palette = useUserDetailsPalette();
 
   return (
@@ -111,4 +104,6 @@ export default function UserDetailsSkeleton({ compact }: { compact: boolean }) {
       </View>
     </View>
   );
-}
+};
+
+export default UserDetailsSkeleton;

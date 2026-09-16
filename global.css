@@ -20,6 +20,149 @@ body,
   display: none; 
 }
 
+/* ========== SCROLLING & MOTION (web) ==========
+   Behaviour only. Nothing here changes a colour, a size or a layout — it
+   governs how the page moves, which is the one thing react-native-web leaves
+   to the document. */
+
+html {
+  /* Prevents Android Chrome inflating body text on rotation, which reflows
+     the whole page and reads as a layout jump. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Programmatic scrolling (anchors, scrollTo, focus jumps) eases instead of
+   teleporting. Scoped to viewers who have not asked for less motion — forcing
+   it on everyone is exactly the misuse the brief warns about, and it also
+   makes assistive "jump to" navigation feel sluggish. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  /* The app shell owns every scroll region; letting the document scroll too
+     produces the rubber-band overscroll that makes a fixed header look loose. */
+  overscroll-behavior-y: none;
+}
+
+/* Keyboard users get a visible focus ring; pointer users do not. The app hides
+   scrollbars, so focus is the only remaining positional cue for keyboard
+   navigation and it must not be suppressed. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ========== FIELDS WHOSE WRAPPER OWNS THE FOCUS STATE ==========
+   A control marked `data-input-shell` sits inside a wrapper that already draws
+   the border, the background and the focused state for the whole field — icon,
+   text and trailing button together. The rule above would draw a *second*
+   indicator on the inner control: because a text field matches
+   `:focus-visible` even when it was reached with the mouse, clicking the
+   password box produced a blue 2px rounded outline inset inside the field's
+   own border. Two rectangles, one field.
+
+   So the inner control's outline is suppressed and the wrapper keeps the sole
+   indicator. Focus is not being hidden — it moves up one element, where it is
+   larger and easier to see, which is why this is scoped to marked wrappers
+   rather than applied to inputs generally. Anything unmarked still gets the
+   ring above, and that is deliberate: it is the only positional cue keyboard
+   users have in an app that hides its scrollbars.
+
+   The `:focus-visible` half of the selector is more specific than the bare
+   rule above (attribute + pseudo-class), so it wins regardless of order.
+
+   Deliberately `input`/`textarea` and not a descendant wildcard. The wrapper's
+   focused state tracks the *text control* only, so a wildcard would also strip
+   the ring from the reveal-password button beside it — which the wrapper does
+   not indicate, leaving a keyboard user tabbing onto it with no visible focus
+   at all. That button keeps the global ring. */
+[data-input-shell] input:focus,
+[data-input-shell] input:focus-visible,
+[data-input-shell] textarea:focus,
+[data-input-shell] textarea:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ========== AUTOFILL ==========
+   Chrome and Brave paint their own pale-blue background on an autofilled
+   control, and it is applied as an internal style that `background-color`
+   cannot override — which would put a filled rectangle inside the wrapper and
+   reintroduce exactly the nested box removed above.
+
+   The transition delay is the standard way out: the autofill background is
+   applied as a transition, so deferring it effectively forever leaves the
+   control transparent and lets the wrapper's own surface show through. Only
+   the text and caret colours are stated outright, so autofilled credentials
+   stay legible against the wrapper in either theme. */
+[data-input-shell] input:-webkit-autofill,
+[data-input-shell] input:-webkit-autofill:hover,
+[data-input-shell] input:-webkit-autofill:focus,
+[data-input-shell] input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-text-primary);
+  caret-color: var(--color-text-primary);
+  transition: background-color 100000s ease-in-out 0s;
+}
+
+/* ========== ECLIPSE LOADER ==========
+   The rotation for the page loader, reproduced from the loading.io reference
+   (`Eclipse@1x-1.0s-200px-200px`). Kept in CSS rather than driven from
+   JavaScript on purpose: this loader appears precisely when the JS thread is
+   busy rendering the page being navigated to, and a compositor-driven
+   transform keeps turning smoothly through exactly that. The geometry — the
+   circle, its displaced box-shadow and the pivot below centre — is set inline
+   by EclipseLoader.tsx, so only the motion lives here.
+
+   Reduced motion is handled in the component, which renders a static mark
+   instead. It must not be handled by slowing this rule down: the global
+   reduced-motion block below collapses every animation to ~0ms, which would
+   leave a spinner frozen mid-turn and looking broken. */
+@keyframes eclipse-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+[data-eclipse-spin] {
+  animation: eclipse-spin 1s linear infinite;
+  /* Promotes the crescent to its own compositor layer so each frame is a GPU
+     transform rather than a repaint. */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* ========== REDUCED MOTION ==========
+   The final say, after every component's own check. A viewer who has asked
+   their operating system for less movement gets it here even from animation
+   this codebase does not know about — a dependency's CSS, a transition added
+   later and not wired through `useReducedMotion`.
+
+   Near-zero rather than `none`: animations still run and still fire their
+   completion events, so anything that reveals content when an animation ends
+   keeps working instead of being left permanently hidden. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* ========== DESIGN TOKEN CONSTANTS ========== */
 
 :root {

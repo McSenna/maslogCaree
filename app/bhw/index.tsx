@@ -1,5 +1,7 @@
 import { Redirect } from "expo-router";
 
-export default function BhwIndex() {
+const BhwIndex = () => {
   return <Redirect href="/bhw/dashboard" />;
-}
+};
+
+export default BhwIndex;

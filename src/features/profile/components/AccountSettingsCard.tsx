@@ -6,11 +6,9 @@ export type AccountSettingsHandlers = {
   onChangePassword?: () => void;
   onNotificationSettings?: () => void;
   onPrivacySecurity?: () => void;
-  /** "large" is the mobile treatment. */
   size?: SettingsRowSize;
 };
 
-/** Account Settings card — Change Password, Notifications, Privacy (§21). */
 const AccountSettingsCard = ({
   onChangePassword,
   onNotificationSettings,

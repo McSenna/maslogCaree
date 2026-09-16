@@ -7,13 +7,6 @@ type LogoutButtonProps = {
   onPress: () => void;
 };
 
-/**
- * Full-width sign-out control for the mobile profile (§24).
- *
- * Sits on a soft red field rather than a solid one: it is the last thing on the
- * screen and should read as deliberate, not alarming. The glyph gets its own
- * white chip so it carries the same weight as the section cards above it.
- */
 const LogoutButton = ({ onPress }: LogoutButtonProps) => {
   const scale = useRef(new Animated.Value(1)).current;
 
@@ -33,9 +26,6 @@ const LogoutButton = ({ onPress }: LogoutButtonProps) => {
         onPress={onPress}
         onPressIn={() => animate(0.98)}
         onPressOut={() => animate(1)}
-        // Press feedback rides on the class, not on a style callback: a
-        // function-form `style` on Pressable is dropped here, taking the fill,
-        // height and centring with it.
         className="flex-row items-center justify-center active:opacity-85"
         style={{
           gap: 11,

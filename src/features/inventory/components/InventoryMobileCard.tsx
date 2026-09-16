@@ -7,13 +7,11 @@ import { CARD_SHADOW, CATEGORY_ICONS, RADIUS, formatShortDate, useInventoryPalet
 
 type InventoryMobileCardProps = {
   item: InventoryItem;
-  /** Opens Item Details — the card's only interaction. */
   onPress: () => void;
-  /** Narrowest phones (320–360px) trim the icon so the badges still fit. */
   dense?: boolean;
 };
 
-function SummaryLine({ label, value, danger = false }: { label: string; value: string; danger?: boolean }) {
+const SummaryLine = ({ label, value, danger = false }: { label: string; value: string; danger?: boolean }) => {
   const palette = useInventoryPalette();
 
   return (
@@ -30,25 +28,13 @@ function SummaryLine({ label, value, danger = false }: { label: string; value: s
       </Text>
     </View>
   );
-}
+};
 
-/**
- * One inventory item as a card — the phone's replacement for a table row.
- *
- * The whole card is the touch target and its only action: tapping it opens
- * Item Details, which is where every stock action lives on mobile. There is
- * deliberately no per-row menu — a three-dot control here would be a ~24px
- * target competing with the card itself, and would split the actions across
- * two places for no gain.
- *
- * Only what identifies an item and tells you whether it needs attention is
- * shown; the full record is one tap away.
- */
-export default function InventoryMobileCard({
+const InventoryMobileCard = ({
   item,
   onPress,
   dense = false,
-}: InventoryMobileCardProps) {
+}: InventoryMobileCardProps) => {
   const palette = useInventoryPalette();
   const tone = palette.categories[item.category] ?? palette.categories.other;
   const badges = resolveStatusBadges(item);
@@ -61,8 +47,6 @@ export default function InventoryMobileCard({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${item.name}${item.specification ? `, ${item.specification}` : ""}. ${subtitle}. Stock ${item.currentStock} ${item.unit}. ${badges.map((b) => b.replace(/-/g, " ")).join(", ")}. Opens item details.`}
-      // Press feedback rides on the class and the ripple: react-native-web drops
-      // a function-form `style` on Pressable, taking the surface with it.
       className="w-full flex-row items-start gap-3 border p-3 active:opacity-90"
       android_ripple={{ color: `${palette.primary}12` }}
       style={{
@@ -118,4 +102,6 @@ export default function InventoryMobileCard({
       </View>
     </Pressable>
   );
-}
+};
+
+export default InventoryMobileCard;

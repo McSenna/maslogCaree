@@ -8,18 +8,11 @@ type PendingQueuePanelProps = {
   onDecline: (appointment: AppointmentRecord) => void;
 };
 
-/**
- * Requests waiting for a slot, in the server's priority order.
- *
- * The order is not re-sorted here: the server ranks by priority tier and then
- * by arrival, and re-deriving that on the client would eventually disagree
- * with the ordering the rest of the system uses.
- */
-export default function PendingQueuePanel({
+const PendingQueuePanel = ({
   pending,
   onAssign,
   onDecline,
-}: PendingQueuePanelProps) {
+}: PendingQueuePanelProps) => {
   return (
     <View className="rounded-2xl border border-slate-200 bg-white p-4">
       <Text className="text-lg font-semibold text-slate-900">Pending queue (priority)</Text>
@@ -61,4 +54,6 @@ export default function PendingQueuePanel({
       )}
     </View>
   );
-}
+};
+
+export default PendingQueuePanel;

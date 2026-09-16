@@ -1,17 +1,9 @@
 import { useCallback, useMemo, useState } from "react";
 import { fetchInventoryItem, type InventoryItem } from "../services/inventoryService";
 
-/**
- * Which row is open, which rows are ticked, and the fuller record behind the
- * open one.
- *
- * Selecting shows the row the list already has and swaps in the detailed
- * record when it lands, so opening the panel never blocks on a request.
- */
-export function useInventorySelection(items: InventoryItem[]) {
+export const useInventorySelection = (items: InventoryItem[]) => {
   const [checkedIds, setCheckedIds] = useState<ReadonlySet<string>>(new Set());
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  /** The selected row, enriched with its batches by the detail request. */
   const [detailItem, setDetailItem] = useState<InventoryItem | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
@@ -27,9 +19,6 @@ export function useInventorySelection(items: InventoryItem[]) {
     try {
       setDetailItem(await fetchInventoryItem(itemId));
     } catch {
-      // The list row is already on screen and carries every field the panel
-      // needs except the batch breakdown, so a failure here is not worth an
-      // error state of its own.
       setDetailItem(null);
     } finally {
       setDetailLoading(false);
@@ -70,7 +59,6 @@ export function useInventorySelection(items: InventoryItem[]) {
     [items]
   );
 
-  /** Points the panel at a record a mutation just returned. */
   const showItem = useCallback((item: InventoryItem) => {
     setDetailItem(item);
     setSelectedId(item._id);
@@ -87,4 +75,4 @@ export function useInventorySelection(items: InventoryItem[]) {
     toggleAllOnPage,
     showItem,
   };
-}
+};

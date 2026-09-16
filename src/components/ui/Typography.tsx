@@ -7,7 +7,7 @@ type TypographyProps = {
   className?: string;
 };
 
-export function PageTitle({ children, className = "" }: TypographyProps) {
+export const PageTitle = ({ children, className = "" }: TypographyProps) => {
   const { classes } = useTheme();
 
   return (
@@ -17,9 +17,9 @@ export function PageTitle({ children, className = "" }: TypographyProps) {
       {children}
     </Text>
   );
-}
+};
 
-export function PageSubtitle({ children, className = "" }: TypographyProps) {
+export const PageSubtitle = ({ children, className = "" }: TypographyProps) => {
   const { classes } = useTheme();
 
   return (
@@ -29,9 +29,9 @@ export function PageSubtitle({ children, className = "" }: TypographyProps) {
       {children}
     </Text>
   );
-}
+};
 
-export function Paragraph({ children, className = "" }: TypographyProps) {
+export const Paragraph = ({ children, className = "" }: TypographyProps) => {
   const { classes } = useTheme();
 
   return (
@@ -41,4 +41,4 @@ export function Paragraph({ children, className = "" }: TypographyProps) {
       {children}
     </Text>
   );
-}
+};

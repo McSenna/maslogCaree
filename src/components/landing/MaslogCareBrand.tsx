@@ -13,15 +13,21 @@ const FONT_FAMILY = Platform.select({
 interface MaslogCareBrandProps {
   variant: "desktop" | "mobile";
   compact?: boolean;
+  logoSize?: number;
+  titleFontSize?: number;
 }
 
-
-const MaslogCareBrand = ({ variant, compact = false }: MaslogCareBrandProps) => {
+const MaslogCareBrand = ({
+  variant,
+  compact = false,
+  logoSize: logoSizeProp,
+  titleFontSize: titleFontSizeProp,
+}: MaslogCareBrandProps) => {
   const isDesktop = variant === "desktop";
 
-  const logoSize = isDesktop ? (compact ? 84 : 112) : 66;
-  const titleFontSize = isDesktop ? (compact ? 44 : 58) : 35;
-  const rowGap = isDesktop ? (compact ? 11 : 14) : 10;
+  const logoSize = logoSizeProp ?? (isDesktop ? (compact ? 84 : 112) : 66);
+  const titleFontSize = titleFontSizeProp ?? (isDesktop ? (compact ? 44 : 58) : 35);
+  const rowGap = isDesktop ? (compact ? 11 : 14) : Math.round(logoSize * 0.15);
 
   return (
     <View style={[styles.container, isDesktop ? styles.desktopAlign : styles.mobileAlign]}>
@@ -39,7 +45,6 @@ const MaslogCareBrand = ({ variant, compact = false }: MaslogCareBrandProps) => 
           style={[
             styles.subtitle,
             compact && styles.subtitleCompact,
-            // Optically aligns with the wordmark's left edge.
             { marginLeft: logoSize + rowGap },
           ]}
         >

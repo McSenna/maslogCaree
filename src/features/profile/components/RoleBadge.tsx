@@ -9,10 +9,6 @@ type RoleBadgeProps = {
   compact?: boolean;
 };
 
-/**
- * Compact role pill — the colour comes from the role config, never from a
- * branch at the call site.
- */
 const RoleBadge = ({ label, style, compact = false }: RoleBadgeProps) => (
   <View
     accessibilityRole="text"

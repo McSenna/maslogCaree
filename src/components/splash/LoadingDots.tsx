@@ -3,26 +3,13 @@ import { Animated, Easing, View } from "react-native";
 import { SPLASH_COLORS, SPLASH_TIMING } from "./splashTheme";
 
 type LoadingDotsProps = {
-  /** Diameter of each dot. */
   size?: number;
   color?: string;
 };
 
 const DOT_COUNT = 3;
 
-/**
- * Three dots that pulse in sequence.
- *
- * Driven by one `Animated.Value` per dot on the native driver, so the loop runs
- * off the JS thread and keeps ticking while startup work is still resolving —
- * an indicator that freezes exactly when the app is busiest would be worse than
- * none at all.
- *
- * Opacity and scale only: no travel, no spin.
- */
 const LoadingDots = ({ size = 10, color = SPLASH_COLORS.dot }: LoadingDotsProps) => {
-  // One value per dot, created once — a fresh array each render would restart
-  // the loop on every parent update.
   const progress = useMemo(
     () => Array.from({ length: DOT_COUNT }, () => new Animated.Value(0)),
     []
@@ -36,7 +23,6 @@ const LoadingDots = ({ size = 10, color = SPLASH_COLORS.dot }: LoadingDotsProps)
     loopsRef.current = progress.map((value, index) =>
       Animated.loop(
         Animated.sequence([
-          // Stagger the three by a third of a cycle each.
           Animated.delay((dotCycle / DOT_COUNT) * index),
           Animated.timing(value, {
             toValue: 1,

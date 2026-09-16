@@ -26,36 +26,24 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-/**
- * Default HeroCard: Mobile view (responsive)
- */
 export const Default: Story = {
   parameters: {
     viewport: { defaultViewport: "mobile1" },
   },
 };
 
-/**
- * Tablet view: Larger typography and spacing
- */
 export const Tablet: Story = {
   parameters: {
     viewport: { defaultViewport: "tablet" },
   },
 };
 
-/**
- * Desktop view: Maximum scale with comfortable reading distance
- */
 export const Desktop: Story = {
   parameters: {
     viewport: { defaultViewport: "ipad" },
   },
 };
 
-/**
- * High contrast variant for accessibility testing
- */
 export const HighContrast: Story = {
   parameters: {
     theme: "dark",
@@ -72,9 +60,6 @@ export const HighContrast: Story = {
   },
 };
 
-/**
- * Focused state for keyboard navigation testing
- */
 export const FocusedState: Story = {
   parameters: {
     docs: {

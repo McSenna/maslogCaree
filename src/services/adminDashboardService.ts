@@ -41,7 +41,6 @@ export interface DashboardActivity {
   createdAt: string;
 }
 
-/** One bucket of a dense time series — zero-filled server-side. */
 export interface TrendPoint {
   key: string;
   label: string;
@@ -51,9 +50,7 @@ export interface TrendPoint {
 export interface AdminDashboardData {
   metrics: DashboardMetrics;
   roleDistribution: RoleDistributionEntry[];
-  /** User registrations per month, last 6 months including the current one. */
   registrationTrend: TrendPoint[];
-  /** System activity per day, last 7 days including today. */
   activityTrend: TrendPoint[];
   recentUsers: DashboardUser[];
   recentActivities: DashboardActivity[];
@@ -81,14 +78,9 @@ export interface AdminDashboardQuery {
   activitiesLimit?: number;
 }
 
-/**
- * One request backs every panel on the dashboard. The desktop limits are
- * requested unconditionally — mobile slices the same payload down to 2
- * activities / 3 users rather than issuing a second, narrower request.
- */
-export async function fetchAdminDashboard(
+export const fetchAdminDashboard = async (
   params: AdminDashboardQuery = {}
-): Promise<AdminDashboardData> {
+): Promise<AdminDashboardData> => {
   const { data } = await api.get<AdminDashboardResponse>("/admin/dashboard", { params });
 
   return {
@@ -100,9 +92,8 @@ export async function fetchAdminDashboard(
     recentActivities: data.recentActivities ?? [],
     generatedAt: data.generatedAt ?? new Date().toISOString(),
   };
-}
+};
 
-/** "USER_CREATED" → "New user created" — the label shown in the activity feed. */
 const ACTION_LABELS: Record<string, string> = {
   LOGIN: "User logged in",
   LOGOUT: "User logged out",
@@ -114,6 +105,8 @@ const ACTION_LABELS: Record<string, string> = {
   USER_DELETED: "User deleted",
   USER_ROLE_CHANGED: "User role changed",
   USER_VERIFIED: "User activated",
+  PASSWORD_RESET_REQUESTED: "Password reset requested",
+  PASSWORD_CHANGED: "Password changed",
   USER_UNVERIFIED: "User deactivated",
   APPOINTMENT_CREATED: "Appointment requested",
   APPOINTMENT_UPDATED: "Appointment updated",
@@ -129,19 +122,18 @@ const ACTION_LABELS: Record<string, string> = {
   SCHEDULE_DELETED: "Schedule deleted",
 };
 
-export function formatActivityTitle(action: string): string {
+export const formatActivityTitle = (action: string): string => {
   if (ACTION_LABELS[action]) return ACTION_LABELS[action];
   return (action || "Activity")
     .replace(/_/g, " ")
     .toLowerCase()
     .replace(/^\w/, (char) => char.toUpperCase());
-}
+};
 
-/** Falls back to the role when the acting account no longer exists. */
-export function formatActivityActor(activity: DashboardActivity): string {
+export const formatActivityActor = (activity: DashboardActivity): string => {
   if (activity.actorName?.trim()) return activity.actorName.trim();
   if (activity.role && activity.role !== "unknown") {
     return activity.role.charAt(0).toUpperCase() + activity.role.slice(1);
   }
   return "System";
-}
+};

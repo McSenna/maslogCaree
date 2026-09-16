@@ -11,21 +11,13 @@ type MissionToolsSheetProps = {
   children: ReactNode;
 };
 
-/**
- * The mission scheduling workspace, behind the Add Mission control.
- *
- * A bottom sheet on a phone and a centred dialog on a desktop — the same
- * component either way, because the contents are identical and only the frame
- * changes. Only roles that may manage a mission can open it, and the API
- * refuses the rest regardless of what is rendered.
- */
-export default function MissionToolsSheet({
+const MissionToolsSheet = ({
   visible,
   onClose,
   isPhone,
   palette,
   children,
-}: MissionToolsSheetProps) {
+}: MissionToolsSheetProps) => {
   return (
     <Modal
       visible={visible}
@@ -98,4 +90,6 @@ export default function MissionToolsSheet({
       </View>
     </Modal>
   );
-}
+};
+
+export default MissionToolsSheet;

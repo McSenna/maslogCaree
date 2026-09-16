@@ -11,7 +11,6 @@ import {
   type StockOutPayload,
 } from "../services/inventoryService";
 
-/** Which form or sheet is open, if any. */
 export type ActiveModal =
   | "none"
   | "add-item"
@@ -21,35 +20,23 @@ export type ActiveModal =
   | "history";
 
 type InventoryMutationsInput = {
-  /** The item the open form acts on. */
   panelItem: InventoryItem | null;
-  /** Patches the list row in place so the panel updates without a refetch. */
   applyItemUpdate: (item: InventoryItem) => void;
-  /** Points the details panel at the record the server returned. */
   showItem: (item: InventoryItem) => void;
-  /** Refetches the list once the server has confirmed the change. */
   reload: () => Promise<unknown>;
   onSuccess: (message: string) => void;
 };
 
-/**
- * Every write on this screen, and the modal state around it.
- *
- * A stock movement changes the summary counts and can move the row between
- * filtered pages, so the list is refetched rather than patched — but the
- * returned record is applied first so the panel updates without waiting.
- */
-export function useInventoryMutations({
+export const useInventoryMutations = ({
   panelItem,
   applyItemUpdate,
   showItem,
   reload,
   onSuccess,
-}: InventoryMutationsInput) {
+}: InventoryMutationsInput) => {
   const [activeModal, setActiveModal] = useState<ActiveModal>("none");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  /** A release awaiting confirmation, held so the dialog can state its effect. */
   const [pendingRelease, setPendingRelease] = useState<StockOutPayload | null>(null);
 
   const openModal = useCallback((modal: ActiveModal, item?: InventoryItem) => {
@@ -79,10 +66,6 @@ export function useInventoryMutations({
         onSuccess(message || fallbackMessage);
         await reload();
       } catch (error: unknown) {
-        // The form stays open so the entry can be corrected without being
-        // retyped — a rejected release is usually a quantity that needs a nudge.
-        // The confirmation is dismissed either way, so the error is not left
-        // sitting behind a dialog the user has already answered.
         setPendingRelease(null);
         setFormError(getApiErrorMessage(error, "That did not go through. Please try again."));
       } finally {
@@ -141,4 +124,4 @@ export function useInventoryMutations({
     addItemStock,
     releaseItemStock,
   };
-}
+};

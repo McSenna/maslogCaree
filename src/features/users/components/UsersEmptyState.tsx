@@ -6,12 +6,11 @@ type UsersEmptyStateProps = {
   onRetry: () => void;
 };
 
-/** Why the account list is empty: a failed load, or nothing matching. */
-export default function UsersEmptyState({
+const UsersEmptyState = ({
   error,
   hasActiveFilters,
   onRetry,
-}: UsersEmptyStateProps) {
+}: UsersEmptyStateProps) => {
   if (error) {
     return (
       <StateBlock
@@ -36,4 +35,6 @@ export default function UsersEmptyState({
       }
     />
   );
-}
+};
+
+export default UsersEmptyState;

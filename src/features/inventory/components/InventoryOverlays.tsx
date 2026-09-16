@@ -1,4 +1,3 @@
-import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import Toast, { type ToastState } from "@/components/ui/Toast";
 import type { InventoryActionHandlers } from "./InventoryActions";
 import type { InventoryFilterState } from "./InventoryFilterSheet";
@@ -11,12 +10,10 @@ import type {
   StockOutPayload,
 } from "../services/inventoryService";
 import type { ActiveModal } from "../hooks/useInventoryMutations";
-import AddStockModal from "./AddStockModal";
 import InventoryDetailsSheet from "./InventoryDetailsSheet";
 import InventoryFilterSheet from "./InventoryFilterSheet";
-import InventoryHistoryModal from "./InventoryHistoryModal";
-import ItemFormModal from "./ItemFormModal";
-import ReleaseStockModal from "./ReleaseStockModal";
+import InventoryFormModals from "./overlays/InventoryFormModals";
+import ReleaseConfirmationModal from "./overlays/ReleaseConfirmationModal";
 
 type InventoryOverlaysProps = {
   activeModal: ActiveModal;
@@ -36,7 +33,6 @@ type InventoryOverlaysProps = {
   onRequestRelease: (payload: StockOutPayload) => void;
   onCancelRelease: () => void;
   onConfirmRelease: (payload: StockOutPayload) => void;
-  /** True on a phone, where the details are a sheet rather than a column. */
   showDetailsSheet: boolean;
   onCloseDetails: () => void;
   filterSheet: "filters" | "sort" | null;
@@ -47,8 +43,7 @@ type InventoryOverlaysProps = {
   onHideToast: () => void;
 };
 
-/** Everything that floats above the page: forms, sheets, confirmation, toast. */
-export default function InventoryOverlays({
+const InventoryOverlays = ({
   activeModal,
   panelItem,
   suppliers,
@@ -74,69 +69,31 @@ export default function InventoryOverlays({
   onCloseFilterSheet,
   toast,
   onHideToast,
-}: InventoryOverlaysProps) {
-  const isEditing = activeModal === "edit-item";
-
+}: InventoryOverlaysProps) => {
   return (
     <>
-      <ItemFormModal
-        visible={activeModal === "add-item" || isEditing}
-        item={isEditing ? panelItem : null}
+      <InventoryFormModals
+        activeModal={activeModal}
+        panelItem={panelItem}
         suppliers={suppliers}
         submitting={submitting}
-        error={formError}
-        onSubmit={isEditing ? onUpdateItem : onCreateItem}
-        onClose={onCloseModal}
-      />
-      <AddStockModal
-        visible={activeModal === "add-stock"}
-        item={panelItem}
-        suppliers={suppliers}
-        submitting={submitting}
-        error={formError}
-        onSubmit={onAddStock}
-        onClose={onCloseModal}
-      />
-      <ReleaseStockModal
-        visible={activeModal === "release-stock"}
-        item={panelItem}
-        submitting={submitting}
-        error={formError}
+        formError={formError}
         releasedByName={releasedByName}
-        onSubmit={onRequestRelease}
-        onClose={onCloseModal}
-      />
-      <InventoryHistoryModal
-        visible={activeModal === "history"}
-        item={panelItem}
-        onClose={onCloseModal}
+        onCreateItem={onCreateItem}
+        onUpdateItem={onUpdateItem}
+        onAddStock={onAddStock}
+        onCloseModal={onCloseModal}
+        onRequestRelease={onRequestRelease}
       />
 
-      {/* Releasing stock is the one action here that cannot be undone from the
-          UI, so it states its arithmetic before it happens. */}
-      <ConfirmationModal
-        visible={pendingRelease !== null}
-        title={
-          pendingRelease && panelItem
-            ? `Release ${pendingRelease.quantity.toLocaleString()} ${panelItem.unit}?`
-            : ""
-        }
-        message={
-          pendingRelease && panelItem
-            ? `This will reduce ${panelItem.name} from ${panelItem.currentStock.toLocaleString()} to ${(panelItem.currentStock - pendingRelease.quantity).toLocaleString()} ${panelItem.unit}.`
-            : ""
-        }
-        confirmLabel="Confirm Release"
-        destructive
-        loading={submitting}
-        onConfirm={() => {
-          if (pendingRelease) onConfirmRelease(pendingRelease);
-        }}
+      <ReleaseConfirmationModal
+        pendingRelease={pendingRelease}
+        panelItem={panelItem}
+        submitting={submitting}
+        onConfirm={onConfirmRelease}
         onCancel={onCancelRelease}
       />
 
-      {/* Phone-only sheets. Both are modals, so they sit above the bottom nav
-          rather than being scrolled past inside the list. */}
       <InventoryDetailsSheet
         visible={showDetailsSheet}
         item={panelItem}
@@ -156,4 +113,6 @@ export default function InventoryOverlays({
       <Toast toast={toast} onDismiss={onHideToast} />
     </>
   );
-}
+};
+
+export default InventoryOverlays;

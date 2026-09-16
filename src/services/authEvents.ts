@@ -4,26 +4,22 @@ type LogoutListener = () => void;
 
 const logoutListeners = new Set<LogoutListener>();
 
-export function subscribeToLogout(listener: LogoutListener): () => void {
+export const subscribeToLogout = (listener: LogoutListener): () => void => {
   logoutListeners.add(listener);
   return () => logoutListeners.delete(listener);
-}
+};
 
-export function emitLogout(): void {
+export const emitLogout = (): void => {
   for (const listener of logoutListeners) {
     try {
       listener();
     } catch {
-      // noop
     }
   }
-}
+};
 
-/**
-  401 - Clear token 
- */
-export async function forceLogout(_reason?: string): Promise<void> {
+export const forceLogout = async (_reason?: string): Promise<void> => {
   clearStoredUser();
   emitLogout();
-}
+};
 

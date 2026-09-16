@@ -1,5 +1,7 @@
 import { Redirect } from "expo-router";
 
-export default function AdminIndex() {
+const AdminIndex = () => {
   return <Redirect href="/admin/dashboard" />;
-}
+};
+
+export default AdminIndex;

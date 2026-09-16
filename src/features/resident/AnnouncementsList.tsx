@@ -30,7 +30,6 @@ const AnnouncementItem = ({
       accessibilityLabel={`${announcement.title}, ${meta}`}
       android_ripple={{ color: `${tone.fg}14` }}
       className="w-full flex-row items-center gap-3 px-1 py-2.5 active:opacity-75"
-      // Comfortably above the 44px touch-target minimum.
       style={{ minHeight: 56 }}
     >
       <View

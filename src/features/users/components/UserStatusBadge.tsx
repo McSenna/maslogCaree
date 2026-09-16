@@ -2,19 +2,17 @@ import { Text, View } from "react-native";
 import type { UserStatus } from "@/features/users/services/userService";
 import { RADIUS, useUsersPalette } from "./usersTheme";
 
-export default function UserStatusBadge({
+const UserStatusBadge = ({
   status,
   compact = false,
 }: {
   status: UserStatus;
   compact?: boolean;
-}) {
+}) => {
   const palette = useUsersPalette();
   const tone = palette.statuses[status] ?? palette.statuses.pending;
 
   return (
-    // The dot is decorative; the label carries the meaning, so status is never
-    // communicated by colour alone.
     <View
       accessibilityRole="text"
       accessibilityLabel={`Status: ${tone.label}`}
@@ -30,4 +28,6 @@ export default function UserStatusBadge({
       </Text>
     </View>
   );
-}
+};
+
+export default UserStatusBadge;

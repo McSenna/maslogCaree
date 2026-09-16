@@ -1,8 +1,7 @@
 import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
-/** The page's opening card: who this is for, and what it offers. */
-export default function AboutHero({ isTablet }: { isTablet: boolean }) {
+const AboutHero = ({ isTablet }: { isTablet: boolean }) => {
   return (
     <View
       style={{
@@ -12,8 +11,6 @@ export default function AboutHero({ isTablet }: { isTablet: boolean }) {
         padding: 24,
       }}
     >
-      {/* Decorative blobs, kept inside the flow so they cannot conflict with
-          the card's own positioning. */}
       <View
         style={{
           position: "absolute",
@@ -101,4 +98,6 @@ export default function AboutHero({ isTablet }: { isTablet: boolean }) {
       </View>
     </View>
   );
-}
+};
+
+export default AboutHero;

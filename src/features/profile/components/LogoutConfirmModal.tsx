@@ -16,12 +16,6 @@ type LogoutConfirmModalProps = {
 
 const ACTION_HEIGHT = 50;
 
-/**
- * Custom sign-out confirmation.
- *
- * Replaces `window.confirm` / `Alert.alert`, which §25 rules out and which the
- * web build could not style to match the rest of the product anyway.
- */
 const LogoutConfirmModal = ({
   visible,
   onCancel,
@@ -32,8 +26,6 @@ const LogoutConfirmModal = ({
     visible={visible}
     onClose={onCancel}
     accessibilityLabel="Log out confirmation"
-    // Backdrop tap maps to Cancel, never to Confirm — a stray tap outside the
-    // card can dismiss the dialog but can never sign the user out.
   >
     <View
       style={{
@@ -81,10 +73,6 @@ const LogoutConfirmModal = ({
         Are you sure you want to sign out of MaslogCare?
       </Text>
 
-      {/* Footer — Cancel left, destructive action right. Press feedback rides
-          on the class, not on a style callback: a function-form `style` on
-          Pressable is dropped on react-native-web, taking the fill with it,
-          which left "Log Out" as white text on a white card. */}
       <View style={{ flexDirection: "row", gap: 12, marginTop: 22 }}>
         <Pressable
           accessibilityRole="button"

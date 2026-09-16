@@ -11,9 +11,7 @@ import {
 type ProfileSectionCardProps = {
   title: string;
   icon: keyof typeof Feather.glyphMap;
-  /** Tint of the rounded icon chip beside the title. */
   tone?: "blue" | "green";
-  /** Optional trailing control, e.g. the "Edit" link on Personal Information. */
   action?: ReactNode;
   children: ReactNode;
 };
@@ -23,10 +21,6 @@ const TONES = {
   green: { bg: PROFILE_COLORS.greenSoft, fg: PROFILE_COLORS.greenDeep },
 } as const;
 
-/**
- * The white card every profile section sits in — Personal Information, Account
- * Settings and Help & Support are all this component with different children.
- */
 const ProfileSectionCard = ({
   title,
   icon,

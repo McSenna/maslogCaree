@@ -4,15 +4,13 @@ import { APPOINTMENT_COLORS } from "./appointmentTheme";
 
 type AppointmentFormHeaderProps = {
   onClose: () => void;
-  /** Closing mid-request would leave the resident unsure whether it was sent. */
   disabled: boolean;
 };
 
-/** The booking form's title row. */
-export default function AppointmentFormHeader({
+const AppointmentFormHeader = ({
   onClose,
   disabled,
-}: AppointmentFormHeaderProps) {
+}: AppointmentFormHeaderProps) => {
   return (
     <View className="flex-row items-center" style={{ gap: 12 }}>
       <View
@@ -56,4 +54,6 @@ export default function AppointmentFormHeader({
       </Pressable>
     </View>
   );
-}
+};
+
+export default AppointmentFormHeader;

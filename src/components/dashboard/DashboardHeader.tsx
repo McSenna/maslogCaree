@@ -17,12 +17,12 @@ type DashboardHeaderProps = {
   resident?: ResidentHeaderProps;
 };
 
-export default function DashboardHeader({
+const DashboardHeader = ({
   title,
   subtitle,
   roleBadge,
   resident,
-}: DashboardHeaderProps) {
+}: DashboardHeaderProps) => {
   const { classes } = useTheme();
 
   return (
@@ -63,4 +63,6 @@ export default function DashboardHeader({
       )}
     </View>
   );
-}
+};
+
+export default DashboardHeader;

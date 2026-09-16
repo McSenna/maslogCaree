@@ -11,20 +11,10 @@ import ProfileHero from "../components/ProfileHero";
 import ProfileNoticeModal from "../components/ProfileNoticeModal";
 import ProfileSkeleton from "../components/ProfileSkeleton";
 
-/**
- * The MaslogCare profile screen — one component for admin, doctor, midwife,
- * BHW and resident.
- *
- * Everything role-specific (title, badge colour, identifier label, which rows
- * appear) comes from the role config via `useProfile`, so the five routes are
- * genuinely the same screen rather than five copies (§40, §41).
- */
-export default function UserProfileScreen() {
+const UserProfileScreen = () => {
   const state = useProfile();
   const { width } = useWindowDimensions();
 
-  // Below ~380px the label/value pair is too tight for a long email on one
-  // line, so those rows stack instead of overflowing the card.
   const stacked = width < 380;
 
   return (
@@ -34,9 +24,6 @@ export default function UserProfileScreen() {
         contentContainerStyle={{
           padding: 14,
           gap: 16,
-          // RoleLayout already reserves the bottom-navigation and safe-area
-          // clearance on the container this screen fills, so only the card's
-          // own breathing room is added here.
           paddingBottom: 20,
         }}
       >
@@ -89,4 +76,6 @@ export default function UserProfileScreen() {
       <ProfileNoticeModal notice={state.notice} onClose={state.dismissNotice} />
     </View>
   );
-}
+};
+
+export default UserProfileScreen;

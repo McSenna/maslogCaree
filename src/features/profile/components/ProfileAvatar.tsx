@@ -9,11 +9,11 @@ export type ProfileAvatarProps = {
 };
 
 
-export default function ProfileAvatar({
+const ProfileAvatar = ({
   size = 72,
   imageUrl,
   verified = false,
-}: ProfileAvatarProps) {
+}: ProfileAvatarProps) => {
   const radius = size / 2;
 
   return (
@@ -39,4 +39,6 @@ export default function ProfileAvatar({
       )}
     </View>
   );
-}
+};
+
+export default ProfileAvatar;

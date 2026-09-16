@@ -3,17 +3,10 @@ import { RESIDENT_COLORS } from "./residentTheme";
 
 type SectionHeaderProps = {
   title: string;
-  /** "View All" / "See More" — omitted where a section has no destination. */
   actionLabel?: string;
   onActionPress?: () => void;
 };
 
-/**
- * The `Title ................ View All` line above every dashboard section.
- *
- * Shared so the six sections cannot drift in type size, weight or the position
- * of their trailing link.
- */
 const SectionHeader = ({ title, actionLabel, onActionPress }: SectionHeaderProps) => (
   <View className="w-full flex-row items-center justify-between">
     <Text

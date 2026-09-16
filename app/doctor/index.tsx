@@ -1,5 +1,7 @@
 import { Redirect } from "expo-router";
 
-export default function DoctorIndex() {
+const DoctorIndex = () => {
   return <Redirect href="/doctor/dashboard" />;
-}
+};
+
+export default DoctorIndex;

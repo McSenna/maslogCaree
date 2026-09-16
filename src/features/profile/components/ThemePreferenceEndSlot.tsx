@@ -1,7 +1,7 @@
 import { Switch, Text, View } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 
-export default function ThemePreferenceEndSlot() {
+const ThemePreferenceEndSlot = () => {
   const { resolvedTheme, setTheme } = useTheme();
   const dark = resolvedTheme === "dark";
 
@@ -17,4 +17,6 @@ export default function ThemePreferenceEndSlot() {
       />
     </View>
   );
-}
+};
+
+export default ThemePreferenceEndSlot;

@@ -6,24 +6,15 @@ type InventoryDetailRowProps = {
   icon: keyof typeof Feather.glyphMap;
   label: string;
   value: string;
-  /** Expiry dates that have passed, or are close, are called out in red. */
   emphasis?: boolean;
 };
 
-/**
- * One `icon + label ......... value` line.
- *
- * Shared by the desktop panel and the mobile sheet so the two cannot drift in
- * row height, icon size or alignment. The label is muted and left-aligned; the
- * value is the stronger of the two and sits hard right, which is what makes a
- * column of them scannable without a divider between each.
- */
-export default function InventoryDetailRow({
+const InventoryDetailRow = ({
   icon,
   label,
   value,
   emphasis = false,
-}: InventoryDetailRowProps) {
+}: InventoryDetailRowProps) => {
   const palette = useInventoryPalette();
 
   return (
@@ -50,4 +41,6 @@ export default function InventoryDetailRow({
       </Text>
     </View>
   );
-}
+};
+
+export default InventoryDetailRow;

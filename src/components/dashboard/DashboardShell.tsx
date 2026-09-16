@@ -11,15 +11,12 @@ type DashboardShellProps = {
   skeleton?: ReactNode;
 };
 
-export default function DashboardShell({ children, loading = false, skeleton }: DashboardShellProps) {
+const DashboardShell = ({ children, loading = false, skeleton }: DashboardShellProps) => {
   const { resolvedTheme } = useTheme();
 
   return (
     <ScrollView
       className="flex-1"
-      // The admin near-white rather than plain white: the navigator paints its
-      // own surface over the shell's, so a dashboard that does not state its
-      // ground sits a shade off every other page under the same chrome.
       style={{ backgroundColor: getAdminDashboardPalette(resolvedTheme).pageBg }}
       showsVerticalScrollIndicator={false}
     >
@@ -38,4 +35,6 @@ export default function DashboardShell({ children, loading = false, skeleton }: 
       </Screen>
     </ScrollView>
   );
-}
+};
+
+export default DashboardShell;

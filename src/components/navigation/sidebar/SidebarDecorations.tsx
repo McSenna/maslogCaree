@@ -5,16 +5,7 @@ import type { SidebarPalette } from "./sidebarTheme";
 const WIDTH = 288;
 const HEIGHT = 150;
 
-/**
- * The pale mountain range along the foot of the rail.
- *
- * Mayon is what Legazpi looks up at, so it is the one piece of scenery that
- * belongs in this barangay's sidebar rather than generic decoration. Kept at a
- * whisper: the community line sits on top of it, and the moment the ridge is
- * legible in its own right it competes with the words. Decorative only, and
- * hidden from assistive technology.
- */
-export default function SidebarDecorations({ palette }: { palette: SidebarPalette }) {
+const SidebarDecorations = ({ palette }: { palette: SidebarPalette }) => {
   return (
     <View
       accessibilityElementsHidden
@@ -34,7 +25,6 @@ export default function SidebarDecorations({ palette }: { palette: SidebarPalett
         viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
         preserveAspectRatio="xMidYMax slice"
       >
-        {/* Far ridge, then the near peak in front of it. */}
         <Path
           d={`M0 108 L54 66 L96 96 L150 44 L214 100 L288 62 V${HEIGHT} H0 Z`}
           fill={palette.waveSoft}
@@ -45,9 +35,10 @@ export default function SidebarDecorations({ palette }: { palette: SidebarPalett
           fill={palette.wave}
           opacity={0.55}
         />
-        {/* The snow-line notch on the near peak, echoing Mayon's cone. */}
         <Path d="M126 88 L140 72 L154 88 L140 82 Z" fill={palette.surface} opacity={0.75} />
       </Svg>
     </View>
   );
-}
+};
+
+export default SidebarDecorations;

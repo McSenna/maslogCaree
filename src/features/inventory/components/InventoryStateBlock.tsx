@@ -10,8 +10,9 @@ type InventoryStateBlockProps = {
   action?: { label: string; onPress: () => void };
 };
 
-/** The shared admin state block, in Inventory's own error tint. */
-export default function InventoryStateBlock(props: InventoryStateBlockProps) {
+const InventoryStateBlock = (props: InventoryStateBlockProps) => {
   const palette = useInventoryPalette();
   return <StateBlock {...props} dangerColor={palette.danger} />;
-}
+};
+
+export default InventoryStateBlock;

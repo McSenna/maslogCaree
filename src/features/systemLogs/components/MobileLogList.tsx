@@ -8,7 +8,7 @@ type MobileLogListProps = {
   onSelect: (log: SystemLog) => void;
 };
 
-export default function MobileLogList({ logs, selectedId, onSelect }: MobileLogListProps) {
+const MobileLogList = ({ logs, selectedId, onSelect }: MobileLogListProps) => {
   return (
     <View className="w-full gap-2.5">
       {logs.map((log) => (
@@ -16,4 +16,6 @@ export default function MobileLogList({ logs, selectedId, onSelect }: MobileLogL
       ))}
     </View>
   );
-}
+};
+
+export default MobileLogList;

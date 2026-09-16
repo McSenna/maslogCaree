@@ -17,12 +17,6 @@ type ProfileNoticeModalProps = {
   onClose: () => void;
 };
 
-/**
- * In-app notice dialog.
- *
- * The profile never calls `window.alert`, so informational messages need a
- * surface of their own that matches the rest of the product (§25, §58).
- */
 const ProfileNoticeModal = ({ notice, onClose }: ProfileNoticeModalProps) => (
   <ProfileOverlay
     visible={Boolean(notice)}
@@ -75,10 +69,6 @@ const ProfileNoticeModal = ({ notice, onClose }: ProfileNoticeModalProps) => (
         {notice?.message}
       </Text>
 
-      {/* Footer. Press feedback rides on the class, not on a style callback:
-          a function-form `style` on Pressable is dropped on react-native-web,
-          taking the button's fill and height with it — which is exactly how
-          this button went missing. */}
       <View style={{ marginTop: 22 }}>
         <Pressable
           accessibilityRole="button"

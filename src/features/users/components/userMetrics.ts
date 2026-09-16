@@ -1,12 +1,12 @@
-import type { AdminUser } from "@/features/users/services/userService";
+import {
+  DISABLED_STATUSES,
+  SIGN_IN_READY_STATUSES,
+  type AdminUser,
+} from "@/features/users/services/userService";
 import { parseToDate } from "@/utils/dateFormatter";
 
 export type UserMetric = {
   value: number;
-  /**
-   * Percentage change against a month ago, or null when there is no baseline
-   * to divide by — the pill is dropped rather than showing a fake figure.
-   */
   growth: number | null;
 };
 
@@ -19,22 +19,12 @@ export type UserMetrics = {
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-function percentChange(current: number, previous: number): number | null {
+const percentChange = (current: number, previous: number): number | null => {
   if (previous <= 0) return null;
   return Math.round(((current - previous) / previous) * 100);
-}
+};
 
-/**
- * Derives the four summary figures from the user list the page already has.
- *
- * The server exposes no historical snapshots, so a trend is computed the only
- * way the data honestly supports: the "a month ago" baseline for a bucket is
- * the number of accounts in that same bucket that already existed 30 days ago.
- * That measures growth attributable to new registrations — the dominant driver
- * — and never invents a status history the records do not carry. Where the
- * baseline is zero the trend is null and the card simply omits its pill.
- */
-export function computeUserMetrics(users: AdminUser[], now: Date = new Date()): UserMetrics {
+export const computeUserMetrics = (users: AdminUser[], now: Date = new Date()): UserMetrics => {
   const monthAgo = now.getTime() - 30 * DAY_MS;
 
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
@@ -52,10 +42,8 @@ export function computeUserMetrics(users: AdminUser[], now: Date = new Date()): 
   for (const user of users) {
     const createdAt = parseToDate(user.createdAt).getTime();
     const existedAMonthAgo = createdAt < monthAgo;
-    // "Suspended Users" is the card's label; the figure covers every account an
-    // administrator has barred, which is both `suspended` and `inactive`.
-    const isSuspended = user.status === "suspended" || user.status === "inactive";
-    const isActive = user.status === "active";
+    const isSuspended = DISABLED_STATUSES.includes(user.status);
+    const isActive = SIGN_IN_READY_STATUSES.includes(user.status);
 
     total += 1;
     if (isActive) active += 1;
@@ -77,4 +65,4 @@ export function computeUserMetrics(users: AdminUser[], now: Date = new Date()): 
     new: { value: newThisMonth, growth: percentChange(newThisMonth, newLastMonth) },
     suspended: { value: suspended, growth: percentChange(suspended, suspendedBefore) },
   };
-}
+};

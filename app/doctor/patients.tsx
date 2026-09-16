@@ -3,7 +3,7 @@ import { ScrollView, View } from "react-native";
 import InfoCard from "@/components/ui/InfoCard";
 import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 
-export default function DoctorPatients() {
+const DoctorPatients = () => {
   return (
     <ScrollView className="flex-1 bg-white" showsVerticalScrollIndicator={false}>
       <View className="gap-6">
@@ -19,7 +19,7 @@ export default function DoctorPatients() {
             title="Juan Dela Cruz"
             description="Last visit: Mar 1, 2026 · Hypertension"
             icon={<Feather name="user" size={18} color="#2D5BFF" />}
-          />
+          />  
           <InfoCard
             title="Maria Lopez"
             description="Last visit: Mar 3, 2026 · Prenatal care"
@@ -34,4 +34,6 @@ export default function DoctorPatients() {
       </View>
     </ScrollView>
   );
-}
+};
+
+export default DoctorPatients;

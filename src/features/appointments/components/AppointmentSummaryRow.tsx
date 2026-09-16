@@ -1,14 +1,13 @@
 import { Text, View } from "react-native";
 import { APPOINTMENT_COLORS } from "./appointmentTheme";
 
-/** One labelled line on the booking receipt. */
-export default function AppointmentSummaryRow({
+const AppointmentSummaryRow = ({
   label,
   value,
 }: {
   label: string;
   value: string;
-}) {
+}) => {
   return (
     <View style={{ gap: 2 }}>
       <Text
@@ -27,4 +26,6 @@ export default function AppointmentSummaryRow({
       </Text>
     </View>
   );
-}
+};
+
+export default AppointmentSummaryRow;

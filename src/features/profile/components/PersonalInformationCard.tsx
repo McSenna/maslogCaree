@@ -8,11 +8,10 @@ import ProfileSectionCard from "./ProfileSectionCard";
 type PersonalInformationCardProps = {
   fields: ProfileField[];
   onEdit?: () => void;
-  /** Stacks label above value — set at narrow widths so long emails fit. */
   stacked?: boolean;
 };
 
-function EditLink({ onPress }: { onPress?: () => void }) {
+const EditLink = ({ onPress }: { onPress?: () => void }) => {
   if (!onPress) return null;
 
   return (
@@ -35,13 +34,8 @@ function EditLink({ onPress }: { onPress?: () => void }) {
       <Feather name="chevron-right" size={14} color={PROFILE_COLORS.primary} />
     </Pressable>
   );
-}
+};
 
-/**
- * Personal Information — the rows come straight from the role config, so a
- * doctor sees their specialization and a resident sees their purok without any
- * role branch in this file (§40).
- */
 const PersonalInformationCard = ({
   fields,
   onEdit,

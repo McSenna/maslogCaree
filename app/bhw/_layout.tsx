@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import RoleLayout from "@/components/layout/RoleLayout";
+import { screenTransition, useReducedMotion } from "@/design/motion";
 import RouteGuard from "@/components/layout/RouteGuard";
 import {
   bhwNavItems,
@@ -7,16 +8,17 @@ import {
 } from "@/config/roleNavConfig";
 
 const BhwLayout = () => {
+  const reducedMotion = useReducedMotion();
   return (
-    <RouteGuard role="bhw">
-      <RoleLayout
-        sidebarItems={bhwNavItems}
-        bottomNavItems={bhwBottomNavItems}
-        roleLabel="BHW"
-      >
-        <Stack screenOptions={{ headerShown: false, animation: "none" }} />
-      </RoleLayout>
-    </RouteGuard>
+    <RoleLayout
+      sidebarItems={bhwNavItems}
+      bottomNavItems={bhwBottomNavItems}
+      roleLabel="BHW"
+    >
+      <RouteGuard role="bhw">
+        <Stack screenOptions={{ headerShown: false, ...screenTransition(reducedMotion) }} />
+      </RouteGuard>
+    </RoleLayout>
   );
 }
 

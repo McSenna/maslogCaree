@@ -5,18 +5,16 @@ type AnnouncementTagProps = {
   color: string;
   background: string;
   fontSize: number;
-  /** The featured card's tags sit slightly wider than the list card's. */
   wide?: boolean;
 };
 
-/** The category pill on an announcement. */
-export default function AnnouncementTag({
+const AnnouncementTag = ({
   label,
   color,
   background,
   fontSize,
   wide = false,
-}: AnnouncementTagProps) {
+}: AnnouncementTagProps) => {
   return (
     <View
       className={wide ? "rounded-full px-2.5 py-0.5" : "rounded-full px-2 py-0.5"}
@@ -27,4 +25,6 @@ export default function AnnouncementTag({
       </Text>
     </View>
   );
-}
+};
+
+export default AnnouncementTag;

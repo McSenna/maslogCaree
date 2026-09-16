@@ -16,12 +16,6 @@ type MetricSpec = {
   description: string;
 };
 
-/**
- * The four headline figures, in the order the design fixes them.
- *
- * A list rather than four near-identical blocks of markup: they differ only in
- * which field they read and what colour they wear.
- */
 const METRIC_SPECS: MetricSpec[] = [
   {
     key: "totalUsers",
@@ -66,15 +60,14 @@ type DashboardMetricGridProps = {
   dense: boolean;
 };
 
-/** The metric row: four across where there is room, otherwise a 2 x 2 grid. */
-export default function DashboardMetricGrid({
+const DashboardMetricGrid = ({
   metrics,
   palette,
   columns,
   gap,
   compact,
   dense,
-}: DashboardMetricGridProps) {
+}: DashboardMetricGridProps) => {
   const cards = METRIC_SPECS.map((spec) => (
     <MetricCard
       key={spec.key}
@@ -100,7 +93,6 @@ export default function DashboardMetricGrid({
     );
   }
 
-  // 2 x 2: Total Users / Active Users, then New Users / Total Patients.
   return (
     <View style={{ gap }}>
       <View style={{ flexDirection: "row", gap }}>
@@ -113,4 +105,6 @@ export default function DashboardMetricGrid({
       </View>
     </View>
   );
-}
+};
+
+export default DashboardMetricGrid;

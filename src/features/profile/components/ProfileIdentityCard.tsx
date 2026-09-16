@@ -14,19 +14,19 @@ export type ProfileIdentityData = {
   dateOfBirth?: string | null;
 };
 
-function normalizeImageUrl(url?: string | null) {
+const normalizeImageUrl = (url?: string | null) => {
   if (!url) return null;
   const trimmed = url.trim();
   return trimmed.length > 0 ? trimmed : null;
-}
+};
 
-function InfoRow({
+const InfoRow = ({
   icon,
   value,
 }: {
   icon: React.ComponentProps<typeof Feather>["name"];
   value?: string | null;
-}) {
+}) => {
   if (!value) return null;
   return (
     <View className="flex-row items-center gap-2">
@@ -38,7 +38,7 @@ function InfoRow({
       </Text>
     </View>
   );
-}
+};
 
 const ProfileIdentityCard = ({ user }: { user: ProfileIdentityData }) => {
   const uri = useMemo(() => normalizeImageUrl(user.avatarUrl), [user.avatarUrl]);

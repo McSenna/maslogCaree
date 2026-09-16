@@ -13,9 +13,7 @@ type LogsTableCardProps = {
   logs: SystemLog[];
   loading: boolean;
   refreshing: boolean;
-  /** Shown in place of the table when it cannot be drawn. */
   fallback: ReactNode;
-  /** True when the fallback replaces the table — an error, or no rows. */
   showFallback: boolean;
   selectedId: string | null;
   onSelect: (log: SystemLog) => void;
@@ -28,12 +26,7 @@ type LogsTableCardProps = {
   onPageChange: (page: number) => void;
 };
 
-/**
- * Desktop: table and pagination inside one white section, the same structure
- * User Management uses. The toolbar stays outside it here because on this page
- * it spans the table and the details panel together.
- */
-export default function LogsTableCard({
+const LogsTableCard = ({
   logs,
   loading,
   refreshing,
@@ -48,7 +41,7 @@ export default function LogsTableCard({
   totalPages,
   total,
   onPageChange,
-}: LogsTableCardProps) {
+}: LogsTableCardProps) => {
   const palette = useSystemLogsPalette();
 
   return (
@@ -66,9 +59,6 @@ export default function LogsTableCard({
       ) : showFallback ? (
         fallback
       ) : (
-        // Below LOGS_TABLE_MIN_WIDTH the nine columns cramp, so the table keeps
-        // its proportions and scrolls sideways instead of squeezing. At or above
-        // it the table takes the full card width and the scroll never engages.
         <View
           className="w-full"
           onLayout={(event) => {
@@ -99,4 +89,6 @@ export default function LogsTableCard({
       ) : null}
     </View>
   );
-}
+};
+
+export default LogsTableCard;

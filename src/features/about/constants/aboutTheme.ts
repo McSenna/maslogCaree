@@ -1,9 +1,3 @@
-/**
- * The About page's own palette.
- *
- * A public, outward-facing page rather than an admin surface, so it uses the
- * barangay's health-service teal rather than the dashboard's blues.
- */
 export const HC = {
   teal: "#0B7A75",
   tealLight: "#14A89F",
@@ -25,7 +19,6 @@ export const HC = {
   shadow: "#0B7A75",
 };
 
-/** One tone per health worker card, cycled so adjacent cards differ. */
 export const BHW_PALETTE = [
   { fg: "#0B7A75", bg: "#B2E5E3", light: "#E6F7F6" },
   { fg: "#059669", bg: "#A7F3D0", light: "#ECFDF5" },
@@ -39,5 +32,4 @@ export const BHW_PALETTE = [
   { fg: "#0F766E", bg: "#99F6E4", light: "#F0FDFA" },
 ];
 
-/** How many health worker cards sit on one row of the grid. */
 export const BHW_COLUMNS = 3;

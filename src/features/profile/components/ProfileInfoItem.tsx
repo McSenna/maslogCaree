@@ -7,7 +7,7 @@ type ProfileInfoItemProps = {
 };
 
 
-export default function ProfileInfoItem({ label, value }: ProfileInfoItemProps) {
+const ProfileInfoItem = ({ label, value }: ProfileInfoItemProps) => {
   const displayValue =
     value === null || value === undefined || value === ""
       ? "Not provided"
@@ -23,4 +23,6 @@ export default function ProfileInfoItem({ label, value }: ProfileInfoItemProps) 
       </Text>
     </View>
   );
-}
+};
+
+export default ProfileInfoItem;

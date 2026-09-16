@@ -8,31 +8,17 @@ import {
 
 type TrendPillProps = {
   palette: AdminDashboardPalette;
-  /** Percentage change against the same figure a month ago. */
   growth: number;
-  /**
-   * Overrides the direction implied by `growth`'s sign. Needed where the source
-   * reports magnitude and direction as separate fields, so a 0% change keeps
-   * the direction the server actually stated.
-   */
   direction?: TrendDirection;
-  /** Phone sizing — smaller arrow, tighter padding. */
   compact?: boolean;
 };
 
-/**
- * Month-over-month change, as a filled pill.
- *
- * The sign is carried by the arrow as well as the fill, so direction is never
- * communicated by colour alone; the magnitude is printed unsigned because the
- * arrow already states which way it went.
- */
-export default function TrendPill({
+const TrendPill = ({
   palette,
   growth,
   direction,
   compact = false,
-}: TrendPillProps) {
+}: TrendPillProps) => {
   const isUp = direction ? direction === "up" : growth >= 0;
   const tone = isUp ? palette.trends.up : palette.trends.down;
 
@@ -60,4 +46,6 @@ export default function TrendPill({
       </Text>
     </View>
   );
-}
+};
+
+export default TrendPill;

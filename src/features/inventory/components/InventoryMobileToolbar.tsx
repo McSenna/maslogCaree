@@ -6,7 +6,6 @@ import { CONTROL_HEIGHT, RADIUS, useInventoryPalette } from "./inventoryTheme";
 type InventoryMobileToolbarProps = {
   search: string;
   onSearchChange: (value: string) => void;
-  /** How many filters are set, so the button can show it without opening the sheet. */
   activeFilterCount: number;
   sortLabel: string;
   onOpenFilters: () => void;
@@ -16,7 +15,7 @@ type InventoryMobileToolbarProps = {
   resultCount: number;
 };
 
-function ToolbarButton({
+const ToolbarButton = ({
   label,
   icon,
   onPress,
@@ -28,7 +27,7 @@ function ToolbarButton({
   onPress: () => void;
   badgeCount?: number;
   accessibilityLabel: string;
-}) {
+}) => {
   const palette = useInventoryPalette();
   const active = badgeCount > 0;
 
@@ -63,17 +62,9 @@ function ToolbarButton({
       ) : null}
     </Pressable>
   );
-}
+};
 
-/**
- * The phone toolbar: search, then Filters and Sort.
- *
- * Four dropdowns side by side is a desktop pattern — at 360px each one would be
- * ~80px and every label truncated. The choices move into sheets instead, and
- * the bar keeps only what has to be reachable in one tap. The Filters button
- * carries a count so the user can see filtering is active without opening it.
- */
-export default function InventoryMobileToolbar({
+const InventoryMobileToolbar = ({
   search,
   onSearchChange,
   activeFilterCount,
@@ -83,7 +74,7 @@ export default function InventoryMobileToolbar({
   onAddItem,
   canAddItem,
   resultCount,
-}: InventoryMobileToolbarProps) {
+}: InventoryMobileToolbarProps) => {
   const palette = useInventoryPalette();
 
   return (
@@ -138,4 +129,6 @@ export default function InventoryMobileToolbar({
       </View>
     </View>
   );
-}
+};
+
+export default InventoryMobileToolbar;

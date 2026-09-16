@@ -10,12 +10,6 @@ type NotificationFilterTabsProps = {
   unreadCount: number;
 };
 
-/**
- * All / Unread segmented control.
- *
- * Deliberately two options: mobile has room for a clear binary, and the type
- * filters the design allows are better served by search than by a crowded row.
- */
 const NotificationFilterTabs = ({
   value,
   onChange,

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { fetchSystemLogStats, type SystemLogStatsResponse } from "@/features/systemLogs/services/systemLogService";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
-export function useSystemLogStats() {
+export const useSystemLogStats = () => {
   const [stats, setStats] = useState<SystemLogStatsResponse["stats"] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,4 +25,4 @@ export function useSystemLogStats() {
   }, [load]);
 
   return { stats, loading, error, reload: load };
-}
+};

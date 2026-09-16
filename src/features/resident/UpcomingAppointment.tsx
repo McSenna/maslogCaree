@@ -12,11 +12,9 @@ type UpcomingAppointmentProps = {
   appointment: NextAppointment | null;
   onViewAll: () => void;
   onViewDetails: (appointment: NextAppointment) => void;
-  /** Phone layout: the status and button move below the details. */
   stacked?: boolean;
 };
 
-/** "10:00 AM" from the stored slot, in the device's own timezone. */
 const formatSlotTime = (iso: string | null): string => {
   if (!iso) return "To be scheduled";
   const date = new Date(iso);
@@ -84,7 +82,6 @@ const UpcomingAppointment = ({
       ) : (
         <View className={`mt-3.5 w-full ${stacked ? "gap-3" : "flex-row items-center gap-4"}`}>
           <View className={stacked ? "flex-row items-center gap-3" : "flex-row items-center gap-4"}>
-            {/* Stacked MON / DD / YYYY block */}
             <View
               className="items-center justify-center px-3.5 py-2.5"
               style={{ borderRadius: CARD.radiusSm, backgroundColor: "#EAF2FE" }}

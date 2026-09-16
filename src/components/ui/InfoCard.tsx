@@ -11,14 +11,14 @@ type InfoCardProps = {
   variant?: "default" | "featured";
 };
 
-export default function InfoCard({
+const InfoCard = ({
   title,
   description,
   icon,
   onPress,
   showArrow = false,
   variant = "default",
-}: InfoCardProps) {
+}: InfoCardProps) => {
   const { classes, resolvedTheme } = useTheme();
   const isFeatured = variant === "featured";
 
@@ -82,4 +82,6 @@ export default function InfoCard({
       </View>
     </Pressable>
   );
-}
+};
+
+export default InfoCard;

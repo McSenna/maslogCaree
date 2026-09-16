@@ -3,16 +3,10 @@ import { Text, View } from "react-native";
 import { useUsersPalette } from "./usersTheme";
 
 type UserManagementHeaderProps = {
-  /** Mobile drops the eyebrow and the tagline, keeping only title + subtitle. */
   compact?: boolean;
 };
 
-/**
- * Page masthead: eyebrow, title, subtitle on the left; the MaslogCare tagline
- * on the right. The tagline is decorative, so it is the first thing dropped
- * when the row gets tight.
- */
-export default function UserManagementHeader({ compact = false }: UserManagementHeaderProps) {
+const UserManagementHeader = ({ compact = false }: UserManagementHeaderProps) => {
   const palette = useUsersPalette();
 
   return (
@@ -56,4 +50,6 @@ export default function UserManagementHeader({ compact = false }: UserManagement
       )}
     </View>
   );
-}
+};
+
+export default UserManagementHeader;

@@ -5,11 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { buildProfileData, type ProfileData } from "../utils/profileData";
 import type { ProfileNotice } from "../components/ProfileNoticeModal";
 
-/**
- * Copy for the actions whose screens exist in the design but have no MaslogCare
- * endpoint behind them yet. Kept together so there is one obvious list of what
- * still needs wiring, rather than the same sentence written six times.
- */
 const PENDING_FEATURES: Record<string, ProfileNotice> = {
   editProfile: {
     title: "Editing not available yet",
@@ -43,15 +38,14 @@ const PENDING_FEATURES: Record<string, ProfileNotice> = {
   },
 };
 
-function getAppVersion(): string | undefined {
+const getAppVersion = (): string | undefined => {
   const version = Constants.expoConfig?.version;
   return version ? `v${version}` : undefined;
-}
+};
 
 export type ProfileState = {
   profile: ProfileData | null;
   loading: boolean;
-  /** True when the session finished restoring but produced no user. */
   failed: boolean;
   appVersion?: string;
 
@@ -76,13 +70,7 @@ export type ProfileState = {
   onAbout: () => void;
 };
 
-/**
- * Everything the profile needs, for every role and both platforms.
- *
- * The web modal and the mobile screen are two presentations of this one hook,
- * which is what keeps role handling from being duplicated across five screens.
- */
-export function useProfile(options: { onAfterLogout?: () => void } = {}): ProfileState {
+export const useProfile = (options: { onAfterLogout?: () => void } = {}): ProfileState => {
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
   const { onAfterLogout } = options;
@@ -110,8 +98,6 @@ export function useProfile(options: { onAfterLogout?: () => void } = {}): Profil
   }, [logout, onAfterLogout, router]);
 
   const retry = useCallback(() => {
-    // The profile is rendered from the session, so recovering means signing in
-    // again rather than refetching a resource.
     router.replace("/");
   }, [router]);
 
@@ -145,4 +131,4 @@ export function useProfile(options: { onAfterLogout?: () => void } = {}): Profil
         message: `MaslogCare ${getAppVersion() ?? ""}\n\nHealthy Residents, Stronger Community.`.trim(),
       }),
   };
-}
+};

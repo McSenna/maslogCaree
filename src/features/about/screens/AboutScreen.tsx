@@ -8,15 +8,7 @@ import HealthcareTeamSection from "../components/HealthcareTeamSection";
 import MissionSection from "../components/MissionSection";
 import { HC } from "../constants/aboutTheme";
 
-/**
- * About Barangay Maslog — the public page.
- *
- * Read-only and open to anyone: what the service is for, who the community is,
- * and who staffs the health team. The org chart is the only part that reads
- * from the API, so it carries its own loading and error states while the rest
- * of the page renders immediately.
- */
-export default function AboutScreen() {
+const AboutScreen = () => {
   const { width } = useWindowDimensions();
   const isTablet = width >= BREAKPOINTS.tablet;
   const isDesktop = width >= BREAKPOINTS.desktop;
@@ -46,4 +38,6 @@ export default function AboutScreen() {
       <AboutSecurityNote isTablet={isTablet} />
     </ScrollView>
   );
-}
+};
+
+export default AboutScreen;

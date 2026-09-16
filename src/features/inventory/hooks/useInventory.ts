@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import {
   NO_PERMISSIONS,
   fetchInventoryItems,
@@ -31,22 +32,12 @@ export type UseInventoryReturn = {
   loading: boolean;
   refreshing: boolean;
   error: string | null;
-  /** Re-runs the list and the summary against the current query. */
   reload: () => Promise<void>;
   refresh: () => Promise<void>;
-  /** Replaces one row in place after a mutation returns the updated record. */
   applyItemUpdate: (item: InventoryItem) => void;
 };
 
-/**
- * Inventory list state.
- *
- * Filtering, sorting and paging are all server-side, so the query is the
- * dependency: any change to it refetches rather than re-slicing a local array.
- * A page filtered on the client would report a total that disagreed with the
- * pagination footer as soon as the list outgrew one page.
- */
-export function useInventory(query: InventoryQuery): UseInventoryReturn {
+export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [summary, setSummary] = useState<InventorySummary>(EMPTY_SUMMARY);
   const [suppliers, setSuppliers] = useState<InventorySupplier[]>([]);
@@ -57,12 +48,8 @@ export function useInventory(query: InventoryQuery): UseInventoryReturn {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Every field is read individually so the effect depends on the values rather
-  // than on the object's identity — the caller builds a fresh query object on
-  // each render, which would otherwise refetch on every keystroke elsewhere.
   const { page, limit, search, category, stockStatus, expiryStatus, sort } = query;
 
-  /** Guards against an earlier request finishing after a later one. */
   const requestIdRef = useRef(0);
 
   const load = useCallback(
@@ -102,9 +89,6 @@ export function useInventory(query: InventoryQuery): UseInventoryReturn {
     void load("initial");
   }, [load]);
 
-  // The supplier list changes rarely and is only needed by the forms, so it is
-  // fetched once rather than alongside every list request. A failure is not
-  // surfaced: the forms fall back to "not recorded" and stay usable.
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -122,6 +106,20 @@ export function useInventory(query: InventoryQuery): UseInventoryReturn {
 
   const reload = useCallback(() => load("initial"), [load]);
   const refresh = useCallback(() => load("refresh"), [load]);
+
+  const loadRef = useRef(load);
+  loadRef.current = load;
+  const hasFocused = useRef(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!hasFocused.current) {
+        hasFocused.current = true;
+        return;
+      }
+      void loadRef.current("refresh");
+    }, [])
+  );
 
   const applyItemUpdate = useCallback((updated: InventoryItem) => {
     setItems((prev) => prev.map((item) => (item._id === updated._id ? { ...item, ...updated } : item)));
@@ -141,4 +139,4 @@ export function useInventory(query: InventoryQuery): UseInventoryReturn {
     refresh,
     applyItemUpdate,
   };
-}
+};

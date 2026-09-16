@@ -15,12 +15,10 @@ describe("HeroCard Accessibility", () => {
     const { getByText } = render(<HeroCard />);
     const heading = getByText("Welcome to Maslog Care App");
     expect(heading).toBeDefined();
-    // Note: Actual contrast validation requires visual inspection or color analysis tools
   });
 
   it("should have accessible text labels for stats", async () => {
     const { getByLabelText } = render(<HeroCard />);
-    // Stats should be accessible
     expect(getByLabelText("Health Workers")).toBeDefined();
     expect(getByLabelText("Digital Access")).toBeDefined();
     expect(getByLabelText("Free For Residents")).toBeDefined();

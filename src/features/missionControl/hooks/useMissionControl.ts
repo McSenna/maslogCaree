@@ -11,18 +11,9 @@ import { useMissionForm } from "./useMissionForm";
 import { useQueueDashboard } from "@/hooks/useQueueDashboard";
 import { useSlotAssignment } from "./useSlotAssignment";
 
-/** The create form opens on today, in the same UTC day key the API stores. */
 const todayDateKey = () => new Date().toISOString().slice(0, 10);
 
-/**
- * The Appointment & Queue screen's whole data layer, in one place.
- *
- * The screen below it renders panels and nothing else. The pieces are separate
- * hooks because they fail and reload independently — the dashboard can be
- * showing an error while the mission workspace is fine — and this composes
- * them so the screen never has to wire six hooks together itself.
- */
-export function useMissionControl() {
+export const useMissionControl = () => {
   const { user } = useAuth();
 
   const dashboard = useQueueDashboard();
@@ -40,10 +31,6 @@ export function useMissionControl() {
     onDashboardChanged: dashboard.refreshAll,
   });
 
-  /**
-   * After an assignment the appointment leaves Pending, joins the queue and
-   * lands in the mission's timeline, so all three are re-read.
-   */
   const handleAssigned = useCallback(
     async (missionId: string) => {
       await refreshLists();
@@ -60,39 +47,22 @@ export function useMissionControl() {
     onAssigned: handleAssigned,
   });
 
-  /**
-   * After a completion the patient leaves the queue and lands under Completed,
-   * and the header figures move. All of it is re-read from the server rather
-   * than patched locally: the counts are computed there, and a client that
-   * recomputed them would only be guessing at the same numbers.
-   */
   const completion = useAppointmentCompletion({
     onCompleted: async () => {
       await dashboard.refreshAll();
     },
   });
 
-  /**
-   * Seeds the create form as services arrive, without discarding a selection
-   * made while the catalogue was being re-read.
-   */
   const { mergeDefaults } = createForm;
   useEffect(() => {
     mergeDefaults(catalogueDefaults(categories));
   }, [categories, mergeDefaults]);
 
-  /** Service key → approved display name, straight from the server catalogue. */
   const serviceLabels = useMemo(
     () => Object.fromEntries(categories.map((category) => [category.key, category.label])),
     [categories]
   );
 
-  /**
-   * What this role is responsible for, in their own words.
-   *
-   * Read from the catalogue the server sent rather than a local list, so the
-   * sentence can never name a service the API would not actually return.
-   */
   const scopeDescription = useMemo(() => {
     const names = (dashboard.overview?.breakdown ?? []).map((row) => row.label);
     if (!names.length) return "Appointments assigned to your services.";
@@ -140,18 +110,9 @@ export function useMissionControl() {
     scopeDescription,
     scopeEmptyMessage,
     todayLabel,
-    /**
-     * Presentation only — `POST /mission-schedule` refuses a midwife or a BHW
-     * with a 403 whether or not the Add Mission control was ever rendered.
-     */
     canManageMissions: canCreateMission(user?.role),
-    /**
-     * Whether this role may act on a row. A BHW reads their own BP Checking
-     * queue but cannot schedule or decline it, so their rows carry no controls
-     * — the same rule the API applies.
-     */
     canAct: canAssignAppointments(user?.role),
   };
-}
+};
 
 export type MissionControl = ReturnType<typeof useMissionControl>;

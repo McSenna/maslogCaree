@@ -1,11 +1,4 @@
-/**
- * Mirror of the backend error-code catalogue (`backend/utils/errorCodes.js`).
- *
- * The backend sends `code` on every failure; screens branch on these constants
- * instead of matching message text, which changes with copy edits.
- */
 export const ERROR_CODES = {
-  // Validation / input
   VALIDATION_ERROR: "VALIDATION_ERROR",
   MISSING_FIELDS: "MISSING_FIELDS",
   INVALID_ID: "INVALID_ID",
@@ -14,7 +7,6 @@ export const ERROR_CODES = {
   PAYLOAD_TOO_LARGE: "PAYLOAD_TOO_LARGE",
   MALFORMED_JSON: "MALFORMED_JSON",
 
-  // Authentication
   AUTHENTICATION_REQUIRED: "AUTHENTICATION_REQUIRED",
   INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
   TOKEN_EXPIRED: "TOKEN_EXPIRED",
@@ -22,16 +14,19 @@ export const ERROR_CODES = {
   ACCOUNT_UNVERIFIED: "ACCOUNT_UNVERIFIED",
   ACCOUNT_NOT_FOUND: "ACCOUNT_NOT_FOUND",
   ACCOUNT_DISABLED: "ACCOUNT_DISABLED",
+  ACCOUNT_PENDING_VERIFICATION: "ACCOUNT_PENDING_VERIFICATION",
+  REGISTRATION_REJECTED: "REGISTRATION_REJECTED",
+  ACCOUNT_SUSPENDED: "ACCOUNT_SUSPENDED",
+  ACCOUNT_DEACTIVATED: "ACCOUNT_DEACTIVATED",
+  INVALID_ID_DOCUMENT: "INVALID_ID_DOCUMENT",
+  REQUEST_ALREADY_PROCESSED: "REQUEST_ALREADY_PROCESSED",
 
-  // Authorization
   FORBIDDEN: "FORBIDDEN",
 
-  // Platform authorization
   PLATFORM_ACCESS_DENIED: "PLATFORM_ACCESS_DENIED",
   RESIDENT_WEB_ACCESS_DENIED: "RESIDENT_WEB_ACCESS_DENIED",
   PLATFORM_CONTEXT_MISMATCH: "PLATFORM_CONTEXT_MISMATCH",
 
-  // Not found
   ROUTE_NOT_FOUND: "ROUTE_NOT_FOUND",
   NOT_FOUND: "NOT_FOUND",
   USER_NOT_FOUND: "USER_NOT_FOUND",
@@ -40,7 +35,6 @@ export const ERROR_CODES = {
   NOTIFICATION_NOT_FOUND: "NOTIFICATION_NOT_FOUND",
   REGISTRATION_NOT_FOUND: "REGISTRATION_NOT_FOUND",
 
-  // Conflict
   CONFLICT: "CONFLICT",
   DUPLICATE_RESOURCE: "DUPLICATE_RESOURCE",
   EMAIL_EXISTS: "EMAIL_EXISTS",
@@ -50,7 +44,6 @@ export const ERROR_CODES = {
   INVALID_STATUS_TRANSITION: "INVALID_STATUS_TRANSITION",
   TRIAGE_ORDER_VIOLATION: "TRIAGE_ORDER_VIOLATION",
 
-  // OTP / registration flow
   OTP_INVALID: "OTP_INVALID",
   OTP_EXPIRED: "OTP_EXPIRED",
   OTP_MAX_ATTEMPTS: "OTP_MAX_ATTEMPTS",
@@ -58,10 +51,8 @@ export const ERROR_CODES = {
   OTP_RATE_LIMITED: "OTP_RATE_LIMITED",
   INVALID_SESSION: "INVALID_SESSION",
 
-  // Rate limiting
   RATE_LIMIT_EXCEEDED: "RATE_LIMIT_EXCEEDED",
 
-  // Infrastructure / email
   DATABASE_ERROR: "DATABASE_ERROR",
   SERVICE_UNAVAILABLE: "SERVICE_UNAVAILABLE",
   EMAIL_SERVICE_LIMIT: "EMAIL_SERVICE_LIMIT",
@@ -69,7 +60,6 @@ export const ERROR_CODES = {
   EMAIL_CONFIGURATION_ERROR: "EMAIL_CONFIGURATION_ERROR",
   INTERNAL_SERVER_ERROR: "INTERNAL_SERVER_ERROR",
 
-  // Client-side only — these never come from the server.
   NETWORK_ERROR: "NETWORK_ERROR",
   TIMEOUT_ERROR: "TIMEOUT_ERROR",
   REQUEST_CANCELLED: "REQUEST_CANCELLED",
@@ -80,10 +70,6 @@ export const ERROR_CODES = {
 
 export type ErrorCode = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
 
-/**
- * Codes that mean "this session is no longer usable". The Axios interceptor
- * uses this set to decide whether to clear the stored session.
- */
 export const SESSION_ENDING_CODES: string[] = [
   ERROR_CODES.AUTHENTICATION_REQUIRED,
   ERROR_CODES.TOKEN_EXPIRED,
@@ -91,15 +77,11 @@ export const SESSION_ENDING_CODES: string[] = [
   ERROR_CODES.ACCOUNT_NOT_FOUND,
   ERROR_CODES.ACCOUNT_UNVERIFIED,
   ERROR_CODES.ACCOUNT_DISABLED,
-  // A session the server will not honour on this client is finished here too:
-  // holding on to it would leave the app looking signed in while every request
-  // it makes is rejected.
   ERROR_CODES.PLATFORM_ACCESS_DENIED,
   ERROR_CODES.RESIDENT_WEB_ACCESS_DENIED,
   ERROR_CODES.PLATFORM_CONTEXT_MISMATCH,
 ];
 
-/** Codes that mean "right credentials, wrong client" rather than "wrong credentials". */
 export const PLATFORM_DENIED_CODES: string[] = [
   ERROR_CODES.RESIDENT_WEB_ACCESS_DENIED,
   ERROR_CODES.PLATFORM_ACCESS_DENIED,

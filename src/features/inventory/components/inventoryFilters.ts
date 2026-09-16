@@ -46,13 +46,6 @@ export const SORT_OPTIONS: readonly SelectOption<InventorySortKey>[] = [
   { value: "expiry_desc", label: "Latest Expiry" },
 ];
 
-/**
- * Desktop table geometry.
- *
- * Two fixed columns in pixels; the rest are flex weights taken from the
- * design's proportions so the table fills the content area instead of sitting
- * at a fixed width. Shared by the header and the rows so they cannot drift.
- */
 export const INVENTORY_COLUMNS = {
   checkbox: 48,
   item: 2.8,
@@ -65,16 +58,6 @@ export const INVENTORY_COLUMNS = {
   status: 1.6,
 } as const;
 
-/** Horizontal padding inside every table cell, header and body alike. */
 export const CELL_PADDING = 10;
 
-/**
- * Below this the ten columns cramp, so the table keeps its proportions and
- * scrolls sideways rather than clipping the badges.
- *
- * Sized so the full table still fits *beside* the details panel on a 1680px
- * screen — the layout the design is drawn in. A wider minimum would push the
- * Status column under the panel and make the most-scanned column the one that
- * needs scrolling to reach.
- */
 export const TABLE_MIN_WIDTH = 936;

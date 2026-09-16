@@ -9,40 +9,45 @@ import AuthActionButton from "./AuthActionButton";
 import { authCardMetrics } from "./authCardMetrics";
 import { authCardStyles as styles } from "./authCardStyles";
 import PlatformAccessModal from "./PlatformAccessModal";
+import ForgotPasswordFlow from "../forgotPassword/ForgotPasswordFlow";
 
 type AuthCardProps = {
-  /** Called when the user taps "Create New Account". */
   onOpenRegister?: () => void;
-  /** Whether to use the mobile-optimised layout. */
   isMobile?: boolean;
-  /** Reduced desktop scale for short or narrow viewports (e.g. 1366x768). */
   compact?: boolean;
+  density?: number;
 };
 
-/**
- * The sign-in card on the landing page.
- *
- * The same card at three scales — full desktop, compact desktop and mobile —
- * chosen by the caller rather than measured here, because the landing page
- * already knows which of its two layouts it is drawing.
- */
-export default function AuthCard({
+const AuthCard = ({
   onOpenRegister,
   isMobile = false,
   compact = false,
-}: AuthCardProps) {
+  density = 1,
+}: AuthCardProps) => {
   const form = useLoginForm();
-  const metrics = authCardMetrics(isMobile, compact);
+  const metrics = authCardMetrics(isMobile, compact, density);
 
   return (
     <View
       style={[
         styles.card,
         isMobile ? styles.cardMobile : compact ? styles.cardDesktopCompact : styles.cardDesktop,
+        {
+          borderRadius: metrics.borderRadius,
+          paddingHorizontal: metrics.paddingHorizontal,
+          paddingTop: metrics.paddingTop,
+          paddingBottom: metrics.paddingBottom,
+        },
       ]}
     >
       <View style={{ marginBottom: metrics.headerGap }}>
-        <AuthHeader centered={isMobile} compact={isMobile || compact} />
+        <AuthHeader
+          centered={isMobile}
+          compact={isMobile || compact}
+          headingSize={isMobile ? metrics.headingSize : undefined}
+          subtitleSize={isMobile ? metrics.subtitleSize : undefined}
+          gap={isMobile ? metrics.headerTextGap : undefined}
+        />
       </View>
 
       <View style={[styles.form, { gap: metrics.fieldGap, marginBottom: metrics.formGap }]}>
@@ -95,7 +100,7 @@ export default function AuthCard({
         onPress={form.forgotPassword}
         style={[styles.forgotContainer, { marginBottom: metrics.afterForgotGap }]}
       >
-        <Text style={styles.forgotText}>Forgotten password?</Text>
+        <Text style={styles.forgotText}>Forgot Password?</Text>
       </Pressable>
 
       <View style={{ marginBottom: metrics.afterDividerGap }}>
@@ -121,6 +126,14 @@ export default function AuthCard({
         visible={form.showPlatformNotice}
         onClose={form.dismissPlatformNotice}
       />
+
+      <ForgotPasswordFlow
+        visible={form.showForgotPassword}
+        onClose={form.closeForgotPassword}
+        initialEmail={form.email}
+      />
     </View>
   );
-}
+};
+
+export default AuthCard;

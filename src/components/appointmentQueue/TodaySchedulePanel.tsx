@@ -5,7 +5,7 @@ import QueuePanel from "./QueuePanel";
 import StatusBadge from "./StatusBadge";
 import { useQueuePalette, type QueuePalette } from "./queueTheme";
 
-function ScheduleRow({
+const ScheduleRow = ({
   appointment,
   serviceLabel,
   isLast,
@@ -15,7 +15,7 @@ function ScheduleRow({
   serviceLabel: string;
   isLast: boolean;
   palette: QueuePalette;
-}) {
+}) => {
   const time = appointment.slotStart ? formatDateTime(appointment.slotStart).time : "—";
   const tone = palette.statuses[appointment.status] ?? palette.statuses.pending;
 
@@ -28,8 +28,6 @@ function ScheduleRow({
         {time}
       </Text>
 
-      {/* The timeline: a dot on the rule, and the rule dropped on the last row
-          so the column ends rather than trailing into nothing. */}
       <View className="items-center" style={{ width: 12 }}>
         <View className="mt-4 h-2.5 w-2.5 rounded-full" style={{ backgroundColor: tone.dot }} />
         {!isLast ? (
@@ -50,16 +48,9 @@ function ScheduleRow({
       </View>
     </View>
   );
-}
+};
 
-/**
- * Today's booked appointments, earliest first.
- *
- * Ordered by the server rather than here — the list arrives sorted by start
- * time, so a second sort on the client could only ever disagree with it. Only
- * the signed-in role's own services appear.
- */
-export default function TodaySchedulePanel({
+const TodaySchedulePanel = ({
   schedule,
   serviceLabels,
   loading,
@@ -67,12 +58,11 @@ export default function TodaySchedulePanel({
   dateLabel,
 }: {
   schedule: AppointmentRecord[];
-  /** Service key → the approved display name. */
   serviceLabels: Record<string, string>;
   loading: boolean;
   emptyMessage: string;
   dateLabel: string;
-}) {
+}) => {
   const palette = useQueuePalette();
 
   return (
@@ -123,4 +113,6 @@ export default function TodaySchedulePanel({
       )}
     </QueuePanel>
   );
-}
+};
+
+export default TodaySchedulePanel;

@@ -11,13 +11,12 @@ type AppointmentCardProps = RowActionProps & {
   palette: QueuePalette;
 };
 
-/** One appointment as a card — the phone's answer to a seven-column table. */
-export default function AppointmentCard({
+const AppointmentCard = ({
   appointment,
   serviceLabel,
   palette,
   ...actions
-}: AppointmentCardProps) {
+}: AppointmentCardProps) => {
   const when = scheduleFor(appointment);
 
   return (
@@ -69,4 +68,6 @@ export default function AppointmentCard({
       </View>
     </View>
   );
-}
+};
+
+export default AppointmentCard;

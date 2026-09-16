@@ -14,10 +14,6 @@ type InventoryActionsProps = {
   item: InventoryItem;
   permissions: InventoryPermissions;
   handlers: InventoryActionHandlers;
-  /**
-   * Below this the two-up grid stacks to one column — four half-width buttons
-   * on a 320px screen leave no room for "Release Stock" beside its icon.
-   */
   stacked?: boolean;
 };
 
@@ -27,11 +23,10 @@ type ActionSpec = {
   icon: keyof typeof Feather.glyphMap;
   onPress: () => void;
   primary: boolean;
-  /** Permitted but not possible right now — an empty or expired shelf. */
   disabled?: boolean;
 };
 
-function ActionButton({ action, palette }: { action: ActionSpec; palette: ReturnType<typeof useInventoryPalette> }) {
+const ActionButton = ({ action, palette }: { action: ActionSpec; palette: ReturnType<typeof useInventoryPalette> }) => {
   const { primary, disabled } = action;
 
   return (
@@ -43,7 +38,6 @@ function ActionButton({ action, palette }: { action: ActionSpec; palette: Return
       accessibilityState={{ disabled: Boolean(disabled) }}
       className="min-w-0 flex-1 flex-row items-center justify-center gap-2 border px-3 active:opacity-85"
       style={{
-        // 46px keeps every action above the 44px touch-target minimum.
         height: 46,
         borderRadius: RADIUS.control,
         backgroundColor: primary ? palette.primary : palette.cardBg,
@@ -61,26 +55,14 @@ function ActionButton({ action, palette }: { action: ActionSpec; palette: Return
       </Text>
     </Pressable>
   );
-}
+};
 
-/**
- * The action area of Item Details.
- *
- * Entirely permission-driven: an action the signed-in role may not perform is
- * not drawn at all rather than drawn disabled, which keeps the grid honest and
- * the phone layout uncluttered. The server re-checks every one of these calls,
- * so hiding a button is a courtesy, never the security boundary.
- *
- * Disabled is reserved for something the role *may* do but cannot right now —
- * releasing from an empty or expired shelf — because there the button's absence
- * would read as a missing permission instead of a temporary state.
- */
-export default function InventoryActions({
+const InventoryActions = ({
   item,
   permissions,
   handlers,
   stacked = false,
-}: InventoryActionsProps) {
+}: InventoryActionsProps) => {
   const palette = useInventoryPalette();
 
   const actions: ActionSpec[] = [];
@@ -143,8 +125,6 @@ export default function InventoryActions({
     );
   }
 
-  // Two per row. An odd count leaves the last button half-width rather than
-  // stretching it, so the grid stays a grid.
   const rows: ActionSpec[][] = [];
   for (let index = 0; index < actions.length; index += 2) {
     rows.push(actions.slice(index, index + 2));
@@ -162,4 +142,6 @@ export default function InventoryActions({
       ))}
     </View>
   );
-}
+};
+
+export default InventoryActions;

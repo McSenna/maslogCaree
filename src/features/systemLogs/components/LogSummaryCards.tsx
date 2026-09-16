@@ -10,7 +10,7 @@ type LogSummaryCardsProps = {
 
 const PLACEHOLDER_METRIC = { value: 0, change: 0, direction: "up" as const, comparisonLabel: "" };
 
-export default function LogSummaryCards({ stats, isDesktop }: LogSummaryCardsProps) {
+const LogSummaryCards = ({ stats, isDesktop }: LogSummaryCardsProps) => {
   const cards = [
     { key: "totalLogs", metric: stats?.totalLogs ?? PLACEHOLDER_METRIC, ...SUMMARY_CARD_META.totalLogs },
     { key: "errorsToday", metric: stats?.errorsToday ?? PLACEHOLDER_METRIC, ...SUMMARY_CARD_META.errorsToday },
@@ -22,9 +22,6 @@ export default function LogSummaryCards({ stats, isDesktop }: LogSummaryCardsPro
     },
   ];
 
-  // Four across on desktop, 2x2 below — the same grid and gaps User Management
-  // uses. Explicit rows rather than flex-wrap, so an odd viewport width can
-  // never leave three cards on one line and one orphaned on the next.
   if (isDesktop) {
     return (
       <View className="w-full flex-row gap-4">
@@ -69,4 +66,6 @@ export default function LogSummaryCards({ stats, isDesktop }: LogSummaryCardsPro
       </View>
     </View>
   );
-}
+};
+
+export default LogSummaryCards;

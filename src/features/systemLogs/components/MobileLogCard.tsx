@@ -9,7 +9,7 @@ import SeverityIndicator from "./SeverityIndicator";
 import StatusBadge from "./StatusBadge";
 import { CARD_SHADOW, useSystemLogsPalette } from "./systemLogsTheme";
 
-export default function MobileLogCard({
+const MobileLogCard = ({
   log,
   isSelected,
   onPress,
@@ -17,7 +17,7 @@ export default function MobileLogCard({
   log: SystemLog;
   isSelected: boolean;
   onPress: () => void;
-}) {
+}) => {
   const palette = useSystemLogsPalette();
   const severityTone = palette.severity[log.severity];
 
@@ -65,4 +65,6 @@ export default function MobileLogCard({
       <Feather name="chevron-right" size={16} color={palette.subtle} style={{ marginTop: 6 }} />
     </Pressable>
   );
-}
+};
+
+export default MobileLogCard;

@@ -3,14 +3,7 @@ import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 import { QUEUE_RADIUS, useQueuePalette } from "./queueTheme";
 
-/**
- * The bordered white panel the dashboard's sections share.
- *
- * Extracted only because the header — tinted icon, title, optional trailing
- * slot, hairline under all of it — has to be identical across the three; the
- * bodies have nothing in common and stay with their own components.
- */
-export default function QueuePanel({
+const QueuePanel = ({
   icon,
   title,
   trailing,
@@ -19,12 +12,10 @@ export default function QueuePanel({
 }: {
   icon: keyof typeof Feather.glyphMap;
   title: string;
-  /** Right-hand side of the header — an action, a date, a link. */
   trailing?: ReactNode;
   children: ReactNode;
-  /** Off for a table that should meet the panel's own edges. */
   bodyPadding?: boolean;
-}) {
+}) => {
   const palette = useQueuePalette();
 
   return (
@@ -57,4 +48,6 @@ export default function QueuePanel({
       <View className={bodyPadding ? "px-5 py-3" : ""}>{children}</View>
     </View>
   );
-}
+};
+
+export default QueuePanel;

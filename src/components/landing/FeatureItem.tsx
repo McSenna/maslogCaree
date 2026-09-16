@@ -10,18 +10,10 @@ interface FeatureItemProps {
   iconBgColor: string;
   title: string;
   description: string;
-  /** Reduced scale for compact desktops. */
   compact?: boolean;
 }
 
-/**
- * Lightweight feature row used in the desktop information section.
- *
- * Structure: [ Rounded Icon Box ]  Title + Description
- *
- * Distinctively clean without outer borders or heavy cards.
- */
-export default function FeatureItem({
+const FeatureItem = ({
   icon,
   customIcon,
   iconColor = LANDING_COLORS.primaryBlue,
@@ -29,10 +21,9 @@ export default function FeatureItem({
   title,
   description,
   compact = false,
-}: FeatureItemProps) {
+}: FeatureItemProps) => {
   return (
     <View style={[styles.row, compact && styles.rowCompact]}>
-      {/* Icon container */}
       <View
         style={[
           styles.iconBox,
@@ -47,7 +38,6 @@ export default function FeatureItem({
         ) : null}
       </View>
 
-      {/* Text column */}
       <View style={styles.textContainer}>
         <Text style={[styles.title, compact && styles.titleCompact]}>{title}</Text>
         <Text style={[styles.description, compact && styles.descriptionCompact]}>
@@ -56,7 +46,7 @@ export default function FeatureItem({
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   row: {
@@ -106,3 +96,5 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
 });
+
+export default FeatureItem;

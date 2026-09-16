@@ -16,8 +16,7 @@ type BookingRequestStepProps = {
   onClose: () => void;
 };
 
-/** Step 1 — what the resident is asking for. */
-export default function BookingRequestStep({ booking, onClose }: BookingRequestStepProps) {
+const BookingRequestStep = ({ booking, onClose }: BookingRequestStepProps) => {
   const { errors, submitting, servicesUnavailable } = booking;
 
   return (
@@ -38,8 +37,6 @@ export default function BookingRequestStep({ booking, onClose }: BookingRequestS
           <AppointmentAlert
             tone="danger"
             align="center"
-            // The specific failure is kept in state for diagnosis; the resident
-            // is shown the one thing they can act on.
             message="Unable to load services. Please try again."
             action={{
               label: "Retry",
@@ -114,10 +111,6 @@ export default function BookingRequestStep({ booking, onClose }: BookingRequestS
           label={submitting ? "Booking Appointment..." : "Book Appointment"}
           accessibilityLabel="Book Appointment"
           onPress={() => void booking.submit()}
-          // Disabled only when submitting or when there is nothing to book.
-          // With fields still missing it stays pressable but dimmed, so pressing
-          // it explains what is missing instead of leaving a dead button and no
-          // reason.
           disabled={submitting || servicesUnavailable}
           busy={submitting}
           opacity={submitting || servicesUnavailable ? 0.55 : booking.isComplete ? 1 : 0.75}
@@ -141,4 +134,6 @@ export default function BookingRequestStep({ booking, onClose }: BookingRequestS
       </View>
     </>
   );
-}
+};
+
+export default BookingRequestStep;

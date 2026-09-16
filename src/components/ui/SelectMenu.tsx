@@ -7,20 +7,12 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 export type SelectOption<T extends string> = { value: T; label: string };
 
 type SelectMenuProps<T extends string> = {
-  /** Announced to screen readers; the trigger itself shows the selected label. */
   label: string;
   value: T;
   options: readonly SelectOption<T>[];
   onChange: (value: T) => void;
-  /**
-   * Shown on the trigger instead of the selected option's label.
-   *
-   * For a date-range menu, "Sep 1 – Sep 7, 2026" tells the reader more than
-   * "Last 7 Days" does; the menu itself still lists the preset names.
-   */
   displayValue?: string;
   icon?: keyof typeof MaterialCommunityIcons.glyphMap;
-  /** Matches the search field so every control on the row lines up. */
   height?: number;
   style?: { flex?: number; width?: number | `${number}%`; minWidth?: number };
 };
@@ -28,15 +20,7 @@ type SelectMenuProps<T extends string> = {
 const MENU_MIN_WIDTH = 200;
 const EDGE = 8;
 
-/**
- * Dropdown used by the toolbar.
- *
- * The list is drawn in a modal anchored to the measured trigger rather than as
- * an absolutely positioned child: inside the table card an inline menu is
- * clipped by the rounded container, and on native it is clipped by the scroll
- * view as well.
- */
-export default function SelectMenu<T extends string>({
+const SelectMenu = <T extends string,>({
   label,
   value,
   options,
@@ -45,7 +29,7 @@ export default function SelectMenu<T extends string>({
   icon,
   height = 48,
   style,
-}: SelectMenuProps<T>) {
+}: SelectMenuProps<T>) => {
   const palette = useAdminSurfacePalette();
   const triggerRef = useRef<View>(null);
   const [anchor, setAnchor] = useState<{ top: number; left: number; width: number } | null>(null);
@@ -147,4 +131,6 @@ export default function SelectMenu<T extends string>({
       </Modal>
     </>
   );
-}
+};
+
+export default SelectMenu;

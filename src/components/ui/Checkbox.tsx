@@ -4,18 +4,17 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 type CheckboxProps = {
   checked: boolean;
-  /** Header checkbox when only some rows on the page are selected. */
   indeterminate?: boolean;
   onChange: (next: boolean) => void;
   accessibilityLabel: string;
 };
 
-export default function Checkbox({
+const Checkbox = ({
   checked,
   indeterminate = false,
   onChange,
   accessibilityLabel,
-}: CheckboxProps) {
+}: CheckboxProps) => {
   const palette = useAdminSurfacePalette();
   const filled = checked || indeterminate;
 
@@ -25,8 +24,6 @@ export default function Checkbox({
       accessibilityRole="checkbox"
       accessibilityLabel={accessibilityLabel}
       accessibilityState={{ checked: indeterminate ? "mixed" : checked }}
-      // The box is 18px to match the design; hitSlop carries it to a 44px
-      // target so it stays usable on touch.
       hitSlop={13}
       className="h-[18px] w-[18px] items-center justify-center border"
       style={{
@@ -42,4 +39,6 @@ export default function Checkbox({
       ) : null}
     </Pressable>
   );
-}
+};
+
+export default Checkbox;

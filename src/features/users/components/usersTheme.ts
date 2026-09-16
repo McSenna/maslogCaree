@@ -4,19 +4,8 @@ import { type BadgeTone } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import type { AdminUser, UserStatus } from "@/features/users/services/userService";
 
-/**
- * Colours for User Management.
- *
- * Built on the admin dashboard palette rather than a second one, the same way
- * System Logs is: the admin area is specified against a cool near-white page
- * (#F8FBFF) with blue-tinted borders, so a screen assembled from Tailwind's
- * neutral greys reads as a foreign page dropped into the dashboard. Everything
- * added here is a tint derived to sit on one of those surfaces.
- */
-
 export type Role = AdminUser["role"];
 
-/** Role identity is shared by the desktop table and the mobile cards. */
 const ROLE_TONES_LIGHT: Record<Role, BadgeTone> = {
   admin: { label: "Admin", text: "#1D4ED8", bg: "#E5F0FF" },
   doctor: { label: "Doctor", text: "#0369A1", bg: "#E0F2FE" },
@@ -33,7 +22,6 @@ const ROLE_TONES_DARK: Record<Role, BadgeTone> = {
   resident: { label: "Resident", text: "#FCD34D", bg: "rgba(180,83,9,0.20)" },
 };
 
-/** Full role names, for screen readers and the details panel. */
 export const ROLE_FULL_LABELS: Record<Role, string> = {
   admin: "Admin",
   doctor: "Doctor",
@@ -52,15 +40,21 @@ export const ROLE_ICONS: Record<Role, keyof typeof MaterialCommunityIcons.glyphM
 
 const STATUS_TONES_LIGHT: Record<UserStatus, BadgeTone> = {
   active: { label: "Active", text: "#15803D", bg: "#DCFCE7", dot: "#22C55E" },
+  approved: { label: "Approved", text: "#15803D", bg: "#DCFCE7", dot: "#22C55E" },
   pending: { label: "Pending", text: "#B45309", bg: "#FEF3C7", dot: "#F59E0B" },
+  rejected: { label: "Rejected", text: "#9F1239", bg: "#FFE4E6", dot: "#E11D48" },
   inactive: { label: "Inactive", text: "#BE123C", bg: "#FFE4E6", dot: "#F43F5E" },
+  deactivated: { label: "Deactivated", text: "#BE123C", bg: "#FFE4E6", dot: "#F43F5E" },
   suspended: { label: "Suspended", text: "#991B1B", bg: "#FEE2E2", dot: "#DC2626" },
 };
 
 const STATUS_TONES_DARK: Record<UserStatus, BadgeTone> = {
   active: { label: "Active", text: "#86EFAC", bg: "rgba(34,197,94,0.16)", dot: "#34D399" },
+  approved: { label: "Approved", text: "#86EFAC", bg: "rgba(34,197,94,0.16)", dot: "#34D399" },
   pending: { label: "Pending", text: "#FCD34D", bg: "rgba(245,158,11,0.16)", dot: "#FBBF24" },
+  rejected: { label: "Rejected", text: "#FDA4AF", bg: "rgba(225,29,72,0.18)", dot: "#FB7185" },
   inactive: { label: "Inactive", text: "#FDA4AF", bg: "rgba(244,63,94,0.16)", dot: "#FB7185" },
+  deactivated: { label: "Deactivated", text: "#FDA4AF", bg: "rgba(244,63,94,0.16)", dot: "#FB7185" },
   suspended: { label: "Suspended", text: "#FCA5A5", bg: "rgba(220,38,38,0.18)", dot: "#F87171" },
 };
 
@@ -89,7 +83,6 @@ export const METRIC_ICONS: Record<MetricKey, keyof typeof Feather.glyphMap> = {
   suspended: "user-x",
 };
 
-/** Trend pill fills, keyed by direction rather than by metric. */
 const TREND_TONES_LIGHT = {
   up: { text: "#15803D", bg: "#DCFCE7" },
   down: { text: "#BE123C", bg: "#FFE4E6" },
@@ -102,7 +95,7 @@ const TREND_TONES_DARK = {
 
 export type UsersPalette = ReturnType<typeof useUsersPalette>;
 
-export function useUsersPalette() {
+export const useUsersPalette = () => {
   const surface = useAdminSurfacePalette();
 
   return useMemo(() => {
@@ -116,9 +109,7 @@ export function useUsersPalette() {
       trends: isDark ? TREND_TONES_DARK : TREND_TONES_LIGHT,
     };
   }, [surface]);
-}
+};
 
-// Surface tokens are shared with Inventory and System Logs; they live in the
-// design layer and are re-exported here so this module keeps one import site.
 export { CARD_SHADOW, CONTROL_HEIGHT, RADIUS } from "@/design/adminSurfaces";
 export type { BadgeTone } from "@/design/adminSurfaces";

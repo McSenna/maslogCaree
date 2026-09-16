@@ -1,6 +1,10 @@
 import React from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
+import {
+  headingLineHeight,
+  subtitleLineHeight,
+} from "@/features/auth/components/authCardMetrics";
 
 const FONT_FAMILY = Platform.select({
   ios: "System",
@@ -11,18 +15,42 @@ const FONT_FAMILY = Platform.select({
 
 interface AuthHeaderProps {
   centered?: boolean;
-  /** Mobile uses slightly smaller type than the 1920×1080 desktop card. */
   compact?: boolean;
+  headingSize?: number;
+  subtitleSize?: number;
+  gap?: number;
 }
 
-const AuthHeader = ({ centered = false, compact = false }: AuthHeaderProps) => {
+const AuthHeader = ({
+  centered = false,
+  compact = false,
+  headingSize,
+  subtitleSize,
+  gap,
+}: AuthHeaderProps) => {
+  const headingType =
+    headingSize === undefined
+      ? undefined
+      : { fontSize: headingSize, lineHeight: headingLineHeight(headingSize) };
+  const subtitleType =
+    subtitleSize === undefined
+      ? undefined
+      : { fontSize: subtitleSize, lineHeight: subtitleLineHeight(subtitleSize) };
+
   return (
-    <View style={[styles.container, centered && styles.centered]}>
+    <View
+      style={[
+        styles.container,
+        centered && styles.centered,
+        gap === undefined ? null : { gap },
+      ]}
+    >
       <Text
         style={[
           styles.heading,
           compact && styles.headingCompact,
           centered && styles.centeredText,
+          headingType,
         ]}
       >
         Welcome Back 👋
@@ -32,6 +60,7 @@ const AuthHeader = ({ centered = false, compact = false }: AuthHeaderProps) => {
           styles.subtitle,
           compact && styles.subtitleCompact,
           centered && styles.centeredText,
+          subtitleType,
         ]}
       >
         Sign in to continue to MaslogCare

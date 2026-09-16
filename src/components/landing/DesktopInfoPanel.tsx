@@ -8,27 +8,17 @@ import {
   NotificationBellIcon,
 } from "./FeatureIcons";
 
-/**
- * Desktop-only left-side information section.
- *
- * Contains:
- * - Description paragraph (4 lines, comfortably constrained)
- * - Short blue accent line
- * - Three lightweight feature rows with custom vector icons
- */
 interface DesktopInfoPanelProps {
-  /** Reduced scale for compact desktops (e.g. 1366×768). */
   compact?: boolean;
 }
 
-export default function DesktopInfoPanel({
+const DesktopInfoPanel = ({
   compact = false,
-}: DesktopInfoPanelProps) {
+}: DesktopInfoPanelProps) => {
   const iconSize = compact ? 27 : 34;
 
   return (
     <View style={[styles.container, compact && styles.containerCompact]}>
-      {/* Description */}
       <Text style={[styles.description, compact && styles.descriptionCompact]}>
         MaslogCare is a barangay appointment{"\n"}
         and healthcare scheduling system designed{"\n"}
@@ -36,10 +26,8 @@ export default function DesktopInfoPanel({
         accessible for every resident.
       </Text>
 
-      {/* Blue accent line */}
       <View style={[styles.accentLine, compact && styles.accentLineCompact]} />
 
-      {/* Feature rows */}
       <View style={[styles.features, compact && styles.featuresCompact]}>
         <FeatureItem
           customIcon={
@@ -82,7 +70,7 @@ export default function DesktopInfoPanel({
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -123,3 +111,5 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
 });
+
+export default DesktopInfoPanel;

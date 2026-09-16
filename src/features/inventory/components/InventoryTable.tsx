@@ -25,14 +25,14 @@ type InventoryTableProps = {
   onToggleAll: (next: boolean) => void;
 };
 
-export default function InventoryTable({
+const InventoryTable = ({
   items,
   selectedItemId,
   onSelectItem,
   checkedIds,
   onToggleItem,
   onToggleAll,
-}: InventoryTableProps) {
+}: InventoryTableProps) => {
   const palette = useInventoryPalette();
 
   const checkedOnPage = items.filter((item) => checkedIds.has(item._id)).length;
@@ -41,8 +41,6 @@ export default function InventoryTable({
 
   return (
     <View className="w-full">
-      {/* Header — deliberately light: a dark strip would fight the metric cards
-          for attention on a page that is mostly table. */}
       <View
         className="w-full flex-row items-center"
         style={{ height: 44, borderBottomWidth: 1, borderBottomColor: palette.divider }}
@@ -83,4 +81,6 @@ export default function InventoryTable({
       ))}
     </View>
   );
-}
+};
+
+export default InventoryTable;

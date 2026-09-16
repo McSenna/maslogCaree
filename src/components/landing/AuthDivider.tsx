@@ -8,7 +8,7 @@ const FONT_FAMILY = Platform.select({
   default: "sans-serif",
 });
 
-export default function AuthDivider() {
+const AuthDivider = () => {
   return (
     <View style={styles.container}>
       <View style={styles.line} />
@@ -16,7 +16,7 @@ export default function AuthDivider() {
       <View style={styles.line} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -37,3 +37,5 @@ const styles = StyleSheet.create({
     fontFamily: FONT_FAMILY,
   },
 });
+
+export default AuthDivider;

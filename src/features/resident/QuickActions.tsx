@@ -9,7 +9,6 @@ type QuickActionsProps = {
   actions: QuickAction[];
   onActionPress: (action: QuickAction) => void;
   onViewAll: () => void;
-  /** Phone layout: a 2x2 grid with the shorter labels. */
   stacked?: boolean;
 };
 
@@ -32,7 +31,6 @@ const QuickActionTile = ({
       android_ripple={{ color: `${tone.fg}18` }}
       className="min-w-0 flex-1 items-center justify-center gap-2 px-2 py-4 active:opacity-80"
       style={{
-        // Above the 44px touch-target minimum at every size.
         minHeight: stacked ? 96 : 104,
         borderRadius: CARD.radiusSm,
         backgroundColor: tone.bg,
@@ -50,12 +48,6 @@ const QuickActionTile = ({
   );
 };
 
-/**
- * The four shortcuts, each on its own pastel tile.
- *
- * One row on desktop as the design shows; a 2x2 grid on a phone, where four
- * across would leave roughly 70px a tile and wrap every label to three lines.
- */
 const QuickActions = ({ actions, onActionPress, onViewAll, stacked = false }: QuickActionsProps) => (
   <DashboardCard>
     <SectionHeader title="Quick Actions" actionLabel="View All" onActionPress={onViewAll} />

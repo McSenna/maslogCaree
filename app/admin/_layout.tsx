@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import RoleLayout from "@/components/layout/RoleLayout";
+import { screenTransition, useReducedMotion } from "@/design/motion";
 import RouteGuard from "@/components/layout/RouteGuard";
 import {
   adminNavItems,
@@ -7,16 +8,17 @@ import {
 } from "@/config/roleNavConfig";
 
 const AdminLayout = () => {
+  const reducedMotion = useReducedMotion();
   return (
-    <RouteGuard role="admin">
-      <RoleLayout
-        sidebarItems={adminNavItems}
-        bottomNavItems={adminBottomNavItems}
-        roleLabel="Admin"
-      >
-        <Stack screenOptions={{ headerShown: false, animation: "none" }} />
-      </RoleLayout>
-    </RouteGuard>
+    <RoleLayout
+      sidebarItems={adminNavItems}
+      bottomNavItems={adminBottomNavItems}
+      roleLabel="Admin"
+    >
+      <RouteGuard role="admin">
+        <Stack screenOptions={{ headerShown: false, ...screenTransition(reducedMotion) }} />
+      </RouteGuard>
+    </RoleLayout>
   );
 }
 

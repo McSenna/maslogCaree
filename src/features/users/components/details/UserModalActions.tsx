@@ -1,10 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import { STATUS_ACTIONS, type AdminUser } from "@/features/users/services/userService";
+import { statusActionFor, type AdminUser } from "@/features/users/services/userService";
 import { DETAIL_RADIUS, useUserDetailsPalette } from "./detailsTheme";
 
-function ActionButton({
+const ActionButton = ({
   icon,
   label,
   text,
@@ -23,9 +23,8 @@ function ActionButton({
   onPress: () => void;
   disabled?: boolean;
   accessibilityLabel: string;
-  /** Stacked, `flex-1` would divide the row's height instead of its width. */
   stacked: boolean;
-}) {
+}) => {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -51,42 +50,27 @@ function ActionButton({
       </Text>
     </Pressable>
   );
-}
+};
 
 type UserModalActionsProps = {
   user: AdminUser;
   onChangeStatus: () => void;
   onViewActivity: () => void;
-  /** True while this user's status change is in flight. */
   busy?: boolean;
-  /** Stacks the pair where the dialog is too narrow for two full-width buttons. */
   compact: boolean;
-  /**
-   * Puts the status action last. The phone sheet does: stacked, the last button
-   * sits on the bottom edge under the thumb, and the destructive one should not
-   * be what a thumb lands on by default — nor should it sit near the close
-   * button at the top. The desktop dialog keeps the status action first.
-   */
   destructiveLast?: boolean;
 };
 
-/**
- * The two things an administrator can do from this dialog.
- *
- * The status action keeps a soft red fill rather than a solid destructive slab:
- * deactivating is reversible and confirmed on the next screen, and a button
- * that shouts is one an admin learns to click past.
- */
-export default function UserModalActions({
+const UserModalActions = ({
   user,
   onChangeStatus,
   onViewActivity,
   busy = false,
   compact,
   destructiveLast = false,
-}: UserModalActionsProps) {
+}: UserModalActionsProps) => {
   const palette = useUserDetailsPalette();
-  const action = STATUS_ACTIONS[user.status];
+  const action = statusActionFor(user);
 
   const statusButton = (
     <ActionButton
@@ -121,4 +105,6 @@ export default function UserModalActions({
       {destructiveLast ? statusButton : activityButton}
     </View>
   );
-}
+};
+
+export default UserModalActions;

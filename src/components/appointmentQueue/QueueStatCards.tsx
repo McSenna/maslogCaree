@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import type { QueueOverview } from "@/services/appointments";
 import { QUEUE_RADIUS, STAT_CARDS, useQueuePalette, type QueuePalette } from "./queueTheme";
 
-function StatCard({
+const StatCard = ({
   label,
   value,
   caption,
@@ -20,9 +20,8 @@ function StatCard({
   tone: { bg: string; fg: string };
   palette: QueuePalette;
   loading: boolean;
-  /** Two-up on a phone: less room for the label, so it wraps instead of clipping. */
   compact: boolean;
-}) {
+}) => {
   return (
     <View
       accessibilityRole="summary"
@@ -73,27 +72,17 @@ function StatCard({
       </View>
     </View>
   );
-}
+};
 
-/**
- * The four figures across the top of the screen.
- *
- * All four are counted server-side against the signed-in role's own services,
- * so a doctor's totals never include a midwife's caseload. There is
- * deliberately no "Current Queue" or "Completed Today" card: this system keeps
- * no queue state and no completed status, and a card that always reads zero
- * teaches staff to distrust the row.
- */
-export default function QueueStatCards({
+const QueueStatCards = ({
   overview,
   loading,
   wide,
 }: {
   overview: QueueOverview | null;
   loading: boolean;
-  /** Four across; otherwise a 2 x 2 grid. */
   wide: boolean;
-}) {
+}) => {
   const palette = useQueuePalette();
 
   return (
@@ -120,4 +109,6 @@ export default function QueueStatCards({
       ))}
     </View>
   );
-}
+};
+
+export default QueueStatCards;

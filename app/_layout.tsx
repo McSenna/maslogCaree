@@ -9,37 +9,26 @@ import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { enableScreens } from "react-native-screens";
 import SplashScreen from "@/screens/SplashScreen";
 import { useAppInitialization } from "@/hooks/useAppInitialization";
+import { screenTransition, useReducedMotion } from "@/design/motion";
+
+enableScreens(true);
 
 const ThemedStack = () => {
   const { resolvedTheme } = useTheme();
   const bg = resolvedTheme === "dark" ? "#020617" : "#FFFFFF";
-
-
-  enableScreens(true);
+  const reducedMotion = useReducedMotion();
 
   return (
     <Stack
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: bg },
-        animation: "none",
+        ...screenTransition(reducedMotion),
       }}
     />
   );
 }
 
-/**
- * Holds the splash over the app until startup finishes.
- *
- * The splash is an overlay, not a route. Under expo-router a `/splash` screen
- * would sit in the history stack and Android Back could return to it; an
- * overlay has nothing to go back to, so the first thing Back can reach is the
- * landing page. It also means no `router.replace` is needed — the routed tree
- * mounts underneath from the start and is simply revealed.
- *
- * Sits inside `AuthProvider` because the initialisation it waits on is that
- * provider's session restore.
- */
 const AppShell = () => {
   const { showSplash, ready } = useAppInitialization();
 

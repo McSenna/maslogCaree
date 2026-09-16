@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import type { SystemLogStatus } from "@/features/systemLogs/services/systemLogService";
 import { useSystemLogsPalette } from "./systemLogsTheme";
 
-export default function StatusBadge({ status }: { status: SystemLogStatus }) {
+const StatusBadge = ({ status }: { status: SystemLogStatus }) => {
   const palette = useSystemLogsPalette();
   const tone = palette.status[status] ?? palette.status.Success;
 
@@ -18,4 +18,6 @@ export default function StatusBadge({ status }: { status: SystemLogStatus }) {
       </Text>
     </View>
   );
-}
+};
+
+export default StatusBadge;

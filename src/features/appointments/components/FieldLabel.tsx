@@ -1,14 +1,7 @@
 import { Text, View } from "react-native";
 import { APPOINTMENT_COLORS } from "./appointmentTheme";
 
-/**
- * "Service Type *" — the label above every control on the booking form.
- *
- * The asterisk is marked decorative and the requirement is carried in the
- * label text instead, so a screen reader announces "Service Type, required"
- * rather than "Service Type star".
- */
-export default function FieldLabel({
+const FieldLabel = ({
   label,
   required = false,
   optional = false,
@@ -16,7 +9,7 @@ export default function FieldLabel({
   label: string;
   required?: boolean;
   optional?: boolean;
-}) {
+}) => {
   return (
     <View className="mb-1.5 flex-row items-center">
       <Text
@@ -41,4 +34,6 @@ export default function FieldLabel({
       ) : null}
     </View>
   );
-}
+};
+
+export default FieldLabel;

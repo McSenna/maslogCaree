@@ -14,22 +14,15 @@ const DATE_OPTS: Intl.DateTimeFormatOptions = {
   day: "numeric",
 };
 
-/**
- * Administrators are greeted by role rather than by name: the seeded operator
- * account is literally "System Administrator", and "Good day, System!" reads as
- * a bug. Any other signed-in role gets its own first name.
- */
-function greetingName(name?: string | null, role?: string | null): string {
+const greetingName = (name?: string | null, role?: string | null): string => {
   if (role === "admin") return "Admin";
   const first = (name ?? "").trim().split(/\s+/)[0];
   return first.length > 0 ? first : "Admin";
-}
+};
 
-export default function DashboardIntro({ palette, compact }: DashboardIntroProps) {
+const DashboardIntro = ({ palette, compact }: DashboardIntroProps) => {
   const { user } = useAuth();
 
-  // Rendered from the device clock on every mount so the dashboard never shows
-  // a stale or baked-in date.
   const today = new Date().toLocaleDateString(undefined, DATE_OPTS);
   const greeting = `Good day, ${greetingName(user?.name, user?.role)}!`;
 
@@ -82,4 +75,6 @@ export default function DashboardIntro({ palette, compact }: DashboardIntroProps
       </View>
     </View>
   );
-}
+};
+
+export default DashboardIntro;

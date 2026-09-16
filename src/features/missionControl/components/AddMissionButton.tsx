@@ -7,8 +7,7 @@ type AddMissionButtonProps = {
   onPress: () => void;
 };
 
-/** Opens the mission scheduling sheet. Rendered only for roles that may schedule. */
-export default function AddMissionButton({ palette, onPress }: AddMissionButtonProps) {
+const AddMissionButton = ({ palette, onPress }: AddMissionButtonProps) => {
   return (
     <Pressable
       onPress={onPress}
@@ -21,4 +20,6 @@ export default function AddMissionButton({ palette, onPress }: AddMissionButtonP
       <Text className="text-[13.5px] font-semibold text-white">Add Mission</Text>
     </Pressable>
   );
-}
+};
+
+export default AddMissionButton;

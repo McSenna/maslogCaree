@@ -4,11 +4,9 @@ import { PROFILE_COLORS, PROFILE_RADIUS } from "../config/profileTheme";
 
 type ProfileErrorStateProps = {
   onRetry?: () => void;
-  /** Optional safe summary. Raw API/server text must never reach this (§45). */
   message?: string;
 };
 
-/** Shown when the profile cannot be resolved from the current session. */
 const ProfileErrorState = ({ onRetry, message }: ProfileErrorStateProps) => (
   <View
     accessibilityRole="alert"

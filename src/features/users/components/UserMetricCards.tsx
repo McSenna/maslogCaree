@@ -4,11 +4,10 @@ import type { UserMetrics } from "./userMetrics";
 
 type UserMetricCardsProps = {
   metrics: UserMetrics;
-  /** Four across on a wide content area, 2x2 below it. */
   isWide: boolean;
 };
 
-export default function UserMetricCards({ metrics, isWide }: UserMetricCardsProps) {
+const UserMetricCards = ({ metrics, isWide }: UserMetricCardsProps) => {
   const cards = [
     {
       metric: "total" as const,
@@ -64,4 +63,6 @@ export default function UserMetricCards({ metrics, isWide }: UserMetricCardsProp
       </View>
     </View>
   );
-}
+};
+
+export default UserMetricCards;

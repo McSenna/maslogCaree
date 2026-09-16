@@ -20,35 +20,21 @@ type InventoryDetailsSheetProps = {
   visible: boolean;
   item: InventoryItem | null;
   permissions: InventoryPermissions;
-  /** True while the fuller record (batches) is still in flight. */
   loading?: boolean;
   onClose: () => void;
   handlers: InventoryActionHandlers;
 };
 
-/** Below this the 2×2 action grid stacks to a single column. */
 const NARROW_WIDTH = 340;
 
-/**
- * Inventory Item Details — the phone presentation.
- *
- * A bottom sheet rather than the desktop's side column: the card list is the
- * whole screen on a phone, so the details rise over it and dismiss back to it.
- * This is also where every inventory action lives on mobile, which is what lets
- * the list cards drop their per-row menus entirely.
- *
- * The header and the action area are fixed; only the middle scrolls, so the
- * actions never scroll out of reach on a long item and never sit under the
- * Android gesture bar.
- */
-export default function InventoryDetailsSheet({
+const InventoryDetailsSheet = ({
   visible,
   item,
   permissions,
   loading = false,
   onClose,
   handlers,
-}: InventoryDetailsSheetProps) {
+}: InventoryDetailsSheetProps) => {
   const palette = useInventoryPalette();
   const insets = useSafeAreaInsets();
   const { height, width } = useWindowDimensions();
@@ -62,7 +48,6 @@ export default function InventoryDetailsSheet({
       visible={visible}
       transparent
       animationType="slide"
-      // Android's hardware/gesture Back closes the sheet, not the screen behind it.
       onRequestClose={onClose}
       statusBarTranslucent
     >
@@ -77,8 +62,6 @@ export default function InventoryDetailsSheet({
         <View
           className="w-full overflow-hidden"
           style={{
-            // Never taller than most of the screen, so the list stays visible
-            // behind it and the sheet reads as a layer rather than a new page.
             maxHeight: height * 0.9,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
@@ -90,7 +73,6 @@ export default function InventoryDetailsSheet({
             elevation: 16,
           }}
         >
-          {/* Grab handle — the affordance that says this panel can be dismissed. */}
           <View className="items-center pb-1 pt-2.5">
             <View
               style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: palette.divider }}
@@ -114,7 +96,6 @@ export default function InventoryDetailsSheet({
                 onPress={onClose}
                 accessibilityRole="button"
                 accessibilityLabel="Close inventory item details"
-                // 18px glyph carried to a 44px target by hitSlop.
                 hitSlop={13}
                 className="h-8 w-8 items-center justify-center rounded-full"
                 style={{ backgroundColor: palette.divider }}
@@ -143,8 +124,6 @@ export default function InventoryDetailsSheet({
             </View>
           </ScrollView>
 
-          {/* Actions stay put while the details scroll, and clear the Android
-              gesture bar / home indicator via the bottom inset. */}
           <View
             className="w-full px-4 pt-3"
             style={{
@@ -164,4 +143,6 @@ export default function InventoryDetailsSheet({
       </View>
     </Modal>
   );
-}
+};
+
+export default InventoryDetailsSheet;

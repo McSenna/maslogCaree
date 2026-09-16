@@ -1,4 +1,3 @@
-/** Column weights, shared by the header and the rows so they cannot drift. */
 export const COLUMNS = {
   index: 54,
   patient: 2.4,

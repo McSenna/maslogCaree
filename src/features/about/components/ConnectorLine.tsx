@@ -1,8 +1,7 @@
 import { View } from "react-native";
 import { HC } from "../constants/aboutTheme";
 
-/** The stem joining one tier of the org chart to the next. */
-export default function ConnectorLine({ height = 24 }: { height?: number }) {
+const ConnectorLine = ({ height = 24 }: { height?: number }) => {
   return (
     <View style={{ alignItems: "center", marginVertical: 2 }}>
       <View style={{ width: 2, height, backgroundColor: HC.tealMid }} />
@@ -17,4 +16,6 @@ export default function ConnectorLine({ height = 24 }: { height?: number }) {
       />
     </View>
   );
-}
+};
+
+export default ConnectorLine;

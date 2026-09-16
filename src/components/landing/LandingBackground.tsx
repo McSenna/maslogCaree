@@ -7,27 +7,24 @@ interface LandingBackgroundProps {
   variant: "desktop" | "mobile";
 }
 
-export default function LandingBackground({ variant }: LandingBackgroundProps) {
+const LandingBackground = ({ variant }: LandingBackgroundProps) => {
   const backgroundSource = landingAssets.barangayBackground;
 
   if (variant === "mobile") {
     return (
       <View style={[StyleSheet.absoluteFill, { pointerEvents: "none" }]}>
-        {/* Base tint sits under the photo so a null asset still reads correctly */}
         <View style={[StyleSheet.absoluteFill, { backgroundColor: "#E8F1FD" }]} />
 
-        {/* Layer 1: Barangay hall photograph */}
         {backgroundSource && (
           <Image
             source={backgroundSource}
             resizeMode="cover"
+            resizeMethod="resize"
             style={[StyleSheet.absoluteFill, styles.fillImage]}
             accessibilityIgnoresInvertColors
           />
         )}
 
-        {/* Layer 2: Blue atmospheric veil — light enough that the hall, flag and
-            trees stay clearly recognizable, per the approved mobile design. */}
         <LinearGradient
           colors={[
             "rgba(232, 243, 255, 0.86)",
@@ -40,9 +37,6 @@ export default function LandingBackground({ variant }: LandingBackgroundProps) {
           style={StyleSheet.absoluteFill}
         />
 
-        {/* Layer 3: Gentle lift behind the wordmark and the status-bar icons.
-            Kept subtle on purpose — a stronger wash reads as a separate pale
-            strip above the hero instead of one continuous image. */}
         <LinearGradient
           colors={[
             "rgba(248, 252, 255, 0.42)",
@@ -56,29 +50,20 @@ export default function LandingBackground({ variant }: LandingBackgroundProps) {
     );
   }
 
-  // Desktop edge-to-edge background
   return (
     <View style={[StyleSheet.absoluteFill, { pointerEvents: "none" }]}>
-      {/* Base soft blue background tint */}
       <View style={[StyleSheet.absoluteFill, { backgroundColor: "#EFF6FD" }]} />
 
-      {/* Layer 1: Barangay photograph, softened so it reads as atmosphere
-          rather than as a competing hero image.
-
-          Held well back: on a desktop the sign-in card and the feature column
-          sit directly on top of it across the full width, and every step the
-          photo gains in presence it takes out of their legibility. */}
       {backgroundSource && (
         <Image
           source={backgroundSource}
           resizeMode="cover"
+          resizeMethod="resize"
           style={[StyleSheet.absoluteFill, styles.fillImage, { opacity: 0.26 }]}
           accessibilityIgnoresInvertColors
         />
       )}
 
-      {/* Layer 2: Left-to-right white fade — heaviest behind the information
-          column, easing off toward the centre-right of the frame. */}
       <LinearGradient
         colors={[
           "rgba(244, 249, 255, 0.97)",
@@ -93,8 +78,6 @@ export default function LandingBackground({ variant }: LandingBackgroundProps) {
         style={StyleSheet.absoluteFill}
       />
 
-      {/* Layer 3: Top-to-bottom atmospheric gradient — near-white at the top
-          edge, easing into the wave system at the bottom. */}
       <LinearGradient
         colors={[
           "rgba(247, 251, 255, 0.96)",
@@ -109,17 +92,13 @@ export default function LandingBackground({ variant }: LandingBackgroundProps) {
       />
     </View>
   );
-}
+};
 
-/**
- * React Native Web renders <Image> at the source's intrinsic size unless the
- * box is pinned explicitly, so absoluteFill alone lets a large photo overflow
- * its container and get clipped by `overflow: hidden`. Pinning width/height to
- * 100% keeps `resizeMode="cover"` cropping against the hero box as intended.
- */
 const styles = StyleSheet.create({
   fillImage: {
     width: "100%",
     height: "100%",
   },
 });
+
+export default LandingBackground;

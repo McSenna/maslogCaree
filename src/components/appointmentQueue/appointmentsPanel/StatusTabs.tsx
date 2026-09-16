@@ -14,15 +14,13 @@ type StatusTabsProps = {
   palette: QueuePalette;
 };
 
-/** The standings a health worker filters the list by, with their counts. */
-export default function StatusTabs({
+const StatusTabs = ({
   activeStatus,
   onStatusChange,
   statusCounts,
   palette,
-}: StatusTabsProps) {
+}: StatusTabsProps) => {
   return (
-    // Tabs scroll sideways on a phone rather than wrapping into two rows.
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
@@ -71,4 +69,6 @@ export default function StatusTabs({
       })}
     </ScrollView>
   );
-}
+};
+
+export default StatusTabs;

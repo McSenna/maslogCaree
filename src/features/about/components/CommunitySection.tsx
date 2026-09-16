@@ -2,8 +2,7 @@ import { Text, View } from "react-native";
 import { HC } from "../constants/aboutTheme";
 import AboutSectionHeader from "./AboutSectionHeader";
 
-/** Who the barangay is, behind a teal rule. */
-export default function CommunitySection({ isTablet }: { isTablet: boolean }) {
+const CommunitySection = ({ isTablet }: { isTablet: boolean }) => {
   return (
     <View>
       <AboutSectionHeader
@@ -38,4 +37,6 @@ export default function CommunitySection({ isTablet }: { isTablet: boolean }) {
       </View>
     </View>
   );
-}
+};
+
+export default CommunitySection;

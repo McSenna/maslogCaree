@@ -8,12 +8,11 @@ type AboutSectionHeaderProps = {
   isTablet: boolean;
 };
 
-/** An eyebrow and a title, above each section of the About page. */
-export default function AboutSectionHeader({
+const AboutSectionHeader = ({
   eyebrow,
   title,
   isTablet,
-}: AboutSectionHeaderProps) {
+}: AboutSectionHeaderProps) => {
   return (
     <View style={{ marginBottom: 12 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 4 }}>
@@ -35,4 +34,6 @@ export default function AboutSectionHeader({
       </Text>
     </View>
   );
-}
+};
+
+export default AboutSectionHeader;

@@ -8,14 +8,9 @@ export type SettingsRowSize = "regular" | "large";
 type SettingsRowProps = {
   label: string;
   icon: keyof typeof Feather.glyphMap;
-  /** Trailing text before the chevron, e.g. an app version. */
   value?: string;
   onPress?: () => void;
   showDivider?: boolean;
-  /**
-   * "large" is the mobile treatment — taller row, tinted icon chip, bigger
-   * label. "regular" keeps the web modal's denser list.
-   */
   size?: SettingsRowSize;
 };
 
@@ -24,13 +19,6 @@ const SIZES = {
   large: { row: 56, chip: 36, icon: 17, label: 15, gap: 13 },
 } as const;
 
-/**
- * Icon | Label | Chevron row used by Account Settings and Help & Support.
- *
- * The mobile size wraps the glyph in a soft blue chip so the row reads as a
- * tappable object at arm's length; the divider is inset past that chip so the
- * list looks like one grouped card rather than stacked strips.
- */
 const SettingsRow = ({
   label,
   icon,
@@ -132,7 +120,6 @@ const SettingsRow = ({
           style={{
             height: 1,
             backgroundColor: PROFILE_COLORS.divider,
-            // Inset past the icon so the rule starts under the label.
             marginLeft: isLarge ? metrics.chip + metrics.gap : 0,
           }}
         />

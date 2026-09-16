@@ -4,11 +4,10 @@ import InventoryMetricCard from "./InventoryMetricCard";
 
 type InventoryMetricCardsProps = {
   summary: InventorySummary;
-  /** Four across on a wide content area, 2x2 below it. */
   isWide: boolean;
 };
 
-export default function InventoryMetricCards({ summary, isWide }: InventoryMetricCardsProps) {
+const InventoryMetricCards = ({ summary, isWide }: InventoryMetricCardsProps) => {
   const cards = [
     {
       metric: "total" as const,
@@ -64,4 +63,6 @@ export default function InventoryMetricCards({ summary, isWide }: InventoryMetri
       </View>
     </View>
   );
-}
+};
+
+export default InventoryMetricCards;

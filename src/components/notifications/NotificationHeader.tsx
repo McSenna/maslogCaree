@@ -25,7 +25,6 @@ const NotificationHeader = ({
         isDark ? "border-slate-700/60" : "border-slate-100"
       }`}
     >
-      {/* Top row: title + close */}
       <View className="flex-row items-center justify-between">
         <View className="flex-1">
           <Text
@@ -44,7 +43,6 @@ const NotificationHeader = ({
         </View>
 
         <View className="flex-row items-center gap-2">
-          {/* Mark all as read */}
           {hasItems && unreadCount > 0 && (
             <Pressable
               accessibilityRole="button"
@@ -67,7 +65,6 @@ const NotificationHeader = ({
             </Pressable>
           )}
 
-          {/* Close button */}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Close notifications"

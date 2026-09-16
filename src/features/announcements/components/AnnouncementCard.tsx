@@ -8,11 +8,10 @@ type AnnouncementCardProps = {
   isTablet: boolean;
 };
 
-/** One of the events after the featured one, in the compact list style. */
-export default function AnnouncementCard({
+const AnnouncementCard = ({
   announcement,
   isTablet,
-}: AnnouncementCardProps) {
+}: AnnouncementCardProps) => {
   const { title, date, description, icon, color, bg, tag } = announcement;
 
   return (
@@ -68,4 +67,6 @@ export default function AnnouncementCard({
       </View>
     </View>
   );
-}
+};
+
+export default AnnouncementCard;

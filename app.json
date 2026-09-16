@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/maslogicon.png",
     "scheme": "maslogcare",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -15,7 +15,6 @@
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/maslogicon.png",
-        "backgroundImage": "./assets/images/maslogicon.png",
         "monochromeImage": "./assets/images/maslogicon.png"
       },
       "edgeToEdgeEnabled": true,
@@ -34,13 +33,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/maslogicon.png",
+          "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
-          "dark": {
-            "backgroundColor": "#000000"
-          }
+          "backgroundColor": "#ffffff"
         }
       ],
       "@react-native-community/datetimepicker"

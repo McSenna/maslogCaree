@@ -10,21 +10,13 @@ export type ResidentInfo = {
   email: string;
 };
 
-/**
- * Turns an account id into the reference shown as "Resident ID".
- *
- * Derived from the account id so it is stable and unique per resident without
- * inventing a sequence number that would read as an official barangay registry
- * entry. If MaslogCare later issues real resident numbers, this is the one
- * place that changes.
- */
-export function formatResidentReference(id: string | number | null | undefined): string {
+export const formatResidentReference = (id: string | number | null | undefined): string => {
   const raw = String(id ?? "").replace(/[^a-zA-Z0-9]/g, "");
   if (!raw) return "—";
   return `RES-${raw.slice(-6).toUpperCase()}`;
-}
+};
 
-function InfoRow({
+const InfoRow = ({
   icon,
   value,
   label,
@@ -32,7 +24,7 @@ function InfoRow({
   icon: keyof typeof MaterialCommunityIcons.glyphMap;
   value: string;
   label: string;
-}) {
+}) => {
   return (
     <View className="flex-row items-center" style={{ gap: 10 }}>
       <MaterialCommunityIcons name={icon} size={17} color={APPOINTMENT_COLORS.primaryBright} />
@@ -46,16 +38,9 @@ function InfoRow({
       </Text>
     </View>
   );
-}
+};
 
-/**
- * The resident's own details, read from the authenticated profile.
- *
- * Read-only on purpose: these values identify the person the health team will
- * see, so the appointment form is not the place to edit them. The badge says
- * where they came from, which is why the form asks for nothing already known.
- */
-export default function ResidentInfoCard({ resident }: { resident: ResidentInfo }) {
+const ResidentInfoCard = ({ resident }: { resident: ResidentInfo }) => {
   return (
     <View
       style={{
@@ -110,4 +95,6 @@ export default function ResidentInfoCard({ resident }: { resident: ResidentInfo 
       </View>
     </View>
   );
-}
+};
+
+export default ResidentInfoCard;

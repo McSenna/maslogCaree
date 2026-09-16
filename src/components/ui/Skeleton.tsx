@@ -6,7 +6,7 @@ type SkeletonProps = ViewProps & {
   className?: string;
 };
 
-export function Skeleton({ className = "", style, ...rest }: SkeletonProps) {
+export const Skeleton = ({ className = "", style, ...rest }: SkeletonProps) => {
   const { classes } = useTheme();
   const opacity = useRef(new Animated.Value(0.45)).current;
 
@@ -36,9 +36,9 @@ export function Skeleton({ className = "", style, ...rest }: SkeletonProps) {
       className={["overflow-hidden rounded-xl", classes.skeleton, className].join(" ")}
     />
   );
-}
+};
 
-export function StatCardSkeleton() {
+export const StatCardSkeleton = () => {
   const { classes } = useTheme();
   return (
     <View className={["gap-3 p-4 md:p-5", classes.card].join(" ")}>
@@ -52,10 +52,9 @@ export function StatCardSkeleton() {
       <Skeleton className="h-3 w-full" />
     </View>
   );
-}
+};
 
-/** Matches resident dashboard structure to avoid layout shift when data arrives */
-export function ResidentDashboardSkeleton() {
+export const ResidentDashboardSkeleton = () => {
   const { classes } = useTheme();
   return (
     <View className="gap-7">
@@ -89,4 +88,4 @@ export function ResidentDashboardSkeleton() {
       </View>
     </View>
   );
-}
+};

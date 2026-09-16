@@ -12,13 +12,6 @@ type HealthTipsProps = {
   stacked?: boolean;
 };
 
-/**
- * The health-worker motif at the right of the Health Tips card.
- *
- * Built from primitives so it tints with the palette and bleeds into the card's
- * own background rather than sitting in a visible image box — the design has it
- * integrated into the surface, not pasted on top. Decorative only.
- */
 const TipsArtwork = ({ size }: { size: number }) => (
   <View
     accessibilityElementsHidden
