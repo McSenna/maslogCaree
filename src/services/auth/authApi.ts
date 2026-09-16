@@ -46,6 +46,7 @@ export async function registerResident(
     idNumber: payload.idNumber.trim(),
     idDocument: payload.idDocument,
     idFileName: payload.idFileName || "government_id",
+    emailVerificationToken: payload.emailVerificationToken,
   });
 
   return { message: data.message, email: data.email, status: data.status };

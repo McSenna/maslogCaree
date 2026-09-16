@@ -27,6 +27,7 @@ const ProfileModalContent = ({ state, twoColumn }: Props) => {
         variant="wide"
         onEditProfile={state.onEditProfile}
         onChangePhoto={state.onChangePhoto}
+        changingPhoto={state.edit.savingAvatar}
       />
 
       <View
@@ -39,7 +40,7 @@ const ProfileModalContent = ({ state, twoColumn }: Props) => {
         <View style={{ flex: twoColumn ? 1.15 : undefined, ...columnStyle }}>
           <PersonalInformationCard
             fields={state.profile.fields}
-            onEdit={state.onEditProfile}
+            edit={state.edit}
           />
           <HealthNoteStrip />
         </View>

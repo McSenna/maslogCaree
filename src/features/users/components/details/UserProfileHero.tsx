@@ -128,7 +128,7 @@ const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
         </View>
 
         <View className={`flex-row items-center gap-2.5 ${compact ? "" : "pl-6"}`}>
-          <MaslogCareLogo size={44} color={palette.isDark ? "#7DB8FF" : "#8FC4F5"} />
+          <MaslogCareLogo size={44} />
           <View>
             <Text className="text-[19px] font-bold" style={{ color: palette.primary }}>
               MaslogCare

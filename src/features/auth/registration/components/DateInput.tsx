@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import { Pressable, Text } from "react-native";
-import DateOfBirthSheet from "../../components/DateOfBirthSheet";
+import DateOfBirthPicker from "../../components/datePicker/DateOfBirthPicker";
 import { formatBirthDate } from "../../utils/dateOfBirth";
 import { REG_COLORS } from "../registrationTheme";
 import FieldShell from "./FieldShell";
@@ -59,7 +59,7 @@ const DateInput = ({
         <Feather name="chevron-down" size={17} color={REG_COLORS.muted} />
       </Pressable>
 
-      <DateOfBirthSheet
+      <DateOfBirthPicker
         visible={open}
         value={value}
         onConfirm={onChange}

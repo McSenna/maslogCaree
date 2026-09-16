@@ -50,22 +50,29 @@ export const useRegistrationForm = () => {
     setStepIndex((index) => Math.max(0, index - 1));
   }, []);
 
-  const goNext = useCallback(() => {
+  const validateCurrentStep = useCallback(() => {
     const step = REGISTRATION_STEPS[stepIndex];
     const stepErrors = validateStep(step.key, values);
 
-    if (Object.keys(stepErrors).length > 0) {
-      setErrors((previous) => ({ ...previous, ...stepErrors }));
-      setTouched((previous) => ({
-        ...previous,
-        ...Object.fromEntries(STEP_FIELDS[step.key].map((field) => [field, true])),
-      }));
-      return false;
-    }
+    if (Object.keys(stepErrors).length === 0) return true;
 
-    setStepIndex((index) => Math.min(REGISTRATION_STEPS.length - 1, index + 1));
-    return true;
+    setErrors((previous) => ({ ...previous, ...stepErrors }));
+    setTouched((previous) => ({
+      ...previous,
+      ...Object.fromEntries(STEP_FIELDS[step.key].map((field) => [field, true])),
+    }));
+    return false;
   }, [stepIndex, values]);
+
+  const advance = useCallback(() => {
+    setStepIndex((index) => Math.min(REGISTRATION_STEPS.length - 1, index + 1));
+  }, []);
+
+  const goNext = useCallback(() => {
+    if (!validateCurrentStep()) return false;
+    advance();
+    return true;
+  }, [validateCurrentStep, advance]);
 
   const resetForm = useCallback(() => {
     setValues(EMPTY_REGISTRATION);
@@ -91,6 +98,8 @@ export const useRegistrationForm = () => {
     goToStep,
     goBack,
     goNext,
+    validateCurrentStep,
+    advance,
     resetForm,
   };
 };

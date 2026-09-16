@@ -9,6 +9,7 @@ import MobileLanding from "./landing/MobileLanding";
 const MaslogCareLandingScreen = () => {
   const { width } = useWindowDimensions();
   const [isRegistrationVisible, setIsRegistrationVisible] = useState(false);
+  const [isLearnMoreVisible, setIsLearnMoreVisible] = useState(false);
 
   const isDesktop = width >= BREAKPOINTS.desktop;
   const isTablet = width >= BREAKPOINTS.tablet && width < BREAKPOINTS.desktop;
@@ -16,13 +17,22 @@ const MaslogCareLandingScreen = () => {
   const handleOpenRegister = () => setIsRegistrationVisible(true);
   const handleCloseRegister = () => setIsRegistrationVisible(false);
 
+  const handleOpenLearnMore = () => setIsLearnMoreVisible(true);
+  const handleCloseLearnMore = () => setIsLearnMoreVisible(false);
+
+  const learnMore = {
+    isLearnMoreVisible,
+    onOpenLearnMore: handleOpenLearnMore,
+    onCloseLearnMore: handleCloseLearnMore,
+  };
+
   if (isDesktop || isTablet) {
     return (
       <DesktopLanding
-        isDesktop={isDesktop}
         onOpenRegister={handleOpenRegister}
         isRegistrationVisible={isRegistrationVisible}
         onCloseRegister={handleCloseRegister}
+        {...learnMore}
       />
     );
   }
@@ -32,6 +42,7 @@ const MaslogCareLandingScreen = () => {
       onOpenRegister={handleOpenRegister}
       isRegistrationVisible={isRegistrationVisible}
       onCloseRegister={handleCloseRegister}
+      {...learnMore}
     />
   );
 };

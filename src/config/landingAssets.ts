@@ -2,8 +2,10 @@ import type { ImageSourcePropType } from "react-native";
 
 export const landingAssets: {
   barangayBackground: ImageSourcePropType | null;
+  brandMark: ImageSourcePropType;
 } = {
   barangayBackground: require("../../assets/images/maslogbackground.png"),
+  brandMark: require("../../assets/images/maslogicon.png"),
 };
 
 export const LANDING_COLORS = {

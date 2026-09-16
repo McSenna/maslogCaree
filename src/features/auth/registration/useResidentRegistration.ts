@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useProfilePhoto } from "../hooks/useProfilePhoto";
 import { REGISTRATION_STEPS } from "./registrationOptions";
 import { validateStep } from "./registrationValidation";
+import { useEmailVerification } from "./hooks/useEmailVerification";
 import { useRegistrationForm } from "./hooks/useRegistrationForm";
 import { useRegistrationSubmit } from "./hooks/useRegistrationSubmit";
 
@@ -16,10 +17,12 @@ export const useResidentRegistration = (onComplete?: () => void) => {
   const [showOtpModal, setShowOtpModal] = useState(false);
 
   const photo = useProfilePhoto();
+  const emailVerification = useEmailVerification(values.email);
 
   const { isSubmitting, registeredEmail, setRegisteredEmail, submit } = useRegistrationSubmit({
     values,
     profilePhoto: photo.photo,
+    emailVerificationToken: emailVerification.token,
     agreedToTerms,
     setErrors,
     setTouched,
@@ -31,12 +34,28 @@ export const useResidentRegistration = (onComplete?: () => void) => {
   const isLastStep = stepIndex === REGISTRATION_STEPS.length - 1;
   const isSucceeded = Boolean(registeredEmail);
 
+  const requiresEmailVerification = step.key === "personal" && !emailVerification.isVerified;
+
+  const goNext = useCallback(() => {
+    if (!form.validateCurrentStep()) return false;
+
+    if (requiresEmailVerification) {
+      setSubmitError("Please verify your email address before continuing.");
+      return false;
+    }
+
+    form.advance();
+    return true;
+  }, [requiresEmailVerification, form, setSubmitError]);
+
   const reset = useCallback(() => {
     form.resetForm();
     setAgreedToTerms(false);
     setRegisteredEmail("");
     setShowOtpModal(false);
     photo.setPhoto(null);
+    emailVerification.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, photo, setRegisteredEmail]);
 
   const completedSteps = useMemo(
@@ -60,13 +79,15 @@ export const useResidentRegistration = (onComplete?: () => void) => {
     stepIndex,
     isLastStep,
     completedSteps,
-    goNext: form.goNext,
+    goNext,
     goBack: form.goBack,
+    emailVerification,
+    requiresEmailVerification,
     goToStep,
 
     agreedToTerms,
     setAgreedToTerms,
-    canSubmit: agreedToTerms && !isSubmitting,
+    canSubmit: agreedToTerms && !isSubmitting && emailVerification.isVerified,
 
     isSubmitting,
     submitError: form.submitError,

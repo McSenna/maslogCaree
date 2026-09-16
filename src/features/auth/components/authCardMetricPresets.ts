@@ -1,3 +1,8 @@
+export const AUTH_CARD_MAX_WIDTH = {
+  default: 446,
+  compact: 404,
+} as const;
+
 export type AuthCardMetrics = {
   paddingTop: number;
   paddingBottom: number;
@@ -16,6 +21,8 @@ export type AuthCardMetrics = {
   afterDividerGap: number;
   afterCreateGap: number;
   fieldFontSize: number;
+  labelSize: number;
+  labelGap: number;
 };
 
 export const DESKTOP_METRICS: AuthCardMetrics = {
@@ -36,6 +43,30 @@ export const DESKTOP_METRICS: AuthCardMetrics = {
   afterDividerGap: 28,
   afterCreateGap: 24,
   fieldFontSize: 16,
+  labelSize: 13.5,
+  labelGap: 8,
+};
+
+export const DESKTOP_TIGHT_METRICS: AuthCardMetrics = {
+  paddingTop: 24,
+  paddingBottom: 22,
+  paddingHorizontal: 28,
+  borderRadius: 18,
+  headingSize: 21,
+  subtitleSize: 13.5,
+  headerTextGap: 5,
+  headerGap: 16,
+  fieldHeight: 46,
+  fieldGap: 11,
+  formGap: 15,
+  buttonHeight: 46,
+  afterLoginGap: 10,
+  afterForgotGap: 13,
+  afterDividerGap: 13,
+  afterCreateGap: 12,
+  fieldFontSize: 14.5,
+  labelSize: 12,
+  labelGap: 5,
 };
 
 export const COMPACT_DESKTOP_METRICS: AuthCardMetrics = {
@@ -56,6 +87,8 @@ export const COMPACT_DESKTOP_METRICS: AuthCardMetrics = {
   afterDividerGap: 20,
   afterCreateGap: 18,
   fieldFontSize: 15,
+  labelSize: 13,
+  labelGap: 7,
 };
 
 export const MOBILE_METRICS: AuthCardMetrics = {
@@ -76,6 +109,8 @@ export const MOBILE_METRICS: AuthCardMetrics = {
   afterDividerGap: 16,
   afterCreateGap: 16,
   fieldFontSize: 15,
+  labelSize: 13,
+  labelGap: 7,
 };
 
 export const MOBILE_TIGHT_METRICS: AuthCardMetrics = {
@@ -96,4 +131,6 @@ export const MOBILE_TIGHT_METRICS: AuthCardMetrics = {
   afterDividerGap: 10,
   afterCreateGap: 10,
   fieldFontSize: 15,
+  labelSize: 12,
+  labelGap: 5,
 };

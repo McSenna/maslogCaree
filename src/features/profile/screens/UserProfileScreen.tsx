@@ -1,70 +1,78 @@
-import { ScrollView, View, useWindowDimensions } from "react-native";
-import { PROFILE_COLORS } from "../config/profileTheme";
-import { useProfile } from "../hooks/useProfile";
-import AccountSettingsCard from "../components/AccountSettingsCard";
-import HelpSupportCard from "../components/HelpSupportCard";
-import LogoutButton from "../components/LogoutButton";
+import { useCallback, useRef } from "react";
+import { ScrollView, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
+import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import { BREAKPOINTS } from "@/constants/breakpoints";
+import { PROFILE_MAX_WIDTH, SOCIAL_COLORS } from "../config/profileSocialTheme";
+import { useProfileScreen } from "../hooks/useProfileScreen";
 import LogoutConfirmModal from "../components/LogoutConfirmModal";
-import PersonalInformationCard from "../components/PersonalInformationCard";
 import ProfileErrorState from "../components/ProfileErrorState";
-import ProfileHero from "../components/ProfileHero";
 import ProfileNoticeModal from "../components/ProfileNoticeModal";
-import ProfileSkeleton from "../components/ProfileSkeleton";
+import ProfileScreenContent from "../components/ProfileScreenContent";
+import ProfileScreenSkeleton from "../components/ProfileScreenSkeleton";
+import ProfileToastLayer from "../components/ProfileToastLayer";
+import EditProfileDialog from "../modals/EditProfileDialog";
+
+const SETTINGS_SCROLL_OFFSET = 12;
 
 const UserProfileScreen = () => {
-  const state = useProfile();
+  const state = useProfileScreen();
   const { width } = useWindowDimensions();
 
+  const scrollRef = useRef<ScrollView>(null);
+  const settingsOffset = useRef(0);
+
+  const wide = width >= BREAKPOINTS.tablet;
+  const twoColumn = width >= BREAKPOINTS.desktop;
   const stacked = width < 380;
 
+  const handleSettingsLayout = useCallback((event: LayoutChangeEvent) => {
+    settingsOffset.current = event.nativeEvent.layout.y;
+  }, []);
+
+  const scrollToSettings = useCallback(() => {
+    state.tabs.selectTab("overview");
+    scrollRef.current?.scrollTo({
+      y: Math.max(settingsOffset.current - SETTINGS_SCROLL_OFFSET, 0),
+      animated: true,
+    });
+  }, [state.tabs]);
+
+  const showSkeleton = state.loading || (state.refreshing && !state.profile);
+
   return (
-    <View style={{ flex: 1, backgroundColor: PROFILE_COLORS.background }}>
+    <View style={{ flex: 1, backgroundColor: SOCIAL_COLORS.background }}>
       <ScrollView
+        ref={scrollRef}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          padding: 14,
-          gap: 16,
-          paddingBottom: 20,
+          paddingHorizontal: wide ? 4 : 7,
+          paddingVertical: 12,
+          paddingBottom: 28,
         }}
       >
-        {state.loading ? (
-          <ProfileSkeleton />
-        ) : !state.profile ? (
-          <ProfileErrorState onRetry={state.retry} />
-        ) : (
-          <>
-            <ProfileHero
+        <View style={{ width: "100%", maxWidth: PROFILE_MAX_WIDTH, alignSelf: "center" }}>
+          {showSkeleton ? (
+            <ProfileScreenSkeleton wide={wide} twoColumn={twoColumn} />
+          ) : !state.profile ? (
+            <ProfileErrorState
+              onRetry={state.reloadAll}
+              message={state.refreshError ?? undefined}
+            />
+          ) : (
+            <ProfileScreenContent
               profile={state.profile}
-              variant="compact"
-              onEditProfile={state.onEditProfile}
-              onChangePhoto={state.onChangePhoto}
-            />
-
-            <PersonalInformationCard
-              fields={state.profile.fields}
-              onEdit={state.onEditProfile}
+              state={state}
+              wide={wide}
+              twoColumn={twoColumn}
               stacked={stacked}
+              onSettingsLayout={handleSettingsLayout}
+              onOpenSettings={scrollToSettings}
             />
-
-            <AccountSettingsCard
-              size="large"
-              onChangePassword={state.onChangePassword}
-              onNotificationSettings={state.onNotificationSettings}
-              onPrivacySecurity={state.onPrivacySecurity}
-            />
-
-            <HelpSupportCard
-              size="large"
-              onHelpCenter={state.onHelpCenter}
-              onContactSupport={state.onContactSupport}
-              onAbout={state.onAbout}
-              appVersion={state.appVersion}
-            />
-
-            <LogoutButton onPress={state.requestLogout} />
-          </>
-        )}
+          )}
+        </View>
       </ScrollView>
+
+      <EditProfileDialog profile={state.profile} edit={state.edit} />
 
       <LogoutConfirmModal
         visible={state.logoutVisible}
@@ -74,6 +82,19 @@ const UserProfileScreen = () => {
       />
 
       <ProfileNoticeModal notice={state.notice} onClose={state.dismissNotice} />
+
+      <ConfirmationModal
+        visible={state.edit.editConfirmingDiscard}
+        title="Discard unsaved changes?"
+        message="Your edits have not been saved. If you leave now, they will be lost."
+        confirmLabel="Discard"
+        cancelLabel="Keep Editing"
+        destructive
+        onConfirm={state.edit.confirmDiscardEditProfile}
+        onCancel={state.edit.cancelDiscardEditProfile}
+      />
+
+      <ProfileToastLayer toast={state.edit.toast} onDismiss={state.edit.hideToast} />
     </View>
   );
 };

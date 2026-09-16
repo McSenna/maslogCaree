@@ -1,13 +1,15 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import { PROFILE_COLORS, PROFILE_RADIUS } from "../config/profileTheme";
+import type { useEditProfile } from "../hooks/useEditProfile";
 import type { ProfileField } from "../utils/profileData";
+import PersonalInfoEditFields from "./PersonalInfoEditFields";
 import ProfileInfoRow from "./ProfileInfoRow";
 import ProfileSectionCard from "./ProfileSectionCard";
 
 type PersonalInformationCardProps = {
   fields: ProfileField[];
-  onEdit?: () => void;
+  edit: ReturnType<typeof useEditProfile>;
   stacked?: boolean;
 };
 
@@ -38,27 +40,31 @@ const EditLink = ({ onPress }: { onPress?: () => void }) => {
 
 const PersonalInformationCard = ({
   fields,
-  onEdit,
+  edit,
   stacked = false,
 }: PersonalInformationCardProps) => (
   <ProfileSectionCard
     title="Personal Information"
     icon="user"
-    action={<EditLink onPress={onEdit} />}
+    action={edit.editVisible ? null : <EditLink onPress={edit.openEditProfile} />}
   >
-    <View>
-      {fields.map((field, index) => (
-        <ProfileInfoRow
-          key={field.key}
-          label={field.label}
-          value={field.value}
-          icon={field.icon}
-          provided={field.provided}
-          stacked={stacked}
-          showDivider={index < fields.length - 1}
-        />
-      ))}
-    </View>
+    {edit.editVisible ? (
+      <PersonalInfoEditFields fields={fields} edit={edit} />
+    ) : (
+      <View>
+        {fields.map((field, index) => (
+          <ProfileInfoRow
+            key={field.key}
+            label={field.label}
+            value={field.value}
+            icon={field.icon}
+            provided={field.provided}
+            stacked={stacked}
+            showDivider={index < fields.length - 1}
+          />
+        ))}
+      </View>
+    )}
   </ProfileSectionCard>
 );
 

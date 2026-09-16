@@ -68,6 +68,7 @@ export interface RegisterPayload {
   idNumber: string;
   idDocument: string;
   idFileName?: string;
+  emailVerificationToken: string;
 }
 
 export interface RegisterResponse {

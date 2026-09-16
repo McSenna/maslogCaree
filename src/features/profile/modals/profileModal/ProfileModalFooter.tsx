@@ -8,7 +8,7 @@ import { PROFILE_COLORS, PROFILE_RADIUS } from "../../config/profileTheme";
 
 const FooterBrand = () => (
   <View style={{ flexDirection: "row", alignItems: "center", gap: 9 }}>
-    <MaslogCareLogo size={32} color={LANDING_COLORS.primaryBlue} />
+    <MaslogCareLogo size={32} />
     <View>
       <Text style={{ fontSize: 16.5, fontWeight: "800", letterSpacing: -0.3 }}>
         <Text style={{ color: LANDING_COLORS.navy }}>Maslog</Text>

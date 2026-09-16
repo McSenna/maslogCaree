@@ -8,13 +8,22 @@ export const styles = StyleSheet.create({
   desktopRoot: {
     flex: 1,
     width: "100%",
+    overflow: "hidden",
     backgroundColor: "#F2F7FD",
     ...Platform.select({
       web: {
+        height: "100dvh",
         minHeight: "100vh",
         overflowX: "hidden",
       } as any,
     }),
+  },
+  desktopFrame: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 2,
   },
   desktopScrollContent: {
     flexGrow: 1,
@@ -30,18 +39,28 @@ export const styles = StyleSheet.create({
     marginHorizontal: "auto",
   },
   desktopLeftColumn: {
-    width: "57%",
-    gap: 26,
-    paddingRight: 40,
+    flex: 1,
+    minWidth: 0,
   },
   desktopRightColumn: {
-    width: "43%",
+    flexShrink: 0,
     alignItems: "flex-end",
     justifyContent: "center",
+  },
+  desktopAuthAnchor: {
+    maxWidth: "100%",
+    alignItems: "flex-end",
+    position: "relative",
   },
 
   mobileRoot: {
     flex: 1,
+    ...Platform.select({
+      web: {
+        height: "100dvh",
+        overflow: "hidden",
+      } as any,
+    }),
   },
   mobileHeroSection: {
     position: "relative",

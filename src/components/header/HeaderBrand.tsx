@@ -24,7 +24,7 @@ const HeaderBrand = ({ compact, isDark, onPress }: HeaderBrandProps) => {
         minWidth: 0,
       }}
     >
-      <MaslogCareLogo size={compact ? 30 : 36} color={palette.brand} />
+      <MaslogCareLogo size={compact ? 30 : 36} />
 
       <View style={{ flexShrink: 1, minWidth: 0 }}>
         <Text

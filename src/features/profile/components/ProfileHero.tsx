@@ -12,11 +12,18 @@ type ProfileHeroProps = {
   variant: "wide" | "compact";
   onEditProfile?: () => void;
   onChangePhoto?: () => void;
+  changingPhoto?: boolean;
 };
 
 const PHOTO_SIZE = { wide: 128, compact: 96 } as const;
 
-const ProfileHero = ({ profile, variant, onEditProfile, onChangePhoto }: ProfileHeroProps) => {
+const ProfileHero = ({
+  profile,
+  variant,
+  onEditProfile,
+  onChangePhoto,
+  changingPhoto = false,
+}: ProfileHeroProps) => {
   const isWide = variant === "wide";
   const [size, setSize] = useState({ width: 0, height: 0 });
 
@@ -35,6 +42,7 @@ const ProfileHero = ({ profile, variant, onEditProfile, onChangePhoto }: Profile
       name={profile.name}
       shape={isWide ? "rounded" : "circle"}
       onChangePhoto={onChangePhoto}
+      changingPhoto={changingPhoto}
     />
   );
 

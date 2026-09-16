@@ -52,7 +52,7 @@ const WaveDecoration = ({
     <View style={styles.desktopWrapper} pointerEvents="none">
       <Svg
         width="100%"
-        height={desktopWaveHeight(compact)}
+        height={height ?? desktopWaveHeight(compact)}
         viewBox="0 0 1920 210"
         preserveAspectRatio="none"
       >

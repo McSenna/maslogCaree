@@ -7,27 +7,41 @@ import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { showAlert } from "@/utils/notify";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
 
+const EMAIL_REQUIRED = "Please enter your email address or phone number.";
+const PASSWORD_REQUIRED = "Please enter your password.";
+
 export const useLoginForm = () => {
   const { login } = useAuth();
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmailValue] = useState("");
+  const [password, setPasswordValue] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPlatformNotice, setShowPlatformNotice] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
 
+  const setEmail = useCallback((value: string) => {
+    setEmailValue(value);
+    setEmailError(null);
+  }, []);
+
+  const setPassword = useCallback((value: string) => {
+    setPasswordValue(value);
+    setPasswordError(null);
+  }, []);
+
   const submit = useCallback(async () => {
     if (isSubmitting) return;
 
-    if (!email.trim()) {
-      showAlert("Validation", "Please enter your email address or phone number.");
-      return;
-    }
-    if (!password) {
-      showAlert("Validation", "Please enter your password.");
-      return;
-    }
+    const missingEmail = !email.trim();
+    const missingPassword = !password;
+
+    setEmailError(missingEmail ? EMAIL_REQUIRED : null);
+    setPasswordError(missingPassword ? PASSWORD_REQUIRED : null);
+
+    if (missingEmail || missingPassword) return;
 
     setIsSubmitting(true);
     try {
@@ -38,7 +52,7 @@ export const useLoginForm = () => {
       }
 
       if (result.code && PLATFORM_DENIED_CODES.includes(result.code)) {
-        setPassword("");
+        setPasswordValue("");
         setShowPlatformNotice(true);
         return;
       }
@@ -66,6 +80,8 @@ export const useLoginForm = () => {
     setEmail,
     password,
     setPassword,
+    emailError,
+    passwordError,
     isSubmitting,
     submit,
     forgotPassword,

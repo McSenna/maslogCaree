@@ -4,7 +4,8 @@ import type { RegistrationValues } from "../registrationValidation";
 
 export const buildRegistrationPayload = (
   values: RegistrationValues,
-  profilePhoto: string | null
+  profilePhoto: string | null,
+  emailVerificationToken: string
 ): RegisterPayload => ({
   firstName: values.firstName,
   middleName: values.middleName,
@@ -27,5 +28,6 @@ export const buildRegistrationPayload = (
   idNumber: values.idNumber,
   idDocument: values.idDocument,
   idFileName: values.idFileName,
+  emailVerificationToken,
   ...(profilePhoto ? { profilePhoto } : {}),
 });

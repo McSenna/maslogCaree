@@ -16,6 +16,7 @@ import { SERVER_FIELD_ALIASES, stepOwning } from "./registrationFieldMapping";
 type Options = {
   values: RegistrationValues;
   profilePhoto: string | null;
+  emailVerificationToken: string;
   agreedToTerms: boolean;
   setErrors: React.Dispatch<React.SetStateAction<RegistrationErrors>>;
   setTouched: React.Dispatch<
@@ -28,6 +29,7 @@ type Options = {
 export const useRegistrationSubmit = ({
   values,
   profilePhoto,
+  emailVerificationToken,
   agreedToTerms,
   setErrors,
   setTouched,
@@ -73,11 +75,19 @@ export const useRegistrationSubmit = ({
       return;
     }
 
+    if (!emailVerificationToken) {
+      setSubmitError("Please verify your email address before submitting your registration.");
+      goToStep("personal");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError("");
 
     try {
-      const result = await registerResident(buildRegistrationPayload(values, profilePhoto));
+      const result = await registerResident(
+        buildRegistrationPayload(values, profilePhoto, emailVerificationToken)
+      );
       setRegisteredEmail(result.email);
     } catch (error: unknown) {
       const { message, normalized } = getAuthErrorPresentation(
@@ -97,6 +107,7 @@ export const useRegistrationSubmit = ({
     agreedToTerms,
     values,
     profilePhoto,
+    emailVerificationToken,
     goToStep,
     applyServerFieldErrors,
     setErrors,

@@ -1,6 +1,21 @@
 import { Platform, StyleSheet } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
+import { AUTH_CARD_MAX_WIDTH } from "./authCardMetricPresets";
 import { FONT_FAMILY } from "./authCardFont";
+
+const BUTTON_BASE = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: 9,
+  borderRadius: 12,
+  ...Platform.select({
+    web: {
+      cursor: "pointer",
+      transition: "background-color 180ms ease, box-shadow 180ms ease",
+    } as any,
+  }),
+} as const;
 
 export const authCardStyles = StyleSheet.create({
   card: {
@@ -10,6 +25,7 @@ export const authCardStyles = StyleSheet.create({
     ...Platform.select({
       web: {
         boxShadow: "0px 14px 40px rgba(8, 21, 47, 0.08)",
+        transition: "box-shadow 220ms ease, border-color 220ms ease",
       } as any,
       default: {
         elevation: 5,
@@ -20,13 +36,21 @@ export const authCardStyles = StyleSheet.create({
       },
     }),
   },
+  cardHovered: {
+    ...Platform.select({
+      web: {
+        boxShadow: "0px 22px 56px rgba(8, 21, 47, 0.13)",
+        borderColor: "#D2E0F2",
+      } as any,
+    }),
+  },
   cardDesktop: {
     width: "100%",
-    maxWidth: 446,
+    maxWidth: AUTH_CARD_MAX_WIDTH.default,
   },
   cardDesktopCompact: {
     width: "100%",
-    maxWidth: 404,
+    maxWidth: AUTH_CARD_MAX_WIDTH.compact,
   },
   cardMobile: {
     width: "100%",
@@ -37,16 +61,8 @@ export const authCardStyles = StyleSheet.create({
   },
 
   loginButton: {
+    ...BUTTON_BASE,
     backgroundColor: LANDING_COLORS.primaryBlue,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    ...Platform.select({
-      web: {
-        cursor: "pointer",
-        transition: "background-color 0.15s ease, opacity 0.15s ease, transform 0.1s ease",
-      } as any,
-    }),
   },
   loadingRow: {
     flexDirection: "row",
@@ -61,20 +77,34 @@ export const authCardStyles = StyleSheet.create({
     fontFamily: FONT_FAMILY,
     letterSpacing: 0.1,
   },
+  buttonHovered: {
+    ...Platform.select({
+      web: { boxShadow: "0px 10px 22px rgba(8, 21, 47, 0.18)" } as any,
+    }),
+  },
   buttonPressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.985 }],
+    opacity: 0.9,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
   },
 
   forgotContainer: {
+    alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 2,
+    paddingHorizontal: 8,
+    borderRadius: 8,
     ...Platform.select({
       web: {
         cursor: "pointer",
+        transition: "background-color 160ms ease",
       } as any,
     }),
+  },
+  forgotContainerActive: {
+    backgroundColor: "rgba(8, 102, 245, 0.08)",
   },
   forgotText: {
     color: LANDING_COLORS.primaryBlue,
@@ -82,18 +112,13 @@ export const authCardStyles = StyleSheet.create({
     fontWeight: "600",
     fontFamily: FONT_FAMILY,
   },
+  forgotTextActive: {
+    textDecorationLine: "underline",
+  },
 
   createButton: {
+    ...BUTTON_BASE,
     backgroundColor: LANDING_COLORS.green,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    ...Platform.select({
-      web: {
-        cursor: "pointer",
-        transition: "background-color 0.15s ease, opacity 0.15s ease, transform 0.1s ease",
-      } as any,
-    }),
   },
   createButtonText: {
     color: LANDING_COLORS.white,

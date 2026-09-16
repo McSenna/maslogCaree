@@ -3,14 +3,10 @@ import { useRouter } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { buildProfileData, type ProfileData } from "../utils/profileData";
+import { useEditProfile } from "./useEditProfile";
 import type { ProfileNotice } from "../components/ProfileNoticeModal";
 
 const PENDING_FEATURES: Record<string, ProfileNotice> = {
-  editProfile: {
-    title: "Editing not available yet",
-    message:
-      "Updating your profile details will be enabled once the MaslogCare profile update service is connected.",
-  },
   changePassword: {
     title: "Change Password",
     message:
@@ -60,6 +56,8 @@ export type ProfileState = {
 
   retry: () => void;
 
+  edit: ReturnType<typeof useEditProfile>;
+
   onEditProfile: () => void;
   onChangePhoto: () => void;
   onChangePassword: () => void;
@@ -74,6 +72,8 @@ export const useProfile = (options: { onAfterLogout?: () => void } = {}): Profil
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
   const { onAfterLogout } = options;
+
+  const edit = useEditProfile();
 
   const [notice, setNotice] = useState<ProfileNotice | null>(null);
   const [logoutVisible, setLogoutVisible] = useState(false);
@@ -118,8 +118,10 @@ export const useProfile = (options: { onAfterLogout?: () => void } = {}): Profil
 
     retry,
 
-    onEditProfile: () => showPending("editProfile"),
-    onChangePhoto: () => showPending("editProfile"),
+    edit,
+
+    onEditProfile: edit.openEditProfile,
+    onChangePhoto: edit.changeAvatar,
     onChangePassword: () => showPending("changePassword"),
     onNotificationSettings: () => showPending("notificationSettings"),
     onPrivacySecurity: () => showPending("privacySecurity"),

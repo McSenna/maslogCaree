@@ -25,6 +25,8 @@ const GESTURE_CLEARANCE_SPACIOUS = 10;
 
 const WAVE_OVERLAP_RATIO = 0.34;
 
+const CARD_CHROME_ALLOWANCE = 8;
+
 export type MobileLandingViewport = {
   width: number;
   height: number;
@@ -52,7 +54,8 @@ export const computeMobileLandingLayout = ({
   const scale = (tight: number, spacious: number) => lerpRound(tight, spacious, density);
 
   const cardMetrics = mobileAuthCardMetrics(density);
-  const cardHeight = mobileAuthCardHeight(cardMetrics, fontScale);
+  const cardHeight =
+    mobileAuthCardHeight(cardMetrics, fontScale) + CARD_CHROME_ALLOWANCE;
 
   const waveHeight = scale(WAVE_HEIGHT_TIGHT, WAVE_HEIGHT_MOBILE);
   const cardOverlap = Math.round(waveHeight * WAVE_OVERLAP_RATIO);
@@ -64,9 +67,15 @@ export const computeMobileLandingLayout = ({
     scale(BOTTOM_SPACING_TIGHT, BOTTOM_SPACING_SPACIOUS),
   );
 
-  const heroMinHeight = insets.top + brandPaddingTop * 2 + logoSize + waveHeight;
+  const heroFloor = insets.top + logoSize + waveHeight;
+  const preferredHeroHeight = insets.top + brandPaddingTop * 2 + logoSize + waveHeight;
 
-  const minimumContentHeight = heroMinHeight + cardHeight - cardOverlap + bottomSpacing;
+  const stackedHeight = (hero: number) => hero + cardHeight - cardOverlap + bottomSpacing;
+
+  const heroOverflow = Math.max(0, stackedHeight(preferredHeroHeight) - height);
+  const heroMinHeight = Math.max(heroFloor, preferredHeroHeight - heroOverflow);
+
+  const minimumContentHeight = stackedHeight(heroMinHeight);
 
   const fitsWithoutScrolling = height >= minimumContentHeight;
 

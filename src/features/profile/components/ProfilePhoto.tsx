@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
 import { PROFILE_COLORS } from "../config/profileTheme";
 
 type ProfilePhotoProps = {
@@ -10,6 +10,7 @@ type ProfilePhotoProps = {
   name: string;
   shape?: "circle" | "rounded";
   onChangePhoto?: () => void;
+  changingPhoto?: boolean;
 };
 
 const ProfilePhoto = ({
@@ -19,6 +20,7 @@ const ProfilePhoto = ({
   name,
   shape = "circle",
   onChangePhoto,
+  changingPhoto = false,
 }: ProfilePhotoProps) => {
   const [failed, setFailed] = useState(false);
 
@@ -81,7 +83,9 @@ const ProfilePhoto = ({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Change profile photo"
+          accessibilityState={{ disabled: changingPhoto, busy: changingPhoto }}
           onPress={onChangePhoto}
+          disabled={changingPhoto}
           hitSlop={8}
           className="absolute items-center justify-center active:opacity-85"
           style={{
@@ -93,9 +97,14 @@ const ProfilePhoto = ({
             backgroundColor: PROFILE_COLORS.primary,
             borderWidth: 3,
             borderColor: PROFILE_COLORS.surface,
+            opacity: changingPhoto ? 0.6 : 1,
           }}
         >
-          <Feather name="camera" size={Math.round(badge * 0.45)} color="#FFFFFF" />
+          {changingPhoto ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : (
+            <Feather name="camera" size={Math.round(badge * 0.45)} color="#FFFFFF" />
+          )}
         </Pressable>
       ) : null}
     </View>

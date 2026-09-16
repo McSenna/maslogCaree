@@ -32,7 +32,7 @@ const MaslogCareBrand = ({
   return (
     <View style={[styles.container, isDesktop ? styles.desktopAlign : styles.mobileAlign]}>
       <View style={[styles.brandRow, { gap: rowGap }]}>
-        <MaslogCareLogo size={logoSize} color={LANDING_COLORS.primaryBlue} />
+        <MaslogCareLogo size={logoSize} />
 
         <Text style={[styles.brandText, { fontSize: titleFontSize }]}>
           <Text style={styles.brandMaslog}>Maslog</Text>

@@ -1,6 +1,6 @@
 import DateInput from "../../components/DateInput";
+import EmailVerificationField from "../../components/EmailVerificationField";
 import PhoneInput from "../../components/PhoneInput";
-import RegistrationInput from "../../components/RegistrationInput";
 import SegmentedInput from "../../components/SegmentedInput";
 import SelectInput from "../../components/SelectInput";
 import { CIVIL_STATUS_OPTIONS, SEX_OPTIONS } from "../../registrationOptions";
@@ -62,21 +62,13 @@ export const useIdentityContactFields = ({ form, layout }: StepProps) => {
   );
 
   const email = (
-    <RegistrationInput
-      label="Email Address"
-      required
-      icon="mail"
-      value={values.email}
-      onChangeText={(text) => setField("email", text)}
-      onBlur={() => blurField("email")}
-      placeholder="you@example.com"
-      helper="We send your verification code here."
-      error={errors.email}
+    <EmailVerificationField
+      email={values.email}
+      onChangeEmail={(text) => setField("email", text)}
+      onBlurEmail={() => blurField("email")}
+      fieldError={errors.email}
+      verification={form.emailVerification}
       height={inputHeight}
-      keyboardType="email-address"
-      autoCapitalize="none"
-      autoComplete="email"
-      textContentType="emailAddress"
     />
   );
 

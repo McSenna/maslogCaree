@@ -59,7 +59,7 @@ const LandingBackground = ({ variant }: LandingBackgroundProps) => {
           source={backgroundSource}
           resizeMode="cover"
           resizeMethod="resize"
-          style={[StyleSheet.absoluteFill, styles.fillImage, { opacity: 0.26 }]}
+          style={[StyleSheet.absoluteFill, styles.fillImage, { opacity: 0.40 }]}
           accessibilityIgnoresInvertColors
         />
       )}

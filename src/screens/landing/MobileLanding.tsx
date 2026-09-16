@@ -3,23 +3,25 @@ import { StatusBar } from "expo-status-bar";
 
 import LandingBackground from "@/components/landing/LandingBackground";
 import MaslogCareBrand from "@/components/landing/MaslogCareBrand";
+import Reveal from "@/components/landing/motion/Reveal";
+import { staggerDelay } from "@/components/landing/motion/landingMotion";
 import WaveDecoration from "@/components/landing/WaveDecoration";
 import AuthCard from "@/features/auth/components/AuthCard";
 import RegistrationModal from "@/features/auth/components/RegistrationModal";
+import LearnMoreDialog from "@/components/landing/learnMore/LearnMoreDialog";
 import { useMobileLandingLayout } from "@/hooks/useMobileLandingLayout";
 
 import { styles } from "./landingStyles";
+import type { LandingScreenProps } from "./landingModalProps";
 
-type Props = {
-  onOpenRegister: () => void;
-  isRegistrationVisible: boolean;
-  onCloseRegister: () => void;
-};
+type Props = LandingScreenProps;
 
 const MobileLanding = ({
   onOpenRegister,
   isRegistrationVisible,
   onCloseRegister,
+  isLearnMoreVisible,
+  onCloseLearnMore,
 }: Props) => {
   const mobileLayout = useMobileLandingLayout();
 
@@ -34,9 +36,9 @@ const MobileLanding = ({
         <ScrollView
           style={styles.flex}
           contentContainerStyle={styles.mobileContent}
-          scrollEnabled={!mobileLayout.fitsWithoutScrolling}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          overScrollMode="never"
           bounces={false}
         >
           <View
@@ -52,11 +54,13 @@ const MobileLanding = ({
             <LandingBackground variant="mobile" />
 
             <View style={styles.mobileBrandWrapper}>
-              <MaslogCareBrand
-                variant="mobile"
-                logoSize={mobileLayout.brand.logoSize}
-                titleFontSize={mobileLayout.brand.titleFontSize}
-              />
+              <Reveal delay={0}>
+                <MaslogCareBrand
+                  variant="mobile"
+                  logoSize={mobileLayout.brand.logoSize}
+                  titleFontSize={mobileLayout.brand.titleFontSize}
+                />
+              </Reveal>
             </View>
 
             <WaveDecoration variant="mobile" height={mobileLayout.hero.waveHeight} />
@@ -72,12 +76,19 @@ const MobileLanding = ({
               },
             ]}
           >
-            <AuthCard onOpenRegister={onOpenRegister} isMobile density={mobileLayout.density} />
+            <AuthCard
+              onOpenRegister={onOpenRegister}
+              isMobile
+              density={mobileLayout.density}
+              entranceDelay={staggerDelay(1)}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
       <RegistrationModal visible={isRegistrationVisible} onClose={onCloseRegister} />
+
+      <LearnMoreDialog visible={isLearnMoreVisible} onClose={onCloseLearnMore} />
     </View>
   );
 };

@@ -6,56 +6,22 @@ import {
   type ProfileFieldKey,
   type ProfileRoleConfig,
 } from "../config/profileRoleConfig";
+import {
+  NOT_PROVIDED,
+  buildDisplayId,
+  calculateAge,
+  getCreationDateFromId,
+  getInitials,
+  titleCase,
+} from "./profileHelpers";
 
-export const NOT_PROVIDED = "Not provided";
-
-const OBJECT_ID = /^[0-9a-f]{24}$/i;
-
-export const getCreationDateFromId = (id: string | number): Date | null => {
-  const raw = String(id);
-  if (!OBJECT_ID.test(raw)) return null;
-
-  const seconds = parseInt(raw.slice(0, 8), 16);
-  if (!Number.isFinite(seconds) || seconds <= 0) return null;
-
-  const date = new Date(seconds * 1000);
-  return Number.isNaN(date.getTime()) ? null : date;
-};
-
-export const buildDisplayId = (
-  id: string | number | null | undefined,
-  prefix: string
-): string => {
-  if (id === null || id === undefined || String(id).length === 0) {
-    return NOT_PROVIDED;
-  }
-
-  const raw = String(id);
-  const created = getCreationDateFromId(raw);
-  const year = (created ?? new Date()).getFullYear();
-  const suffix = raw.replace(/[^a-zA-Z0-9]/g, "").slice(-4).toUpperCase();
-
-  return `${prefix}-${year}-${suffix.padStart(4, "0")}`;
-};
-
-export const getInitials = (name?: string | null): string => {
-  const parts = (name ?? "")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
-
-  if (parts.length === 0) return "";
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-};
-
-const titleCase = (value?: string | null): string | null => {
-  if (!value) return null;
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
-};
+export {
+  NOT_PROVIDED,
+  buildDisplayId,
+  calculateAge,
+  getCreationDateFromId,
+  getInitials,
+} from "./profileHelpers";
 
 export type ProfileField = {
   key: ProfileFieldKey;
@@ -75,6 +41,9 @@ export type ProfileData = {
   initials: string;
   displayId: string;
   accountStatus: string;
+  verified: boolean;
+  age: number | null;
+  joinedOn: string | null;
   fields: ProfileField[];
 };
 
@@ -104,10 +73,6 @@ const resolveFieldValue = (
     }
     case "accountStatus":
       return ctx.accountStatus;
-    case "specialization":
-    case "facility":
-    case "assignedArea":
-      return null;
     default:
       return null;
   }
@@ -116,8 +81,8 @@ const resolveFieldValue = (
 export const buildProfileData = (user: CurrentUser): ProfileData => {
   const role = getProfileRoleConfig(user.role);
   const displayId = buildDisplayId(user.id, role.idPrefix);
-
   const accountStatus = user.verified ? "Active" : "Pending";
+  const createdAt = getCreationDateFromId(user.id);
 
   const fields: ProfileField[] = role.fields.map((key) => {
     const definition = PROFILE_FIELDS[key];
@@ -142,6 +107,9 @@ export const buildProfileData = (user: CurrentUser): ProfileData => {
     initials: getInitials(user.name),
     displayId,
     accountStatus,
+    verified: Boolean(user.verified),
+    age: calculateAge(user.dateOfBirth),
+    joinedOn: createdAt ? formatDate(createdAt) : null,
     fields,
   };
 };

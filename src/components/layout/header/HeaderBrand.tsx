@@ -1,7 +1,6 @@
 import { Text, View } from "react-native";
 
 import MaslogCareLogo from "@/components/landing/MaslogCareLogo";
-import { LANDING_COLORS } from "@/config/landingAssets";
 
 type Props = { isMobile: boolean; logoSize: number };
 
@@ -23,10 +22,7 @@ const HeaderBrand = ({ isMobile, logoSize }: Props) => {
           borderColor: "rgba(255,255,255,0.3)",
         }}
       >
-        <MaslogCareLogo
-          size={Math.round(logoSize * 0.72)}
-          color={LANDING_COLORS.primaryBlue}
-        />
+        <MaslogCareLogo size={Math.round(logoSize * 0.82)} />
       </View>
 
       <View>

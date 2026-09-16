@@ -1,13 +1,15 @@
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import AuthDivider from "@/components/landing/AuthDivider";
+import AuthField from "@/components/landing/AuthField";
 import AuthHeader from "@/components/landing/AuthHeader";
-import AuthInput from "@/components/landing/AuthInput";
 import SecurityNotice from "@/components/landing/SecurityNotice";
 import { useLoginForm } from "../hooks/useLoginForm";
 import AuthActionButton from "./AuthActionButton";
+import AuthCardShell from "./AuthCardShell";
 import { authCardMetrics } from "./authCardMetrics";
 import { authCardStyles as styles } from "./authCardStyles";
+import ForgotPasswordLink from "./ForgotPasswordLink";
 import PlatformAccessModal from "./PlatformAccessModal";
 import ForgotPasswordFlow from "../forgotPassword/ForgotPasswordFlow";
 
@@ -16,6 +18,7 @@ type AuthCardProps = {
   isMobile?: boolean;
   compact?: boolean;
   density?: number;
+  entranceDelay?: number;
 };
 
 const AuthCard = ({
@@ -23,22 +26,25 @@ const AuthCard = ({
   isMobile = false,
   compact = false,
   density = 1,
+  entranceDelay = 0,
 }: AuthCardProps) => {
   const form = useLoginForm();
-  const metrics = authCardMetrics(isMobile, compact, density);
+  const metrics = authCardMetrics(isMobile, density);
+
+  const fieldProps = {
+    labelSize: metrics.labelSize,
+    labelGap: metrics.labelGap,
+    height: metrics.fieldHeight,
+    fontSize: metrics.fieldFontSize,
+    disabled: form.isSubmitting,
+  };
 
   return (
-    <View
-      style={[
-        styles.card,
-        isMobile ? styles.cardMobile : compact ? styles.cardDesktopCompact : styles.cardDesktop,
-        {
-          borderRadius: metrics.borderRadius,
-          paddingHorizontal: metrics.paddingHorizontal,
-          paddingTop: metrics.paddingTop,
-          paddingBottom: metrics.paddingBottom,
-        },
-      ]}
+    <AuthCardShell
+      isMobile={isMobile}
+      compact={compact}
+      metrics={metrics}
+      entranceDelay={entranceDelay}
     >
       <View style={{ marginBottom: metrics.headerGap }}>
         <AuthHeader
@@ -51,26 +57,31 @@ const AuthCard = ({
       </View>
 
       <View style={[styles.form, { gap: metrics.fieldGap, marginBottom: metrics.formGap }]}>
-        <AuthInput
+        <AuthField
+          {...fieldProps}
+          label="Email or Phone Number"
           icon="mail-outline"
-          placeholder="Email address or phone number"
+          placeholder="Enter your email or phone"
           value={form.email}
           onChangeText={form.setEmail}
           keyboardType="email-address"
-          accessibilityLabel="Email address or phone number"
-          height={metrics.fieldHeight}
-          fontSize={metrics.fieldFontSize}
+          autoComplete="username"
+          returnKeyType="next"
+          error={form.emailError}
         />
 
-        <AuthInput
+        <AuthField
+          {...fieldProps}
+          label="Password"
           icon="lock-closed-outline"
-          placeholder="Password"
+          placeholder="Enter your password"
           value={form.password}
           onChangeText={form.setPassword}
           secureTextEntry
-          accessibilityLabel="Password"
-          height={metrics.fieldHeight}
-          fontSize={metrics.fieldFontSize}
+          autoComplete="current-password"
+          returnKeyType="go"
+          onSubmitEditing={() => void form.submit()}
+          error={form.passwordError}
         />
       </View>
 
@@ -83,6 +94,7 @@ const AuthCard = ({
         marginBottom={metrics.afterLoginGap}
         backgroundColor={LANDING_COLORS.primaryBlue}
         baseStyle={styles.loginButton}
+        trailingIcon={form.isSubmitting ? undefined : "arrow-forward"}
       >
         {form.isSubmitting ? (
           <View style={styles.loadingRow}>
@@ -94,14 +106,10 @@ const AuthCard = ({
         )}
       </AuthActionButton>
 
-      <Pressable
-        accessibilityRole="link"
-        accessibilityLabel="Forgotten password"
+      <ForgotPasswordLink
         onPress={form.forgotPassword}
-        style={[styles.forgotContainer, { marginBottom: metrics.afterForgotGap }]}
-      >
-        <Text style={styles.forgotText}>Forgot Password?</Text>
-      </Pressable>
+        marginBottom={metrics.afterForgotGap}
+      />
 
       <View style={{ marginBottom: metrics.afterDividerGap }}>
         <AuthDivider />
@@ -114,6 +122,7 @@ const AuthCard = ({
         marginBottom={metrics.afterCreateGap}
         backgroundColor={LANDING_COLORS.green}
         baseStyle={styles.createButton}
+        trailingIcon="person-add-outline"
       >
         <Text style={styles.createButtonText}>Create New Account</Text>
       </AuthActionButton>
@@ -132,7 +141,7 @@ const AuthCard = ({
         onClose={form.closeForgotPassword}
         initialEmail={form.email}
       />
-    </View>
+    </AuthCardShell>
   );
 };
 
