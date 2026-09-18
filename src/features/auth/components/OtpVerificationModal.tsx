@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
-import { KeyboardAvoidingView, Modal, Platform, Text, View } from "react-native";
+import { Modal, Text, View } from "react-native";
 
 import { useAuth } from "@/contexts/AuthContext";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 import PlatformAccessModal from "@/features/auth/components/PlatformAccessModal";
 
 import OtpDigitRow from "./otp/OtpDigitRow";
@@ -26,6 +27,10 @@ const OtpVerificationModal = ({
 }: OtpVerificationModalProps) => {
   const { logout } = useAuth();
   const otp = useOtpVerification({ email, onClose, onVerified });
+  // KeyboardAvoidingView is inert inside a statusBarTranslucent modal on
+  // Android, which left the keyboard over the OTP digits. Reserving the
+  // keyboard's height re-centres the card in the space that is left.
+  const keyboardInset = useKeyboardInset(visible);
 
   return (
     <Modal
@@ -35,10 +40,9 @@ const OtpVerificationModal = ({
       onRequestClose={otp.handleClose}
       statusBarTranslucent
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <View
         className="flex-1 justify-center px-4"
-        style={{ backgroundColor: "rgba(15, 23, 42, 0.6)" }}
+        style={{ backgroundColor: "rgba(15, 23, 42, 0.6)", paddingBottom: keyboardInset }}
       >
         <View
           className="w-full max-w-md rounded-2xl bg-white overflow-hidden self-center"
@@ -75,7 +79,7 @@ const OtpVerificationModal = ({
             </Text>
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
 
       <PlatformAccessModal
         visible={otp.showPlatformNotice}

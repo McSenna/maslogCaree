@@ -23,6 +23,7 @@ export const STATUS_ICON: Record<string, IconName> = {
   declined: "x-circle",
   processing: "activity",
   completed: "check-circle",
+  cancelled: "slash",
 };
 
 export const STATUS_TONE: Record<string, { bg: string; text: string; icon: string }> = {
@@ -32,6 +33,7 @@ export const STATUS_TONE: Record<string, { bg: string; text: string; icon: strin
   declined: { bg: "bg-rose-50", text: "text-rose-700", icon: "#E11D48" },
   processing: { bg: "bg-violet-50", text: "text-violet-700", icon: "#7C3AED" },
   completed: { bg: "bg-emerald-50", text: "text-emerald-700", icon: "#059669" },
+  cancelled: { bg: "bg-slate-100", text: "text-slate-600", icon: "#64748B" },
   default: { bg: "bg-slate-100", text: "text-slate-700", icon: "#475569" },
 };
 

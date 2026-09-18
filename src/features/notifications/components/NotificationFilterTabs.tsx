@@ -1,13 +1,82 @@
+import React, { useCallback } from "react";
 import { Pressable, Text, View } from "react-native";
-import { PROFILE_COLORS, PROFILE_RADIUS } from "@/features/profile";
-
-export type NotificationFilter = "all" | "unread";
+import { NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
+import type { NotificationFilter } from "../notification.types";
 
 type NotificationFilterTabsProps = {
   value: NotificationFilter;
   onChange: (next: NotificationFilter) => void;
   totalCount: number;
   unreadCount: number;
+  compact?: boolean;
+};
+
+const Tab = ({
+  label,
+  count,
+  active,
+  compact,
+  onPress,
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  compact: boolean;
+  onPress: () => void;
+}) => {
+  const palette = useNotificationPalette();
+
+  return (
+    <Pressable
+      accessibilityRole="tab"
+      accessibilityLabel={`${label}, ${count} notifications`}
+      accessibilityState={{ selected: active }}
+      onPress={onPress}
+      style={({ pressed }) => ({
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 6,
+        height: compact ? 30 : 34,
+        paddingHorizontal: compact ? 12 : 14,
+        borderRadius: NOTIFICATION_RADIUS.pill,
+        backgroundColor: active ? palette.primarySoft : "rgba(148,163,184,0.08)",
+        borderWidth: 1,
+        borderColor: active ? "rgba(22,119,255,0.22)" : "transparent",
+        opacity: pressed ? 0.8 : 1,
+      })}
+    >
+      <Text
+        maxFontSizeMultiplier={1.2}
+        style={{
+          fontSize: compact ? 12.5 : 13,
+          fontWeight: active ? "700" : "500",
+          color: active ? palette.primary : palette.muted,
+        }}
+      >
+        {label}
+      </Text>
+
+      <View
+        style={{
+          paddingHorizontal: 6,
+          paddingVertical: 1.5,
+          borderRadius: 10,
+          backgroundColor: active ? "rgba(22,119,255,0.14)" : "rgba(148,163,184,0.15)",
+        }}
+      >
+        <Text
+          maxFontSizeMultiplier={1.2}
+          style={{
+            fontSize: 11,
+            fontWeight: active ? "700" : "600",
+            color: active ? palette.primary : palette.muted,
+          }}
+        >
+          {count > 99 ? "99+" : count}
+        </Text>
+      </View>
+    </Pressable>
+  );
 };
 
 const NotificationFilterTabs = ({
@@ -15,65 +84,23 @@ const NotificationFilterTabs = ({
   onChange,
   totalCount,
   unreadCount,
+  compact = false,
 }: NotificationFilterTabsProps) => {
-  const tabs: { key: NotificationFilter; label: string; count: number }[] = [
-    { key: "all", label: "All", count: totalCount },
-    { key: "unread", label: "Unread", count: unreadCount },
-  ];
+  const selectAll = useCallback(() => onChange("all"), [onChange]);
+  const selectUnread = useCallback(() => onChange("unread"), [onChange]);
 
   return (
-    <View
-      accessibilityRole="tablist"
-      style={{
-        flexDirection: "row",
-        gap: 4,
-        padding: 4,
-        borderRadius: PROFILE_RADIUS.control,
-        backgroundColor: "#EEF2F7",
-      }}
-    >
-      {tabs.map((tab) => {
-        const active = tab.key === value;
-
-        return (
-          <Pressable
-            key={tab.key}
-            accessibilityRole="tab"
-            accessibilityLabel={`${tab.label}, ${tab.count}`}
-            accessibilityState={{ selected: active }}
-            onPress={() => onChange(tab.key)}
-            className="flex-1 flex-row items-center justify-center gap-1.5 active:opacity-80"
-            style={{
-              height: 38,
-              borderRadius: 9,
-              backgroundColor: active ? PROFILE_COLORS.surface : "transparent",
-            }}
-          >
-            <Text
-              maxFontSizeMultiplier={1.2}
-              style={{
-                fontSize: 13.5,
-                fontWeight: active ? "700" : "600",
-                color: active ? PROFILE_COLORS.primary : PROFILE_COLORS.muted,
-              }}
-            >
-              {tab.label}
-            </Text>
-            <Text
-              maxFontSizeMultiplier={1.2}
-              style={{
-                fontSize: 12,
-                fontWeight: "600",
-                color: active ? PROFILE_COLORS.primary : PROFILE_COLORS.subtle,
-              }}
-            >
-              {tab.count}
-            </Text>
-          </Pressable>
-        );
-      })}
+    <View accessibilityRole="tablist" style={{ flexDirection: "row", gap: 8 }}>
+      <Tab label="All" count={totalCount} active={value === "all"} compact={compact} onPress={selectAll} />
+      <Tab
+        label="Unread"
+        count={unreadCount}
+        active={value === "unread"}
+        compact={compact}
+        onPress={selectUnread}
+      />
     </View>
   );
 };
 
-export default NotificationFilterTabs;
+export default React.memo(NotificationFilterTabs);

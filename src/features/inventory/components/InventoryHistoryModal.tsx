@@ -2,7 +2,9 @@ import { Modal, Pressable, ScrollView, View, useWindowDimensions } from "react-n
 
 import type { InventoryItem } from "@/features/inventory/services/inventoryService";
 
-import { CARD_SHADOW, RADIUS, useInventoryPalette } from "./inventoryTheme";
+import { createShadow } from "@/design/shadow";
+
+import { RADIUS, useInventoryPalette } from "./inventoryTheme";
 import HistoryEntry from "./history/HistoryEntry";
 import HistoryModalHeader from "./history/HistoryModalHeader";
 import {
@@ -59,10 +61,13 @@ const InventoryHistoryModal = ({
             borderRadius: RADIUS.card,
             backgroundColor: palette.cardBg,
             borderColor: palette.cardBorder,
-            ...CARD_SHADOW,
-            shadowOpacity: 0.18,
-            shadowRadius: 28,
-            elevation: 12,
+            ...createShadow({
+              color: "#0F172A",
+              opacity: 0.18,
+              radius: 28,
+              offsetY: 2,
+              elevation: 12,
+            }),
           }}
         >
           <HistoryModalHeader itemName={item.name} total={total} onClose={onClose} />

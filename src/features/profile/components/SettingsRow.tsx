@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useRef } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import { PROFILE_COLORS, PROFILE_TYPE } from "../config/profileTheme";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 export type SettingsRowSize = "regular" | "large";
 
@@ -34,7 +35,7 @@ const SettingsRow = ({
   const animate = (toValue: number) =>
     Animated.spring(scale, {
       toValue,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
       speed: 40,
       bounciness: 0,
     }).start();

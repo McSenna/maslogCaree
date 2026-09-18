@@ -4,7 +4,7 @@ import { LANDING_COLORS } from "@/config/landingAssets";
 import FloatingGlyph from "./FloatingGlyph";
 
 const FloatingGlyphs = () => (
-  <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+  <View style={[StyleSheet.absoluteFill, { pointerEvents: "none" }]}>
     <FloatingGlyph
       icon="calendar-outline"
       color={LANDING_COLORS.primaryBlue}

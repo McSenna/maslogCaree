@@ -8,36 +8,23 @@ import { PROFILE_RADIUS, PROFILE_SHADOW } from "../../config/profileTheme";
 import type { ProfileData } from "../../utils/profileData";
 import ProfilePhoto from "../ProfilePhoto";
 import ProfileCover from "./ProfileCover";
-import ProfileHeaderActions from "./ProfileHeaderActions";
 import ProfileIdentity from "./ProfileIdentity";
 
 type ProfileHeaderCardProps = {
   profile: ProfileData;
   wide: boolean;
-  onEditProfile?: () => void;
   onChangePhoto?: () => void;
-  onOpenSettings?: () => void;
   changingPhoto?: boolean;
 };
 
 const ProfileHeaderCard = ({
   profile,
   wide,
-  onEditProfile,
   onChangePhoto,
-  onOpenSettings,
   changingPhoto = false,
 }: ProfileHeaderCardProps) => {
   const avatarSize = wide ? AVATAR_SIZE.wide : AVATAR_SIZE.compact;
   const centered = !wide;
-
-  const actions = (
-    <ProfileHeaderActions
-      onEditProfile={onEditProfile}
-      onOpenSettings={onOpenSettings}
-      stacked={centered}
-    />
-  );
 
   return (
     <View
@@ -71,11 +58,7 @@ const ProfileHeaderCard = ({
           </View>
 
           <ProfileIdentity profile={profile} centered={centered} />
-
-          {centered ? null : actions}
         </View>
-
-        {centered ? actions : null}
       </View>
     </View>
   );

@@ -5,6 +5,7 @@ import PlatformAccessBadge from "../PlatformAccessBadge";
 import RoleBadge from "../RoleBadge";
 import UserStatusBadge from "../UserStatusBadge";
 import { useUserDetailsPalette } from "./detailsTheme";
+import { createShadow } from "@/design/shadow";
 
 const UserProfileSummary = ({ user }: { user: AdminUser }) => {
   const palette = useUserDetailsPalette();
@@ -18,11 +19,13 @@ const UserProfileSummary = ({ user }: { user: AdminUser }) => {
             borderRadius: 9999,
             borderWidth: 3,
             borderColor: palette.avatarRing,
-            shadowColor: "#0F2557",
-            shadowOpacity: 0.14,
-            shadowRadius: 10,
-            shadowOffset: { width: 0, height: 4 },
-            elevation: 3,
+            ...createShadow({
+              color: "#0F2557",
+              offsetY: 4,
+              radius: 10,
+              opacity: 0.14,
+              elevation: 3,
+            }),
           }}
         >
           <UserAvatar

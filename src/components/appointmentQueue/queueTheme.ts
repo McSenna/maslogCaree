@@ -22,7 +22,8 @@ export const STATUS_LABELS: Record<AppointmentStatus, string> = {
   rescheduled: "Rescheduled",
   processing: "In Progress",
   completed: "Completed",
-  declined: "Cancelled",
+  declined: "Declined",
+  cancelled: "Cancelled",
 };
 
 export type StatTone = "blue" | "green" | "purple" | "amber";
@@ -74,7 +75,8 @@ export const useQueuePalette = () => {
         declined: { bg: isDark ? "rgba(239,68,68,0.14)" : "#FEF1F1", fg: isDark ? "#FCA5A5" : "#B91C1C", dot: "#EF4444" },
         processing: { bg: isDark ? "rgba(139,92,246,0.16)" : "#F1ECFF", fg: isDark ? "#C4B5FD" : "#6D28D9", dot: "#8B5CF6" },
         completed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },
-      } as Record<AppointmentStatus, { bg: string; fg: string; dot: string }>,
+        cancelled: { bg: isDark ? "rgba(100,116,139,0.18)" : "#F1F5F9", fg: isDark ? "#CBD5E1" : "#475569", dot: "#64748B" },
+      } satisfies Record<AppointmentStatus, { bg: string; fg: string; dot: string }>,
       skeleton: isDark ? "#1E293B" : "#EDF2F9",
     };
   }, [resolvedTheme]);

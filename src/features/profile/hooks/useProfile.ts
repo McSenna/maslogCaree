@@ -48,6 +48,13 @@ export type ProfileState = {
   notice: ProfileNotice | null;
   dismissNotice: () => void;
 
+  aboutVisible: boolean;
+  closeAbout: () => void;
+
+  changePasswordVisible: boolean;
+  openChangePassword: () => void;
+  closeChangePassword: () => void;
+
   logoutVisible: boolean;
   loggingOut: boolean;
   requestLogout: () => void;
@@ -76,6 +83,8 @@ export const useProfile = (options: { onAfterLogout?: () => void } = {}): Profil
   const edit = useEditProfile();
 
   const [notice, setNotice] = useState<ProfileNotice | null>(null);
+  const [aboutVisible, setAboutVisible] = useState(false);
+  const [changePasswordVisible, setChangePasswordVisible] = useState(false);
   const [logoutVisible, setLogoutVisible] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -110,6 +119,13 @@ export const useProfile = (options: { onAfterLogout?: () => void } = {}): Profil
     notice,
     dismissNotice: () => setNotice(null),
 
+    aboutVisible,
+    closeAbout: () => setAboutVisible(false),
+
+    changePasswordVisible,
+    openChangePassword: () => setChangePasswordVisible(true),
+    closeChangePassword: () => setChangePasswordVisible(false),
+
     logoutVisible,
     loggingOut,
     requestLogout: () => setLogoutVisible(true),
@@ -122,15 +138,11 @@ export const useProfile = (options: { onAfterLogout?: () => void } = {}): Profil
 
     onEditProfile: () => edit.startEditing("personal"),
     onChangePhoto: edit.changeAvatar,
-    onChangePassword: () => showPending("changePassword"),
+    onChangePassword: () => setChangePasswordVisible(true),
     onNotificationSettings: () => showPending("notificationSettings"),
     onPrivacySecurity: () => showPending("privacySecurity"),
     onHelpCenter: () => showPending("helpCenter"),
     onContactSupport: () => showPending("contactSupport"),
-    onAbout: () =>
-      setNotice({
-        title: "About MaslogCare",
-        message: `MaslogCare ${getAppVersion() ?? ""}\n\nHealthy Residents, Stronger Community.`.trim(),
-      }),
+    onAbout: () => setAboutVisible(true),
   };
 };

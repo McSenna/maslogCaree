@@ -1,15 +1,9 @@
-import {
-  Animated,
-  Modal,
-  Platform,
-  Pressable,
-  View,
-  useWindowDimensions,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useSheetDragDismiss } from "@/hooks/useSheetDragDismiss";
-import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
+import { Platform, View, useWindowDimensions } from "react-native";
+
+import BottomSheet from "@/components/ui/BottomSheet";
 import type { AdminUser } from "@/features/users/services/userService";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import UserModalActions from "./UserModalActions";
 import { useUserDetailsPalette } from "./detailsTheme";
 import UserSheetBody from "./sheet/UserSheetBody";
@@ -47,75 +41,48 @@ const UserDetailsSheet = ({
 }: UserDetailsSheetProps) => {
   const palette = useUserDetailsPalette();
   const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
-  useWebModalBehavior(visible, onClose);
-
-  const { dragY, panResponder } = useSheetDragDismiss(visible, onClose);
-
-  if (!visible) return null;
-
+  const hasActions = Boolean(user) && !error;
 
   return (
-    <Modal
+    <BottomSheet
       visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={onClose}
-      statusBarTranslucent
-      {...dialogAccessibilityProps}
+      onClose={onClose}
+      accessibilityLabel="User details"
+      surface={palette.cardBg}
+      handleColor={palette.divider}
+      scrim="rgba(15,23,42,0.35)"
+      // The action row below pads itself past the home indicator when present.
+      applyBottomInset={!hasActions}
+      header={(requestClose) => (
+        <View {...dialogAccessibilityProps}>
+          <UserSheetHeader titleId={TITLE_ID} onClose={requestClose} />
+        </View>
+      )}
     >
-      <View className="flex-1 justify-end" style={{ backgroundColor: "rgba(15,23,42,0.35)" }}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Close user details"
-          onPress={onClose}
-          style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
-        />
+      <UserSheetBody user={user} loading={loading} error={error} onRetry={onRetry} />
 
-        <Animated.View
-          className="w-full overflow-hidden"
+      {hasActions && user ? (
+        <View
+          className="w-full px-4 pt-3"
           style={{
-            maxHeight: height * 0.92,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            backgroundColor: palette.cardBg,
-            transform: [{ translateY: dragY }],
-            shadowColor: "#0F2557",
-            shadowOpacity: 0.2,
-            shadowRadius: 24,
-            shadowOffset: { width: 0, height: -6 },
-            elevation: 16,
+            borderTopWidth: 1,
+            borderTopColor: palette.divider,
+            paddingBottom: Math.max(insets.bottom, 12) + 4,
           }}
         >
-          <View {...panResponder.panHandlers}>
-            <UserSheetHeader titleId={TITLE_ID} onClose={onClose} />
-          </View>
-
-          <UserSheetBody user={user} loading={loading} error={error} onRetry={onRetry} />
-
-          {user && !error ? (
-            <View
-              className="w-full px-4 pt-3"
-              style={{
-                borderTopWidth: 1,
-                borderTopColor: palette.divider,
-                paddingBottom: Math.max(insets.bottom, 12) + 4,
-              }}
-            >
-              <UserModalActions
-                user={user}
-                busy={busy}
-                compact={width < NARROW_WIDTH}
-                destructiveLast
-                onChangeStatus={() => onChangeStatus(user)}
-                onViewActivity={() => onViewActivity(user)}
-              />
-            </View>
-          ) : null}
-        </Animated.View>
-      </View>
-    </Modal>
+          <UserModalActions
+            user={user}
+            busy={busy}
+            compact={width < NARROW_WIDTH}
+            destructiveLast
+            onChangeStatus={() => onChangeStatus(user)}
+            onViewActivity={() => onViewActivity(user)}
+          />
+        </View>
+      ) : null}
+    </BottomSheet>
   );
 };
 

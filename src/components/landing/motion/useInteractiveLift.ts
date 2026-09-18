@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated } from "react-native";
-import { useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
 import { LIFT_SPRING } from "./landingMotion";
 
 type LiftOptions = {
@@ -26,8 +26,8 @@ export const useInteractiveLift = ({
     const targetScale = reducedMotion ? 1 : pressed ? pressScale : hovered ? hoverScale : 1;
 
     const animation = Animated.parallel([
-      Animated.spring(translateY, { toValue: targetY, useNativeDriver: true, ...LIFT_SPRING }),
-      Animated.spring(scale, { toValue: targetScale, useNativeDriver: true, ...LIFT_SPRING }),
+      Animated.spring(translateY, { toValue: targetY, useNativeDriver: USE_NATIVE_DRIVER, ...LIFT_SPRING }),
+      Animated.spring(scale, { toValue: targetScale, useNativeDriver: USE_NATIVE_DRIVER, ...LIFT_SPRING }),
     ]);
 
     animation.start();

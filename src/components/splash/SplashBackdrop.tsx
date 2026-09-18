@@ -13,8 +13,8 @@ const SplashBackdrop = () => {
     <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      pointerEvents="none"
       className="absolute inset-0"
+      style={{ pointerEvents: "none" }}
     >
       <LinearGradient
         colors={[SPLASH_COLORS.skyTop, SPLASH_COLORS.skyMid, SPLASH_COLORS.base]}

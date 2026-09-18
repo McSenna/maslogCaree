@@ -9,6 +9,14 @@ export const DURATION = {
 
 export const ENTER_OFFSET = 6;
 
+/**
+ * React Native Web ships no native animated module, so asking for the native
+ * driver there logs a warning and silently falls back to the JS driver anyway.
+ * Native platforms keep the optimised driver, so behaviour is unchanged on
+ * every platform.
+ */
+export const USE_NATIVE_DRIVER = Platform.OS !== "web";
+
 export const useReducedMotion = (): boolean => {
   const [reduced, setReduced] = useState(false);
 

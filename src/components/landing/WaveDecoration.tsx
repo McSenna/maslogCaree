@@ -24,7 +24,7 @@ const WaveDecoration = ({
 }: WaveDecorationProps) => {
   if (variant === "mobile") {
     return (
-      <View style={styles.mobileWrapper} pointerEvents="none">
+      <View style={[styles.mobileWrapper, { pointerEvents: "none" }]}>
         <Svg
           width="100%"
           height={height ?? WAVE_HEIGHT_MOBILE}
@@ -49,7 +49,7 @@ const WaveDecoration = ({
   }
 
   return (
-    <View style={styles.desktopWrapper} pointerEvents="none">
+    <View style={[styles.desktopWrapper, { pointerEvents: "none" }]}>
       <Svg
         width="100%"
         height={height ?? desktopWaveHeight(compact)}

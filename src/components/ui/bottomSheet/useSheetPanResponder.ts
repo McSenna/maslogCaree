@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Animated, PanResponder } from "react-native";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 const DISMISS_DISTANCE = 110;
 const DISMISS_VELOCITY = 0.75;
@@ -7,7 +8,7 @@ const DISMISS_VELOCITY = 0.75;
 const springBack = (translateY: Animated.Value) =>
   Animated.spring(translateY, {
     toValue: 0,
-    useNativeDriver: true,
+    useNativeDriver: USE_NATIVE_DRIVER,
     bounciness: 0,
     speed: 14,
   }).start();

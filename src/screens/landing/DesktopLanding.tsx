@@ -8,7 +8,7 @@ import WaveDecoration from "@/components/landing/WaveDecoration";
 import AuthCard from "@/features/auth/components/AuthCard";
 import { AUTH_CARD_MAX_WIDTH } from "@/features/auth/components/authCardMetricPresets";
 import RegistrationModal from "@/features/auth/components/RegistrationModal";
-import LearnMoreDialog from "@/components/landing/learnMore/LearnMoreDialog";
+import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
 import { useDesktopLandingLayout } from "@/hooks/useDesktopLandingLayout";
 
 import DesktopHeroColumn from "./DesktopHeroColumn";
@@ -95,7 +95,7 @@ const DesktopLanding = ({
 
       <RegistrationModal visible={isRegistrationVisible} onClose={onCloseRegister} />
 
-      <LearnMoreDialog visible={isLearnMoreVisible} onClose={onCloseLearnMore} />
+      <AboutMaslogCareDialog visible={isLearnMoreVisible} onClose={onCloseLearnMore} />
     </View>
   );
 };

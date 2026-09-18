@@ -8,6 +8,7 @@ import UserModalActions from "./details/UserModalActions";
 import { DETAIL_RADIUS, useUserDetailsPalette } from "./details/detailsTheme";
 import { UserModalBody } from "./panel/UserModalBody";
 import { TITLE_ID, UserModalHeader } from "./panel/UserModalHeader";
+import { createShadow } from "@/design/shadow";
 
 const MAX_WIDTH = 1000;
 
@@ -88,11 +89,13 @@ const UserDetailsPanel = ({
             borderColor: palette.cardBorder,
             opacity: enter,
             transform: [{ scale }],
-            shadowColor: "#0F2557",
-            shadowOpacity: 0.22,
-            shadowRadius: 40,
-            shadowOffset: { width: 0, height: 18 },
-            elevation: 16,
+            ...createShadow({
+              color: "#0F2557",
+              offsetY: 18,
+              radius: 40,
+              opacity: 0.22,
+              elevation: 16,
+            }),
           }}
         >
           <View className="px-7 pb-5 pt-7">

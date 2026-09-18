@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { AnimatedPressable } from "../motion/landingMotion";
 import { useInteractiveLift } from "../motion/useInteractiveLift";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 type HeroActionButtonProps = {
   label: string;
@@ -33,7 +34,7 @@ const HeroActionButton = ({
   useEffect(() => {
     const animation = Animated.spring(iconShift, {
       toValue: lift.hovered ? ICON_SHIFT : 0,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
       speed: 26,
       bounciness: 0,
     });

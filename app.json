@@ -7,7 +7,6 @@
     "icon": "./assets/images/maslogicon.png",
     "scheme": "maslogcare",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
     },
@@ -17,12 +16,7 @@
         "foregroundImage": "./assets/images/maslogicon.png",
         "monochromeImage": "./assets/images/maslogicon.png"
       },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
-    },
-    "androidStatusBar": {
-      "barStyle": "dark-content",
-      "translucent": true
     },
     "web": {
       "output": "static",
@@ -39,7 +33,17 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "expo-font",
+      "expo-image",
+      "expo-web-browser",
+      "expo-secure-store",
+      [
+        "expo-status-bar",
+        {
+          "style": "dark"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

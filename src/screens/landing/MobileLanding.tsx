@@ -1,14 +1,16 @@
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
 
+import AppStatusBar from "@/components/layout/AppStatusBar";
 import LandingBackground from "@/components/landing/LandingBackground";
 import MaslogCareBrand from "@/components/landing/MaslogCareBrand";
+import HeroActionButton from "@/components/landing/hero/HeroActionButton";
 import Reveal from "@/components/landing/motion/Reveal";
 import { staggerDelay } from "@/components/landing/motion/landingMotion";
 import WaveDecoration from "@/components/landing/WaveDecoration";
 import AuthCard from "@/features/auth/components/AuthCard";
 import RegistrationModal from "@/features/auth/components/RegistrationModal";
-import LearnMoreDialog from "@/components/landing/learnMore/LearnMoreDialog";
+import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
+import { LANDING_CONTENT } from "@/config/landingContent";
 import { useMobileLandingLayout } from "@/hooks/useMobileLandingLayout";
 
 import { styles } from "./landingStyles";
@@ -16,18 +18,23 @@ import type { LandingScreenProps } from "./landingModalProps";
 
 type Props = LandingScreenProps;
 
+const LANDING_SURFACE = "#F2F7FD";
+
 const MobileLanding = ({
   onOpenRegister,
   isRegistrationVisible,
   onCloseRegister,
   isLearnMoreVisible,
+  onOpenLearnMore,
   onCloseLearnMore,
 }: Props) => {
   const mobileLayout = useMobileLandingLayout();
 
   return (
-    <View style={[styles.mobileRoot, { backgroundColor: "#F2F7FD" }]}>
-      {Platform.OS !== "web" && <StatusBar style="dark" translucent />}
+    <View style={[styles.mobileRoot, { backgroundColor: LANDING_SURFACE }]}>
+      {Platform.OS !== "web" && (
+        <AppStatusBar style="dark" backgroundColor={LANDING_SURFACE} />
+      )}
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -82,13 +89,23 @@ const MobileLanding = ({
               density={mobileLayout.density}
               entranceDelay={staggerDelay(1)}
             />
+
+            <View style={{ marginTop: 14 }}>
+              <HeroActionButton
+                label={LANDING_CONTENT.actions.secondary.label}
+                icon={LANDING_CONTENT.actions.secondary.icon}
+                variant="secondary"
+                onPress={onOpenLearnMore}
+                height={48}
+              />
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
       <RegistrationModal visible={isRegistrationVisible} onClose={onCloseRegister} />
 
-      <LearnMoreDialog visible={isLearnMoreVisible} onClose={onCloseLearnMore} />
+      <AboutMaslogCareDialog visible={isLearnMoreVisible} onClose={onCloseLearnMore} />
     </View>
   );
 };

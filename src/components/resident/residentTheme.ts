@@ -1,4 +1,5 @@
 import type { AccentTone } from "@/types/residentDashboard";
+import { createShadow } from "@/design/shadow";
 
 export const RESIDENT_COLORS = {
   primary: "#0B63F6",
@@ -43,10 +44,10 @@ export const CARD = {
   radiusLg: 18,
 } as const;
 
-export const CARD_SHADOW = {
-  shadowColor: "#0B1744",
-  shadowOpacity: 0.05,
-  shadowRadius: 12,
-  shadowOffset: { width: 0, height: 2 },
+export const CARD_SHADOW = createShadow({
+  color: "#0B1744",
+  opacity: 0.05,
+  radius: 12,
+  offsetY: 2,
   elevation: 1,
-} as const;
+});

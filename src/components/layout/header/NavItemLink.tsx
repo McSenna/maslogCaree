@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Platform, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
 
 type NavItemLinkProps = {
   label: string;
@@ -28,7 +28,7 @@ const NavItemLink = ({ label, icon, isActive, isDesktop }: NavItemLinkProps) => 
     const animation = Animated.timing(indicator, {
       toValue: target,
       duration: 180,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
     });
 
     animation.start();

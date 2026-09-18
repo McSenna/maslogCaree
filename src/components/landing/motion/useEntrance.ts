@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Animated } from "react-native";
-import { useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
 import { ENTER_DISTANCE, ENTER_DURATION, enterEasing } from "./landingMotion";
 
 type EntranceOptions = {
@@ -28,7 +28,7 @@ export const useEntrance = ({
       duration,
       delay,
       easing: enterEasing,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
     });
 
     animation.start();

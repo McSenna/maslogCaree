@@ -11,6 +11,7 @@ import {
   type BottomNavPalette,
 } from "./bottomNavTokens";
 import type { BottomNavEntry } from "./types";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 type BottomNavItemProps = {
   item: BottomNavEntry;
@@ -32,7 +33,7 @@ const BottomNavItem = ({
     Animated.timing(activeAnim, {
       toValue: isActive ? 1 : 0,
       duration: BOTTOM_NAV_TIMING.active,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   }, [isActive, activeAnim]);
 
@@ -40,7 +41,7 @@ const BottomNavItem = ({
     Animated.timing(pressAnim, {
       toValue,
       duration: BOTTOM_NAV_TIMING.press,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   };
 

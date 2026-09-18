@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, type ViewStyle } from "react-native";
 
 import { CLOSE_MS, LIFT, OPEN_MS, SHRINK } from "./dropdownTypes";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 export const useMenuTransition = (visible: boolean) => {
   const progress = useRef(new Animated.Value(0)).current;
@@ -17,7 +18,7 @@ export const useMenuTransition = (visible: boolean) => {
       toValue: visible ? 1 : 0,
       duration: visible ? OPEN_MS : CLOSE_MS,
       easing: visible ? Easing.out(Easing.cubic) : Easing.in(Easing.cubic),
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
     });
 
     animation.start(({ finished }) => {

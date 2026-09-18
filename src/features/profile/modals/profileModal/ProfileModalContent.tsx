@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { View } from "react-native";
 
+import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
+
 import AccountSettingsCard from "../../components/AccountSettingsCard";
 import HealthNoteStrip from "../../components/HealthNoteStrip";
 import HelpSupportCard from "../../components/HelpSupportCard";
@@ -63,6 +65,8 @@ const ProfileModalContent = ({ state, twoColumn }: Props) => {
           />
         </View>
       </View>
+
+      <AboutMaslogCareDialog visible={state.aboutVisible} onClose={state.closeAbout} />
     </>
   );
 };

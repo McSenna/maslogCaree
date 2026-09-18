@@ -39,7 +39,13 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(new ApiError(normalizeApiError(error)))
 );
 
-const AUTH_PATHS_NO_LOGOUT_ON_401 = ["/login", "/register", "/send-otp", "/verify-otp"];
+const AUTH_PATHS_NO_LOGOUT_ON_401 = [
+  "/login",
+  "/register",
+  "/send-otp",
+  "/verify-otp",
+  "/change-password",
+];
 
 apiClient.interceptors.response.use(
   (response) => response,

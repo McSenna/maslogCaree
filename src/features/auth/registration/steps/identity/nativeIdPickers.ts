@@ -43,7 +43,7 @@ export const pickImageFromGallery = async ({ onSelected, setProcessing }: Picker
 
     setProcessing(true);
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: false,
       quality: 0.85,
       base64: true,
@@ -74,6 +74,7 @@ export const captureIdPhoto = async ({ onSelected, setProcessing }: PickerContex
 
     setProcessing(true);
     const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ["images"],
       allowsEditing: false,
       quality: 0.85,
       base64: true,

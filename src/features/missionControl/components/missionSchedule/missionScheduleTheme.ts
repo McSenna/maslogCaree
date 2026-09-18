@@ -7,6 +7,7 @@ import {
   SERVICE_TONES_DARK,
   SERVICE_TONES_LIGHT,
 } from "@/design/serviceColors";
+import { createShadow } from "@/design/shadow";
 
 export const MISSION_RADIUS = {
   sheet: 26,
@@ -61,11 +62,13 @@ export const useMissionSchedulePalette = () => {
       dangerBorder: isDark ? "rgba(220,38,38,0.32)" : "#FECACA",
       backdrop: "rgba(15,23,42,0.45)",
       shadow: {
-        shadowColor: "#0F172A",
-        shadowOpacity: isDark ? 0.5 : 0.12,
-        shadowRadius: 30,
-        shadowOffset: { width: 0, height: 20 },
-        elevation: 12,
+        ...createShadow({
+          color: "#0F172A",
+          offsetY: 20,
+          radius: 30,
+          opacity: isDark ? 0.5 : 0.12,
+          elevation: 12,
+        }),
       },
       toneFor: (categoryKey: string): IconTone => tones[categoryKey] ?? neutral,
       neutralTone: neutral,

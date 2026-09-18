@@ -47,7 +47,7 @@ export type AppointmentRecord = {
   description?: string;
   additionalNotes?: string;
   preferredProvider?: { _id?: string; fullname?: string; role?: string } | null;
-  status: "pending" | "confirmed" | "declined" | "rescheduled" | "processing" | "completed";
+  status: "pending" | "confirmed" | "declined" | "rescheduled" | "processing" | "completed" | "cancelled";
   isUrgent?: boolean;
   ageTier?: number;
   prioritySortKey?: number;
@@ -73,13 +73,14 @@ export type AppointmentRecord = {
   slotStart?: string | null;
   slotEnd?: string | null;
   declineReason?: string;
+  cancelReason?: string;
   assignedBy?: { _id?: string; fullname?: string; role?: string } | null;
 
   approvedAt?: string | null;
   processingAt?: string | null;
   completedAt?: string | null;
   completedBy?: { _id?: string; fullname?: string; role?: string } | null;
-  medicalRecord?: string | null;
+  medicalRecord?: string | { _id: string; [key: string]: any } | null;
   statusHistory?: {
     status: AppointmentRecord["status"];
     timestamp: string;
@@ -96,4 +97,27 @@ export type MissionScheduleRecord = {
   afternoonStart: string;
   afternoonEnd: string;
   categories: { categoryKey: string; durationMinutes: number }[];
+};
+
+export type RescheduleOptionSchedule = {
+  missionScheduleId: string;
+  date: string;
+  morningStart: string;
+  morningEnd: string;
+  afternoonStart: string;
+  afternoonEnd: string;
+  durationMinutes: number;
+  availableSlotStarts: string[];
+};
+
+export type RescheduleOptionsResponse = {
+  appointment: {
+    _id: string;
+    consultationType: string;
+    status: AppointmentRecord["status"];
+    slotStart?: string | null;
+    slotEnd?: string | null;
+    missionSchedule?: string | null;
+  };
+  schedules: RescheduleOptionSchedule[];
 };

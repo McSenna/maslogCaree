@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { Pressable, Text } from "react-native";
 import DateOfBirthPicker from "../../components/datePicker/DateOfBirthPicker";
 import { formatBirthDate } from "../../utils/dateOfBirth";
+import { useDatePickerHost } from "../dialog/datePickerHost";
 import { REG_COLORS } from "../registrationTheme";
 import FieldShell from "./FieldShell";
 import { fieldSurface } from "./fieldStyles";
@@ -26,12 +27,20 @@ const DateInput = ({
   error,
   height,
 }: DateInputProps) => {
-  const [open, setOpen] = useState(false);
+  const host = useDatePickerHost();
+  const [localOpen, setLocalOpen] = useState(false);
+
+  // The dialog hosts the picker when one is available, so its open state lives
+  // outside the modal subtree that Android can remount. Standalone usage keeps
+  // rendering its own picker.
+  const open = host ? false : localOpen;
+  const openPicker = () =>
+    host ? host.open({ value, onConfirm: onChange }) : setLocalOpen(true);
 
   return (
     <FieldShell label={label} required={required} error={error}>
       <Pressable
-        onPress={() => setOpen(true)}
+        onPress={openPicker}
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityValue={{ text: value ? formatBirthDate(value) : placeholder }}
@@ -59,12 +68,14 @@ const DateInput = ({
         <Feather name="chevron-down" size={17} color={REG_COLORS.muted} />
       </Pressable>
 
-      <DateOfBirthPicker
-        visible={open}
-        value={value}
-        onConfirm={onChange}
-        onClose={() => setOpen(false)}
-      />
+      {host ? null : (
+        <DateOfBirthPicker
+          visible={open}
+          value={value}
+          onConfirm={onChange}
+          onClose={() => setLocalOpen(false)}
+        />
+      )}
     </FieldShell>
   );
 };

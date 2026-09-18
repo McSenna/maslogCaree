@@ -1,14 +1,11 @@
 import type { ReactNode } from "react";
-import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Modal, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+
 import ModalHeader from "./ModalHeader";
 
 export { SectionCard } from "./SectionCard";
@@ -39,7 +36,11 @@ const CompleteModalShell = ({
   onLayoutWidth?: (width: number) => void;
 }) => {
   const palette = useQueuePalette();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  // This form is full of inputs, and KeyboardAvoidingView is inert inside a
+  // statusBarTranslucent modal on Android, so the shell tracks the keyboard.
+  const keyboardInset = useKeyboardInset(visible);
   const isSheet = width < SHEET_WIDTH;
 
   return (
@@ -50,8 +51,7 @@ const CompleteModalShell = ({
       onRequestClose={() => dismissible && onRequestClose()}
       statusBarTranslucent
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <View
         className={`flex-1 ${isSheet ? "justify-end" : "items-center justify-center p-4"}`}
         style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
       >
@@ -67,7 +67,10 @@ const CompleteModalShell = ({
           onLayout={(event) => onLayoutWidth?.(event.nativeEvent.layout.width)}
           style={{
             maxWidth: isSheet ? undefined : 920,
-            maxHeight: isSheet ? "94%" : "90%",
+            maxHeight: isSheet
+              ? Math.round((height - keyboardInset - insets.top) * 0.94)
+              : Math.round(height * 0.9),
+            marginBottom: isSheet ? keyboardInset : 0,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             borderBottomLeftRadius: isSheet ? 0 : 24,
@@ -91,6 +94,7 @@ const CompleteModalShell = ({
           />
 
           <ScrollView
+            style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
@@ -101,18 +105,20 @@ const CompleteModalShell = ({
 
           {footer ? (
             <View
-              className="px-4 py-3.5"
+              className="px-4 pt-3.5"
               style={{
                 backgroundColor: palette.panelBg,
                 borderTopWidth: 1,
                 borderTopColor: palette.divider,
+                paddingBottom:
+                  14 + (isSheet && keyboardInset === 0 ? Math.max(insets.bottom, 0) : 0),
               }}
             >
               {footer}
             </View>
           ) : null}
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 };

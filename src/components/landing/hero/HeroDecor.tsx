@@ -11,10 +11,9 @@ type HeroDecorProps = {
 
 const HeroDecor = ({ compact = false }: HeroDecorProps) => (
   <View
-    pointerEvents="none"
     accessibilityElementsHidden
     importantForAccessibility="no-hide-descendants"
-    style={StyleSheet.absoluteFill}
+    style={[StyleSheet.absoluteFill, { pointerEvents: "none" }]}
   >
     <HeroOrb
       size={compact ? 300 : 420}

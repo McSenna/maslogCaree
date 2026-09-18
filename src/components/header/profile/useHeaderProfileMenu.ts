@@ -8,6 +8,7 @@ import { getProfilePath, type UserRole } from "@/data/mockUsers";
 import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
 
 import type { ProfileAnchor, ProfileMenuItem } from "../ProfileDropdown";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 export const useHeaderProfileMenu = (compact: boolean, width: number) => {
   const { user, isLoading, logout } = useAuth();
@@ -30,7 +31,7 @@ export const useHeaderProfileMenu = (compact: boolean, width: number) => {
         toValue,
         duration: 180,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       }).start();
     },
     [chevronAnim]

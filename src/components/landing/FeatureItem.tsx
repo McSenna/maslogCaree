@@ -3,6 +3,7 @@ import { Animated, Platform, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { useInteractiveLift } from "./motion/useInteractiveLift";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 export type FeatureMetrics = {
   iconBox: number;
@@ -36,7 +37,7 @@ const FeatureItem = ({
   useEffect(() => {
     const animation = Animated.spring(iconScale, {
       toValue: lift.hovered ? 1.07 : 1,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
       speed: 24,
       bounciness: 4,
     });

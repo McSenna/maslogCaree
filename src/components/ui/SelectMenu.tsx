@@ -1,7 +1,8 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback, useRef, useState } from "react";
 import { Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
-import { CARD_SHADOW, RADIUS } from "@/design/adminSurfaces";
+import { RADIUS } from "@/design/adminSurfaces";
+import { createShadow } from "@/design/shadow";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 export type SelectOption<T extends string> = { value: T; label: string };
@@ -91,10 +92,13 @@ const SelectMenu = <T extends string,>({
               borderRadius: RADIUS.control,
               backgroundColor: palette.menuBg,
               borderColor: palette.menuBorder,
-              ...CARD_SHADOW,
-              shadowOpacity: 0.12,
-              shadowRadius: 16,
-              elevation: 6,
+              ...createShadow({
+                color: "#0F172A",
+                opacity: 0.12,
+                radius: 16,
+                offsetY: 2,
+                elevation: 6,
+              }),
             }}
           >
             <ScrollView style={{ maxHeight: 288 }} nestedScrollEnabled>

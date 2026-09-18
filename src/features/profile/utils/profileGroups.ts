@@ -22,19 +22,6 @@ const GROUP_DEFINITIONS: GroupDefinition[] = [
     icon: "phone",
     keys: ["phone", "email", "address"],
   },
-  {
-    key: "account",
-    title: "Account Information",
-    icon: "shield",
-    keys: [
-      "userId",
-      "accountStatus",
-      "dateJoined",
-      "specialization",
-      "facility",
-      "assignedArea",
-    ],
-  },
 ];
 
 const toGroupItem = (field: ProfileField): ProfileInfoGroup["items"][number] => ({

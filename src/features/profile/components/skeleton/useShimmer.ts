@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Animated, Easing } from "react-native";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 export const useShimmer = () => {
   const value = useRef(new Animated.Value(0.5)).current;
@@ -11,13 +12,13 @@ export const useShimmer = () => {
           toValue: 1,
           duration: 700,
           easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
         Animated.timing(value, {
           toValue: 0.5,
           duration: 700,
           easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
       ])
     );

@@ -1,5 +1,7 @@
 import { ScrollView, View } from "react-native";
 
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+
 import SheetSection from "../../../details/SheetSection";
 import UserDetailsError from "../../../details/UserDetailsError";
 import UserSheetSkeleton from "../../../details/UserSheetSkeleton";
@@ -29,7 +31,11 @@ const VerificationSheetBody = ({
   onRetry,
 }: Props) => {
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20 }}>
+    <ScrollView
+      style={SHEET_SCROLL_STYLE}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 12 }}
+    >
       {error && !request ? (
         <UserDetailsError onRetry={onRetry} message={error} />
       ) : !request || loading ? (

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { Animated, Platform } from "react-native";
+import { Animated } from "react-native";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 export const useDialogEnter = (visible: boolean) => {
   const enter = useRef(new Animated.Value(0)).current;
@@ -12,7 +13,7 @@ export const useDialogEnter = (visible: boolean) => {
     Animated.timing(enter, {
       toValue: 1,
       duration: 180,
-      useNativeDriver: Platform.OS !== "web",
+      useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   }, [visible, enter]);
 

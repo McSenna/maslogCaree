@@ -1,22 +1,23 @@
-import { Feather } from "@expo/vector-icons";
 import { useCallback, useMemo, useState } from "react";
-import { FlatList, Pressable, RefreshControl, Text, View } from "react-native";
-import NotificationEmptyState from "@/components/notifications/NotificationEmptyState";
-import NotificationErrorState from "@/components/notifications/NotificationErrorState";
-import NotificationItem from "@/components/notifications/NotificationItem";
-import NotificationSkeleton from "@/components/notifications/NotificationSkeleton";
+import { useRouter } from "expo-router";
+import { RefreshControl, View } from "react-native";
+import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
-import { PROFILE_COLORS, PROFILE_RADIUS } from "@/features/profile";
-import type { NotificationItem as NotificationItemType } from "@/services/notifications";
-import NotificationFilterTabs, {
-  type NotificationFilter,
-} from "../components/NotificationFilterTabs";
-
-const keyExtractor = (item: NotificationItemType) => item.id;
+import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
+import NotificationListView from "../components/NotificationListView";
+import NotificationPageHeader from "../components/NotificationPageHeader";
+import { useNotificationActions } from "../hooks/useNotificationActions";
+import { NOTIFICATION_METRICS, useNotificationPalette } from "../notification.theme";
+import type { NotificationFilter } from "../notification.types";
 
 const NotificationsScreen = () => {
-  const { notifications, unreadCount, loading, error, refresh, markRead, markAllRead } =
+  const { notifications, unreadCount, loading, loadingMore, hasMore, error, refresh, loadMore, markAllRead } =
     useNotificationsContext();
+
+  const palette = useNotificationPalette();
+  const insets = useRoleScreenInsets();
+  const router = useRouter();
+  const { handlePress, isNavigable } = useNotificationActions();
 
   const [filter, setFilter] = useState<NotificationFilter>("all");
   const [refreshing, setRefreshing] = useState(false);
@@ -35,102 +36,61 @@ const NotificationsScreen = () => {
     }
   }, [refresh]);
 
-  const handlePressItem = useCallback(
-    (id: string) => {
-      const item = notifications.find((n) => n.id === id);
-      if (item && !item.isRead) void markRead(id);
-    },
-    [markRead, notifications]
-  );
-
-  const renderItem = useCallback(
-    ({ item }: { item: NotificationItemType }) => (
-      <NotificationItem item={item} onPress={handlePressItem} variant="card" />
-    ),
-    [handlePressItem]
-  );
-
-  const header = (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-        paddingBottom: 14,
-      }}
-    >
-      <View style={{ flex: 1, minWidth: 0 }}>
-        <NotificationFilterTabs
-          value={filter}
-          onChange={setFilter}
-          totalCount={notifications.length}
-          unreadCount={unreadCount}
-        />
-      </View>
-
-      {unreadCount > 0 ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={`Mark all ${unreadCount} notifications as read`}
-          onPress={() => void markAllRead()}
-          className="shrink-0 flex-row items-center gap-1.5 active:opacity-75"
-          style={{
-            height: 46,
-            paddingHorizontal: 12,
-            borderRadius: PROFILE_RADIUS.control,
-            backgroundColor: PROFILE_COLORS.primarySoft,
-          }}
-        >
-          <Feather name="check-circle" size={14} color={PROFILE_COLORS.primary} />
-          <Text style={{ fontSize: 12.5, fontWeight: "700", color: PROFILE_COLORS.primary }}>
-            Mark all
-          </Text>
-        </Pressable>
-      ) : null}
-    </View>
-  );
-
-  const empty =
-    loading && notifications.length === 0 ? (
-      <NotificationSkeleton />
-    ) : error && notifications.length === 0 ? (
-      <NotificationErrorState message={error} onRetry={() => void refresh()} />
-    ) : filter === "unread" ? (
-      <NotificationEmptyState
-        title="No unread notifications"
-        message="You're all caught up."
-      />
-    ) : (
-      <NotificationEmptyState
-        title="No notifications yet"
-        message="You're all caught up."
-      />
-    );
+  const handleEndReached = useCallback(() => {
+    if (hasMore && !loadingMore) void loadMore();
+  }, [hasMore, loadingMore, loadMore]);
 
   return (
-    <View style={{ flex: 1, backgroundColor: PROFILE_COLORS.background }}>
-      <FlatList
-        data={visible}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        ListHeaderComponent={header}
-        ListEmptyComponent={empty}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          padding: 14,
-          gap: 10,
-          paddingBottom: 20,
-          flexGrow: 1,
+    <View style={{ flex: 1, backgroundColor: palette.background }}>
+      <RoleScreenBackdrop color={palette.background} insets={insets} />
+
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+          maxWidth: NOTIFICATION_METRICS.pageMaxWidth,
+          alignSelf: "center",
+          paddingHorizontal: insets.gutter,
+          paddingTop: insets.paddingTop,
         }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            tintColor={PROFILE_COLORS.primary}
-            colors={[PROFILE_COLORS.primary]}
+      >
+        <NotificationPageHeader
+          unreadCount={unreadCount}
+          totalCount={notifications.length}
+          filter={filter}
+          onChangeFilter={setFilter}
+          onMarkAllRead={() => void markAllRead()}
+          onBack={router.canGoBack() ? router.back : undefined}
+        />
+
+        <View style={{ flex: 1 }}>
+          <NotificationListView
+            items={visible}
+            filter={filter}
+            loading={loading}
+            loadingMore={loadingMore}
+            hasMore={hasMore}
+            error={error}
+            isNavigable={isNavigable}
+            onPressItem={handlePress}
+            onRetry={() => void refresh()}
+            onEndReached={handleEndReached}
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingBottom: insets.isPhone ? 32 : 24,
+            }}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                tintColor={palette.primary}
+                colors={[palette.primary]}
+                progressBackgroundColor={palette.surface}
+              />
+            }
           />
-        }
-      />
+        </View>
+      </View>
     </View>
   );
 };

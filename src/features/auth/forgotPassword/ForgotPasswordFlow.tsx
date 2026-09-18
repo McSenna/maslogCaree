@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useForgotPassword, type ForgotPasswordController } from "./useForgotPassword";
 import StepIndicator from "./components/StepIndicator";
 import FlowHeader from "./flow/FlowHeader";
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import FlowShell from "./flow/FlowShell";
 import {
   EmailSentStep,
@@ -12,6 +13,7 @@ import {
   ResetPasswordStep,
   SuccessStep,
 } from "./components/RecoverySteps";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 const SHEET_BREAKPOINT = 768;
 
@@ -39,7 +41,7 @@ const StepTransition = ({ flow }: { flow: ForgotPasswordController }) => {
       toValue: 1,
       duration: 220,
       easing: Easing.out(Easing.quad),
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   }, [flow.step, fade]);
 
@@ -82,6 +84,7 @@ const ForgotPasswordFlow = ({
   return (
     <FlowShell visible={visible} isSheet={isSheet} insets={insets} onRequestClose={requestClose}>
       <ScrollView
+        style={SHEET_SCROLL_STYLE}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"

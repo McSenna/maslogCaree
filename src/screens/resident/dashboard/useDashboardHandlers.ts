@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
-import type { Announcement, HealthService, QuickAction } from "@/types/residentDashboard";
+import type { Announcement, HealthService } from "@/types/residentDashboard";
 
 export const useDashboardHandlers = () => {
   const router = useGuardedNavigation();
@@ -16,8 +16,6 @@ export const useDashboardHandlers = () => {
     () => ({
       onViewAllAppointments: () => go("/resident/appointments"),
       onViewAppointment: () => go("/resident/appointments"),
-      onQuickAction: (action: QuickAction) => go(action.href),
-      onViewAllQuickActions: () => go("/resident/services"),
       onViewAllAnnouncements: () => go("/resident/announcements"),
       onAnnouncement: (_announcement: Announcement) => go("/resident/announcements"),
       onViewAllServices: () => go("/resident/services"),

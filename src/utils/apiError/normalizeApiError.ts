@@ -137,6 +137,16 @@ export const isAuthError = (error: unknown): boolean => {
   return normalizeApiError(error).isAuthError;
 };
 
+export const isNotFoundError = (error: unknown): boolean => {
+  const normalized = normalizeApiError(error);
+  return normalized.status === 404 || normalized.code === ERROR_CODES.NOT_FOUND;
+};
+
+export const isConflictError = (error: unknown): boolean => {
+  const normalized = normalizeApiError(error);
+  return normalized.status === 409 || normalized.code === ERROR_CODES.CONFLICT;
+};
+
 export const isOfflineError = (error: unknown): boolean => {
   const normalized = normalizeApiError(error);
   return normalized.isNetworkError || normalized.isTimeoutError;

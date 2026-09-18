@@ -1,5 +1,10 @@
 import { REG_COLORS, REG_RADIUS } from "../registrationTheme";
 
+/**
+ * `height` is the room the sheet actually has: the window minus whatever the
+ * keyboard is covering. Both bounds have to shrink with it, or the minimum
+ * height alone pushes the form taller than the space left above the keys.
+ */
 export const dialogSurfaceStyle = (isSheet: boolean, height: number) => ({
   width: "100%" as const,
   maxWidth: isSheet ? undefined : 760,

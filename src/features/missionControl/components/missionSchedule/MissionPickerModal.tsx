@@ -28,7 +28,7 @@ const MissionPickerModal = ({
   children,
 }: MissionPickerModalProps) => {
   const palette = useMissionSchedulePalette();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const safeArea = useSafeAreaInsets();
   const isSheet = width < MISSION_SHEET_BREAKPOINT;
 
@@ -55,6 +55,8 @@ const MissionPickerModal = ({
           className="w-full overflow-hidden"
           style={{
             maxWidth: isSheet ? undefined : 420,
+            // Bounded so a tall wheel picker cannot run off a short device.
+            maxHeight: Math.round(height * (isSheet ? 0.9 : 0.88)),
             borderTopLeftRadius: MISSION_RADIUS.sheet,
             borderTopRightRadius: MISSION_RADIUS.sheet,
             borderBottomLeftRadius: isSheet ? 0 : MISSION_RADIUS.sheet,

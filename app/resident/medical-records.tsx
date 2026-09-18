@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
-import MedicalRecordBottomSheet from "@/components/medicalRecord/history/MedicalRecordBottomSheet";
+import ResidentMedicalDetailsDialog from "@/features/medical-records/components/ResidentMedicalDetailsDialog";
 import MedicalRecordCard from "@/components/medicalRecord/history/MedicalRecordCard";
 import MedicalRecordEmptyState from "@/components/medicalRecord/history/MedicalRecordEmptyState";
 import MedicalRecordFilters, {
@@ -19,8 +19,7 @@ const INITIAL_FILTERS: FilterState = { query: "", service: "all", range: "any" }
 const ResidentMedicalRecords = () => {
   const { classes } = useTheme();
   const palette = useQueuePalette();
-  const { records, loading, error, viewing, viewLoading, openRecord, closeRecord, refetch } =
-    useResidentMedicalRecords();
+  const { records, loading, error, refetch, viewer } = useResidentMedicalRecords();
 
   const [filters, setFilters] = useState<FilterState>(INITIAL_FILTERS);
 
@@ -59,7 +58,7 @@ const ResidentMedicalRecords = () => {
             key={record._id}
             record={record}
             palette={palette}
-            onOpen={(r) => void openRecord(r)}
+            onOpen={(row) => void viewer.open(row)}
           />
         ))}
       </View>
@@ -113,12 +112,14 @@ const ResidentMedicalRecords = () => {
         </View>
       </ScrollView>
 
-      <MedicalRecordBottomSheet
-        visible={Boolean(viewing)}
-        record={viewing?.record ?? null}
-        form={viewing?.form ?? null}
-        loading={viewLoading}
-        onClose={closeRecord}
+      <ResidentMedicalDetailsDialog
+        visible={viewer.isOpen}
+        record={viewer.record}
+        form={viewer.form}
+        loading={viewer.loading}
+        error={viewer.error}
+        onRetry={viewer.retry}
+        onClose={viewer.close}
       />
     </>
   );

@@ -16,9 +16,8 @@ const TipsArtwork = ({ size }: { size: number }) => (
   <View
     accessibilityElementsHidden
     importantForAccessibility="no-hide-descendants"
-    pointerEvents="none"
     className="items-center justify-end"
-    style={{ width: size * 1.25, height: size }}
+    style={{ width: size * 1.25, height: size, pointerEvents: "none" }}
   >
     <View
       className="absolute rounded-full"

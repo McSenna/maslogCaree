@@ -9,12 +9,15 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import type { InventoryItem, InventoryPermissions } from "@/features/inventory/services/inventoryService";
 import InventoryActions, { type InventoryActionHandlers } from "./InventoryActions";
 import InventoryDetailRow from "./InventoryDetailRow";
 import InventoryItemSummary from "./InventoryItemSummary";
 import { buildDetailFields } from "./inventoryDetailFields";
 import { useInventoryPalette } from "./inventoryTheme";
+import { createShadow } from "@/design/shadow";
 
 type InventoryDetailsSheetProps = {
   visible: boolean;
@@ -66,11 +69,13 @@ const InventoryDetailsSheet = ({
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             backgroundColor: palette.cardBg,
-            shadowColor: "#0F2557",
-            shadowOpacity: 0.2,
-            shadowRadius: 24,
-            shadowOffset: { width: 0, height: -6 },
-            elevation: 16,
+            ...createShadow({
+              color: "#0F2557",
+              offsetY: -6,
+              radius: 24,
+              opacity: 0.2,
+              elevation: 16,
+            }),
           }}
         >
           <View className="items-center pb-1 pt-2.5">
@@ -106,6 +111,7 @@ const InventoryDetailsSheet = ({
           </View>
 
           <ScrollView
+            style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ padding: 16, gap: 14 }}
           >

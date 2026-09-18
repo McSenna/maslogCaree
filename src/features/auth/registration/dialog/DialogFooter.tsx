@@ -1,6 +1,8 @@
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+
 import FormError from "../components/FormError";
 import RegistrationFooter from "../components/RegistrationFooter";
 import { REG_COLORS } from "../registrationTheme";
@@ -22,13 +24,16 @@ const DialogFooter = ({
   onPrimaryPress,
 }: Props) => {
   const insets = useSafeAreaInsets();
+  // The sheet already rides above the keyboard; the home-indicator gap on top
+  // of that would just be dead space between the buttons and the keys.
+  const keyboardInset = useKeyboardInset();
 
   return (
     <View
       style={{
         paddingHorizontal: horizontalPadding,
         paddingTop: 14,
-        paddingBottom: isSheet ? Math.max(insets.bottom, 12) + 8 : 22,
+        paddingBottom: isSheet ? (keyboardInset > 0 ? 12 : Math.max(insets.bottom, 12) + 8) : 22,
         gap: 12,
         borderTopWidth: 1,
         borderTopColor: REG_COLORS.border,

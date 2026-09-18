@@ -46,14 +46,5 @@ export const useResidentMedicalRecords = () => {
     }, [load])
   );
 
-  return {
-    records,
-    loading,
-    error,
-    refetch,
-    viewing: viewer.viewing,
-    viewLoading: viewer.loading,
-    openRecord: viewer.open,
-    closeRecord: viewer.close,
-  };
+  return { records, loading, error, refetch, viewer };
 };

@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 type ProfileOverlayProps = {
   visible: boolean;
@@ -47,13 +48,13 @@ const ProfileOverlay = ({
           toValue: 1,
           duration: OPEN_MS,
           easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
         Animated.timing(scale, {
           toValue: 1,
           duration: OPEN_MS,
           easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
       ]).start();
       return;
@@ -66,13 +67,13 @@ const ProfileOverlay = ({
         toValue: 0,
         duration: CLOSE_MS,
         easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       }),
       Animated.timing(scale, {
         toValue: 0.98,
         duration: CLOSE_MS,
         easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       }),
     ]).start(({ finished }) => {
       if (finished) setMounted(false);
@@ -120,8 +121,8 @@ const ProfileOverlay = ({
             paddingBottom: insets.bottom + 12,
             opacity,
             transform: [{ scale }],
+            pointerEvents: "box-none",
           }}
-          pointerEvents="box-none"
         >
           {children}
         </Animated.View>

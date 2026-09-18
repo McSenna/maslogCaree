@@ -2,6 +2,7 @@ import { useMemo, useRef } from "react";
 import { Animated, PanResponder } from "react-native";
 
 import { showAlert } from "@/utils/notify";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 const DISMISS_DISTANCE = 96;
 
@@ -32,7 +33,7 @@ export const useDialogDismiss = ({
 
   const dragY = useRef(new Animated.Value(0)).current;
   const settle = () =>
-    Animated.spring(dragY, { toValue: 0, useNativeDriver: true, bounciness: 0 }).start();
+    Animated.spring(dragY, { toValue: 0, useNativeDriver: USE_NATIVE_DRIVER, bounciness: 0 }).start();
 
   const dragHandlers = useMemo(
     () =>

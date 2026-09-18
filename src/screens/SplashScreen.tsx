@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import LoadingDots from "@/components/splash/LoadingDots";
 import SplashBackdrop from "@/components/splash/SplashBackdrop";
 import { SPLASH_COLORS, SPLASH_TIMING } from "@/components/splash/splashTheme";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 const MASLOG_SEAL = require("../../assets/images/maslogicon.png");
 
@@ -27,19 +28,19 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
         toValue: 1,
         duration: SPLASH_TIMING.fadeIn,
         easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       }),
       Animated.timing(logoOpacity, {
         toValue: 1,
         duration: SPLASH_TIMING.logoIn,
         easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       }),
       Animated.timing(logoScale, {
         toValue: 1,
         duration: SPLASH_TIMING.logoIn,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       }),
       Animated.sequence([
         Animated.delay(SPLASH_TIMING.wordmarkDelay),
@@ -47,7 +48,7 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
           toValue: 1,
           duration: SPLASH_TIMING.wordmarkIn,
           easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
       ]),
     ]).start();
@@ -59,14 +60,17 @@ const SplashScreen = ({ visible }: SplashScreenProps) => {
       toValue: 0,
       duration: SPLASH_TIMING.fadeOut,
       easing: Easing.in(Easing.quad),
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   }, [visible, screenOpacity]);
 
   return (
     <Animated.View
-      style={{ ...StyleSheetAbsolute, opacity: screenOpacity }}
-      pointerEvents={visible ? "auto" : "none"}
+      style={{
+        ...StyleSheetAbsolute,
+        opacity: screenOpacity,
+        pointerEvents: visible ? "auto" : "none",
+      }}
     >
       <View className="flex-1" style={{ backgroundColor: SPLASH_COLORS.base }}>
         <SplashBackdrop />

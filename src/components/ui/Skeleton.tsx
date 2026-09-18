@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Animated, View, type ViewProps } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 type SkeletonProps = ViewProps & {
   className?: string;
@@ -16,12 +17,12 @@ export const Skeleton = ({ className = "", style, ...rest }: SkeletonProps) => {
         Animated.timing(opacity, {
           toValue: 0.85,
           duration: 700,
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
         Animated.timing(opacity, {
           toValue: 0.35,
           duration: 700,
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
       ])
     );

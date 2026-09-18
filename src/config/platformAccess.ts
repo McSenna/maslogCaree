@@ -12,7 +12,7 @@ export const PLATFORM_ACCESS: Record<UserRole, ClientPlatform[]> = {
   doctor: ["web", "mobile"],
   midwife: ["web", "mobile"],
   bhw: ["web", "mobile"],
-  resident: ["mobile"],
+  resident: ["web", "mobile"],
 };
 
 const FALLBACK_ALLOWED: ClientPlatform[] = ["mobile"];

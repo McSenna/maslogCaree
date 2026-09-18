@@ -8,6 +8,7 @@ import PlatformAccessBadge from "../PlatformAccessBadge";
 import RoleBadge from "../RoleBadge";
 import UserStatusBadge from "../UserStatusBadge";
 import { DETAIL_RADIUS, HERO_TAGLINE, useUserDetailsPalette } from "./detailsTheme";
+import { createShadow } from "@/design/shadow";
 
 const HeroDecor = ({ tint, soft }: { tint: string; soft: string }) => {
   return (
@@ -66,11 +67,13 @@ const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
                 borderRadius: 9999,
                 borderWidth: 4,
                 borderColor: palette.avatarRing,
-                shadowColor: "#0F2557",
-                shadowOpacity: 0.16,
-                shadowRadius: 14,
-                shadowOffset: { width: 0, height: 6 },
-                elevation: 4,
+                ...createShadow({
+                  color: "#0F2557",
+                  offsetY: 6,
+                  radius: 14,
+                  opacity: 0.16,
+                  elevation: 4,
+                }),
               }}
             >
               <UserAvatar

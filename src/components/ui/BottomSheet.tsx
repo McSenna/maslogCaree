@@ -10,15 +10,32 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 
 import { useSheetAnimation } from "./bottomSheet/useSheetAnimation";
 import { useSheetPanResponder } from "./bottomSheet/useSheetPanResponder";
 
 const SHEET_MAX_WIDTH = BREAKPOINTS.tablet;
 
-export const SHEET_SCROLL_STYLE = (
-  Platform.OS === "web" ? { overscrollBehavior: "contain" } : {}
-) as object;
+/** Minimum gap between the sheet's action row and the device's bottom edge. */
+const MIN_BOTTOM_GAP = 12;
+
+/**
+ * Style every scrollable region inside a sheet must carry.
+ *
+ * `flexShrink` with `minHeight: 0` is the load-bearing part: it makes the
+ * scroll region the thing that gives when the sheet runs out of room, so a
+ * pinned footer keeps its height and short content still renders a compact
+ * sheet. Never add `flex: 1` on top of this — a flex child resolves against
+ * the column's zero free space and collapses to nothing.
+ */
+export const SHEET_SCROLL_STYLE = {
+  flexGrow: 0,
+  flexShrink: 1,
+  minHeight: 0,
+  ...(Platform.OS === "web" ? { overscrollBehavior: "contain" } : {}),
+} as object;
 
 export type BottomSheetProps = {
   visible: boolean;
@@ -31,6 +48,8 @@ export type BottomSheetProps = {
   scrim?: string;
   maxHeightRatio?: number;
   desktopWidth?: number;
+  /** Set false for sheets whose own footer already owns the bottom inset. */
+  applyBottomInset?: boolean;
 };
 
 const BottomSheet = ({
@@ -44,19 +63,31 @@ const BottomSheet = ({
   scrim = "rgba(15,37,87,0.35)",
   maxHeightRatio = 0.92,
   desktopWidth = 640,
+  applyBottomInset = true,
 }: BottomSheetProps) => {
   const { width, height } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const isSheet = width < SHEET_MAX_WIDTH;
+  const keyboardInset = useKeyboardInset(visible);
 
   const { translateY, scrimOpacity, animateOut, requestClose, onSheetLayout } =
     useSheetAnimation({ visible, isSheet, height, onClose });
 
   const panResponder = useSheetPanResponder({ translateY, animateOut, onClose });
 
+  useWebModalBehavior(visible, requestClose);
+
   if (!visible) return null;
 
-  const sheetMaxHeight = Math.round(height * (isSheet ? maxHeightRatio : 0.88));
+  // `marginBottom` below already lifts the whole sheet clear of the keyboard,
+  // so this padding only ever covers the home indicator / gesture bar — and
+  // while the keyboard is up, the keyboard is covering those anyway.
+  const bottomInset =
+    keyboardInset > 0 ? MIN_BOTTOM_GAP : applyBottomInset ? Math.max(insets.bottom, MIN_BOTTOM_GAP) : 0;
+
+  const sheetMaxHeight = Math.round(
+    (height - (isSheet ? keyboardInset + insets.top : 0)) * (isSheet ? maxHeightRatio : 0.88)
+  );
 
   return (
     <Modal
@@ -97,6 +128,10 @@ const BottomSheet = ({
             overflow: "hidden",
             maxWidth: isSheet ? undefined : desktopWidth,
             maxHeight: sheetMaxHeight,
+            // The sheet is a column that sizes to its content and shrinks to
+            // `maxHeight`; the scrollable region below is what gives.
+            flexDirection: "column",
+            marginBottom: isSheet ? keyboardInset : 0,
             backgroundColor: surface,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
@@ -114,7 +149,7 @@ const BottomSheet = ({
                 }),
           }}
         >
-          <View {...(isSheet ? panResponder.panHandlers : {})}>
+          <View style={{ flexGrow: 0, flexShrink: 0 }} {...(isSheet ? panResponder.panHandlers : {})}>
             {isSheet ? (
               <View className="w-full items-center pb-1 pt-2.5">
                 <View
@@ -132,9 +167,21 @@ const BottomSheet = ({
             {header?.(requestClose)}
           </View>
 
+          {/*
+            `minHeight: 0` is what lets this region shrink below the natural
+            height of its content — without it a tall child pushes the column
+            past `maxHeight` and the sheet's footer ends up off-screen. Children
+            must size themselves to their content (no `flex: 1`), so that a
+            short sheet stays compact and a tall one shrinks here and scrolls.
+          */}
           <View
-            className="w-full min-h-0 flex-1"
-            style={{ paddingBottom: isSheet ? Math.max(insets.bottom, 8) : 0 }}
+            style={{
+              width: "100%",
+              flexGrow: 0,
+              flexShrink: 1,
+              minHeight: 0,
+              paddingBottom: isSheet ? bottomInset : 0,
+            }}
           >
             {children}
           </View>

@@ -103,6 +103,7 @@ export const useEditProfile = () => {
     changeAvatar: avatar.changeAvatar,
     savingAvatar: avatar.savingAvatar,
     toast,
+    showToast,
     hideToast,
   };
 };

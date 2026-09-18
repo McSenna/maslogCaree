@@ -14,14 +14,6 @@ const VerificationSheetHeader = ({ titleId, busy, onClose }: Props) => {
 
   return (
     <>
-      <View className="items-center pb-1 pt-2.5">
-        <View
-          accessibilityElementsHidden
-          importantForAccessibility="no-hide-descendants"
-          style={{ width: 44, height: 4.5, borderRadius: 3, backgroundColor: palette.divider }}
-        />
-      </View>
-
       <View
         className="flex-row items-center justify-between gap-3 px-4 pb-3 pt-1"
         style={{ borderBottomWidth: 1, borderBottomColor: palette.divider }}

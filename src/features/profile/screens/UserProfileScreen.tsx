@@ -1,5 +1,6 @@
-import { useCallback, useRef } from "react";
-import { ScrollView, View, useWindowDimensions, type LayoutChangeEvent } from "react-native";
+import { useRef } from "react";
+import { ScrollView, View, useWindowDimensions } from "react-native";
+import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 import { PROFILE_MAX_WIDTH, SOCIAL_COLORS } from "../config/profileSocialTheme";
 import { useCardReveal } from "../hooks/useCardReveal";
@@ -11,12 +12,10 @@ import ProfileNoticeModal from "../components/ProfileNoticeModal";
 import ProfileScreenContent from "../components/ProfileScreenContent";
 import ProfileScreenSkeleton from "../components/ProfileScreenSkeleton";
 import ProfileToastLayer from "../components/ProfileToastLayer";
-
-const SETTINGS_SCROLL_OFFSET = 12;
+import { ChangePasswordDialog } from "../change-password/ChangePasswordDialog";
 
 const UserProfileScreen = () => {
   const scrollRef = useRef<ScrollView>(null);
-  const settingsOffset = useRef(0);
 
   const reveal = useCardReveal(scrollRef);
   const state = useProfileScreen({ onEditProfileStarted: reveal.revealCard });
@@ -25,18 +24,6 @@ const UserProfileScreen = () => {
   const wide = width >= BREAKPOINTS.tablet;
   const twoColumn = width >= BREAKPOINTS.desktop;
   const stacked = width < 380;
-
-  const handleSettingsLayout = useCallback((event: LayoutChangeEvent) => {
-    settingsOffset.current = event.nativeEvent.layout.y;
-  }, []);
-
-  const scrollToSettings = useCallback(() => {
-    state.tabs.selectTab("overview");
-    scrollRef.current?.scrollTo({
-      y: Math.max(settingsOffset.current - SETTINGS_SCROLL_OFFSET, 0),
-      animated: true,
-    });
-  }, [state.tabs]);
 
   const showSkeleton = state.loading || (state.refreshing && !state.profile);
 
@@ -69,10 +56,8 @@ const UserProfileScreen = () => {
               wide={wide}
               twoColumn={twoColumn}
               stacked={stacked}
-              onSettingsLayout={handleSettingsLayout}
               onTabPanelLayout={reveal.onPanelLayout}
               onPersonalCardLayout={reveal.onCardLayout}
-              onOpenSettings={scrollToSettings}
             />
           )}
         </View>
@@ -87,7 +72,15 @@ const UserProfileScreen = () => {
 
       <ProfileNoticeModal notice={state.notice} onClose={state.dismissNotice} />
 
+      <AboutMaslogCareDialog visible={state.aboutVisible} onClose={state.closeAbout} />
+
       <ProfileEditConfirmations edit={state.edit} />
+
+      <ChangePasswordDialog
+        visible={state.changePasswordVisible}
+        onClose={state.closeChangePassword}
+        onSuccess={() => state.edit.showToast("Password changed successfully.")}
+      />
 
       <ProfileToastLayer toast={state.edit.toast} onDismiss={state.edit.hideToast} />
     </View>

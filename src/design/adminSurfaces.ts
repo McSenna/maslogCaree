@@ -1,10 +1,11 @@
-export const CARD_SHADOW = {
-  shadowColor: "#0F172A",
-  shadowOpacity: 0.04,
-  shadowRadius: 12,
-  shadowOffset: { width: 0, height: 2 },
+import { createShadow } from "./shadow";
+export const CARD_SHADOW = createShadow({
+  color: "#0F172A",
+  opacity: 0.04,
+  radius: 12,
+  offsetY: 2,
   elevation: 1,
-} as const;
+});
 
 export const CONTROL_HEIGHT = 48;
 

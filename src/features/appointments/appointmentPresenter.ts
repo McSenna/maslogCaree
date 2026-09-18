@@ -10,6 +10,7 @@ export const RESIDENT_STATUS_LABELS: Record<AppointmentStatus, string> = {
   processing: "Being seen",
   completed: "Completed",
   declined: "Declined",
+  cancelled: "Cancelled",
 };
 
 export const residentStatusLabel = (status: string | undefined): string => {
@@ -19,6 +20,24 @@ export const residentStatusLabel = (status: string | undefined): string => {
 export const statusToneKey = (status: string | undefined): AppointmentStatus => {
   return (RESIDENT_STATUS_LABELS[status as AppointmentStatus] ? status : "pending") as AppointmentStatus;
 };
+
+/**
+ * A resident may drop any request that has not been acted on yet.
+ */
+const CANCELLABLE_STATUSES: AppointmentStatus[] = ["pending", "confirmed", "rescheduled"];
+
+/**
+ * Only an appointment that already holds a slot can be moved. A pending
+ * request has no schedule yet — it is still waiting for the priority queue to
+ * assign one, and letting a resident pick their own would jump that queue.
+ */
+const RESCHEDULABLE_STATUSES: AppointmentStatus[] = ["confirmed", "rescheduled"];
+
+export const canCancelAppointment = (appointment: AppointmentRecord): boolean =>
+  CANCELLABLE_STATUSES.includes(appointment.status);
+
+export const canRescheduleAppointment = (appointment: AppointmentRecord): boolean =>
+  RESCHEDULABLE_STATUSES.includes(appointment.status);
 
 export const appointmentServiceLabel = (appointment: AppointmentRecord): string => {
   return getServiceLabel(appointment.consultationType) || appointment.consultationType;
@@ -57,6 +76,7 @@ const STEP_LABELS: Record<AppointmentStatus, string> = {
   processing: "Healthcare service performed",
   completed: "Completed",
   declined: "Appointment declined",
+  cancelled: "Appointment cancelled",
 };
 
 export const buildAppointmentTimeline = (appointment: AppointmentRecord): AppointmentStep[] => {
@@ -67,7 +87,7 @@ export const buildAppointmentTimeline = (appointment: AppointmentRecord): Appoin
       key: `${entry.status}-${index}`,
       label: STEP_LABELS[entry.status] ?? entry.status,
       at: entry.timestamp ?? null,
-      tone: entry.status === "declined" ? "declined" : "done",
+      tone: entry.status === "declined" || entry.status === "cancelled" ? "declined" : "done",
     }));
   }
 
@@ -83,10 +103,18 @@ export const buildAppointmentTimeline = (appointment: AppointmentRecord): Appoin
     .map((step) => ({ ...step, tone: "done" as const }));
 };
 
+/**
+ * The id to open medical details with. Falls back to the appointment id, which
+ * the medical-record endpoint also resolves, so a completed visit whose
+ * `medicalRecord` link was not populated still reaches its record.
+ */
 export const medicalRecordIdOf = (appointment: AppointmentRecord): string | null => {
   if (appointment.status !== "completed") return null;
+
   const id = appointment.medicalRecord;
-  return typeof id === "string" && id.trim() ? id : null;
+  if (typeof id === "string" && id.trim()) return id.trim();
+  if (id && typeof id === "object" && id._id) return String(id._id);
+  return String(appointment._id);
 };
 
 export const appointmentReference = (appointment: AppointmentRecord): string => {

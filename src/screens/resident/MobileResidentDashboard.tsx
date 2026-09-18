@@ -2,8 +2,6 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } 
 import StatCard from "@/components/resident/StatCard";
 import WelcomeBanner from "@/components/resident/WelcomeBanner";
 import AnnouncementsList from "@/features/resident/AnnouncementsList";
-import HealthServices from "@/features/resident/HealthServices";
-import QuickActions from "@/features/resident/QuickActions";
 import RecentAppointments from "@/features/resident/RecentAppointments";
 import UpcomingAppointment from "@/features/resident/UpcomingAppointment";
 import { RESIDENT_COLORS } from "@/components/resident/residentTheme";
@@ -81,13 +79,6 @@ const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
         stacked
       />
 
-      <QuickActions
-        actions={model.quickActions}
-        onActionPress={model.handlers.onQuickAction}
-        onViewAll={model.handlers.onViewAllQuickActions}
-        stacked
-      />
-
       <RecentAppointments
         appointments={model.recentAppointments}
         onViewAll={model.handlers.onViewAllAppointments}
@@ -99,13 +90,6 @@ const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
         announcements={model.announcements}
         onViewAll={model.handlers.onViewAllAnnouncements}
         onAnnouncementPress={model.handlers.onAnnouncement}
-      />
-
-      <HealthServices
-        services={model.healthServices}
-        onViewAll={model.handlers.onViewAllServices}
-        onServicePress={model.handlers.onService}
-        stacked
       />
     </View>
   </ScrollView>

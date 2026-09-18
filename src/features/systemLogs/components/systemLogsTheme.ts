@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { SystemLogSeverity, SystemLogStatus } from "@/features/systemLogs/services/systemLogService";
+import { createShadow } from "@/design/shadow";
 
 export type StatusTone = {
   label: string;
@@ -56,13 +57,13 @@ export const useSystemLogsPalette = () => {
   }, [resolvedTheme]);
 };
 
-export const CARD_SHADOW = {
-  shadowColor: "#0F172A",
-  shadowOpacity: 0.04,
-  shadowRadius: 12,
-  shadowOffset: { width: 0, height: 2 },
+export const CARD_SHADOW = createShadow({
+  color: "#0F172A",
+  opacity: 0.04,
+  radius: 12,
+  offsetY: 2,
   elevation: 1,
-} as const;
+});
 
 export const RADIUS = {
   card: 16,

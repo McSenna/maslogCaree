@@ -3,7 +3,7 @@ import { Animated, Easing, Platform, StyleSheet, View } from "react-native";
 import { usePathname } from "expo-router";
 import PageLoader from "@/components/feedback/PageLoader";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
-import { DURATION, ENTER_OFFSET, useReducedMotion } from "@/design/motion";
+import { DURATION, ENTER_OFFSET, USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
 
 const useIsomorphicLayoutEffect = Platform.OS === "web" ? useLayoutEffect : useEffect;
 
@@ -48,13 +48,13 @@ const ScreenTransition = ({ children }: { children: ReactNode }) => {
         toValue: 1,
         duration: DURATION.screen,
         easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       }),
       Animated.timing(translateY, {
         toValue: 0,
         duration: DURATION.screen,
         easing: Easing.out(Easing.cubic),
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       }),
     ]);
 
@@ -92,8 +92,10 @@ const ScreenTransition = ({ children }: { children: ReactNode }) => {
 
       {showLoader ? (
         <View
-          style={[StyleSheet.absoluteFill, { backgroundColor: "transparent" }]}
-          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFill,
+            { backgroundColor: "transparent", pointerEvents: "none" },
+          ]}
         >
           <PageLoader showLabel={false} />
         </View>

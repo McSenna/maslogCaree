@@ -8,6 +8,7 @@ import { useDialogEnter } from "@/hooks/useDialogEnter";
 
 import { PanelBody } from "./panel/PanelBody";
 import { PanelHeader, TITLE_ID } from "./panel/PanelHeader";
+import { createShadow } from "@/design/shadow";
 
 const MAX_WIDTH = 860;
 
@@ -82,11 +83,13 @@ const ResidentDetailsPanel = ({
             borderColor: palette.cardBorder,
             opacity: enter,
             transform: [{ scale }],
-            shadowColor: "#0F2557",
-            shadowOpacity: 0.22,
-            shadowRadius: 40,
-            shadowOffset: { width: 0, height: 18 },
-            elevation: 16,
+            ...createShadow({
+              color: "#0F2557",
+              offsetY: 18,
+              radius: 40,
+              opacity: 0.22,
+              elevation: 16,
+            }),
           }}
         >
           <View className="px-7 pb-5 pt-7">

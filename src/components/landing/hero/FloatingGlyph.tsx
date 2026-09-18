@@ -33,7 +33,6 @@ const FloatingGlyph = ({
 
   return (
     <Animated.View
-      pointerEvents="none"
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       style={{
@@ -55,6 +54,7 @@ const FloatingGlyph = ({
           web: { boxShadow: "0px 10px 26px rgba(8, 21, 47, 0.10)" } as any,
           default: { elevation: 3 },
         }),
+        pointerEvents: "none",
       }}
     >
       <Ionicons name={icon} size={Math.round(size * 0.44)} color={color} />

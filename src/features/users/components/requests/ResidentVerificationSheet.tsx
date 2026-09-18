@@ -1,6 +1,6 @@
-import { Animated, Modal, Platform, Pressable, View } from "react-native";
+import { Platform, View } from "react-native";
 
-import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
+import BottomSheet from "@/components/ui/BottomSheet";
 import { formatDateTime } from "@/utils/dateFormatter";
 
 import { useUserDetailsPalette } from "../details/detailsTheme";
@@ -9,7 +9,6 @@ import VerificationDecisionOverlays from "./verification/VerificationDecisionOve
 import VerificationSheetActions from "./verification/sheet/VerificationSheetActions";
 import VerificationSheetBody from "./verification/sheet/VerificationSheetBody";
 import VerificationSheetHeader from "./verification/sheet/VerificationSheetHeader";
-import { useSheetDragDismiss } from "./verification/useSheetDragDismiss";
 import { useVerificationDecision } from "./verification/useVerificationDecision";
 
 const TITLE_ID = "resident-verification-sheet-title";
@@ -44,76 +43,57 @@ const ResidentVerificationSheet = ({
 }: ResidentVerificationSheetProps) => {
   const palette = useUserDetailsPalette();
   const decision = useVerificationDecision({ visible, onApprove, onReject });
-  const { dragY, panResponder, height } = useSheetDragDismiss(visible, onClose);
-
-  useWebModalBehavior(visible, onClose);
-
-  if (!visible) return null;
 
   const resident = request?.resident;
   const verification = request?.verification;
   const isPending = verification?.verificationStatus === "pending";
   const busy = approving || rejecting;
   const submitted = verification?.submittedAt ? formatDateTime(verification.submittedAt) : null;
+  const showActions = Boolean(request) && !error && isPending;
+
+  // An approval or rejection in flight must finish before the sheet can go.
+  const handleClose = () => {
+    if (busy) return;
+    onClose();
+  };
 
   return (
     <>
-      <Modal
+      <BottomSheet
         visible={visible}
-        transparent
-        animationType="slide"
-        onRequestClose={busy ? undefined : onClose}
-        statusBarTranslucent
-        {...dialogAccessibilityProps}
+        onClose={handleClose}
+        accessibilityLabel="Identity verification"
+        surface={palette.cardBg}
+        handleColor={palette.divider}
+        scrim="rgba(15,23,42,0.35)"
+        maxHeightRatio={0.94}
+        // VerificationSheetActions pads itself past the home indicator.
+        applyBottomInset={!showActions}
+        header={(requestClose) => (
+          <View {...dialogAccessibilityProps}>
+            <VerificationSheetHeader titleId={TITLE_ID} busy={busy} onClose={requestClose} />
+          </View>
+        )}
       >
-        <View className="flex-1 justify-end" style={{ backgroundColor: "rgba(15,23,42,0.35)" }}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Close identity verification"
-            onPress={busy ? undefined : onClose}
-            style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+        <VerificationSheetBody
+          request={request}
+          loading={loading}
+          error={error}
+          registeredLabel={submitted ? submitted.date : "—"}
+          decision={decision}
+          onRetry={onRetry}
+        />
+
+        {showActions ? (
+          <VerificationSheetActions
+            residentName={resident?.fullname}
+            approving={approving}
+            rejecting={rejecting}
+            onApprove={decision.openApproveConfirm}
+            onReject={decision.openRejectModal}
           />
-
-          <Animated.View
-            className="w-full overflow-hidden"
-            style={{
-              maxHeight: height * 0.94,
-              borderTopLeftRadius: 24,
-              borderTopRightRadius: 24,
-              backgroundColor: palette.cardBg,
-              transform: [{ translateY: dragY }],
-              shadowColor: "#0F2557",
-              shadowOpacity: 0.2,
-              shadowRadius: 24,
-              shadowOffset: { width: 0, height: -6 },
-              elevation: 16,
-            }}
-          >
-            <View {...panResponder.panHandlers}>
-              <VerificationSheetHeader titleId={TITLE_ID} busy={busy} onClose={onClose} />
-            </View>
-
-            <VerificationSheetBody
-              request={request}
-              loading={loading}
-              error={error}
-              registeredLabel={submitted ? submitted.date : "—"}
-              decision={decision}
-              onRetry={onRetry}
-            />
-
-            {request && !error && isPending ? (
-              <VerificationSheetActions
-                residentName={resident?.fullname}
-                approving={approving}
-                rejecting={rejecting}
-                onApprove={decision.openApproveConfirm}
-                onReject={decision.openRejectModal}
-              />
-            ) : null}
-          </Animated.View>
-        </View>
-      </Modal>
+        ) : null}
+      </BottomSheet>
 
       <VerificationDecisionOverlays
         decision={decision}

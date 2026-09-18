@@ -8,10 +8,17 @@ type ProfileHeroDecorProps = {
 
 const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
   <View
-    pointerEvents="none"
     accessibilityElementsHidden
     importantForAccessibility="no-hide-descendants"
-    style={{ position: "absolute", right: 0, top: 0, bottom: 0, width, height }}
+    style={{
+      position: "absolute",
+      right: 0,
+      top: 0,
+      bottom: 0,
+      width,
+      height,
+      pointerEvents: "none",
+    }}
   >
     <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
       <Path

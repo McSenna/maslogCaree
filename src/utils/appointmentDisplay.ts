@@ -8,6 +8,7 @@ export const statusLabel = (status?: string): string => {
     declined: "Declined",
     processing: "In Progress",
     completed: "Completed",
+    cancelled: "Cancelled",
   };
 
   return statusLabels[normalized] ?? (normalized || "Unknown");

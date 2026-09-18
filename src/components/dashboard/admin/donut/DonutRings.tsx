@@ -110,7 +110,7 @@ const DonutRings = ({
         />
       ))}
 
-      <View className="absolute items-center" pointerEvents="none">
+      <View className="absolute items-center" style={{ pointerEvents: "none" }}>
         <Text
           className="font-bold tabular-nums"
           style={{

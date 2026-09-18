@@ -1,3 +1,4 @@
+import { createShadow } from "@/design/shadow";
 export const ROLE_COLORS: Record<string, string> = {
   admin: "#1677FF",
   doctor: "#22C55E",
@@ -29,13 +30,13 @@ export const DASHBOARD_BREAKPOINTS = {
   threePanelColumns: 1100,
 } as const;
 
-export const DASHBOARD_CARD_SHADOW = {
-  shadowColor: "#0F172A",
-  shadowOpacity: 0.04,
-  shadowRadius: 12,
-  shadowOffset: { width: 0, height: 2 },
+export const DASHBOARD_CARD_SHADOW = createShadow({
+  color: "#0F172A",
+  opacity: 0.04,
+  radius: 12,
+  offsetY: 2,
   elevation: 1,
-} as const;
+});
 
 export const DASHBOARD_RADIUS = {
   card: 16,

@@ -2,9 +2,7 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } 
 import StatCard from "@/components/resident/StatCard";
 import WelcomeBanner from "@/components/resident/WelcomeBanner";
 import AnnouncementsList from "@/features/resident/AnnouncementsList";
-import HealthServices from "@/features/resident/HealthServices";
 import HealthTips from "@/features/resident/HealthTips";
-import QuickActions from "@/features/resident/QuickActions";
 import RecentAppointments from "@/features/resident/RecentAppointments";
 import UpcomingAppointment from "@/features/resident/UpcomingAppointment";
 import { RESIDENT_COLORS } from "@/components/resident/residentTheme";
@@ -80,10 +78,10 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
             />
           </View>
           <View className="min-w-0 flex-1">
-            <QuickActions
-              actions={model.quickActions}
-              onActionPress={model.handlers.onQuickAction}
-              onViewAll={model.handlers.onViewAllQuickActions}
+            <HealthTips
+              tip={model.healthTip}
+              onSeeMore={model.handlers.onHealthTipsSeeMore}
+              onLearnMore={model.handlers.onLearnMore}
             />
           </View>
         </View>
@@ -97,27 +95,10 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
             />
           </View>
           <View className="min-w-0 flex-1">
-            <HealthTips
-              tip={model.healthTip}
-              onSeeMore={model.handlers.onHealthTipsSeeMore}
-              onLearnMore={model.handlers.onLearnMore}
-            />
-          </View>
-        </View>
-
-        <View className={`w-full flex-row items-start ${gap}`}>
-          <View className="min-w-0 flex-1">
             <AnnouncementsList
               announcements={model.announcements}
               onViewAll={model.handlers.onViewAllAnnouncements}
               onAnnouncementPress={model.handlers.onAnnouncement}
-            />
-          </View>
-          <View className="min-w-0 flex-1">
-            <HealthServices
-              services={model.healthServices}
-              onViewAll={model.handlers.onViewAllServices}
-              onServicePress={model.handlers.onService}
             />
           </View>
         </View>

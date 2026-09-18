@@ -29,7 +29,6 @@ const HeroOrb = ({
 
   return (
     <Animated.View
-      pointerEvents="none"
       style={{
         position: "absolute",
         top,
@@ -41,6 +40,7 @@ const HeroOrb = ({
         borderRadius: size / 2,
         overflow: "hidden",
         transform: [{ translateY }],
+        pointerEvents: "none",
       }}
     >
       <LinearGradient

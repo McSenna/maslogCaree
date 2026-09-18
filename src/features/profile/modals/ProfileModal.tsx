@@ -9,6 +9,7 @@ import ProfileNoticeModal from "../components/ProfileNoticeModal";
 import ProfileOverlay from "../components/ProfileOverlay";
 import ProfileSkeleton from "../components/ProfileSkeleton";
 import ProfileToastLayer from "../components/ProfileToastLayer";
+import { ChangePasswordDialog } from "../change-password/ChangePasswordDialog";
 import ProfileModalContent from "./profileModal/ProfileModalContent";
 import ProfileModalFooter from "./profileModal/ProfileModalFooter";
 import ProfileModalHeader from "./profileModal/ProfileModalHeader";
@@ -72,6 +73,12 @@ const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
       <ProfileNoticeModal notice={state.notice} onClose={state.dismissNotice} />
 
       <ProfileEditConfirmations edit={state.edit} />
+
+      <ChangePasswordDialog
+        visible={state.changePasswordVisible}
+        onClose={state.closeChangePassword}
+        onSuccess={() => state.edit.showToast("Password changed successfully.")}
+      />
 
       <ProfileToastLayer toast={state.edit.toast} onDismiss={state.edit.hideToast} />
     </>

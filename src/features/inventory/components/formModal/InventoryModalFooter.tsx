@@ -1,6 +1,8 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+
 import { CONTROL_HEIGHT, RADIUS, useInventoryPalette } from "../inventoryTheme";
 
 type Props = {
@@ -22,6 +24,10 @@ const InventoryModalFooter = ({
 }: Props) => {
   const palette = useInventoryPalette();
   const insets = useSafeAreaInsets();
+  // The sheet already sits on top of the keyboard, so the home-indicator gap
+  // would only add dead space between the buttons and the keys.
+  const keyboardInset = useKeyboardInset();
+  const bottomGap = keyboardInset > 0 ? 12 : Math.max(insets.bottom, 12) + 4;
 
   return (
     <View
@@ -29,7 +35,7 @@ const InventoryModalFooter = ({
       style={{
         borderTopWidth: 1,
         borderTopColor: palette.divider,
-        ...(isMobile ? { paddingBottom: Math.max(insets.bottom, 12) + 4 } : null),
+        ...(isMobile ? { paddingBottom: bottomGap } : null),
       }}
     >
       <Pressable

@@ -1,25 +1,22 @@
 import { useMemo, type ReactNode } from "react";
 import { useWindowDimensions, View } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { getNotificationsPath, type UserRole } from "@/data/mockUsers";
 import { BREAKPOINTS } from "@/constants/breakpoints";
-import { getBottomContentPadding } from "@/constants/layout";
+import { ROLE_LAYOUT_PADDING } from "@/constants/layout";
 import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
-import { AppHeader } from "@/components/header";
+import AppHeader from "@/components/header/AppHeader";
 import { getHeaderPalette } from "@/components/header/headerTokens";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
+import AppStatusBar from "./AppStatusBar";
 import ScreenTransition from "./ScreenTransition";
 import RoleBottomNav from "../navigation/RoleBottomNav";
 import SidebarNavigation from "../navigation/SidebarNavigation";
 import type { NavItem } from "../navigation/SidebarNavigation";
 
-export const ROLE_LAYOUT_PADDING = {
-  mobile: { horizontal: 7, top: 7, bottom: getBottomContentPadding(0) },
-  desktop: { horizontal: 24, top: 20, bottom: 24 },
-} as const;
+export { ROLE_LAYOUT_PADDING };
 
 type RoleLayoutProps = {
   children: ReactNode;
@@ -64,7 +61,7 @@ const RoleLayout = ({
         backgroundColor: safeBg,
       }}
     >
-      <StatusBar style={isDark ? "light" : "dark"} />
+      <AppStatusBar style={isDark ? "light" : "dark"} backgroundColor={safeBg} />
 
       <View className="flex-1 w-full min-w-0" style={{ backgroundColor: pageSurface }}>
 

@@ -1,4 +1,4 @@
-import { useWindowDimensions } from "react-native";
+import { Platform, useWindowDimensions } from "react-native";
 
 import { BREAKPOINTS } from "@/constants/breakpoints";
 
@@ -25,7 +25,9 @@ const DateOfBirthPicker = ({ visible, value, onConfirm, onClose }: DateOfBirthPi
 
   const shared = { visible, draft, onCancel: onClose, onConfirm: handleConfirm };
 
-  return width >= BREAKPOINTS.tablet ? (
+  const isWebOrDesktop = Platform.OS === "web" || width >= BREAKPOINTS.tablet;
+
+  return isWebOrDesktop ? (
     <DateOfBirthModal {...shared} />
   ) : (
     <DateOfBirthBottomSheet {...shared} />

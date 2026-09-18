@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Animated, Pressable } from "react-native";
 import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleTheme";
+import { createShadow } from "@/design/shadow";
 
 type ServiceToggleProps = {
   value: boolean;
@@ -62,11 +63,13 @@ const ServiceToggle = ({ value, onChange, label, disabled = false }: ServiceTogg
                 }),
               },
             ],
-            shadowColor: "#0F172A",
-            shadowOpacity: 0.18,
-            shadowRadius: 3,
-            shadowOffset: { width: 0, height: 1 },
-            elevation: 2,
+            ...createShadow({
+              color: "#0F172A",
+              offsetY: 1,
+              radius: 3,
+              opacity: 0.18,
+              elevation: 2,
+            }),
           }}
         />
       </Animated.View>

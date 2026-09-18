@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useWindowDimensions } from "react-native";
-import { ROLE_LAYOUT_PADDING } from "@/components/layout/RoleLayout";
+import { ROLE_LAYOUT_PADDING } from "@/constants/layout";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 
 export const useRoleScreenInsets = () => {

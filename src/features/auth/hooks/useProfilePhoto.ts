@@ -10,9 +10,10 @@ const toDataUri = (asset: ImagePicker.ImagePickerAsset): string | null => {
   return `data:${mime};base64,${asset.base64}`;
 };
 
-const PICKER_OPTIONS = {
+const PICKER_OPTIONS: ImagePicker.ImagePickerOptions = {
+  mediaTypes: ["images"],
   allowsEditing: true,
-  aspect: [1, 1] as [number, number],
+  aspect: [1, 1],
   quality: 0.8,
   base64: true,
 };
@@ -22,7 +23,7 @@ export const useProfilePhoto = (onPicked?: () => void) => {
 
   const applyResult = useCallback(
     (result: ImagePicker.ImagePickerResult) => {
-      if (result.canceled || !result.assets[0]) return;
+      if (result.canceled || !result.assets?.[0]) return;
 
       const dataUri = toDataUri(result.assets[0]);
       if (!dataUri) {
@@ -47,10 +48,7 @@ export const useProfilePhoto = (onPicked?: () => void) => {
         return;
       }
       applyResult(
-        await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          ...PICKER_OPTIONS,
-        })
+        await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS)
       );
     } catch {
       showAlert("Photo Error", "Failed to pick the image. Please try again.");

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Animated, Easing, View } from "react-native";
 import { SPLASH_COLORS, SPLASH_TIMING } from "./splashTheme";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 type LoadingDotsProps = {
   size?: number;
@@ -28,13 +29,13 @@ const LoadingDots = ({ size = 10, color = SPLASH_COLORS.dot }: LoadingDotsProps)
             toValue: 1,
             duration: dotCycle / 2,
             easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
+            useNativeDriver: USE_NATIVE_DRIVER,
           }),
           Animated.timing(value, {
             toValue: 0,
             duration: dotCycle / 2,
             easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true,
+            useNativeDriver: USE_NATIVE_DRIVER,
           }),
           Animated.delay((dotCycle / DOT_COUNT) * (DOT_COUNT - 1 - index)),
         ])

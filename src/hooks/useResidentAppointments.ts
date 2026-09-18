@@ -50,7 +50,7 @@ export const useResidentAppointments = () => {
     }, [load])
   );
 
-  const refresh = useCallback(() => void load(true), [load]);
+  const refresh = useCallback(() => load(true), [load]);
 
   return { appointments, loading, error, refresh };
 };

@@ -1,16 +1,11 @@
 import type { ReactNode } from "react";
-import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+
 import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleTheme";
 
 type MissionScheduleSheetProps = {
@@ -35,9 +30,10 @@ const MissionScheduleSheet = ({
   footer,
 }: MissionScheduleSheetProps) => {
   const palette = useMissionSchedulePalette();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const safeArea = useSafeAreaInsets();
   const isSheet = width < MISSION_SHEET_BREAKPOINT;
+  const keyboardInset = useKeyboardInset(visible);
 
   return (
     <Modal
@@ -47,8 +43,7 @@ const MissionScheduleSheet = ({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <View
         className={`flex-1 ${isSheet ? "justify-end" : "items-center justify-center p-5"}`}
         style={{ backgroundColor: palette.backdrop }}
       >
@@ -63,7 +58,10 @@ const MissionScheduleSheet = ({
           className="w-full overflow-hidden"
           style={{
             maxWidth: isSheet ? undefined : DESKTOP_WIDTH,
-            maxHeight: isSheet ? "94%" : "88%",
+            maxHeight: isSheet
+              ? Math.round((height - keyboardInset - safeArea.top) * 0.94)
+              : Math.round(height * 0.88),
+            marginBottom: isSheet ? keyboardInset : 0,
             borderTopLeftRadius: MISSION_RADIUS.sheet,
             borderTopRightRadius: MISSION_RADIUS.sheet,
             borderBottomLeftRadius: isSheet ? 0 : MISSION_RADIUS.sheet,
@@ -108,7 +106,9 @@ const MissionScheduleSheet = ({
             </Pressable>
           </View>
 
+          {/* Shrinks so the footer below stays on screen on short devices. */}
           <ScrollView
+            style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}
@@ -122,13 +122,13 @@ const MissionScheduleSheet = ({
               borderTopWidth: 1,
               borderTopColor: palette.divider,
               backgroundColor: palette.surface,
-              paddingBottom: 14 + (isSheet ? safeArea.bottom : 0),
+              paddingBottom: 14 + (isSheet && keyboardInset === 0 ? safeArea.bottom : 0),
             }}
           >
             {footer}
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 };

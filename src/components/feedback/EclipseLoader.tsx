@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Animated, Easing, Platform, View } from "react-native";
-import { useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
 
 const CIRCLE_RATIO = 0.8;
 const SHADOW_RATIO = 0.025;
@@ -48,7 +48,7 @@ const EclipseLoader = ({
         toValue: 1,
         duration: 1000,
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: USE_NATIVE_DRIVER,
       })
     );
     loop.start();

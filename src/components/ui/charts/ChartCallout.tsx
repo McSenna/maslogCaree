@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { createShadow } from "@/design/shadow";
 
 export type CalloutContent = { title: string; meta: string };
 
@@ -32,8 +33,7 @@ const ChartCallout = ({
 
   return (
     <View
-      pointerEvents="none"
-      style={{ position: "absolute", left, top, width: CALLOUT_W }}
+      style={{ position: "absolute", left, top, width: CALLOUT_W, pointerEvents: "none" }}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
     >
@@ -43,11 +43,13 @@ const ChartCallout = ({
           backgroundColor: background,
           borderWidth: border === "transparent" ? 0 : 1,
           borderColor: border,
-          shadowColor: "#0F172A",
-          shadowOpacity: 0.18,
-          shadowRadius: 10,
-          shadowOffset: { width: 0, height: 4 },
-          elevation: 4,
+          ...createShadow({
+            color: "#0F172A",
+            offsetY: 4,
+            radius: 10,
+            opacity: 0.18,
+            elevation: 4,
+          }),
         }}
       >
         <Text numberOfLines={1} className="text-[12.5px] font-bold" style={{ color: "#FFFFFF" }}>

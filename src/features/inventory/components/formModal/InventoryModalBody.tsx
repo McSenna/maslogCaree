@@ -2,6 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import type { ReactNode } from "react";
 import { ScrollView, Text, View } from "react-native";
 
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+
 import { RADIUS, useInventoryPalette } from "../inventoryTheme";
 
 type Props = {
@@ -15,6 +17,7 @@ const InventoryModalBody = ({ isMobile, error, children }: Props) => {
 
   return (
     <ScrollView
+      style={SHEET_SCROLL_STYLE}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={{ padding: isMobile ? 16 : 20, gap: 14 }}

@@ -1,5 +1,7 @@
 import { ScrollView, Text, View } from "react-native";
 
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+
 import { describePlatformAccess } from "@/config/platformAccess";
 import type { AdminUser } from "@/features/users/services/userService";
 
@@ -24,7 +26,11 @@ const UserSheetBody = ({ user, loading, error, onRetry }: Props) => {
   const access = user ? user.platformAccess ?? describePlatformAccess(user.role) : null;
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 20 }}>
+    <ScrollView
+      style={SHEET_SCROLL_STYLE}
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 12 }}
+    >
       {error && !user ? (
         <UserDetailsError onRetry={onRetry} message={error} />
       ) : !user || loading ? (

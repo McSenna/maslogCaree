@@ -92,7 +92,7 @@ const MedicalRecordBottomSheet = ({
         className="flex-1"
         style={SHEET_SCROLL_STYLE}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 24, gap: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12, gap: 16 }}
       >
         <PatientInformation record={record} palette={palette} />
 

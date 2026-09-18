@@ -5,6 +5,7 @@ import { AnimatedPressable } from "@/components/landing/motion/landingMotion";
 import { useInteractiveLift } from "@/components/landing/motion/useInteractiveLift";
 import { ANDROID_RIPPLE } from "./authCardMetrics";
 import { authCardStyles } from "./authCardStyles";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 type AuthActionButtonProps = {
   accessibilityLabel: string;
@@ -39,7 +40,7 @@ const AuthActionButton = ({
   useEffect(() => {
     const animation = Animated.spring(iconShift, {
       toValue: lift.hovered && !disabled ? ICON_SHIFT : 0,
-      useNativeDriver: true,
+      useNativeDriver: USE_NATIVE_DRIVER,
       speed: 26,
       bounciness: 0,
     });

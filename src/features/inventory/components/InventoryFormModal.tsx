@@ -1,15 +1,10 @@
 import type { Feather } from "@expo/vector-icons";
 import type { ReactNode } from "react";
-import {
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  Pressable,
-  View,
-  useWindowDimensions,
-} from "react-native";
+import { Modal, Pressable, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 
 import { useInventoryPalette } from "./inventoryTheme";
 import InventoryModalBody from "./formModal/InventoryModalBody";
@@ -46,8 +41,13 @@ const InventoryFormModal = ({
 }: InventoryFormModalProps) => {
   const palette = useInventoryPalette();
   const { height, width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const keyboardInset = useKeyboardInset(visible);
 
   const isMobile = width < BREAKPOINTS.tablet;
+  // The form fields need the keyboard accounted for in the sheet's own height:
+  // KeyboardAvoidingView cannot do it inside a statusBarTranslucent modal.
+  const availableHeight = isMobile ? height - keyboardInset - insets.top : height;
 
   return (
     <Modal
@@ -57,8 +57,7 @@ const InventoryFormModal = ({
       onRequestClose={onClose}
       statusBarTranslucent
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <View
         className={`flex-1 ${isMobile ? "justify-end" : "items-center justify-center p-4"}`}
         style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
       >
@@ -71,12 +70,15 @@ const InventoryFormModal = ({
 
         <View
           className={`w-full overflow-hidden ${isMobile ? "" : "border"}`}
-          style={inventoryModalSurface({
-            isMobile,
-            height,
-            cardBg: palette.cardBg,
-            cardBorder: palette.cardBorder,
-          })}
+          style={[
+            inventoryModalSurface({
+              isMobile,
+              height: availableHeight,
+              cardBg: palette.cardBg,
+              cardBorder: palette.cardBorder,
+            }),
+            isMobile ? { marginBottom: keyboardInset } : null,
+          ]}
         >
           {isMobile ? (
             <View className="items-center pb-1 pt-2.5">
@@ -114,7 +116,7 @@ const InventoryFormModal = ({
             onClose={onClose}
           />
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 };

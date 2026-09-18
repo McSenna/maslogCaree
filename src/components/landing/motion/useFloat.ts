@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Animated } from "react-native";
-import { useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
 import { FLOAT_DISTANCE, FLOAT_DURATION, floatEasing } from "./landingMotion";
 
 type FloatOptions = {
@@ -30,13 +30,13 @@ export const useFloat = ({
           duration,
           delay,
           easing: floatEasing,
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
         Animated.timing(progress, {
           toValue: 0,
           duration,
           easing: floatEasing,
-          useNativeDriver: true,
+          useNativeDriver: USE_NATIVE_DRIVER,
         }),
       ])
     );

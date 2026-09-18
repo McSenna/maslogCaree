@@ -24,3 +24,8 @@ export const getBottomNavHeight = (bottomInset: number): number => {
 export const getBottomContentPadding = (bottomInset: number): number => {
   return getBottomNavHeight(bottomInset) + BOTTOM_NAV_CONTENT_CLEARANCE;
 };
+
+export const ROLE_LAYOUT_PADDING = {
+  mobile: { horizontal: 7, top: 7, bottom: getBottomContentPadding(0) },
+  desktop: { horizontal: 24, top: 20, bottom: 24 },
+} as const;

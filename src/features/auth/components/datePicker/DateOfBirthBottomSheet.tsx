@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View, useWindowDimensions } from "react-native";
 
 import BottomSheet, { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 
@@ -38,29 +38,44 @@ const DateOfBirthBottomSheet = ({
   draft,
   onCancel,
   onConfirm,
-}: DateOfBirthBottomSheetProps) => (
-  <BottomSheet
-    visible={visible}
-    onClose={onCancel}
-    accessibilityLabel="Select date of birth"
-    surface={REG_COLORS.surface}
-    handleColor={REG_COLORS.border}
-    header={() => <SheetHeader />}
-  >
-    <ScrollView
-      style={SHEET_SCROLL_STYLE}
-      contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 16, paddingBottom: 20, gap: 18 }}
-      showsVerticalScrollIndicator={false}
+}: DateOfBirthBottomSheetProps) => {
+  const { width } = useWindowDimensions();
+
+  // Responsive cellSize so the 7 weekday columns fit comfortably across all phone widths
+  const horizontalPadding = 20;
+  const availableGridWidth = width - horizontalPadding * 2 - 14;
+  const cellSize = Math.min(42, Math.max(34, Math.floor(availableGridWidth / 7)));
+
+  return (
+    <BottomSheet
+      visible={visible}
+      onClose={onCancel}
+      accessibilityLabel="Select date of birth"
+      surface={REG_COLORS.surface}
+      handleColor={REG_COLORS.border}
+      header={() => <SheetHeader />}
     >
-      <DatePickerPanel draft={draft} cellSize={42} />
-      <DatePickerActions
-        onCancel={onCancel}
-        onConfirm={onConfirm}
-        canConfirm={Boolean(draft.selected)}
-        height={48}
-      />
-    </ScrollView>
-  </BottomSheet>
-);
+      <ScrollView
+        style={SHEET_SCROLL_STYLE}
+        contentContainerStyle={{
+          paddingHorizontal: horizontalPadding,
+          paddingTop: 16,
+          paddingBottom: 20,
+          gap: 18,
+        }}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+      >
+        <DatePickerPanel draft={draft} cellSize={cellSize} />
+        <DatePickerActions
+          onCancel={onCancel}
+          onConfirm={onConfirm}
+          canConfirm={Boolean(draft.selected)}
+          height={48}
+        />
+      </ScrollView>
+    </BottomSheet>
+  );
+};
 
 export default DateOfBirthBottomSheet;

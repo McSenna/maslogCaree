@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text } from "react-native";
+import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 export type ToastTone = "success" | "error";
 
@@ -33,9 +34,9 @@ const Toast = ({ toast, onDismiss }: { toast: ToastState; onDismiss: () => void 
   useEffect(() => {
     if (!toast) return;
 
-    Animated.timing(opacity, { toValue: 1, duration: 180, useNativeDriver: true }).start();
+    Animated.timing(opacity, { toValue: 1, duration: 180, useNativeDriver: USE_NATIVE_DRIVER }).start();
     const timer = setTimeout(() => {
-      Animated.timing(opacity, { toValue: 0, duration: 180, useNativeDriver: true }).start(() => {
+      Animated.timing(opacity, { toValue: 0, duration: 180, useNativeDriver: USE_NATIVE_DRIVER }).start(() => {
         dismissRef.current();
       });
     }, AUTO_DISMISS_MS);
@@ -49,8 +50,15 @@ const Toast = ({ toast, onDismiss }: { toast: ToastState; onDismiss: () => void 
 
   return (
     <Animated.View
-      pointerEvents="box-none"
-      style={{ opacity, position: "absolute", left: 16, right: 16, bottom: 24, alignItems: "center" }}
+      style={{
+        opacity,
+        position: "absolute",
+        left: 16,
+        right: 16,
+        bottom: 24,
+        alignItems: "center",
+        pointerEvents: "box-none",
+      }}
     >
       <Pressable
         onPress={onDismiss}

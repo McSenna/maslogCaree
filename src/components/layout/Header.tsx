@@ -1,10 +1,11 @@
 import { usePathname } from "expo-router";
-import { StatusBar, View, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 
 import { useHeaderTopInset } from "@/components/header/useHeaderTopInset";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 import type { CurrentUser } from "@/contexts/AuthContext";
 
+import AppStatusBar from "./AppStatusBar";
 import HeaderActions from "./header/HeaderActions";
 import HeaderBrand from "./header/HeaderBrand";
 import HeaderNav from "./header/HeaderNav";
@@ -14,6 +15,8 @@ type HeaderProps = {
   onPressLogin: () => void;
   user?: CurrentUser | null;
 };
+
+const HEADER_SURFACE = "#3f54be";
 
 const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
   const pathname = usePathname();
@@ -25,12 +28,12 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
 
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#1e2a6e" />
+      <AppStatusBar style="light" backgroundColor={HEADER_SURFACE} />
 
       <View
         style={{
           zIndex: 50,
-          backgroundColor: "#3f54be",
+          backgroundColor: HEADER_SURFACE,
           borderBottomWidth: 1,
           borderBottomColor: "rgba(12,31,110,0.35)",
           boxShadow: "0px 4px 12px rgba(12,31,110,0.2)",

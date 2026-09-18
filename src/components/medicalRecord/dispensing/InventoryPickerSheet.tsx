@@ -1,6 +1,8 @@
 import { ActivityIndicator, FlatList, Modal, Pressable, Text, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
+import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 import type { InventoryCategory, InventoryItem } from "@/features/inventory/services/inventoryService";
 
 import InventoryPickerRow from "./InventoryPickerRow";
@@ -31,8 +33,11 @@ const InventoryPickerSheet = ({
   searchPlaceholder?: string;
 }) => {
   const palette = useQueuePalette();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const keyboardInset = useKeyboardInset(visible);
   const isSheet = width < SHEET_WIDTH;
+  const availableHeight = height - (isSheet ? keyboardInset + insets.top : 0);
 
   const picker = useInventorySearch(visible, category);
 
@@ -59,7 +64,8 @@ const InventoryPickerSheet = ({
           className="w-full overflow-hidden"
           style={{
             maxWidth: isSheet ? undefined : 560,
-            height: isSheet ? "78%" : "76%",
+            height: Math.round(availableHeight * (isSheet ? 0.78 : 0.76)),
+            marginBottom: isSheet ? keyboardInset : 0,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             borderBottomLeftRadius: isSheet ? 0 : 24,
@@ -96,7 +102,11 @@ const InventoryPickerSheet = ({
             data={picker.items}
             keyExtractor={(item) => item._id}
             keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 24, gap: 2 }}
+            contentContainerStyle={{
+              paddingHorizontal: 12,
+              gap: 2,
+              paddingBottom: 12 + (isSheet && keyboardInset === 0 ? Math.max(insets.bottom, 0) : 0),
+            }}
             renderItem={({ item }) => (
               <InventoryPickerRow
                 item={item}

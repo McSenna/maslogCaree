@@ -1,7 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import { Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import type { CompletionForm, MedicalRecord } from "@/services/medicalRecords";
 
 import {
@@ -31,6 +33,7 @@ const MedicalRecordDetails = ({
 }) => {
   const palette = useQueuePalette();
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
   const isSheet = width < SHEET_WIDTH;
 
   if (!record) return null;
@@ -107,8 +110,13 @@ const MedicalRecordDetails = ({
           </View>
 
           <ScrollView
+            style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ padding: 16, gap: 14 }}
+            contentContainerStyle={{
+              padding: 16,
+              gap: 14,
+              paddingBottom: 16 + (isSheet ? Math.max(insets.bottom, 0) : 0),
+            }}
           >
             <CompletedBadge record={record} palette={palette} />
             <VisitBlock record={record} form={form} palette={palette} />

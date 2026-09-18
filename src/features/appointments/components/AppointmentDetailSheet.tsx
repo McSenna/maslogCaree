@@ -17,6 +17,7 @@ import {
   residentStatusLabel,
   statusToneKey,
 } from "../appointmentPresenter";
+import AppointmentSheetActions from "./detailSheet/AppointmentSheetActions";
 import AppointmentSheetHeader from "./detailSheet/AppointmentSheetHeader";
 import {
   AppointmentDetailRows,
@@ -31,6 +32,8 @@ const AppointmentDetailSheet = ({
   palette,
   onClose,
   onOpenMedicalRecord,
+  onReschedule,
+  onCancel,
   recordLoading = false,
   recordError,
 }: {
@@ -39,6 +42,8 @@ const AppointmentDetailSheet = ({
   palette: QueuePalette;
   onClose: () => void;
   onOpenMedicalRecord: (recordId: string) => void;
+  onReschedule?: (appointment: AppointmentRecord) => void;
+  onCancel?: (appointment: AppointmentRecord) => void;
   recordLoading?: boolean;
   recordError?: string | null;
 }) => {
@@ -91,10 +96,29 @@ const AppointmentDetailSheet = ({
         contentContainerStyle={{
           paddingHorizontal: 20,
           paddingTop: 16,
-          paddingBottom: 24,
+          paddingBottom: 12,
           gap: 16,
         }}
       >
+        <AppointmentSheetActions
+          appointment={appointment}
+          palette={palette}
+          onReschedule={
+            onReschedule &&
+            ((item) => {
+              onClose();
+              onReschedule(item);
+            })
+          }
+          onCancel={
+            onCancel &&
+            ((item) => {
+              onClose();
+              onCancel(item);
+            })
+          }
+        />
+
         <AppointmentDetailRows rows={rows} palette={palette} />
         <ResidentNotesSection appointment={appointment} palette={palette} />
         <DeclineReasonSection appointment={appointment} palette={palette} />

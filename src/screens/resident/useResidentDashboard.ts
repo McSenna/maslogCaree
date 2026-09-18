@@ -1,10 +1,6 @@
 import { useMemo } from "react";
-import {
-  healthServices,
-  healthTip,
-  quickActions,
-} from "@/data/residentDashboardData";
-import { useNotifications } from "@/hooks/useNotifications";
+import { healthTip } from "@/data/residentDashboardData";
+import { useNotificationsContext } from "@/contexts/NotificationsContext";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
 import { getTimeGreeting, summarizeResidentAppointments } from "@/utils/residentDashboard";
 import { mapAnnouncements } from "./dashboard/dashboardMappers";
@@ -16,7 +12,7 @@ const RECENT_APPOINTMENTS_LIMIT = 3;
 
 export const useResidentDashboard = () => {
   const appointmentsState = useResidentAppointments();
-  const notificationsState = useNotifications();
+  const notificationsState = useNotificationsContext();
   const { data, loading, refreshing, error, load } = useDashboardData();
   const handlers = useDashboardHandlers();
 
@@ -44,8 +40,6 @@ export const useResidentDashboard = () => {
     nextAppointment: data?.nextAppointment ?? null,
     recentAppointments,
     announcements,
-    quickActions,
-    healthServices,
     healthTip,
     loading,
     refreshing,

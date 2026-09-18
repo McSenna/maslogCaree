@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import type { QueuePalette } from "@/components/appointmentQueue/queueTheme";
 
 type MissionToolsSheetProps = {
@@ -18,6 +21,8 @@ const MissionToolsSheet = ({
   palette,
   children,
 }: MissionToolsSheetProps) => {
+  const insets = useSafeAreaInsets();
+
   return (
     <Modal
       visible={visible}
@@ -81,8 +86,14 @@ const MissionToolsSheet = ({
           </View>
 
           <ScrollView
+            style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ padding: 16, gap: 20 }}
+            contentContainerStyle={{
+              padding: 16,
+              gap: 20,
+              // Keeps the last tool clear of the gesture bar / home indicator.
+              paddingBottom: 16 + (isPhone ? Math.max(insets.bottom, 0) : 0),
+            }}
           >
             {children}
           </ScrollView>

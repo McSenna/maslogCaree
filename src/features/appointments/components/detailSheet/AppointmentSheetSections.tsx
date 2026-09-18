@@ -67,6 +67,11 @@ export const ResidentNotesSection = ({
   );
 };
 
+const REASON_OF: Record<string, (a: AppointmentRecord) => string | undefined> = {
+  declined: (a) => a.declineReason,
+  cancelled: (a) => a.cancelReason,
+};
+
 export const DeclineReasonSection = ({
   appointment,
   palette,
@@ -74,7 +79,11 @@ export const DeclineReasonSection = ({
   appointment: AppointmentRecord;
   palette: QueuePalette;
 }) => {
-  if (appointment.status !== "declined" || !appointment.declineReason) return null;
+  const reason = REASON_OF[appointment.status]?.(appointment)?.trim();
+  if (!reason) return null;
+
+  const tone =
+    appointment.status === "cancelled" ? palette.statuses.cancelled : palette.statuses.declined;
 
   return (
     <View className="w-full gap-2">
@@ -86,16 +95,10 @@ export const DeclineReasonSection = ({
       </Text>
       <View
         className="w-full px-3.5 py-3"
-        style={{
-          borderRadius: QUEUE_RADIUS.control,
-          backgroundColor: palette.statuses.declined.bg,
-        }}
+        style={{ borderRadius: QUEUE_RADIUS.control, backgroundColor: tone.bg }}
       >
-        <Text
-          className="text-[13.5px] leading-[20px]"
-          style={{ color: palette.statuses.declined.fg }}
-        >
-          {appointment.declineReason}
+        <Text className="text-[13.5px] leading-[20px]" style={{ color: tone.fg }}>
+          {reason}
         </Text>
       </View>
     </View>

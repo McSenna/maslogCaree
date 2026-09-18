@@ -32,7 +32,6 @@ const VerifiedPill = ({ verified, roleLabel }: VerifiedPillProps) => {
       style={{
         flexDirection: "row",
         alignItems: "center",
-        alignSelf: "flex-start",
         gap: 5,
         paddingHorizontal: 10,
         paddingVertical: 4,

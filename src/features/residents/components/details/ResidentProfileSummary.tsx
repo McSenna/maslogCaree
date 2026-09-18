@@ -3,6 +3,7 @@ import UserAvatar, { initialsFrom } from "@/components/ui/UserAvatar";
 import UserStatusBadge from "@/features/users/components/UserStatusBadge";
 import { useUserDetailsPalette } from "@/features/users/components/details/detailsTheme";
 import type { ResidentRecord } from "../../services/residentService";
+import { createShadow } from "@/design/shadow";
 
 const ResidentProfileSummary = ({ resident }: { resident: ResidentRecord }) => {
   const palette = useUserDetailsPalette();
@@ -14,11 +15,13 @@ const ResidentProfileSummary = ({ resident }: { resident: ResidentRecord }) => {
           borderRadius: 9999,
           borderWidth: 3,
           borderColor: palette.avatarRing,
-          shadowColor: "#0F2557",
-          shadowOpacity: 0.14,
-          shadowRadius: 10,
-          shadowOffset: { width: 0, height: 4 },
-          elevation: 3,
+          ...createShadow({
+            color: "#0F2557",
+            offsetY: 4,
+            radius: 10,
+            opacity: 0.14,
+            elevation: 3,
+          }),
         }}
       >
         <UserAvatar

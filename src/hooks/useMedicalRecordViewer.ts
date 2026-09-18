@@ -4,16 +4,32 @@ import {
   type CompletionForm,
   type MedicalRecord,
 } from "@/services/medicalRecords";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { getApiErrorMessage, isNotFoundError } from "@/utils/apiErrorHandler";
 
+type ViewerState = {
+  isOpen: boolean;
+  record: MedicalRecord | null;
+  form: CompletionForm | null;
+  loading: boolean;
+  error: string | null;
+};
+
+const CLOSED: ViewerState = {
+  isOpen: false,
+  record: null,
+  form: null,
+  loading: false,
+  error: null,
+};
+
+/**
+ * Owns the "view my medical details" dialog. The dialog opens as soon as a
+ * record is requested so the resident sees a loading state, then resolves to
+ * the record, an empty state (no record filed yet) or a retryable error.
+ */
 export const useMedicalRecordViewer = () => {
-  const [viewing, setViewing] = useState<{
-    record: MedicalRecord;
-    form: CompletionForm | null;
-  } | null>(null);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [state, setState] = useState<ViewerState>(CLOSED);
+  const lastRequestedId = useRef<string | null>(null);
 
   const mounted = useRef(true);
   useEffect(() => {
@@ -23,43 +39,54 @@ export const useMedicalRecordViewer = () => {
     };
   }, []);
 
-  const open = useCallback(async (record: MedicalRecord) => {
-    setError(null);
-    setLoading(true);
-    setViewing({ record, form: null });
-
-    try {
-      const detail = await fetchMedicalRecord(record._id);
-      if (mounted.current) setViewing({ record: detail.medicalRecord, form: detail.form });
-    } catch {
-    } finally {
-      if (mounted.current) setLoading(false);
-    }
-  }, []);
-
   const openById = useCallback(async (recordId: string): Promise<boolean> => {
-    setError(null);
-    setLoading(true);
+    lastRequestedId.current = recordId;
+    setState({ isOpen: true, record: null, form: null, loading: true, error: null });
 
     try {
       const detail = await fetchMedicalRecord(recordId);
-      if (!mounted.current) return false;
-      setViewing({ record: detail.medicalRecord, form: detail.form });
+      if (!mounted.current || lastRequestedId.current !== recordId) return false;
+
+      setState({
+        isOpen: true,
+        record: detail.medicalRecord,
+        form: detail.form ?? null,
+        loading: false,
+        error: null,
+      });
       return true;
     } catch (e: unknown) {
-      if (mounted.current) {
-        setError(getApiErrorMessage(e, "Unable to open this medical record."));
-      }
+      if (!mounted.current || lastRequestedId.current !== recordId) return false;
+
+      // A missing record is an empty state, not a failure: the visit is closed
+      // but the health worker has not filed the details yet.
+      setState({
+        isOpen: true,
+        record: null,
+        form: null,
+        loading: false,
+        error: isNotFoundError(e)
+          ? null
+          : getApiErrorMessage(e, "Unable to load medical details."),
+      });
       return false;
-    } finally {
-      if (mounted.current) setLoading(false);
     }
   }, []);
 
+  const open = useCallback(
+    (record: MedicalRecord) => openById(record._id),
+    [openById]
+  );
+
+  const retry = useCallback(() => {
+    const id = lastRequestedId.current;
+    if (id) void openById(id);
+  }, [openById]);
+
   const close = useCallback(() => {
-    setViewing(null);
-    setError(null);
+    lastRequestedId.current = null;
+    setState(CLOSED);
   }, []);
 
-  return { viewing, loading, error, open, openById, close };
+  return { ...state, open, openById, retry, close };
 };

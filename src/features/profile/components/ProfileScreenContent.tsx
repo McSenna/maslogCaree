@@ -15,10 +15,8 @@ type ProfileScreenContentProps = {
   wide: boolean;
   twoColumn: boolean;
   stacked: boolean;
-  onSettingsLayout: (event: LayoutChangeEvent) => void;
   onTabPanelLayout: (event: LayoutChangeEvent) => void;
   onPersonalCardLayout: (event: LayoutChangeEvent) => void;
-  onOpenSettings: () => void;
 };
 
 const ProfileScreenContent = ({
@@ -27,10 +25,8 @@ const ProfileScreenContent = ({
   wide,
   twoColumn,
   stacked,
-  onSettingsLayout,
   onTabPanelLayout,
   onPersonalCardLayout,
-  onOpenSettings,
 }: ProfileScreenContentProps) => {
   const groups = useMemo(() => buildProfileGroups(profile), [profile]);
   const { insights, tabs } = state;
@@ -40,9 +36,7 @@ const ProfileScreenContent = ({
       <ProfileHeaderCard
         profile={profile}
         wide={wide}
-        onEditProfile={state.onEditProfile}
         onChangePhoto={state.onChangePhoto}
-        onOpenSettings={onOpenSettings}
         changingPhoto={state.edit.savingAvatar}
       />
 
@@ -77,7 +71,6 @@ const ProfileScreenContent = ({
         <ProfileSettingsSection
           twoColumn={twoColumn}
           appVersion={state.appVersion}
-          onLayout={onSettingsLayout}
           onChangePassword={state.onChangePassword}
           onNotificationSettings={state.onNotificationSettings}
           onPrivacySecurity={state.onPrivacySecurity}
