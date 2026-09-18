@@ -120,7 +120,7 @@ export const useProfile = (options: { onAfterLogout?: () => void } = {}): Profil
 
     edit,
 
-    onEditProfile: edit.openEditProfile,
+    onEditProfile: () => edit.startEditing("personal"),
     onChangePhoto: edit.changeAvatar,
     onChangePassword: () => showPending("changePassword"),
     onNotificationSettings: () => showPending("notificationSettings"),

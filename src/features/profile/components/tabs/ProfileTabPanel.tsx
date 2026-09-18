@@ -1,3 +1,5 @@
+import type { LayoutChangeEvent } from "react-native";
+import type { ProfileEditState } from "../../hooks/useEditProfile";
 import type { ProfileInfoGroup, ProfileInsightsState, ProfileTabKey } from "../../types/profile.types";
 import ActivityTab from "./ActivityTab";
 import AppointmentsTab from "./AppointmentsTab";
@@ -11,6 +13,8 @@ type ProfileTabPanelProps = {
   twoColumn: boolean;
   stacked: boolean;
   isResident: boolean;
+  edit?: ProfileEditState;
+  onPersonalCardLayout?: (event: LayoutChangeEvent) => void;
 };
 
 const ProfileTabPanel = ({
@@ -20,6 +24,8 @@ const ProfileTabPanel = ({
   twoColumn,
   stacked,
   isResident,
+  edit,
+  onPersonalCardLayout,
 }: ProfileTabPanelProps) => {
   if (activeTab === "appointments") {
     return (
@@ -57,7 +63,15 @@ const ProfileTabPanel = ({
     );
   }
 
-  return <OverviewTab groups={groups} twoColumn={twoColumn} stacked={stacked} />;
+  return (
+    <OverviewTab
+      groups={groups}
+      twoColumn={twoColumn}
+      stacked={stacked}
+      edit={edit}
+      onPersonalCardLayout={onPersonalCardLayout}
+    />
+  );
 };
 
 export default ProfileTabPanel;

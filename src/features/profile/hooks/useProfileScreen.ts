@@ -15,9 +15,16 @@ export type ProfileScreenState = ProfileState &
     reloadAll: () => void;
   };
 
-export const useProfileScreen = (): ProfileScreenState => {
+type ProfileScreenOptions = {
+  onEditProfileStarted?: () => void;
+};
+
+export const useProfileScreen = (
+  options: ProfileScreenOptions = {}
+): ProfileScreenState => {
   const { user } = useAuth();
   const profileState = useProfile();
+  const { onEditProfileStarted } = options;
 
   const role = user?.role ?? null;
   const refresh = useProfileRefresh(Boolean(user));
@@ -29,6 +36,12 @@ export const useProfileScreen = (): ProfileScreenState => {
     insights.reload();
   }, [refresh, insights]);
 
+  const onEditProfile = useCallback(() => {
+    tabs.selectTab("overview");
+    profileState.onEditProfile();
+    onEditProfileStarted?.();
+  }, [tabs, profileState, onEditProfileStarted]);
+
   return {
     ...profileState,
     ...refresh,
@@ -36,5 +49,6 @@ export const useProfileScreen = (): ProfileScreenState => {
     tabs,
     isResident: isResidentRole(role),
     reloadAll,
+    onEditProfile,
   };
 };

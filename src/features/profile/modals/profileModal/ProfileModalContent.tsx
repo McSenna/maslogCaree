@@ -1,11 +1,13 @@
+import { useMemo } from "react";
 import { View } from "react-native";
 
 import AccountSettingsCard from "../../components/AccountSettingsCard";
 import HealthNoteStrip from "../../components/HealthNoteStrip";
 import HelpSupportCard from "../../components/HelpSupportCard";
-import PersonalInformationCard from "../../components/PersonalInformationCard";
 import ProfileHero from "../../components/ProfileHero";
+import ProfileInfoCard from "../../components/ProfileInfoCard";
 import type { useProfile } from "../../hooks/useProfile";
+import { buildProfileGroups } from "../../utils/profileGroups";
 
 type Props = {
   state: ReturnType<typeof useProfile>;
@@ -13,7 +15,10 @@ type Props = {
 };
 
 const ProfileModalContent = ({ state, twoColumn }: Props) => {
-  if (!state.profile) return null;
+  const { profile } = state;
+  const groups = useMemo(() => (profile ? buildProfileGroups(profile) : []), [profile]);
+
+  if (!profile) return null;
 
   const columnStyle = {
     width: twoColumn ? undefined : ("100%" as const),
@@ -23,7 +28,7 @@ const ProfileModalContent = ({ state, twoColumn }: Props) => {
   return (
     <>
       <ProfileHero
-        profile={state.profile}
+        profile={profile}
         variant="wide"
         onEditProfile={state.onEditProfile}
         onChangePhoto={state.onChangePhoto}
@@ -38,10 +43,9 @@ const ProfileModalContent = ({ state, twoColumn }: Props) => {
         }}
       >
         <View style={{ flex: twoColumn ? 1.15 : undefined, ...columnStyle }}>
-          <PersonalInformationCard
-            fields={state.profile.fields}
-            edit={state.edit}
-          />
+          {groups.map((group) => (
+            <ProfileInfoCard key={group.key} group={group} edit={state.edit} />
+          ))}
           <HealthNoteStrip />
         </View>
 

@@ -13,6 +13,7 @@ type ProfileSectionCardProps = {
   icon: keyof typeof Feather.glyphMap;
   tone?: "blue" | "green";
   action?: ReactNode;
+  highlighted?: boolean;
   children: ReactNode;
 };
 
@@ -26,6 +27,7 @@ const ProfileSectionCard = ({
   icon,
   tone = "blue",
   action,
+  highlighted = false,
   children,
 }: ProfileSectionCardProps) => {
   const palette = TONES[tone];
@@ -36,7 +38,7 @@ const ProfileSectionCard = ({
         borderRadius: PROFILE_RADIUS.card,
         backgroundColor: PROFILE_COLORS.surface,
         borderWidth: 1,
-        borderColor: PROFILE_COLORS.border,
+        borderColor: highlighted ? PROFILE_COLORS.primaryBorder : PROFILE_COLORS.border,
         overflow: "hidden",
         ...PROFILE_SHADOW.card,
       }}

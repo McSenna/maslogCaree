@@ -1,4 +1,5 @@
-import { Text, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
+import FieldShell from "./FieldShell";
 
 type ProfileFieldProps = {
   label: string;
@@ -8,6 +9,7 @@ type ProfileFieldProps = {
   keyboardType?: "default" | "email-address" | "phone-pad";
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   multiline?: boolean;
+  hint?: string;
   error?: string;
 };
 
@@ -19,12 +21,10 @@ const ProfileField = ({
   keyboardType = "default",
   autoCapitalize = "none",
   multiline = false,
+  hint,
   error,
 }: ProfileFieldProps) => (
-  <View>
-    <Text className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
-      {label}
-    </Text>
+  <FieldShell label={label} hint={hint} error={error}>
     <View
       className={`rounded-2xl border bg-slate-50 px-3.5 ${error ? "border-red-400" : "border-slate-200"}`}
     >
@@ -40,12 +40,7 @@ const ProfileField = ({
         placeholderTextColor="#CBD5E1"
       />
     </View>
-    {error ? (
-      <Text accessibilityLiveRegion="polite" className="mt-1 text-[11px] text-red-500">
-        {error}
-      </Text>
-    ) : null}
-  </View>
+  </FieldShell>
 );
 
 export default ProfileField;

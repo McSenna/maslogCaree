@@ -1,66 +1,79 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
+  EMPTY_EDIT_PROFILE_VALUES,
+  PROFILE_EDIT_SECTION_FIELDS,
+  type EditProfileField,
+  type EditProfileValues,
+  type ProfileEditSection,
+} from "../config/profileEditSections";
+import {
   validateEditProfileValues,
   type EditProfileErrors,
 } from "../validation/editProfileValidation";
 
-export type EditProfileValues = {
-  fullname: string;
-  email: string;
-  phone: string;
-  address: string;
+export type { EditProfileValues } from "../config/profileEditSections";
+
+const NAME_FIELDS: EditProfileField[] = ["firstName", "middleName", "surname"];
+
+/**
+ * The backend rebuilds `fullname` from the name parts, so a change to any one
+ * of them must carry the other two — otherwise unchanged parts that are still
+ * blank in the database would be dropped from the rebuilt full name.
+ */
+const withCompleteName = (fields: EditProfileField[]): EditProfileField[] => {
+  if (!fields.some((field) => NAME_FIELDS.includes(field))) return fields;
+  return [...new Set([...fields, ...NAME_FIELDS])];
 };
 
-export type EditProfileInitial = EditProfileValues;
-
-const EMPTY_VALUES: EditProfileValues = { fullname: "", email: "", phone: "", address: "" };
-
-export const useEditProfileForm = () => {
-  const [values, setValues] = useState<EditProfileValues>(EMPTY_VALUES);
+export const useEditProfileForm = (section: ProfileEditSection | null) => {
+  const [values, setValues] = useState<EditProfileValues>(EMPTY_EDIT_PROFILE_VALUES);
   const [errors, setErrors] = useState<EditProfileErrors>({});
-  const baseline = useRef<EditProfileInitial>(EMPTY_VALUES);
+  const baseline = useRef<EditProfileValues>(EMPTY_EDIT_PROFILE_VALUES);
 
-  const syncTo = useCallback((initial: EditProfileInitial) => {
+  const syncTo = useCallback((initial: EditProfileValues) => {
     baseline.current = initial;
-    setValues({
-      fullname: initial.fullname,
-      email: initial.email,
-      phone: initial.phone,
-      address: initial.address,
-    });
+    setValues(initial);
     setErrors({});
   }, []);
 
-  const setField = useCallback((field: keyof EditProfileValues, value: string) => {
-    setValues((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => (prev[field as keyof EditProfileErrors] ? { ...prev, [field]: undefined } : prev));
+  const setField = useCallback((field: EditProfileField, value: string) => {
+    setValues((prev) => (prev[field] === value ? prev : { ...prev, [field]: value }));
+    setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
   }, []);
 
-  const isDirty = useMemo(() => {
-    const base = baseline.current;
-    return (
-      values.fullname.trim() !== base.fullname.trim() ||
-      values.phone.trim() !== base.phone.trim() ||
-      values.address.trim() !== base.address.trim()
+  const changedFields = useMemo<EditProfileField[]>(() => {
+    if (!section) return [];
+
+    return PROFILE_EDIT_SECTION_FIELDS[section].filter(
+      (field) => values[field].trim() !== baseline.current[field].trim()
     );
-  }, [values]);
+  }, [section, values]);
 
   const validate = useCallback(() => {
-    const nextErrors = validateEditProfileValues(values);
+    if (!section) return false;
+
+    const nextErrors = validateEditProfileValues(values, section);
     setErrors(nextErrors);
     return Object.keys(nextErrors).length === 0;
-  }, [values]);
+  }, [section, values]);
 
   const buildPayload = useCallback(() => {
-    const base = baseline.current;
-    const payload: Record<string, string> = {};
-
-    if (values.fullname.trim() !== base.fullname.trim()) payload.fullname = values.fullname.trim();
-    if (values.phone.trim() !== base.phone.trim()) payload.phone = values.phone.trim();
-    if (values.address.trim() !== base.address.trim()) payload.address = values.address.trim();
-
+    const payload: Partial<Record<EditProfileField, string>> = {};
+    withCompleteName(changedFields).forEach((field) => {
+      payload[field] = values[field].trim();
+    });
     return payload;
-  }, [values]);
+  }, [changedFields, values]);
 
-  return { values, errors, setField, isDirty, syncTo, validate, buildPayload };
+  return {
+    values,
+    errors,
+    setField,
+    syncTo,
+    validate,
+    buildPayload,
+    isDirty: changedFields.length > 0,
+  };
 };
+
+export type EditProfileFormState = ReturnType<typeof useEditProfileForm>;

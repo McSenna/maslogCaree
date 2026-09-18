@@ -16,6 +16,8 @@ type ProfileScreenContentProps = {
   twoColumn: boolean;
   stacked: boolean;
   onSettingsLayout: (event: LayoutChangeEvent) => void;
+  onTabPanelLayout: (event: LayoutChangeEvent) => void;
+  onPersonalCardLayout: (event: LayoutChangeEvent) => void;
   onOpenSettings: () => void;
 };
 
@@ -26,6 +28,8 @@ const ProfileScreenContent = ({
   twoColumn,
   stacked,
   onSettingsLayout,
+  onTabPanelLayout,
+  onPersonalCardLayout,
   onOpenSettings,
 }: ProfileScreenContentProps) => {
   const groups = useMemo(() => buildProfileGroups(profile), [profile]);
@@ -56,14 +60,18 @@ const ProfileScreenContent = ({
         compact={!wide}
       />
 
-      <ProfileTabPanel
-        activeTab={tabs.activeTab}
-        insights={insights}
-        groups={groups}
-        twoColumn={twoColumn}
-        stacked={stacked}
-        isResident={state.isResident}
-      />
+      <View onLayout={onTabPanelLayout}>
+        <ProfileTabPanel
+          activeTab={tabs.activeTab}
+          insights={insights}
+          groups={groups}
+          twoColumn={twoColumn}
+          stacked={stacked}
+          isResident={state.isResident}
+          edit={state.edit}
+          onPersonalCardLayout={onPersonalCardLayout}
+        />
+      </View>
 
       {tabs.activeTab === "overview" ? (
         <ProfileSettingsSection

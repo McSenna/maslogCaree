@@ -1,6 +1,5 @@
 export { default as UserProfileScreen } from "./screens/UserProfileScreen";
 export { default as ProfileModal } from "./modals/ProfileModal";
-export { default as EditProfileDialog } from "./modals/EditProfileDialog";
 
 export { useProfile } from "./hooks/useProfile";
 export type { ProfileState } from "./hooks/useProfile";

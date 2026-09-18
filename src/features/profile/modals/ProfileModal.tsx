@@ -1,10 +1,10 @@
 import { ScrollView, View, useWindowDimensions } from "react-native";
 
-import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { PROFILE_COLORS, PROFILE_RADIUS, PROFILE_SHADOW } from "../config/profileTheme";
 import { useProfile } from "../hooks/useProfile";
 import LogoutConfirmModal from "../components/LogoutConfirmModal";
 import ProfileErrorState from "../components/ProfileErrorState";
+import ProfileEditConfirmations from "../components/ProfileEditConfirmations";
 import ProfileNoticeModal from "../components/ProfileNoticeModal";
 import ProfileOverlay from "../components/ProfileOverlay";
 import ProfileSkeleton from "../components/ProfileSkeleton";
@@ -71,16 +71,7 @@ const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
 
       <ProfileNoticeModal notice={state.notice} onClose={state.dismissNotice} />
 
-      <ConfirmationModal
-        visible={state.edit.editConfirmingDiscard}
-        title="Discard unsaved changes?"
-        message="Your edits have not been saved. If you leave now, they will be lost."
-        confirmLabel="Discard"
-        cancelLabel="Keep Editing"
-        destructive
-        onConfirm={state.edit.confirmDiscardEditProfile}
-        onCancel={state.edit.cancelDiscardEditProfile}
-      />
+      <ProfileEditConfirmations edit={state.edit} />
 
       <ProfileToastLayer toast={state.edit.toast} onDismiss={state.edit.hideToast} />
     </>

@@ -5,6 +5,10 @@ import type { ClientPlatform } from "@/config/platformAccess";
 export interface CurrentUser {
   id: string | number;
   name: string;
+  firstName?: string;
+  middleName?: string;
+  surname?: string;
+  suffix?: string;
   email: string;
   role: UserRole;
   avatarUrl?: string | null;

@@ -12,6 +12,10 @@ const asDateString = (value: AuthUser["dateOfBirth"]) => {
 export const toCurrentUser = (userData: AuthUser): CurrentUser => ({
   id: userData._id,
   name: userData.fullname,
+  firstName: userData.firstName ?? "",
+  middleName: userData.middleName ?? "",
+  surname: userData.surname ?? "",
+  suffix: userData.suffix ?? "",
   email: userData.email,
   role: userData.role as UserRole,
   dateOfBirth: asDateString(userData.dateOfBirth),
@@ -29,6 +33,10 @@ export const toStoredUser = (
 ): StoredUser => ({
   id: currentUser.id,
   name: currentUser.name,
+  firstName: currentUser.firstName,
+  middleName: currentUser.middleName,
+  surname: currentUser.surname,
+  suffix: currentUser.suffix,
   email: currentUser.email,
   role: currentUser.role,
   token,
@@ -43,6 +51,10 @@ export const toStoredUser = (
 export const fromStoredUser = (stored: StoredUser): CurrentUser => ({
   id: stored.id,
   name: stored.name,
+  firstName: stored.firstName ?? "",
+  middleName: stored.middleName ?? "",
+  surname: stored.surname ?? "",
+  suffix: stored.suffix ?? "",
   email: stored.email ?? "",
   role: stored.role as UserRole,
   dateOfBirth: stored.dateOfBirth ?? null,

@@ -35,6 +35,10 @@ const storage = getStorage();
 export interface StoredUser {
   id: string | number;
   name: string;
+  firstName?: string;
+  middleName?: string;
+  surname?: string;
+  suffix?: string;
   email?: string;
   role: string;
   token?: string;
