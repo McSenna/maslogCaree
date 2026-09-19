@@ -2,7 +2,12 @@ export { default as NotificationBell } from "./components/NotificationBell";
 export { default as NotificationPanel } from "./components/NotificationPanel";
 
 export { useNotificationActions } from "./hooks/useNotificationActions";
+export { usePushNotifications } from "./hooks/usePushNotifications";
 export { getNotificationsRoute, resolveNotificationDestination } from "./notification.routes";
+export { getNotificationRoute } from "./utils/notificationNavigation";
+export { NOTIFICATION_CHANNELS } from "./constants/notificationChannels";
+export { getPushCapability, getPushProjectId } from "./utils/notificationEnvironment";
+export { releasePushToken } from "./services/pushTokenRegistry";
 export {
   formatNotificationMessage,
   formatNotificationTime,
@@ -27,3 +32,14 @@ export type {
   NotificationTone,
   NotificationType,
 } from "./notification.types";
+
+export type {
+  PushNotificationData,
+  DeviceTokenRegistrationPayload,
+  DeviceTokenResponse,
+  PushCapability,
+  PushNotificationState,
+  PushPermissionState,
+  PushRuntime,
+  PushSetupStatus,
+} from "./types/pushNotification.types";

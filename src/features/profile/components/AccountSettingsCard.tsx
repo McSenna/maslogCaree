@@ -5,14 +5,12 @@ import SettingsRow, { type SettingsRowSize } from "./SettingsRow";
 export type AccountSettingsHandlers = {
   onChangePassword?: () => void;
   onNotificationSettings?: () => void;
-  onPrivacySecurity?: () => void;
   size?: SettingsRowSize;
 };
 
 const AccountSettingsCard = ({
   onChangePassword,
   onNotificationSettings,
-  onPrivacySecurity,
   size = "regular",
 }: AccountSettingsHandlers) => (
   <ProfileSectionCard title="Account Settings" icon="settings" tone="green">
@@ -27,12 +25,6 @@ const AccountSettingsCard = ({
         label="Notification Settings"
         icon="bell"
         onPress={onNotificationSettings}
-        size={size}
-      />
-      <SettingsRow
-        label="Privacy & Security"
-        icon="shield"
-        onPress={onPrivacySecurity}
         size={size}
         showDivider={false}
       />

@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useRef } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import { PROFILE_COLORS, PROFILE_TYPE } from "../config/profileTheme";
+import SettingsRowAccessory from "./settingsRow/SettingsRowAccessory";
 import { USE_NATIVE_DRIVER } from "@/design/motion";
 
 export type SettingsRowSize = "regular" | "large";
@@ -9,7 +10,9 @@ export type SettingsRowSize = "regular" | "large";
 type SettingsRowProps = {
   label: string;
   icon: keyof typeof Feather.glyphMap;
+  description?: string;
   value?: string;
+  badge?: string;
   onPress?: () => void;
   showDivider?: boolean;
   size?: SettingsRowSize;
@@ -23,7 +26,9 @@ const SIZES = {
 const SettingsRow = ({
   label,
   icon,
+  description,
   value,
+  badge,
   onPress,
   showDivider = true,
   size = "regular",
@@ -44,7 +49,7 @@ const SettingsRow = ({
     <View>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={value ? `${label}, ${value}` : label}
+        accessibilityLabel={[label, description, badge, value].filter(Boolean).join(", ")}
         onPress={onPress}
         disabled={!onPress}
         onPressIn={() => animate(0.985)}
@@ -62,6 +67,7 @@ const SettingsRow = ({
             flexDirection: "row",
             alignItems: "center",
             gap: metrics.gap,
+            paddingVertical: description ? 10 : 0,
             transform: [{ scale }],
           }}
         >
@@ -84,35 +90,32 @@ const SettingsRow = ({
             </View>
           )}
 
-          <Text
-            numberOfLines={1}
-            maxFontSizeMultiplier={1.3}
-            style={{
-              flex: 1,
-              minWidth: 0,
-              fontSize: metrics.label,
-              fontWeight: "600",
-              letterSpacing: -0.1,
-              color: PROFILE_COLORS.heading,
-            }}
-          >
-            {label}
-          </Text>
-
-          {value ? (
+          <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
             <Text
-              maxFontSizeMultiplier={1.2}
-              style={{ fontSize: PROFILE_TYPE.meta, color: PROFILE_COLORS.subtle }}
+              numberOfLines={1}
+              maxFontSizeMultiplier={1.3}
+              style={{
+                fontSize: metrics.label,
+                fontWeight: "600",
+                letterSpacing: -0.1,
+                color: PROFILE_COLORS.heading,
+              }}
             >
-              {value}
+              {label}
             </Text>
-          ) : null}
 
-          <Feather
-            name="chevron-right"
-            size={isLarge ? 19 : 18}
-            color={PROFILE_COLORS.subtle}
-          />
+            {description ? (
+              <Text
+                numberOfLines={2}
+                maxFontSizeMultiplier={1.2}
+                style={{ fontSize: PROFILE_TYPE.meta, lineHeight: 17, color: PROFILE_COLORS.muted }}
+              >
+                {description}
+              </Text>
+            ) : null}
+          </View>
+
+          <SettingsRowAccessory value={value} badge={badge} large={isLarge} />
         </Animated.View>
       </Pressable>
 

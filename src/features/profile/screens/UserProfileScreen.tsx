@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { ScrollView, View, useWindowDimensions } from "react-native";
 import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
+import { HelpSupportOverlays } from "@/features/help-center";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 import { PROFILE_MAX_WIDTH, SOCIAL_COLORS } from "../config/profileSocialTheme";
 import { useCardReveal } from "../hooks/useCardReveal";
@@ -73,6 +74,8 @@ const UserProfileScreen = () => {
       <ProfileNoticeModal notice={state.notice} onClose={state.dismissNotice} />
 
       <AboutMaslogCareDialog visible={state.aboutVisible} onClose={state.closeAbout} />
+
+      <HelpSupportOverlays overlay={state.supportOverlay} />
 
       <ProfileEditConfirmations edit={state.edit} />
 

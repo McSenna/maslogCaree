@@ -1,14 +1,13 @@
 import { Animated, Platform, Pressable, Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 
+import { AnimatedCircle } from "@/components/ui/charts/animatedSvgShapes";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { DashboardRole } from "@/services/adminDashboardService";
 
 import ChartTooltip from "../ChartTooltip";
 import { DIMMED_OPACITY, HOTSPOT_SIZE, type DonutSegment } from "./donutSegments";
 import type { RoleFilter } from "./donutSegments.types";
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 type Props = {
   size: number;

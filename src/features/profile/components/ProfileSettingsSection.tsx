@@ -7,11 +7,13 @@ type ProfileSettingsSectionProps = {
   twoColumn: boolean;
   appVersion?: string;
   onLayout?: (event: LayoutChangeEvent) => void;
+  supportBadge?: string;
   onChangePassword: () => void;
   onNotificationSettings: () => void;
   onPrivacySecurity: () => void;
   onHelpCenter: () => void;
   onContactSupport: () => void;
+  onSupportRequests: () => void;
   onAbout: () => void;
   onRequestLogout: () => void;
 };
@@ -19,12 +21,14 @@ type ProfileSettingsSectionProps = {
 const ProfileSettingsSection = ({
   twoColumn,
   appVersion,
+  supportBadge,
   onLayout,
   onChangePassword,
   onNotificationSettings,
   onPrivacySecurity,
   onHelpCenter,
   onContactSupport,
+  onSupportRequests,
   onAbout,
   onRequestLogout,
 }: ProfileSettingsSectionProps) => (
@@ -41,7 +45,6 @@ const ProfileSettingsSection = ({
           size="large"
           onChangePassword={onChangePassword}
           onNotificationSettings={onNotificationSettings}
-          onPrivacySecurity={onPrivacySecurity}
         />
       </View>
 
@@ -50,7 +53,10 @@ const ProfileSettingsSection = ({
           size="large"
           onHelpCenter={onHelpCenter}
           onContactSupport={onContactSupport}
+          onSupportRequests={onSupportRequests}
+          onPrivacySecurity={onPrivacySecurity}
           onAbout={onAbout}
+          supportBadge={supportBadge}
           appVersion={appVersion}
         />
       </View>

@@ -1,10 +1,10 @@
 import { Animated } from "react-native";
-import Svg, { Defs, LinearGradient, Line, Rect, Stop } from "react-native-svg";
+import Svg, { Defs, LinearGradient, Line, Stop } from "react-native-svg";
+
+import { AnimatedRect } from "../animatedSvgShapes";
 
 import { PAD_X, TICKS, type BarLayout } from "./barChartLayout";
 import type { SimpleBarDatum } from "./barChartTypes";
-
-const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 type Props = {
   data: SimpleBarDatum[];

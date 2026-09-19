@@ -1,6 +1,6 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback, useRef, useState } from "react";
-import { Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { Keyboard, Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
 import { RADIUS } from "@/design/adminSurfaces";
 import { createShadow } from "@/design/shadow";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
@@ -40,6 +40,7 @@ const SelectMenu = <T extends string,>({
   const triggerLabel = displayValue ?? selected?.label ?? "";
 
   const open = useCallback(() => {
+    Keyboard.dismiss();
     const menuHeight = Math.min(options.length * 44 + 12, 300);
 
     triggerRef.current?.measureInWindow((x, y, w, h) => {

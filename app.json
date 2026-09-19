@@ -11,12 +11,14 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.maslogcare.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/maslogicon.png",
         "monochromeImage": "./assets/images/maslogicon.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "output": "static",
@@ -42,6 +44,14 @@
         "expo-status-bar",
         {
           "style": "dark"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/maslogicon.png",
+          "color": "#0284C7",
+          "defaultChannel": "maslogcare-default"
         }
       ]
     ],

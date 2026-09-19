@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, Text } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import type { AdminUser } from "@/features/users/services/userService";
 import PlatformAccessBadge from "./PlatformAccessBadge";
 import RoleBadge from "./RoleBadge";
@@ -38,14 +38,8 @@ const UserTableRow = ({
       : palette.cardBg;
 
   return (
-    <Pressable
-      onPress={onSelect}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      accessibilityRole="button"
-      accessibilityLabel={`View details for ${user.fullname}`}
-      accessibilityState={{ selected: isSelected }}
-      className="w-full flex-row items-center"
+    <View
+      className="relative w-full flex-row items-center"
       style={{
         minHeight: 68,
         backgroundColor: background,
@@ -53,7 +47,24 @@ const UserTableRow = ({
         borderBottomColor: palette.divider,
       }}
     >
-      <Cell width={USER_COLUMNS.checkbox} align="center">
+      <Pressable
+        onPress={onSelect}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        accessibilityRole="button"
+        accessibilityLabel={`View details for ${user.fullname}`}
+        accessibilityState={{ selected: isSelected }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 0,
+        }}
+      />
+
+      <Cell width={USER_COLUMNS.checkbox} align="center" style={{ zIndex: 2 }}>
         <Checkbox
           checked={isChecked}
           onChange={onToggleCheck}
@@ -61,38 +72,38 @@ const UserTableRow = ({
         />
       </Cell>
 
-      <Cell flex={USER_COLUMNS.user}>
-        <UserIdentityCell user={user} onSelect={onSelect} />
+      <Cell flex={USER_COLUMNS.user} style={{ zIndex: 1 }}>
+        <UserIdentityCell user={user} />
       </Cell>
 
-      <Cell flex={USER_COLUMNS.email}>
+      <Cell flex={USER_COLUMNS.email} style={{ zIndex: 1 }}>
         <Text className="text-[13px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
           {user.email}
         </Text>
       </Cell>
 
-      <Cell flex={USER_COLUMNS.role}>
+      <Cell flex={USER_COLUMNS.role} style={{ zIndex: 1 }}>
         <RoleBadge role={user.role} />
       </Cell>
 
-      <Cell flex={USER_COLUMNS.platform}>
+      <Cell flex={USER_COLUMNS.platform} style={{ zIndex: 1 }}>
         <PlatformAccessBadge user={user} />
       </Cell>
 
-      <Cell flex={USER_COLUMNS.location}>
+      <Cell flex={USER_COLUMNS.location} style={{ zIndex: 1 }}>
         <Text className="text-[13px] font-medium" numberOfLines={2} style={{ color: palette.body }}>
           {user.address || "—"}
         </Text>
       </Cell>
 
-      <Cell flex={USER_COLUMNS.status}>
+      <Cell flex={USER_COLUMNS.status} style={{ zIndex: 1 }}>
         <UserStatusBadge status={user.status} compact />
       </Cell>
 
-      <Cell flex={USER_COLUMNS.lastLogin}>
+      <Cell flex={USER_COLUMNS.lastLogin} style={{ zIndex: 1 }}>
         <LastLoginCell lastLogin={user.lastLogin} />
       </Cell>
-    </Pressable>
+    </View>
   );
 };
 

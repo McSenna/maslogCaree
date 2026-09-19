@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { buildProfileData, type ProfileData } from "../utils/profileData";
 import { useEditProfile } from "./useEditProfile";
 import type { ProfileNotice } from "../components/ProfileNoticeModal";
+import { useProfileHelpSupport, type ProfileHelpSupportState } from "./useProfileHelpSupport";
 
 const PENDING_FEATURES: Record<string, ProfileNotice> = {
   changePassword: {
@@ -16,21 +17,6 @@ const PENDING_FEATURES: Record<string, ProfileNotice> = {
     title: "Notification Settings",
     message:
       "Notification preferences will be available once MaslogCare can store them for your account.",
-  },
-  privacySecurity: {
-    title: "Privacy & Security",
-    message:
-      "Security preferences will be available once the MaslogCare security service is connected.",
-  },
-  helpCenter: {
-    title: "Help Center",
-    message:
-      "The MaslogCare Help Center is being prepared. For now, please contact your barangay health office.",
-  },
-  contactSupport: {
-    title: "Contact Support",
-    message:
-      "Please reach out to your barangay health office, or email support@maslogcare.ph for assistance.",
   },
 };
 
@@ -69,18 +55,18 @@ export type ProfileState = {
   onChangePhoto: () => void;
   onChangePassword: () => void;
   onNotificationSettings: () => void;
-  onPrivacySecurity: () => void;
-  onHelpCenter: () => void;
-  onContactSupport: () => void;
   onAbout: () => void;
-};
+} & ProfileHelpSupportState;
 
-export const useProfile = (options: { onAfterLogout?: () => void } = {}): ProfileState => {
+type ProfileOptions = { onAfterLogout?: () => void };
+
+export const useProfile = (options: ProfileOptions = {}): ProfileState => {
   const { user, isLoading, logout } = useAuth();
   const router = useRouter();
   const { onAfterLogout } = options;
 
   const edit = useEditProfile();
+  const helpSupport = useProfileHelpSupport();
 
   const [notice, setNotice] = useState<ProfileNotice | null>(null);
   const [aboutVisible, setAboutVisible] = useState(false);
@@ -140,9 +126,8 @@ export const useProfile = (options: { onAfterLogout?: () => void } = {}): Profil
     onChangePhoto: edit.changeAvatar,
     onChangePassword: () => setChangePasswordVisible(true),
     onNotificationSettings: () => showPending("notificationSettings"),
-    onPrivacySecurity: () => showPending("privacySecurity"),
-    onHelpCenter: () => showPending("helpCenter"),
-    onContactSupport: () => showPending("contactSupport"),
     onAbout: () => setAboutVisible(true),
+
+    ...helpSupport,
   };
 };

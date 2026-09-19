@@ -5,6 +5,7 @@ export const adminNavItems: NavItem[] = [
   { label: "User Management", href: "/admin/users", icon: "users" },
   { label: "Inventory", href: "/admin/inventory", icon: "box" },
   { label: "System Logs", href: "/admin/system-logs", icon: "shield" },
+  { label: "Support", href: "/admin/support", icon: "life-buoy" },
 ];
 
 export const doctorNavItems: NavItem[] = [
@@ -71,7 +72,7 @@ export const bhwBottomNavItems: NavItem[] = [
 export const residentBottomNavItems: NavItem[] = [
   { label: "Home", href: "/resident/dashboard", icon: "home" },
   { label: "Appointments", href: "/resident/appointments", icon: "calendar" },
-    { label: "Medical Records", href: "/resident/medical-records", icon: "file-text" },
+  { label: "Medical Records", href: "/resident/medical-records", icon: "file-text" },
   { label: "Notifications", href: "/resident/notifications", icon: "bell" },
   { label: "Profile", href: "/resident/profile", icon: "user" },
 ];

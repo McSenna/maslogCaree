@@ -71,11 +71,13 @@ const ProfileScreenContent = ({
         <ProfileSettingsSection
           twoColumn={twoColumn}
           appVersion={state.appVersion}
+          supportBadge={state.supportBadge}
           onChangePassword={state.onChangePassword}
           onNotificationSettings={state.onNotificationSettings}
           onPrivacySecurity={state.onPrivacySecurity}
           onHelpCenter={state.onHelpCenter}
           onContactSupport={state.onContactSupport}
+          onSupportRequests={state.onSupportRequests}
           onAbout={state.onAbout}
           onRequestLogout={state.requestLogout}
         />

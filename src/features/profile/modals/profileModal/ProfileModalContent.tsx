@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { View } from "react-native";
 
 import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
+import { HelpSupportOverlays } from "@/features/help-center";
 
 import AccountSettingsCard from "../../components/AccountSettingsCard";
 import HealthNoteStrip from "../../components/HealthNoteStrip";
@@ -55,18 +56,22 @@ const ProfileModalContent = ({ state, twoColumn }: Props) => {
           <AccountSettingsCard
             onChangePassword={state.onChangePassword}
             onNotificationSettings={state.onNotificationSettings}
-            onPrivacySecurity={state.onPrivacySecurity}
           />
           <HelpSupportCard
             onHelpCenter={state.onHelpCenter}
             onContactSupport={state.onContactSupport}
+            onSupportRequests={state.onSupportRequests}
+            onPrivacySecurity={state.onPrivacySecurity}
             onAbout={state.onAbout}
+            supportBadge={state.supportBadge}
             appVersion={state.appVersion}
           />
         </View>
       </View>
 
       <AboutMaslogCareDialog visible={state.aboutVisible} onClose={state.closeAbout} />
+
+      <HelpSupportOverlays overlay={state.supportOverlay} />
     </>
   );
 };

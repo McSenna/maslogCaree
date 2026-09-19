@@ -7,6 +7,7 @@ import { ERROR_CODES } from "@/utils/errorCodes";
 import { getApiErrorMessage, normalizeApiError } from "@/utils/apiErrorHandler";
 import { clearStoredUser, setStoredUser } from "@/utils/storage";
 import { forceLogout } from "@/services/authEvents";
+import { releasePushToken } from "@/features/notifications/services/pushTokenRegistry";
 
 import type { CurrentUser } from "./authTypes";
 import { toCurrentUser, toStoredUser } from "./authUserMapping";
@@ -77,6 +78,8 @@ export const useAuthActions = ({ setUser }: Options) => {
 
   const logout = useCallback(() => {
     void (async () => {
+      await releasePushToken();
+
       try {
         await api.post("/logout");
       } catch (error) {

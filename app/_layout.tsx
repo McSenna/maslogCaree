@@ -11,6 +11,8 @@ import SplashScreen from "@/screens/SplashScreen";
 import { useAppInitialization } from "@/hooks/useAppInitialization";
 import { screenTransition, useReducedMotion } from "@/design/motion";
 
+import { usePushNotifications } from "@/features/notifications";
+
 enableScreens(true);
 
 const ThemedStack = () => {
@@ -27,9 +29,10 @@ const ThemedStack = () => {
       }}
     />
   );
-}
+};
 
 const AppShell = () => {
+  usePushNotifications();
   const { showSplash, ready } = useAppInitialization();
 
   return (
