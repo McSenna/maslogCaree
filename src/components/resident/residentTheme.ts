@@ -28,16 +28,6 @@ export const TONES: Record<AccentTone, ToneStyle> = {
   pink: { bg: "#FDE9EE", fg: "#E11D48" },
 };
 
-export type StatusStyle = { bg: string; fg: string };
-
-export const STATUS_STYLES: Record<string, StatusStyle> = {
-  pending: { bg: "#FEF3C7", fg: "#B45309" },
-  confirmed: { bg: "#DCFCE7", fg: "#15803D" },
-  rescheduled: { bg: "#DBEAFE", fg: "#1D4ED8" },
-  declined: { bg: "#FEE2E2", fg: "#B91C1C" },
-  unknown: { bg: "#E8EEF7", fg: "#475569" },
-};
-
 export const CARD = {
   radius: 16,
   radiusSm: 12,

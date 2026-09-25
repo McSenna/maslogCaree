@@ -1,6 +1,6 @@
 import * as ImagePicker from "expo-image-picker";
 
-import { showAlert } from "@/utils/notify";
+import { toast } from "@/components/feedback/toast/toastStore";
 
 export type DocumentSelectedHandler = (
   base64DataUri: string,
@@ -34,7 +34,7 @@ export const pickImageFromGallery = async ({ onSelected, setProcessing }: Picker
   try {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      showAlert(
+      toast.error(
         "Permission Required",
         "Please grant media library permissions to upload your Government ID."
       );
@@ -54,11 +54,11 @@ export const pickImageFromGallery = async ({ onSelected, setProcessing }: Picker
       if (asset.base64) {
         forwardAsset(asset, `id_${Date.now()}.jpg`, onSelected);
       } else {
-        showAlert("Upload Error", "Could not process image base64 data.");
+        toast.error("Upload Error", "Could not process image base64 data.");
       }
     }
   } catch {
-    showAlert("Upload Error", "An error occurred while picking the ID image.");
+    toast.error("Upload Error", "An error occurred while picking the ID image.");
   } finally {
     setProcessing(false);
   }
@@ -68,7 +68,7 @@ export const captureIdPhoto = async ({ onSelected, setProcessing }: PickerContex
   try {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      showAlert("Permission Required", "Please grant camera permissions to capture your ID.");
+      toast.error("Permission Required", "Please grant camera permissions to capture your ID.");
       return;
     }
 
@@ -93,7 +93,7 @@ export const captureIdPhoto = async ({ onSelected, setProcessing }: PickerContex
       }
     }
   } catch {
-    showAlert("Camera Error", "Failed to capture photo.");
+    toast.error("Camera Error", "Failed to capture photo.");
   } finally {
     setProcessing(false);
   }

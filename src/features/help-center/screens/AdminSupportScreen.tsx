@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Platform, ScrollView, View, useWindowDimensions } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
-import { BREAKPOINTS } from "@/constants/breakpoints";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 
@@ -13,16 +12,17 @@ import AdminSupportToolbar from "../admin/AdminSupportToolbar";
 import AdminTicketDetailsDialog from "../admin/AdminTicketDetailsDialog";
 import SupportTicketList from "../support/SupportTicketList";
 import { useAdminSupportTickets } from "../hooks/useAdminSupportTickets";
+import { useResponsive } from "@/hooks/useResponsive";
 
 const AdminSupportScreen = () => {
-  const { width } = useWindowDimensions();
+  const { isDesktopWeb, pagePadding, isMobile } = useResponsive();
   const palette = useAdminSurfacePalette();
   const insets = useRoleScreenInsets();
   const support = useAdminSupportTickets();
   const [openTicketId, setOpenTicketId] = useState<string | null>(null);
 
-  const isDesktop = Platform.OS === "web" && width >= BREAKPOINTS.tablet;
-  const horizontalPadding = width >= BREAKPOINTS.xl ? 32 : width >= BREAKPOINTS.tablet ? 24 : insets.gutter;
+  const isDesktop = isDesktopWeb;
+  const horizontalPadding = isMobile ? insets.gutter : pagePadding;
 
   return (
     <View style={{ flex: 1, backgroundColor: palette.pageBg, width: "100%" }}>

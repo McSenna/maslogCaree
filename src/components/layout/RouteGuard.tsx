@@ -2,7 +2,7 @@ import { useEffect, type ReactNode } from "react";
 import { Redirect, type Href } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { forceLogout } from "@/services/authEvents";
-import { getDashboardPath, type UserRole } from "@/data/mockUsers";
+import { getDashboardPath, type UserRole } from "@/config/roleRoutes";
 import { isBlockedOnThisPlatform } from "@/config/platformAccess";
 import PageLoader from "@/components/feedback/PageLoader";
 

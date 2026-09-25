@@ -7,6 +7,7 @@ import type {
   SupportTicket,
   SupportTicketPage,
 } from "../types/support.types";
+import { toTicketPage } from "./ticketPage";
 
 type TicketResponse = { success: boolean; ticket: SupportTicket };
 type MessageResponse = { success: boolean; message: SupportMessage };
@@ -44,11 +45,11 @@ export const fetchMySupportTickets = async (
   page = 1,
   limit?: number
 ): Promise<SupportTicketPage> => {
-  const { data } = await api.get<SupportTicketPage>("/support/tickets/my", {
+  const { data } = await api.get<Partial<SupportTicketPage>>("/support/tickets/my", {
     params: { page, ...(limit ? { limit } : null) },
   });
 
-  return data;
+  return toTicketPage(data, page);
 };
 
 export const fetchMySupportTicket = async (ticketId: string): Promise<SupportTicket> => {

@@ -1,7 +1,8 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 
-import { statusLabel } from "@/utils/appointmentDisplay";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
+import { getStatusLabel } from "@/components/status/appointmentStatusModel";
 
 import { STATUS_ICON, STATUS_TONE } from "./recordPresentation";
 
@@ -48,9 +49,7 @@ const RecordCard = ({
             {staff ? ` · ${staff}` : ""}
           </Text>
         </View>
-        <View className={`rounded-full px-2.5 py-1 ${tone.bg}`}>
-          <Text className={`text-xs font-semibold ${tone.text}`}>{statusLabel(status)}</Text>
-        </View>
+        <AppointmentStatusBadge status={status} audience="resident" />
       </View>
 
       {hasNotes ? (
@@ -88,7 +87,7 @@ const RecordCard = ({
       <Pressable
         onPress={onPress}
         accessibilityRole="button"
-        accessibilityLabel={`${typeLabel}, ${statusLabel(status)}, ${when}. Tap to view medical details.`}
+        accessibilityLabel={`${typeLabel}, ${getStatusLabel(status, "resident")}, ${when}. Tap to view medical details.`}
         className="gap-3 rounded-2xl border border-slate-200 bg-white p-4 active:opacity-80"
       >
         {content}
@@ -101,7 +100,7 @@ const RecordCard = ({
       className="gap-3 rounded-2xl border border-slate-200 bg-white p-4"
       accessible
       accessibilityRole="summary"
-      accessibilityLabel={`${typeLabel}, ${statusLabel(status)}, ${when}${staff ? `, ${staff}` : ""}`}
+      accessibilityLabel={`${typeLabel}, ${getStatusLabel(status, "resident")}, ${when}${staff ? `, ${staff}` : ""}`}
     >
       {content}
     </View>

@@ -1,12 +1,11 @@
-import { useWindowDimensions } from "react-native";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useResponsive } from "@/hooks/useResponsive";
 import ResidentDetailsPanel, { type ResidentDetailsProps } from "./ResidentDetailsPanel";
 import ResidentDetailsSheet from "./ResidentDetailsSheet";
 
 const ResidentDetails = (props: ResidentDetailsProps) => {
-  const { width } = useWindowDimensions();
+  const { isMobile } = useResponsive();
 
-  return width < BREAKPOINTS.tablet ? (
+  return isMobile ? (
     <ResidentDetailsSheet {...props} />
   ) : (
     <ResidentDetailsPanel {...props} />

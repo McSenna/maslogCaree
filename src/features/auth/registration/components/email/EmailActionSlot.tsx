@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type Ref } from "react";
 import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
@@ -11,6 +11,7 @@ type EmailActionSlotProps = {
   height: number;
   minWidth: number;
   fontSize: number;
+  buttonRef?: Ref<View>;
 };
 
 const TONE_COLORS = {
@@ -26,6 +27,7 @@ const EmailActionSlot = ({
   height,
   minWidth,
   fontSize,
+  buttonRef,
 }: EmailActionSlotProps) => {
   const [hovered, setHovered] = useState(false);
   const [pressed, setPressed] = useState(false);
@@ -36,6 +38,7 @@ const EmailActionSlot = ({
 
   return (
     <Pressable
+      ref={buttonRef}
       accessibilityRole="button"
       accessibilityLabel={action.accessibilityLabel}
       accessibilityState={{ disabled: action.disabled, busy: action.tone === "busy" }}

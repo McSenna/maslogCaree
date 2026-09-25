@@ -1,4 +1,4 @@
-import InventoryStateBlock from "./InventoryStateBlock";
+import StateBlock from "@/components/ui/StateBlock";
 
 type InventoryEmptyStateProps = {
   error: string | null;
@@ -19,7 +19,7 @@ const InventoryEmptyState = ({
 }: InventoryEmptyStateProps) => {
   if (error) {
     return (
-      <InventoryStateBlock
+      <StateBlock
         icon="alert-circle"
         tone="error"
         title="Unable to load inventory."
@@ -31,7 +31,7 @@ const InventoryEmptyState = ({
 
   if (hasActiveFilters) {
     return (
-      <InventoryStateBlock
+      <StateBlock
         icon="search"
         tone="neutral"
         title="No inventory items found."
@@ -42,7 +42,7 @@ const InventoryEmptyState = ({
   }
 
   return (
-    <InventoryStateBlock
+    <StateBlock
       icon="package"
       tone="neutral"
       title="No inventory items yet"

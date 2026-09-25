@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Platform, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { APPOINTMENT_COLORS, APPOINTMENT_METRICS, TEXT_LIMIT } from "./appointmentTheme";
 import FieldLabel from "./FieldLabel";
+import { webStyle } from "@/theme/webStyle";
 
 type FormTextAreaProps = {
   label: string;
@@ -76,7 +77,7 @@ const FormTextArea = ({
               lineHeight: 20,
               color: APPOINTMENT_COLORS.bodyText,
               padding: 0,
-              ...Platform.select({ web: { outlineStyle: "none" } as any }),
+              ...webStyle({ outlineStyle: "none" }),
             }}
           />
         </View>

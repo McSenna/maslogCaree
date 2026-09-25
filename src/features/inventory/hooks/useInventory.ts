@@ -12,6 +12,7 @@ import {
   type InventorySupplier,
 } from "@/features/inventory/services/inventoryService";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { useLatestRef } from "@/hooks/useLatestRef";
 
 const EMPTY_SUMMARY: InventorySummary = {
   total: { value: 0, growth: null },
@@ -86,6 +87,7 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void load("initial");
   }, [load]);
 
@@ -107,8 +109,7 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
   const reload = useCallback(() => load("initial"), [load]);
   const refresh = useCallback(() => load("refresh"), [load]);
 
-  const loadRef = useRef(load);
-  loadRef.current = load;
+  const loadRef = useLatestRef(load);
   const hasFocused = useRef(false);
 
   useFocusEffect(
@@ -118,7 +119,7 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
         return;
       }
       void loadRef.current("refresh");
-    }, [])
+    }, [loadRef])
   );
 
   const applyItemUpdate = useCallback((updated: InventoryItem) => {

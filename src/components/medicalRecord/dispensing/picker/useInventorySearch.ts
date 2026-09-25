@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 
 import {
   fetchInventoryItems,
@@ -28,14 +29,14 @@ export const useInventorySearch = (visible: boolean, category?: InventoryCategor
     return () => clearTimeout(timer);
   }, [search, visible]);
 
-  useEffect(() => {
+  useSyncOnChange([visible], () => {
     if (visible) return;
     setSearch("");
     setDebounced("");
     setItems([]);
     setPage(1);
     setError(null);
-  }, [visible]);
+  });
 
   const load = useCallback(
     async (targetPage: number, term: string) => {
@@ -71,6 +72,7 @@ export const useInventorySearch = (visible: boolean, category?: InventoryCategor
 
   useEffect(() => {
     if (!visible) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void load(1, debounced);
   }, [visible, debounced, load]);
 

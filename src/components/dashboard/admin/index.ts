@@ -1,10 +1,9 @@
 export { default as ActivityTrendPanel } from "./ActivityTrendPanel";
 export { default as AdminDashboardSkeleton } from "./AdminDashboardSkeleton";
-export { default as BusiestDayCard } from "./BusiestDayCard";
 export { default as ChartTooltip } from "./ChartTooltip";
 export { default as DashboardErrorState } from "./DashboardErrorState";
 export { default as RegistrationTrendPanel } from "./RegistrationTrendPanel";
-export { default as DashboardIntro } from "./DashboardIntro";
+export { default as DashboardDate } from "./DashboardDate";
 export { default as MetricCard } from "./MetricCard";
 export { default as TrendPill } from "./TrendPill";
 export { default as PanelCard } from "./PanelCard";

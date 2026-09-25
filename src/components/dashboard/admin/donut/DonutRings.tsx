@@ -104,7 +104,7 @@ const DonutRings = ({
             width: HOTSPOT_SIZE,
             height: HOTSPOT_SIZE,
             borderRadius: HOTSPOT_SIZE / 2,
-            ...Platform.select({ web: { cursor: "pointer" } as any }),
+            ...Platform.select({ web: { cursor: "pointer" } }),
           }}
         />
       ))}

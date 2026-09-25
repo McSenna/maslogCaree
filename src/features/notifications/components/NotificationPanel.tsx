@@ -67,12 +67,14 @@ const NotificationPanel = ({ visible, onClose, bellPosition }: NotificationPanel
 
   return (
     <Modal visible={modalVisible} transparent animationType="none" onRequestClose={animateClose} statusBarTranslucent>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Close notifications"
-        onPress={animateClose}
-        style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0, backgroundColor: palette.scrim }}
-      />
+      <Animated.View style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0, opacity }}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Close notifications"
+          onPress={animateClose}
+          style={{ flex: 1, backgroundColor: palette.scrim }}
+        />
+      </Animated.View>
 
       <Animated.View
         ref={attachFocusTrap as never}
@@ -84,6 +86,7 @@ const NotificationPanel = ({ visible, onClose, bellPosition }: NotificationPanel
           width: placement.width,
           maxHeight: placement.maxHeight,
           opacity,
+          transformOrigin: "top right",
           transform: [{ translateY }, { scale }],
         }}
       >

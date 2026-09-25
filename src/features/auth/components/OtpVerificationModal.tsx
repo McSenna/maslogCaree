@@ -1,16 +1,27 @@
-import { Feather } from "@expo/vector-icons";
-import { Modal, Text, View } from "react-native";
+import { useId } from "react";
+import { Modal, ScrollView, Text, View } from "react-native";
 
+import FieldMessage from "@/components/forms/FieldMessage";
+import BrandedDialogHeader from "@/components/ui/dialog/BrandedDialogHeader";
+import OtpCodeInput from "@/components/ui/OtpCodeInput";
+import { useThemedOtpPalette } from "@/components/ui/otp/useThemedOtpPalette";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import { useAuth } from "@/contexts/AuthContext";
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
 import PlatformAccessModal from "@/features/auth/components/PlatformAccessModal";
+import { maskEmail } from "@/features/auth/registration/components/email/verificationCopy";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { useReducedMotion } from "@/theme/motion";
+import { RADII } from "@/theme/radius";
+import { SHADOWS } from "@/theme/shadows";
+import { SPACING } from "@/theme/spacing";
 
-import OtpDigitRow from "./otp/OtpDigitRow";
 import OtpModalActions from "./otp/OtpModalActions";
-import OtpModalHeader from "./otp/OtpModalHeader";
-import { useOtpVerification } from "./otp/useOtpVerification";
+import OtpSpamHint from "./otp/OtpSpamHint";
+import { OTP_LENGTH, useOtpVerification } from "./otp/useOtpVerification";
 
-const MC_PRIMARY = "#2A7DE1";
+const CARD_EDGE = SPACING.lg;
 
 export type OtpVerificationModalProps = {
   visible: boolean;
@@ -19,71 +30,99 @@ export type OtpVerificationModalProps = {
   onVerified?: () => void;
 };
 
-const OtpVerificationModal = ({
-  visible,
-  email,
-  onClose,
-  onVerified,
-}: OtpVerificationModalProps) => {
+const OtpVerificationModal = ({ visible, email, onClose, onVerified }: OtpVerificationModalProps) => {
   const { logout } = useAuth();
+  const colors = useThemeColors();
+  const palette = useThemedOtpPalette();
+  const reducedMotion = useReducedMotion();
+  const messageId = useId();
   const otp = useOtpVerification({ email, onClose, onVerified });
-  // KeyboardAvoidingView is inert inside a statusBarTranslucent modal on
-  // Android, which left the keyboard over the OTP digits. Reserving the
-  // keyboard's height re-centres the card in the space that is left.
-  const keyboardInset = useKeyboardInset(visible);
+  const layout = useSheetLayout({ enabled: visible, variant: "centered", edgePadding: CARD_EDGE });
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={otp.handleClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, otp.handleClose)}
       statusBarTranslucent
     >
-      <View
-        className="flex-1 justify-center px-4"
-        style={{ backgroundColor: "rgba(15, 23, 42, 0.6)", paddingBottom: keyboardInset }}
-      >
+      <SheetViewport layout={layout} style={{ backgroundColor: colors.overlay, paddingHorizontal: CARD_EDGE }}>
         <View
-          className="w-full max-w-md rounded-2xl bg-white overflow-hidden self-center"
-          style={{ boxShadow: "0px 12px 24px rgba(15,23,42,0.2)", elevation: 12 }}
+          style={[
+            {
+              width: "100%",
+              maxWidth: 440,
+              maxHeight: layout.maxHeight,
+              alignSelf: "center",
+              overflow: "hidden",
+              borderRadius: RADII.modal,
+              backgroundColor: colors.surface,
+            },
+            SHADOWS.overlay,
+          ]}
         >
-          <OtpModalHeader email={email} onClose={otp.handleClose} />
+          <BrandedDialogHeader
+            icon="shield"
+            eyebrow="Email verification"
+            title="Verify your email"
+            closeLabel="Close verification"
+            onClose={otp.handleClose}
+            description={
+              <>
+                We sent a {OTP_LENGTH}-digit code to{" "}
+                <Text style={{ fontWeight: "700", color: "#FFFFFF" }}>{maskEmail(email)}</Text>.
+              </>
+            }
+          />
 
-          <View className="px-5 py-5 gap-4">
-            <OtpDigitRow
-              otpDigits={otp.otpDigits}
-              inputRefs={otp.inputRefs}
-              verificationError={otp.verificationError}
-              isVerifying={otp.isVerifying}
-              onDigitChange={otp.handleDigitChange}
-              onKeyPress={otp.handleKeyPress}
-            />
+          <ScrollView
+            style={{ flexGrow: 0, flexShrink: 1 }}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ padding: SPACING.xl - 4, gap: SPACING.lg }}
+          >
+            <View style={{ gap: SPACING.sm }}>
+              <OtpCodeInput
+                label="Verification code"
+                value={otp.code}
+                onChange={otp.setCode}
+                onSubmit={() => void otp.handleVerify()}
+                palette={palette}
+                length={OTP_LENGTH}
+                disabled={otp.isVerifying || otp.verified}
+                invalid={Boolean(otp.verificationError)}
+                success={otp.verified}
+                describedBy={messageId}
+                focusRequest={otp.focusRequest}
+                reducedMotion={reducedMotion}
+              />
+              <FieldMessage
+                nativeID={messageId}
+                error={otp.verificationError || null}
+                helper={otp.verified ? "Email verified" : "Paste the code or type it digit by digit."}
+              />
+            </View>
 
             <OtpModalActions
               isResending={otp.isResending}
               resendTimer={otp.resendTimer}
               resendDisabled={otp.resendDisabled}
               isVerifying={otp.isVerifying}
+              verified={otp.verified}
               otpComplete={otp.otpComplete}
-              onResend={otp.handleResend}
-              onVerify={otp.handleVerify}
+              onResend={() => void otp.handleResend()}
+              onVerify={() => void otp.handleVerify()}
               onSwitchAccount={logout}
             />
-          </View>
+          </ScrollView>
 
-          <View className="bg-slate-50 px-5 py-3.5 border-t border-slate-200 flex-row items-center gap-2">
-            <Feather name="info" size={13} color={MC_PRIMARY} />
-            <Text className="text-[10px] text-slate-600 flex-1 leading-relaxed">
-              Can&apos;t find the email? Check your spam or junk folder.
-            </Text>
-          </View>
+          <OtpSpamHint />
         </View>
-      </View>
+      </SheetViewport>
 
       <PlatformAccessModal
         visible={otp.showPlatformNotice}
-        title="Account Created — Mobile App Required"
+        title="Account created — mobile app required"
         message={
           "Your email has been verified and your MaslogCare account is ready.\n\n" +
           "Resident accounts sign in through the MaslogCare mobile application."

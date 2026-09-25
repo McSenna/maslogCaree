@@ -6,10 +6,12 @@ import { NotificationsProvider } from "@/contexts/NotificationsContext";
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import ActionDialogHost from "@/components/feedback/dialog/ActionDialogHost";
+import ToastViewport from "@/components/feedback/toast/ToastViewport";
+import HydrationBoundary from "@/components/layout/HydrationBoundary";
 import { enableScreens } from "react-native-screens";
-import SplashScreen from "@/screens/SplashScreen";
 import { useAppInitialization } from "@/hooks/useAppInitialization";
-import { screenTransition, useReducedMotion } from "@/design/motion";
+import { screenTransition, useReducedMotion } from "@/theme/motion";
 
 import { usePushNotifications } from "@/features/notifications";
 
@@ -33,12 +35,15 @@ const ThemedStack = () => {
 
 const AppShell = () => {
   usePushNotifications();
-  const { showSplash, ready } = useAppInitialization();
+  useAppInitialization();
 
   return (
     <View className="flex-1">
-      <ThemedStack />
-      {showSplash ? <SplashScreen visible={!ready} /> : null}
+      <HydrationBoundary>
+        <ThemedStack />
+        <ToastViewport />
+        <ActionDialogHost />
+      </HydrationBoundary>
     </View>
   );
 };
@@ -57,6 +62,6 @@ const RootLayout = () => {
       </SafeAreaProvider>
     </ErrorBoundary>
   );
-}
+};
 
 export default RootLayout;

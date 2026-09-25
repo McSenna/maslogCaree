@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { AccessibilityInfo, Animated, Easing } from "react-native";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 export const useMountProgress = (durationMs = 600, resetKey: unknown = "static"): Animated.Value => {
-  const progress = useRef(new Animated.Value(0)).current;
+  const progress = useAnimatedValue(0);
 
   useEffect(() => {
     let cancelled = false;

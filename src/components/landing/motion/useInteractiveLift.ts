@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Animated } from "react-native";
-import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
 import { LIFT_SPRING } from "./landingMotion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type LiftOptions = {
   lift?: number;
@@ -18,8 +19,8 @@ export const useInteractiveLift = ({
   const [hovered, setHovered] = useState(false);
   const [pressed, setPressed] = useState(false);
 
-  const translateY = useRef(new Animated.Value(0)).current;
-  const scale = useRef(new Animated.Value(1)).current;
+  const translateY = useAnimatedValue(0);
+  const scale = useAnimatedValue(1);
 
   useEffect(() => {
     const targetY = reducedMotion || pressed ? 0 : hovered ? -lift : 0;

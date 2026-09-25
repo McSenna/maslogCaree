@@ -8,7 +8,10 @@ import {
   View,
   useWindowDimensions,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import type { InventoryItem, InventoryPermissions } from "@/features/inventory/services/inventoryService";
@@ -39,8 +42,8 @@ const InventoryDetailsSheet = ({
   handlers,
 }: InventoryDetailsSheetProps) => {
   const palette = useInventoryPalette();
-  const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
+  const layout = useSheetLayout({ enabled: visible, maxHeightRatio: 0.9 });
 
   if (!item) return null;
 
@@ -51,10 +54,10 @@ const InventoryDetailsSheet = ({
       visible={visible}
       transparent
       animationType="slide"
-      onRequestClose={onClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <View className="flex-1 justify-end" style={{ backgroundColor: "rgba(15,37,87,0.35)" }}>
+      <SheetViewport layout={layout} style={{ backgroundColor: "rgba(15,37,87,0.35)" }}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Close inventory item details"
@@ -65,7 +68,7 @@ const InventoryDetailsSheet = ({
         <View
           className="w-full overflow-hidden"
           style={{
-            maxHeight: height * 0.9,
+            maxHeight: layout.maxHeight,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
             backgroundColor: palette.cardBg,
@@ -135,7 +138,7 @@ const InventoryDetailsSheet = ({
             style={{
               borderTopWidth: 1,
               borderTopColor: palette.divider,
-              paddingBottom: Math.max(insets.bottom, 12) + 4,
+              paddingBottom: Math.max(layout.bottomInset, 12) + 4,
             }}
           >
             <InventoryActions
@@ -146,7 +149,7 @@ const InventoryDetailsSheet = ({
             />
           </View>
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

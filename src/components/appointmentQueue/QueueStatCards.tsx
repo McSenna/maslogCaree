@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
+import ResponsiveGrid from "@/components/layout/ResponsiveGrid";
 import type { QueueOverview } from "@/services/appointments";
 import { QUEUE_RADIUS, STAT_CARDS, useQueuePalette, type QueuePalette } from "./queueTheme";
 
@@ -26,7 +27,7 @@ const StatCard = ({
     <View
       accessibilityRole="summary"
       accessibilityLabel={`${label}: ${loading ? "loading" : value} ${caption}`}
-      className={`min-w-0 flex-1 flex-row items-center border p-4 ${compact ? "gap-3" : "gap-3.5"}`}
+      className={`min-w-0 flex-1 border p-4 ${compact ? "items-start gap-2.5" : "flex-row items-center gap-3.5"}`}
       style={{
         borderRadius: QUEUE_RADIUS.panel,
         backgroundColor: palette.panelBg,
@@ -44,7 +45,7 @@ const StatCard = ({
         <Feather name={icon} size={compact ? 18 : 21} color={tone.fg} />
       </View>
 
-      <View className="min-w-0 flex-1">
+      <View className={compact ? "w-full min-w-0" : "min-w-0 flex-1"}>
         <Text
           numberOfLines={compact ? 2 : 1}
           className="text-[13px] font-medium"
@@ -86,28 +87,27 @@ const QueueStatCards = ({
   const palette = useQueuePalette();
 
   return (
-    <View className={`w-full gap-3.5 ${wide ? "flex-row" : "flex-row flex-wrap"}`}>
+    <ResponsiveGrid
+      minColumnWidth={wide ? 200 : 128}
+      maxColumns={4}
+      columnOptions={[1, 2, 4]}
+      gap={14}
+      initialColumns={{ mobile: 2, desktop: 4 }}
+    >
       {STAT_CARDS.map((card) => (
-        <View
+        <StatCard
           key={card.key}
-          className="min-w-0"
-          style={wide ? { flex: 1 } : { flexBasis: "47%", flexGrow: 1 }}
-        >
-          <StatCard
-            label={card.label}
-            caption={card.caption}
-            icon={card.icon}
-            tone={palette.tones[card.tone]}
-            palette={palette}
-            loading={loading}
-            compact={!wide}
-            value={
-              overview ? (overview.stats[card.key as keyof QueueOverview["stats"]] ?? 0) : 0
-            }
-          />
-        </View>
+          label={card.label}
+          caption={card.caption}
+          icon={card.icon}
+          tone={palette.tones[card.tone]}
+          palette={palette}
+          loading={loading}
+          compact={!wide}
+          value={overview ? (overview.stats[card.key as keyof QueueOverview["stats"]] ?? 0) : 0}
+        />
       ))}
-    </View>
+    </ResponsiveGrid>
   );
 };
 

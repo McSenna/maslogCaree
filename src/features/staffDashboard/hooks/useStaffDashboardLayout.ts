@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { useWindowDimensions } from "react-native";
-import { SIDEBAR_WIDTH } from "@/components/navigation/sidebar/sidebarTheme";
+import { getSidebarWidth } from "@/components/navigation/sidebar/sidebarTheme";
+import { useResponsive } from "@/hooks/useResponsive";
 import { DASHBOARD_BREAKPOINTS } from "@/design/adminDashboardTheme";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { DENSE_METRIC_MAX_WIDTH } from "@/features/adminDashboard/constants/dashboardLayout";
 
 export const useStaffDashboardLayout = () => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, breakpoint, isMobile } = useResponsive();
   const insets = useRoleScreenInsets();
 
   const [measuredWidth, setMeasuredWidth] = useState(0);
 
-  const isMobile = windowWidth < DASHBOARD_BREAKPOINTS.mobile;
   const gap = isMobile ? 12 : 16;
 
   const availableWidth =
@@ -20,7 +19,7 @@ export const useStaffDashboardLayout = () => {
       280,
       windowWidth -
         insets.layoutPadding.horizontal * 2 -
-        (isMobile ? 0 : SIDEBAR_WIDTH) -
+        getSidebarWidth(breakpoint) -
         insets.gutter * 2
     );
 

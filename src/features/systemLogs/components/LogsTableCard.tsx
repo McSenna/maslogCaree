@@ -66,7 +66,11 @@ const LogsTableCard = ({
             if (next > 0 && next !== tableAreaWidth) onTableAreaWidth(next);
           }}
         >
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {/* Show the scrollbar only when columns overflow, so clipped columns are discoverable. */}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={tableAreaWidth > 0 && tableAreaWidth < LOGS_TABLE_MIN_WIDTH}
+          >
             <View style={{ width: Math.max(tableAreaWidth, LOGS_TABLE_MIN_WIDTH) }}>
               <LogsTable logs={logs} selectedId={selectedId} onSelect={onSelect} />
             </View>

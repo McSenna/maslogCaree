@@ -36,7 +36,7 @@ export const residentNavItems: NavItem[] = [
 ];
 
 export const adminBottomNavItems: NavItem[] = [
-  { label: "Dashboard", href: "/admin/dashboard", icon: "layout" },
+  { label: "Dashboard", shortLabel: "Home", href: "/admin/dashboard", icon: "layout" },
   { label: "Users", href: "/admin/users", icon: "users" },
   { label: "Inventory", href: "/admin/inventory", icon: "box" },
   { label: "Logs", href: "/admin/system-logs", icon: "shield" },
@@ -44,35 +44,34 @@ export const adminBottomNavItems: NavItem[] = [
 ];
 
 export const doctorBottomNavItems: NavItem[] = [
-  { label: "Dashboard", href: "/doctor/dashboard", icon: "layout" },
+  { label: "Dashboard", shortLabel: "Home", href: "/doctor/dashboard", icon: "layout" },
   { label: "Queue", href: "/doctor/mission", icon: "calendar" },
   { label: "Inventory", href: "/doctor/inventory", icon: "box" },
-  { label: "Notifications", href: "/doctor/notifications", icon: "bell" },
+  { label: "Notifications", shortLabel: "Alerts", href: "/doctor/notifications", icon: "bell" },
   { label: "Profile", href: "/doctor/profile", icon: "user" },
 ];
 
 export const midwifeBottomNavItems: NavItem[] = [
-  { label: "Dashboard", href: "/midwife/dashboard", icon: "layout" },
+  { label: "Dashboard", shortLabel: "Home", href: "/midwife/dashboard", icon: "layout" },
   { label: "Queue", href: "/midwife/mission", icon: "calendar" },
-  { label: "Patients", href: "/midwife/patients", icon: "users" },
   { label: "Inventory", href: "/midwife/inventory", icon: "box" },
-  { label: "Notifications", href: "/midwife/notifications", icon: "bell" },
+  { label: "Notifications", shortLabel: "Alerts", href: "/midwife/notifications", icon: "bell" },
   { label: "Profile", href: "/midwife/profile", icon: "user" },
 ];
 
 export const bhwBottomNavItems: NavItem[] = [
-  { label: "Dashboard", href: "/bhw/dashboard", icon: "layout" },
+  { label: "Dashboard", shortLabel: "Home", href: "/bhw/dashboard", icon: "layout" },
   { label: "Queue", href: "/bhw/mission", icon: "calendar" },
   { label: "Residents", href: "/bhw/residents", icon: "users" },
   { label: "Inventory", href: "/bhw/inventory", icon: "box" },
-  { label: "Notifications", href: "/bhw/notifications", icon: "bell" },
+  { label: "Notifications", shortLabel: "Alerts", href: "/bhw/notifications", icon: "bell" },
   { label: "Profile", href: "/bhw/profile", icon: "user" },
 ];
 
 export const residentBottomNavItems: NavItem[] = [
   { label: "Home", href: "/resident/dashboard", icon: "home" },
   { label: "Appointments", href: "/resident/appointments", icon: "calendar" },
-  { label: "Medical Records", href: "/resident/medical-records", icon: "file-text" },
-  { label: "Notifications", href: "/resident/notifications", icon: "bell" },
+  { label: "Medical Records", shortLabel: "Records", href: "/resident/medical-records", icon: "file-text" },
+  { label: "Notifications", shortLabel: "Alerts", href: "/resident/notifications", icon: "bell" },
   { label: "Profile", href: "/resident/profile", icon: "user" },
 ];

@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import type { QueuePalette } from "@/components/appointmentQueue/queueTheme";
 
 type MissionToolsSheetProps = {
@@ -21,19 +23,24 @@ const MissionToolsSheet = ({
   palette,
   children,
 }: MissionToolsSheetProps) => {
-  const insets = useSafeAreaInsets();
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isPhone ? "sheet" : "centered",
+    maxHeightRatio: 0.92,
+    edgePadding: isPhone ? 0 : 16,
+  });
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType={isPhone ? "slide" : "fade"}
-      onRequestClose={onClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <View
-        className={`flex-1 ${isPhone ? "justify-end" : "items-center justify-center p-4"}`}
-        style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
+      <SheetViewport
+        layout={layout}
+        style={{ backgroundColor: "rgba(15,37,87,0.35)", paddingHorizontal: isPhone ? 0 : 16 }}
       >
         <Pressable
           accessibilityRole="button"
@@ -46,7 +53,7 @@ const MissionToolsSheet = ({
           className="w-full overflow-hidden"
           style={{
             maxWidth: isPhone ? undefined : 640,
-            maxHeight: "92%",
+            maxHeight: layout.maxHeight,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             borderBottomLeftRadius: isPhone ? 0 : 24,
@@ -92,13 +99,13 @@ const MissionToolsSheet = ({
               padding: 16,
               gap: 20,
               // Keeps the last tool clear of the gesture bar / home indicator.
-              paddingBottom: 16 + (isPhone ? Math.max(insets.bottom, 0) : 0),
+              paddingBottom: 16 + (isPhone ? layout.bottomInset : 0),
             }}
           >
             {children}
           </ScrollView>
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

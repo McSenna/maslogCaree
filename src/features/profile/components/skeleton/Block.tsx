@@ -1,4 +1,5 @@
 import { Animated } from "react-native";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 const Block = ({
   width,
@@ -11,13 +12,14 @@ const Block = ({
   radius?: number;
   opacity: Animated.Value;
 }) => {
+  const colors = useThemeColors();
   return (
     <Animated.View
       style={{
         width,
         height,
         borderRadius: radius,
-        backgroundColor: "#E7EDF5",
+        backgroundColor: colors.skeleton,
         opacity,
       }}
     />

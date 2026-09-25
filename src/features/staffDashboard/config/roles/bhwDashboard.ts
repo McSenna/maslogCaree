@@ -3,11 +3,10 @@ import { plural, progressCaption } from "./dashboardConfigTypes";
 
 export const BHW: RoleDashboardConfig = {
   role: "bhw",
-  badge: "BHW",
-  tagline: "Here's your blood pressure monitoring for today.",
   metrics: [
     {
       key: "today",
+      route: "mission",
       label: "BP Checks Today",
       icon: "activity",
       tone: "blue",
@@ -16,6 +15,7 @@ export const BHW: RoleDashboardConfig = {
     },
     {
       key: "waiting",
+      route: "mission",
       label: "Waiting for Check",
       icon: "clock",
       tone: "pink",
@@ -25,6 +25,7 @@ export const BHW: RoleDashboardConfig = {
     },
     {
       key: "completed",
+      route: "mission",
       label: "Completed Today",
       icon: "check-circle",
       tone: "green",
@@ -33,6 +34,7 @@ export const BHW: RoleDashboardConfig = {
     },
     {
       key: "upcoming",
+      route: "mission",
       label: "Upcoming Checks",
       icon: "calendar",
       tone: "purple",

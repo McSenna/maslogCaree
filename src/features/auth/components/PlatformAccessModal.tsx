@@ -48,7 +48,7 @@ const PlatformAccessModal = ({
 
         <View
           accessibilityViewIsModal
-          accessibilityRole={Platform.OS === "web" ? ("dialog" as any) : undefined}
+          role={Platform.OS === "web" ? "dialog" : undefined}
           accessibilityLabel={title}
           className="w-full items-center"
           style={{
@@ -61,7 +61,7 @@ const PlatformAccessModal = ({
             paddingTop: 28,
             paddingBottom: 22,
             ...Platform.select({
-              web: { boxShadow: "0px 18px 48px rgba(8, 21, 47, 0.16)" } as any,
+              web: { boxShadow: "0px 18px 48px rgba(8, 21, 47, 0.16)" },
               default: {
                 elevation: 8,
                 shadowColor: "#08152F",

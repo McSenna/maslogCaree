@@ -16,13 +16,11 @@ const ELEVATION: ViewStyle =
 export const buildSheetSurfaceStyle = ({
   isSheet,
   maxHeight,
-  marginBottom,
   desktopWidth,
   surface,
 }: {
   isSheet: boolean;
   maxHeight: number;
-  marginBottom: number;
   desktopWidth: number;
   surface: string;
 }): ViewStyle => ({
@@ -31,7 +29,6 @@ export const buildSheetSurfaceStyle = ({
   maxWidth: isSheet ? undefined : desktopWidth,
   maxHeight,
   flexDirection: "column",
-  marginBottom,
   backgroundColor: surface,
   borderTopLeftRadius: SHEET_RADIUS,
   borderTopRightRadius: SHEET_RADIUS,

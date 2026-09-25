@@ -1,4 +1,4 @@
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 
 const MISSION_MANAGER_ROLES: readonly string[] = ["doctor", "admin"];
 

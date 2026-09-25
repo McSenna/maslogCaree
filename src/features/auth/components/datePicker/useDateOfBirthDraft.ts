@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 
 import { DEFAULT_BIRTH_YEAR } from "../../constants/registrationFields";
 import { toIsoBirthDate } from "../../utils/dateOfBirth";
@@ -16,14 +17,14 @@ export const useDateOfBirthDraft = (value: string, visible: boolean) => {
   const [selected, setSelected] = useState(value && initial ? value : "");
 
   // Re-seed the draft each time the picker opens so Cancel truly discards edits.
-  useEffect(() => {
+  useSyncOnChange([visible, value], () => {
     if (!visible) return;
 
     const parsed = parseIsoDate(value);
     setYear(parsed?.year ?? DEFAULT_BIRTH_YEAR);
     setMonthIndex(parsed?.monthIndex ?? 0);
     setSelected(parsed ? value : "");
-  }, [visible, value]);
+  });
 
   const goToPreviousMonth = useCallback(() => {
     setMonthIndex((current) => {

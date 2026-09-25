@@ -14,10 +14,8 @@ import {
   appointmentWhen,
   buildAppointmentTimeline,
   medicalRecordIdOf,
-  residentStatusLabel,
-  statusToneKey,
 } from "../appointmentPresenter";
-import AppointmentSheetActions from "./detailSheet/AppointmentSheetActions";
+import { AppointmentSheetActions } from "./detailSheet/AppointmentSheetActions";
 import AppointmentSheetHeader from "./detailSheet/AppointmentSheetHeader";
 import {
   AppointmentDetailRows,
@@ -56,8 +54,6 @@ const AppointmentDetailSheet = ({
 
   const visual = resolveVisual(getServiceVisual(appointment.consultationType), palette.isDark);
   const service = appointmentServiceLabel(appointment);
-  const status = residentStatusLabel(appointment.status);
-  const tone = palette.statuses[statusToneKey(appointment.status)];
   const recordId = medicalRecordIdOf(appointment);
 
   const rows = [
@@ -77,8 +73,7 @@ const AppointmentDetailSheet = ({
         <AppointmentSheetHeader
           visual={visual}
           service={service}
-          status={status}
-          tone={tone}
+          status={appointment.status}
           when={appointmentWhen(appointment)}
           palette={palette}
           onRequestClose={requestClose}

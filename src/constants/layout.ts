@@ -1,4 +1,4 @@
-export const BOTTOM_NAV_ROW_HEIGHT = 44;
+export const BOTTOM_NAV_ROW_HEIGHT = 52;
 
 export const BOTTOM_NAV_TOP_PADDING = 6;
 

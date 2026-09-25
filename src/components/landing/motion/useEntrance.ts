@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Animated } from "react-native";
-import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
 import { ENTER_DISTANCE, ENTER_DURATION, enterEasing } from "./landingMotion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type EntranceOptions = {
   delay?: number;
@@ -15,7 +16,7 @@ export const useEntrance = ({
   duration = ENTER_DURATION,
 }: EntranceOptions = {}) => {
   const reducedMotion = useReducedMotion();
-  const progress = useRef(new Animated.Value(0)).current;
+  const progress = useAnimatedValue(0);
 
   useEffect(() => {
     if (reducedMotion) {
@@ -46,7 +47,7 @@ export const useEntrance = ({
       {
         translateY: progress.interpolate({
           inputRange: [0, 1],
-          outputRange: [-distance, 0],
+          outputRange: [distance, 0],
         }),
       },
     ],

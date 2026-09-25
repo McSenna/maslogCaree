@@ -1,12 +1,23 @@
 import { Feather } from "@expo/vector-icons";
-import { KeyboardAvoidingView, Modal, Platform, Pressable, Text, View } from "react-native";
+import { Modal, ScrollView, Text, View } from "react-native";
+
+import Button from "@/components/buttons/Button";
+import InlineAlert from "@/components/feedback/InlineAlert";
+import TextField from "@/components/forms/TextField";
+import BrandedDialogHeader from "@/components/ui/dialog/BrandedDialogHeader";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import { SHADOWS } from "@/theme/shadows";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 
 import PlatformAccessModal from "@/features/auth/components/PlatformAccessModal";
 import ForgotPasswordFlow from "@/features/auth/forgotPassword/ForgotPasswordFlow";
 
-import LoginField from "./login/LoginField";
-import LoginModalHeader from "./login/LoginModalHeader";
-import { useLoginForm } from "./login/useLoginForm";
+import { useLoginForm } from "../hooks/useLoginForm";
 
 type LoginModalProps = {
   visible: boolean;
@@ -14,120 +25,112 @@ type LoginModalProps = {
   onOpenRegister?: () => void;
 };
 
+const CARD_EDGE = SPACING.lg;
+
 const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
-  const form = useLoginForm(onClose);
+  const colors = useThemeColors();
+  const form = useLoginForm({ onSuccess: onClose });
+  const layout = useSheetLayout({ enabled: visible, variant: "centered", edgePadding: CARD_EDGE });
+  const submit = () => void form.submit();
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="flex-1 items-center justify-center px-4"
-        style={{ backgroundColor: "rgba(15, 23, 42, 0.65)" }}
-      >
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={backDismissesKeyboardFirst(layout, onClose)}>
+      <SheetViewport layout={layout} style={{ backgroundColor: colors.overlay, paddingHorizontal: CARD_EDGE }}>
         <View
-          className="w-full max-w-md rounded-3xl bg-white overflow-hidden"
-          style={{ boxShadow: "0px 16px 40px rgba(59,91,219,0.25)" }}
+          style={[
+            {
+              width: "100%",
+              maxWidth: 440,
+              maxHeight: layout.maxHeight,
+              overflow: "hidden",
+              borderRadius: RADII.modal,
+              backgroundColor: colors.surface,
+            },
+            SHADOWS.overlay,
+          ]}
         >
-          <LoginModalHeader onClose={onClose} />
+          <BrandedDialogHeader
+            icon="activity"
+            eyebrow="Maslog Care"
+            title="Welcome back"
+            description="Sign in to access your digital barangay health services."
+            closeLabel="Close login"
+            onClose={onClose}
+          />
 
-          <View className="px-5 py-5 gap-3.5">
-            <LoginField
-              label="Email"
-              icon="user"
-              focused={form.focusedField === "email"}
+          <ScrollView
+            style={{ flexGrow: 0, flexShrink: 1 }}
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ padding: SPACING.xl - 4, gap: SPACING.lg }}
+          >
+            <TextField
+              label="Email or phone number"
+              leftIcon="user"
               value={form.email}
               onChangeText={form.setEmail}
-              placeholder="Enter your email"
+              placeholder="Enter your email or phone"
               autoCapitalize="none"
+              autoComplete="username"
               keyboardType="email-address"
-              onFocus={() => form.setFocusedField("email")}
-              onBlur={() => form.setFocusedField(null)}
+              returnKeyType="next"
+              disabled={form.isSubmitting}
+              error={form.emailError}
             />
 
-            <LoginField
+            <TextField
               label="Password"
-              icon="lock"
-              focused={form.focusedField === "password"}
+              leftIcon="lock"
               value={form.password}
               onChangeText={form.setPassword}
               placeholder="Enter your password"
-              secureTextEntry={!form.showPassword}
-              onFocus={() => form.setFocusedField("password")}
-              onBlur={() => form.setFocusedField(null)}
-              trailing={
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={form.showPassword ? "Hide password" : "Show password"}
-                  onPress={form.toggleShowPassword}
-                  className="ml-1 h-8 w-8 items-center justify-center"
-                >
-                  <Feather
-                    name={form.showPassword ? "eye-off" : "eye"}
-                    size={14}
-                    color="#94A3B8"
-                  />
-                </Pressable>
-              }
+              autoComplete="current-password"
+              secureToggle
+              returnKeyType="go"
+              onSubmitEditing={submit}
+              disabled={form.isSubmitting}
+              error={form.passwordError}
             />
 
-            <View className="flex-row items-center justify-between -mt-1">
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Forgot password"
-                onPress={form.openForgotPassword}
-                hitSlop={8}
-              >
-                <Text className="text-[10px] font-semibold text-slate-400">Forgot Password?</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => {
-                  onClose();
-                  onOpenRegister?.();
-                }}
-              >
-                <Text className="text-[10px] font-bold text-mc-primary">Register Now →</Text>
-              </Pressable>
+            {form.formError ? <InlineAlert title={form.formError.title} message={form.formError.message} /> : null}
+
+            <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
+              <Button variant="text" size="sm" label="Forgot password?" onPress={form.forgotPassword} />
+              {onOpenRegister ? (
+                <Button
+                  variant="text"
+                  size="sm"
+                  label="Register now"
+                  icon="arrow-right"
+                  iconPosition="right"
+                  onPress={() => {
+                    onClose();
+                    onOpenRegister();
+                  }}
+                />
+              ) : null}
             </View>
 
-            <Pressable
-              className="rounded-xl bg-mc-primary items-center justify-center"
-              style={({ pressed }) => ({
-                height: 48,
-                transform: [{ scale: pressed ? 0.97 : 1 }],
-                opacity: pressed || form.isSubmitting ? 0.72 : 1,
-                boxShadow: "0px 5px 12px rgba(59,91,219,0.35)",
-              })}
-              disabled={form.isSubmitting}
-              onPress={form.handleSubmit}
-            >
-              <View className="flex-row items-center gap-2">
-                <Feather name="log-in" size={30} color="#fff" />
-                <Text className="text-[20px] font-bold text-white">
-                  {form.isSubmitting ? "Logging In..." : "Login"}
-                </Text>
-              </View>
-            </Pressable>
+            <Button
+              label="Log in"
+              loadingLabel="Logging in…"
+              icon="log-in"
+              size="lg"
+              fullWidth
+              loading={form.isSubmitting}
+              onPress={submit}
+            />
 
-            <View className="flex-row items-center justify-center gap-1.5">
-              <Feather name="lock" size={9} color="#CBD5E1" />
-              <Text className="text-[9px] text-slate-400">
-                Secure login for Barangay Maslog residents
-              </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center", gap: SPACING.xs + 2 }}>
+              <Feather name="lock" size={12} color={colors.subtle} />
+              <Text style={[TYPE.caption, { color: colors.muted }]}>Secure login for Barangay Maslog residents</Text>
             </View>
-          </View>
+          </ScrollView>
         </View>
-      </KeyboardAvoidingView>
+      </SheetViewport>
 
-      <PlatformAccessModal
-        visible={form.showPlatformNotice}
-        onClose={form.dismissPlatformNotice}
-      />
+      <PlatformAccessModal visible={form.showPlatformNotice} onClose={form.dismissPlatformNotice} />
 
-      <ForgotPasswordFlow
-        visible={form.showForgotPassword}
-        onClose={form.closeForgotPassword}
-        initialEmail={form.email}
-      />
+      <ForgotPasswordFlow visible={form.showForgotPassword} onClose={form.closeForgotPassword} initialEmail={form.email} />
     </Modal>
   );
 };

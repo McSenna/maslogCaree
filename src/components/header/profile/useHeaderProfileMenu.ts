@@ -1,14 +1,15 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { Animated, Easing, View } from "react-native";
+import { Animated, View } from "react-native";
 
 import { IS_WEB_PLATFORM } from "@/config/platformAccess";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { BREAKPOINTS } from "@/theme/breakpoints";
 import { useAuth } from "@/contexts/AuthContext";
-import { getProfilePath, type UserRole } from "@/data/mockUsers";
+import { getProfilePath, type UserRole } from "@/config/roleRoutes";
 import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
 
 import type { ProfileAnchor, ProfileMenuItem } from "../ProfileDropdown";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { EASING, USE_NATIVE_DRIVER } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 export const useHeaderProfileMenu = (compact: boolean, width: number) => {
   const { user, isLoading, logout } = useAuth();
@@ -21,7 +22,7 @@ export const useHeaderProfileMenu = (compact: boolean, width: number) => {
   const [logoutOpen, setLogoutOpen] = useState(false);
 
   const useProfileModal = IS_WEB_PLATFORM && width >= BREAKPOINTS.tablet;
-  const chevronAnim = useRef(new Animated.Value(0)).current;
+  const chevronAnim = useAnimatedValue(0);
 
   const role = (user?.role ?? "resident") as UserRole;
 
@@ -30,7 +31,7 @@ export const useHeaderProfileMenu = (compact: boolean, width: number) => {
       Animated.timing(chevronAnim, {
         toValue,
         duration: 180,
-        easing: Easing.out(Easing.cubic),
+        easing: EASING.out,
         useNativeDriver: USE_NATIVE_DRIVER,
       }).start();
     },
@@ -55,7 +56,7 @@ export const useHeaderProfileMenu = (compact: boolean, width: number) => {
       setProfileOpen(true);
       return;
     }
-    router.push(getProfilePath(role) as any);
+    router.push(getProfilePath(role));
   }, [role, router, useProfileModal]);
 
   const menuItems = useMemo<ProfileMenuItem[]>(

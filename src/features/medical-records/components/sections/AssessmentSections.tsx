@@ -6,7 +6,7 @@ import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { MedicalRecord } from "@/services/medicalRecords";
 
 import { formatDate } from "../recordFormat";
-import DetailSection, { Paragraph } from "./DetailSection";
+import { DetailSection, Paragraph } from "./DetailSection";
 
 type Props = { palette: ResidentDialogPalette; record: MedicalRecord };
 

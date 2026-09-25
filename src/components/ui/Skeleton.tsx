@@ -1,37 +1,23 @@
-import { useEffect, useRef } from "react";
+import { cssInterop } from "nativewind";
 import { Animated, View, type ViewProps } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { useSkeletonPulse } from "@/hooks/useSkeletonPulse";
 
 type SkeletonProps = ViewProps & {
   className?: string;
 };
 
+// NativeWind doesn't style Animated.View's className out of the box, which left every placeholder
+// transparent. Register a dedicated animated view so only skeletons opt in.
+const AnimatedBlock = Animated.createAnimatedComponent(View);
+cssInterop(AnimatedBlock, { className: "style" });
+
 export const Skeleton = ({ className = "", style, ...rest }: SkeletonProps) => {
   const { classes } = useTheme();
-  const opacity = useRef(new Animated.Value(0.45)).current;
-
-  useEffect(() => {
-    const loop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 0.85,
-          duration: 700,
-          useNativeDriver: USE_NATIVE_DRIVER,
-        }),
-        Animated.timing(opacity, {
-          toValue: 0.35,
-          duration: 700,
-          useNativeDriver: USE_NATIVE_DRIVER,
-        }),
-      ])
-    );
-    loop.start();
-    return () => loop.stop();
-  }, [opacity]);
+  const opacity = useSkeletonPulse(0.35, 0.85);
 
   return (
-    <Animated.View
+    <AnimatedBlock
       {...rest}
       style={[{ opacity }, style]}
       className={["overflow-hidden rounded-xl", classes.skeleton, className].join(" ")}

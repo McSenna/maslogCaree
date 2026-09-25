@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import { showAlert } from "@/utils/notify";
 import { exportSystemLogs, type SystemLogsQuery } from "../services/systemLogService";
+import { toast } from "@/components/feedback/toast/toastStore";
 
 export const useLogExport = (exportParams: SystemLogsQuery) => {
   const [exporting, setExporting] = useState(false);
@@ -10,7 +10,7 @@ export const useLogExport = (exportParams: SystemLogsQuery) => {
     try {
       await exportSystemLogs(exportParams);
     } catch {
-      showAlert("Export failed", "Failed to export system logs. Please try again.");
+      toast.error("Export failed", "Failed to export system logs. Please try again.");
     } finally {
       setExporting(false);
     }

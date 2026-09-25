@@ -1,5 +1,7 @@
 import { Image, View } from "react-native";
 
+import { landingAssets } from "@/config/landingAssets";
+
 import type { ForgotPasswordController } from "../../useForgotPassword";
 import {
   PrimaryButton,
@@ -9,11 +11,9 @@ import {
 } from "../RecoveryControls";
 import { StepHeading } from "./StepChrome";
 
-const MASLOG_SEAL = require("../../../../../../assets/images/maslogicon.png");
-
 export const EmailStep = ({ flow }: { flow: ForgotPasswordController }) => (
   <View className="w-full items-center gap-5">
-    <Image source={MASLOG_SEAL} style={{ width: 52, height: 52 }} resizeMode="contain" />
+    <Image source={landingAssets.brandMark} style={{ width: 52, height: 52 }} resizeMode="contain" />
     <StepHeading
       title="Forgot Password?"
       subtitle="Enter your Gmail address and we'll send you a verification code."

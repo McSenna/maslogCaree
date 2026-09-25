@@ -6,7 +6,7 @@ import { useIdDocument } from "../../hooks/useIdDocument";
 import ImagePreview from "./idDocument/ImagePreview";
 import PdfDocumentPreview from "./idDocument/PdfDocumentPreview";
 
-export { formatFileSize } from "./idDocument/idDocumentFormat";
+export { formatFileSize } from "@/utils/fileSize";
 
 type IdDocumentViewerProps = {
   verificationId: string | null;

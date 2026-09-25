@@ -3,8 +3,8 @@ import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { AppointmentRecord } from "@/types/appointments.types";
 
 import { useRescheduleAppointment } from "../../hooks/useRescheduleAppointment";
-import RescheduleConfirmStep from "./RescheduleConfirmStep";
-import RescheduleSelectStep from "./RescheduleSelectStep";
+import { RescheduleConfirmStep } from "./RescheduleConfirmStep";
+import { RescheduleSelectStep } from "./RescheduleSelectStep";
 
 export type RescheduleAppointmentFormProps = {
   appointment: AppointmentRecord;

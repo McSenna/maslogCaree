@@ -1,8 +1,9 @@
 import { Feather } from "@expo/vector-icons";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import * as Haptics from "expo-haptics";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { useCountBump } from "@/hooks/useCountBump";
+import { useInteractionState } from "@/hooks/useInteractionState";
 import { useNotificationPalette } from "../notification.theme";
 import type { BellPosition } from "../notification.types";
 
@@ -18,6 +19,8 @@ type NotificationBellProps = {
 };
 
 const MAX_BADGE = 99;
+const MIN_TARGET = 44;
+const HOVER_WASH = "rgba(148, 163, 184, 0.16)";
 
 const NotificationBell = ({
   unreadCount,
@@ -33,49 +36,52 @@ const NotificationBell = ({
   const iconColor = color ?? palette.heading;
   const badgeRing = ringColor ?? palette.surface;
   const bellRef = useRef<View>(null);
-  const [scale] = useState(() => new Animated.Value(1));
+  const bump = useCountBump(unreadCount);
+  const { hovered, focused, scaleStyle, handlers } = useInteractionState({ pressScale: 0.94 });
 
   const handlePress = useCallback(() => {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-    Animated.sequence([
-      Animated.timing(scale, { toValue: 0.92, duration: 80, useNativeDriver: USE_NATIVE_DRIVER }),
-      Animated.timing(scale, { toValue: 1, duration: 120, useNativeDriver: USE_NATIVE_DRIVER }),
-    ]).start();
-
     bellRef.current?.measureInWindow((x, y, width, height) => onMeasure({ x, y, width, height }));
     onPress();
-  }, [onMeasure, onPress, scale]);
+  }, [onMeasure, onPress]);
 
   const badge = unreadCount > MAX_BADGE ? `${MAX_BADGE}+` : String(unreadCount);
   const offset = Math.max((hitSize - iconSize) / 2 - 5, 0);
 
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
+    <Animated.View style={scaleStyle}>
       <Pressable
         ref={bellRef}
+        {...handlers}
+        hitSlop={hitSize < MIN_TARGET ? (MIN_TARGET - hitSize) / 2 : 0}
         accessibilityRole="button"
         accessibilityLabel={
           unreadCount > 0 ? `Open notifications, ${unreadCount} unread` : "Open notifications"
         }
         onPress={handlePress}
-        style={({ pressed }) => ({
+        style={{
           width: hitSize,
           height: hitSize,
           alignItems: "center",
           justifyContent: "center",
           borderRadius: hitSize / 2,
-          opacity: pressed ? 0.75 : 1,
-        })}
+          backgroundColor: hovered ? HOVER_WASH : "transparent",
+          outlineWidth: focused ? 3 : 0,
+          outlineStyle: "solid",
+          outlineColor: palette.primary,
+          outlineOffset: 1,
+        }}
       >
         <Feather name="bell" size={iconSize} color={iconColor} />
 
         {unreadCount > 0 ? (
           indicator === "dot" ? (
-            <View
+            <Animated.View
               accessibilityElementsHidden
               importantForAccessibility="no-hide-descendants"
               style={{
+                ...bump,
                 position: "absolute",
                 top: offset,
                 right: offset,
@@ -88,10 +94,11 @@ const NotificationBell = ({
               }}
             />
           ) : (
-            <View
+            <Animated.View
               accessibilityElementsHidden
               importantForAccessibility="no-hide-descendants"
               style={{
+                ...bump,
                 position: "absolute",
                 top: Math.max(offset - 3, 0),
                 right: Math.max(offset - 5, 0),
@@ -109,7 +116,7 @@ const NotificationBell = ({
               <Text allowFontScaling={false} style={{ fontSize: 9.5, fontWeight: "800", color: palette.onPrimary }}>
                 {badge}
               </Text>
-            </View>
+            </Animated.View>
           )
         ) : null}
       </Pressable>

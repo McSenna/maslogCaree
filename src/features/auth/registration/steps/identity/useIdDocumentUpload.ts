@@ -1,6 +1,7 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, type ChangeEvent } from "react";
 import { Platform } from "react-native";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import { showAlert } from "@/utils/notify";
 import type { RegistrationController } from "../../useResidentRegistration";
 import { ALLOWED_MIME_TYPES, MAX_FILE_SIZE_BYTES } from "./idDocumentFormat";
@@ -14,7 +15,7 @@ export const useIdDocumentUpload = (form: RegistrationController) => {
   const handleDocumentSelected = useCallback(
     (base64DataUri: string, fileName: string, mimeType: string, fileSize: number) => {
       if (fileSize > MAX_FILE_SIZE_BYTES) {
-        showAlert(
+        toast.error(
           "File Too Large",
           "The selected file exceeds the 10MB limit. Please choose a smaller image or compressed PDF."
         );
@@ -28,7 +29,7 @@ export const useIdDocumentUpload = (form: RegistrationController) => {
         cleanMime === "application/pdf";
 
       if (!isAllowed) {
-        showAlert(
+        toast.error(
           "Unsupported Format",
           "Only JPG, JPEG, PNG, and PDF files are accepted for identity verification."
         );
@@ -38,13 +39,13 @@ export const useIdDocumentUpload = (form: RegistrationController) => {
       setField("idDocument", base64DataUri);
       setField("idFileName", fileName);
       setField("idMimeType", cleanMime);
-      form.setField("idFileSize" as any, String(fileSize));
+      form.setField("idFileSize", String(fileSize));
     },
     [setField, form]
   );
 
-  const handleWebFileChange = (e: any) => {
-    const file = e?.target?.files?.[0];
+  const handleWebFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setIsProcessingFile(true);
@@ -59,7 +60,7 @@ export const useIdDocumentUpload = (form: RegistrationController) => {
 
     reader.onerror = () => {
       setIsProcessingFile(false);
-      showAlert("Read Error", "Could not read the selected file. Please try another.");
+      toast.error("Read Error", "Could not read the selected file. Please try another.");
     };
 
     reader.readAsDataURL(file);
@@ -87,7 +88,7 @@ export const useIdDocumentUpload = (form: RegistrationController) => {
     setField("idDocument", "");
     setField("idFileName", "");
     setField("idMimeType", "");
-    form.setField("idFileSize" as any, "0");
+    form.setField("idFileSize", "0");
   };
 
   return {

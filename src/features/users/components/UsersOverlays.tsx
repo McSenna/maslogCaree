@@ -1,5 +1,4 @@
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
-import Toast from "@/components/ui/Toast";
 import type { UserManagementController } from "../hooks/useUserManagementScreen";
 import { statusActionFor, type AdminUser } from "../services/userService";
 import ResidentVerificationModal from "./requests/ResidentVerificationModal";
@@ -88,7 +87,6 @@ const UsersOverlays = ({ controller }: UsersOverlaysProps) => {
         onCancel={statusChange.cancel}
       />
 
-      <Toast toast={controller.toast} onDismiss={controller.hideToast} />
     </>
   );
 };

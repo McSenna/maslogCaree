@@ -17,6 +17,8 @@ type Props = {
   dimColor: string;
   gridColor: string;
   showGrid: boolean;
+  gridDashed: boolean;
+  gradientId: string;
   peakIdx: number;
   activeIndex: number | null;
   progress: Animated.Value;
@@ -33,6 +35,8 @@ const BarChartBars = ({
   dimColor,
   gridColor,
   showGrid,
+  gridDashed,
+  gradientId,
   peakIdx,
   activeIndex,
   progress,
@@ -42,11 +46,11 @@ const BarChartBars = ({
   return (
     <Svg width={chartW} height={height}>
       <Defs>
-        <LinearGradient id="barGradientAccent" x1="0" y1="0" x2="0" y2="1">
+        <LinearGradient id={`${gradientId}-accent`} x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0%" stopColor={accentColor} stopOpacity={1} />
           <Stop offset="100%" stopColor={accentColor} stopOpacity={0.7} />
         </LinearGradient>
-        <LinearGradient id="barGradientDim" x1="0" y1="0" x2="0" y2="1">
+        <LinearGradient id={`${gradientId}-dim`} x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0%" stopColor={dimColor} stopOpacity={0.6} />
           <Stop offset="100%" stopColor={dimColor} stopOpacity={0.3} />
         </LinearGradient>
@@ -64,6 +68,7 @@ const BarChartBars = ({
               y2={y}
               stroke={gridColor}
               strokeWidth={1}
+              strokeDasharray={gridDashed ? "4 4" : undefined}
             />
           );
         })}
@@ -74,8 +79,8 @@ const BarChartBars = ({
         const fill = d.color
           ? d.color
           : i === peakIdx
-            ? "url(#barGradientAccent)"
-            : "url(#barGradientDim)";
+            ? `url(#${gradientId}-accent)`
+            : `url(#${gradientId}-dim)`;
 
         return (
           <AnimatedRect

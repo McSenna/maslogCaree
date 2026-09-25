@@ -4,12 +4,12 @@ import type {
   ChangePasswordPayload,
 } from "./changePassword.types";
 
-export async function changePasswordApi(
+export const changePasswordApi = async (
   payload: ChangePasswordPayload
-): Promise<ChangePasswordApiResponse> {
+): Promise<ChangePasswordApiResponse> => {
   const { data } = await api.post<ChangePasswordApiResponse>(
     "/change-password",
     payload
   );
   return data;
-}
+};

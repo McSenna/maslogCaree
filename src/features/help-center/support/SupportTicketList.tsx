@@ -1,7 +1,11 @@
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { View } from "react-native";
 
-import { RADIUS } from "@/design/adminSurfaces";
-import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import AnimatedListItem from "@/components/animations/AnimatedListItem";
+import Button from "@/components/buttons/Button";
+import EmptyState from "@/components/feedback/EmptyState";
+import ErrorState from "@/components/feedback/ErrorState";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { SPACING } from "@/theme/spacing";
 
 import SupportTicketCard from "./SupportTicketCard";
 import type { SupportTicketSummary } from "../types/support.types";
@@ -35,100 +39,49 @@ const SupportTicketList = ({
   onLoadMore,
   onRetry,
 }: SupportTicketListProps) => {
-  const palette = useAdminSurfacePalette();
-
   if (loading) {
     return (
-      <View style={{ paddingVertical: 40, alignItems: "center" }}>
-        <ActivityIndicator color={palette.primary} />
+      <View style={{ gap: SPACING.md }} accessibilityLabel="Loading support requests">
+        {[0, 1, 2].map((key) => (
+          <Skeleton key={key} className="h-24 w-full rounded-2xl" />
+        ))}
       </View>
     );
   }
 
   if (error && tickets.length === 0) {
-    return (
-      <View style={{ alignItems: "center", gap: 10, paddingVertical: 32 }}>
-        <Text style={{ fontSize: 13.5, color: palette.negative, textAlign: "center" }}>{error}</Text>
-        {onRetry ? (
-          <Pressable
-            onPress={onRetry}
-            accessibilityRole="button"
-            style={{
-              minHeight: 44,
-              justifyContent: "center",
-              paddingHorizontal: 18,
-              borderRadius: RADIUS.control,
-              backgroundColor: palette.primary,
-            }}
-          >
-            <Text style={{ fontSize: 13.5, fontWeight: "700", color: "#FFFFFF" }}>Try again</Text>
-          </Pressable>
-        ) : null}
-      </View>
-    );
+    return <ErrorState title="Unable to load support requests" message={error} onRetry={onRetry} compact />;
   }
 
   if (tickets.length === 0) {
     return (
-      <View style={{ alignItems: "center", gap: 12, paddingVertical: 32 }}>
-        <Text style={{ fontSize: 15, fontWeight: "700", color: palette.heading }}>
-          No support requests yet
-        </Text>
-        <Text style={{ fontSize: 13.5, color: palette.muted, textAlign: "center" }}>
-          {emptyMessage}
-        </Text>
-
-        {emptyActionLabel && onEmptyAction ? (
-          <Pressable
-            onPress={onEmptyAction}
-            accessibilityRole="button"
-            style={{
-              minHeight: 44,
-              justifyContent: "center",
-              paddingHorizontal: 20,
-              borderRadius: RADIUS.control,
-              backgroundColor: palette.primary,
-            }}
-          >
-            <Text style={{ fontSize: 13.5, fontWeight: "700", color: "#FFFFFF" }}>
-              {emptyActionLabel}
-            </Text>
-          </Pressable>
-        ) : null}
-      </View>
+      <EmptyState
+        icon="life-buoy"
+        title="No support requests yet"
+        description={emptyMessage}
+        compact
+        action={emptyActionLabel && onEmptyAction ? { label: emptyActionLabel, onPress: onEmptyAction } : undefined}
+      />
     );
   }
 
   return (
-    <View style={{ gap: 12 }}>
-      {tickets.map((ticket) => (
-        <SupportTicketCard
-          key={ticket.id}
-          ticket={ticket}
-          onPress={onOpenTicket}
-          showRequester={showRequester}
-        />
+    <View style={{ gap: SPACING.md }}>
+      {tickets.map((ticket, index) => (
+        <AnimatedListItem key={ticket.id} index={index}>
+          <SupportTicketCard ticket={ticket} onPress={onOpenTicket} showRequester={showRequester} />
+        </AnimatedListItem>
       ))}
 
       {hasMore && onLoadMore ? (
-        <Pressable
+        <Button
+          variant="secondary"
+          label="Load more"
+          loadingLabel="Loading…"
+          loading={loadingMore}
+          fullWidth
           onPress={onLoadMore}
-          disabled={loadingMore}
-          accessibilityRole="button"
-          style={{
-            minHeight: 44,
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: RADIUS.control,
-            borderWidth: 1,
-            borderColor: palette.cardBorder,
-            backgroundColor: palette.cardBg,
-          }}
-        >
-          <Text style={{ fontSize: 13.5, fontWeight: "600", color: palette.body }}>
-            {loadingMore ? "Loading..." : "Load more"}
-          </Text>
-        </Pressable>
+        />
       ) : null}
     </View>
   );

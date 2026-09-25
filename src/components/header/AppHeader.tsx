@@ -1,5 +1,5 @@
-import { Platform, View, useWindowDimensions } from "react-native";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { View, useWindowDimensions } from "react-native";
+import { BREAKPOINTS, CONTENT_MAX_WIDTH } from "@/theme/breakpoints";
 import { useTheme } from "@/contexts/ThemeContext";
 import HeaderBrand from "./HeaderBrand";
 import HeaderNotifications from "./HeaderNotifications";
@@ -10,13 +10,16 @@ import {
   IDENTITY_MIN_WIDTH,
 } from "./headerTokens";
 import { HEADER_TOP_GAP, useHeaderTopInset } from "./useHeaderTopInset";
+import { webStyle } from "@/theme/webStyle";
+import MobileNotificationsLink from "./MobileNotificationsLink";
 
 type AppHeaderProps = {
   onPressBrand?: () => void;
   variant: "mobile" | "desktop";
+  mobileNotificationsHref?: string;
 };
 
-const AppHeader = ({ onPressBrand, variant }: AppHeaderProps) => {
+const AppHeader = ({ onPressBrand, variant, mobileNotificationsHref }: AppHeaderProps) => {
   const { width } = useWindowDimensions();
   const { resolvedTheme } = useTheme();
 
@@ -46,14 +49,15 @@ const AppHeader = ({ onPressBrand, variant }: AppHeaderProps) => {
           borderBottomColor: palette.border,
           paddingTop: topInset + HEADER_TOP_GAP,
         },
-        Platform.OS === "web"
-          ? ({ position: "sticky", top: 0 } as any)
-          : null,
+        webStyle({ position: "sticky", top: 0 }),
       ]}
     >
       <View
         style={{
           minHeight,
+          width: "100%",
+          maxWidth: isMobile ? undefined : CONTENT_MAX_WIDTH,
+          alignSelf: "center",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
@@ -76,6 +80,9 @@ const AppHeader = ({ onPressBrand, variant }: AppHeaderProps) => {
           }}
         >
           {!isMobile && <HeaderNotifications compact={isMobile} isDark={isDark} />}
+          {isMobile && mobileNotificationsHref ? (
+            <MobileNotificationsLink href={mobileNotificationsHref} isDark={isDark} />
+          ) : null}
 
           {!isMobile && (
             <View

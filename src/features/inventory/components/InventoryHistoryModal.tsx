@@ -1,4 +1,8 @@
-import { Modal, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import { Modal, Pressable, ScrollView, View } from "react-native";
+
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 
 import type { InventoryItem } from "@/features/inventory/services/inventoryService";
 
@@ -27,7 +31,13 @@ const InventoryHistoryModal = ({
   onClose,
 }: InventoryHistoryModalProps) => {
   const palette = useInventoryPalette();
-  const { height } = useWindowDimensions();
+  // Centred on every width, phones included, so it keeps clear of the status bar.
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: "centered",
+    maxHeightRatio: 0.88,
+    edgePadding: 16,
+  });
   const history = useItemHistory(visible, item);
 
   if (!item) return null;
@@ -39,12 +49,12 @@ const InventoryHistoryModal = ({
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <View
-        className="flex-1 items-center justify-center p-4"
-        style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
+      <SheetViewport
+        layout={layout}
+        style={{ backgroundColor: "rgba(15,37,87,0.35)", paddingHorizontal: 16 }}
       >
         <Pressable
           accessibilityRole="button"
@@ -57,7 +67,7 @@ const InventoryHistoryModal = ({
           className="w-full overflow-hidden border"
           style={{
             maxWidth: 560,
-            maxHeight: height * 0.88,
+            maxHeight: layout.maxHeight,
             borderRadius: RADIUS.card,
             backgroundColor: palette.cardBg,
             borderColor: palette.cardBorder,
@@ -102,7 +112,7 @@ const InventoryHistoryModal = ({
             )}
           </ScrollView>
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

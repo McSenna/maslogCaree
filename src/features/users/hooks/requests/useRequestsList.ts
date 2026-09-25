@@ -90,6 +90,7 @@ export const useRequestsList = () => {
   const refreshRequests = useCallback(() => load("refresh"), [load]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void load("load");
   }, [load]);
 

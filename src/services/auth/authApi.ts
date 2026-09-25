@@ -12,17 +12,17 @@ import {
   type VerifyOtpResponse,
 } from "./authTypes";
 
-async function postJson<T>(
+const postJson = async <T>(
   path: string,
   body: Record<string, unknown>
-): Promise<T> {
+): Promise<T> => {
   const response = await api.post<T>(path, body);
   return response.data;
-}
+};
 
-export async function registerResident(
+export const registerResident = async (
   payload: RegisterPayload
-): Promise<{ message: string; email: string; status?: string }> {
+): Promise<{ message: string; email: string; status?: string }> => {
   const data = await postJson<RegisterResponse>("/register", {
     firstName: payload.firstName.trim(),
     middleName: payload.middleName?.trim() || "",
@@ -50,22 +50,22 @@ export async function registerResident(
   });
 
   return { message: data.message, email: data.email, status: data.status };
-}
+};
 
-export async function resendOtp(
+export const resendOtp = async (
   email: string
-): Promise<{ message: string }> {
+): Promise<{ message: string }> => {
   const data = await postJson<ResendOtpResponse>("/send-otp", {
     email: email.trim().toLowerCase(),
   });
 
   return { message: data.message };
-}
+};
 
-export async function verifyOtp(
+export const verifyOtp = async (
   email: string,
   otp: string
-): Promise<{ message: string; token: string | null; user: AuthUser; code?: string }> {
+): Promise<{ message: string; token: string | null; user: AuthUser; code?: string }> => {
   const data = await postJson<VerifyOtpResponse>("/verify-otp", {
     email: email.trim().toLowerCase(),
     otp: otp.trim(),
@@ -82,12 +82,12 @@ export async function verifyOtp(
     user: data.user,
     code: data.code,
   };
-}
+};
 
-export async function loginWithEmail(
+export const loginWithEmail = async (
   email: string,
   password: string
-): Promise<{ token: string; user: AuthUser }> {
+): Promise<{ token: string; user: AuthUser }> => {
   const data = await postJson<LoginResponse>("/login", {
     email: email.trim().toLowerCase(),
     password,
@@ -99,4 +99,4 @@ export async function loginWithEmail(
   }
 
   return { token: data.token, user: data.user };
-}
+};

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import type { QueuePalette } from "../queueTheme";
-import StatusBadge from "../StatusBadge";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { scheduleFor } from "./appointmentSchedule";
 import { COLUMNS } from "./columns";
 import QueueAvatar from "./QueueAvatar";
@@ -87,7 +87,7 @@ const AppointmentsTableRow = ({
       </TableCell>
 
       <TableCell flex={COLUMNS.status}>
-        <StatusBadge status={appointment.status} />
+        <AppointmentStatusBadge status={appointment.status} />
       </TableCell>
 
       {actions.canAct ? (

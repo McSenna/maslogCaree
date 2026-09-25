@@ -1,6 +1,5 @@
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, Text, View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import StatCard from "@/components/resident/StatCard";
-import WelcomeBanner from "@/components/resident/WelcomeBanner";
 import AnnouncementsList from "@/features/resident/AnnouncementsList";
 import RecentAppointments from "@/features/resident/RecentAppointments";
 import UpcomingAppointment from "@/features/resident/UpcomingAppointment";
@@ -12,35 +11,6 @@ type MobileResidentDashboardProps = {
 };
 
 const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
-  if (model.loading) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator size="large" color={RESIDENT_COLORS.primary} />
-      </View>
-    );
-  }
-
-  if (model.error && !model.nextAppointment && model.stats.every((s) => s.value === 0)) {
-    return (
-      <View className="flex-1 items-center justify-center gap-3 bg-white px-8">
-        <Text className="text-center text-[15px] font-semibold" style={{ color: RESIDENT_COLORS.heading }}>
-          Unable to load your dashboard
-        </Text>
-        <Text className="text-center text-[13px]" style={{ color: RESIDENT_COLORS.muted }}>
-          {model.error}
-        </Text>
-        <Pressable
-          onPress={model.reload}
-          accessibilityRole="button"
-          accessibilityLabel="Retry loading the dashboard"
-          className="items-center justify-center px-6 active:opacity-85"
-          style={{ height: 44, borderRadius: 10, backgroundColor: RESIDENT_COLORS.primary }}
-        >
-          <Text className="text-[14px] font-semibold text-white">Retry</Text>
-        </Pressable>
-      </View>
-    );
-  }
 
   return (
   <ScrollView
@@ -57,8 +27,6 @@ const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
     }
   >
     <View className="w-full gap-3.5">
-      <WelcomeBanner greeting={model.greeting} firstName={model.firstName} stacked />
-
       <View className="w-full gap-2.5">
         <View className="w-full flex-row gap-2.5">
           {model.stats.slice(0, 2).map((stat) => (

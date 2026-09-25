@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type Ref } from "react";
 import { Platform, TextInput, View, useWindowDimensions } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
@@ -19,6 +19,8 @@ type EmailFieldControlProps = {
   editable: boolean;
   height: number;
   labelledBy: string;
+  inputRef?: Ref<TextInput>;
+  actionRef?: Ref<View>;
 };
 
 const NARROW_WIDTH = 400;
@@ -33,6 +35,8 @@ const EmailFieldControl = ({
   editable,
   height,
   labelledBy,
+  inputRef,
+  actionRef,
 }: EmailFieldControlProps) => {
   const { width } = useWindowDimensions();
   const [focused, setFocused] = useState(false);
@@ -80,6 +84,7 @@ const EmailFieldControl = ({
         />
 
         <TextInput
+          ref={inputRef}
           value={value}
           onChangeText={onChangeText}
           onFocus={() => setFocused(true)}
@@ -113,6 +118,7 @@ const EmailFieldControl = ({
       <View style={{ width: 1, alignSelf: "stretch", backgroundColor: REG_COLORS.border }} />
 
       <EmailActionSlot
+        buttonRef={actionRef}
         action={action}
         onPress={onActionPress}
         height={height}

@@ -51,6 +51,7 @@ export const useResidentAppointments = () => {
   );
 
   const refresh = useCallback(() => load(true), [load]);
+  const revalidate = useCallback(() => load(false), [load]);
 
-  return { appointments, loading, error, refresh };
+  return { appointments, loading, error, refresh, revalidate };
 };

@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef } from "react";
-import { Animated, Easing } from "react-native";
+import { Animated } from "react-native";
 
-import { DURATION, USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
+import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
-const OPEN_MS = DURATION.screen;
-const CLOSE_MS = DURATION.exit;
+const OPEN_MS = TIMING.modal;
+const CLOSE_MS = TIMING.exit;
 
 export const useSheetAnimation = ({
   visible,
@@ -19,8 +20,8 @@ export const useSheetAnimation = ({
 }) => {
   const reducedMotion = useReducedMotion();
 
-  const translateY = useRef(new Animated.Value(height)).current;
-  const scrimOpacity = useRef(new Animated.Value(0)).current;
+  const translateY = useAnimatedValue(height);
+  const scrimOpacity = useAnimatedValue(0);
 
   // Slide distance. Starts at the window height and is replaced by the real
   // sheet height as soon as one layout pass has run, so re-opens travel exactly
@@ -41,7 +42,7 @@ export const useSheetAnimation = ({
         Animated.timing(translateY, {
           toValue: sheetHeight.current,
           duration: CLOSE_MS,
-          easing: Easing.in(Easing.cubic),
+          easing: EASING.drawer,
           useNativeDriver: USE_NATIVE_DRIVER,
         }),
         Animated.timing(scrimOpacity, {
@@ -96,7 +97,7 @@ export const useSheetAnimation = ({
       Animated.timing(translateY, {
         toValue: 0,
         duration: OPEN_MS,
-        easing: Easing.out(Easing.cubic),
+        easing: EASING.drawer,
         useNativeDriver: USE_NATIVE_DRIVER,
       }),
       Animated.timing(scrimOpacity, {

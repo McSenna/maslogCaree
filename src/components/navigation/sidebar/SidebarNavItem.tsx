@@ -47,7 +47,8 @@ const SidebarNavItem = ({
         onPressOut={() => setPressed(false)}
         className="w-full flex-row items-center"
         style={{
-          height: SIDEBAR_METRICS.itemHeight,
+          minHeight: SIDEBAR_METRICS.itemHeight,
+          paddingVertical: 8,
           paddingHorizontal: SIDEBAR_METRICS.itemPaddingX,
           borderRadius: SIDEBAR_METRICS.itemRadius,
           backgroundColor: background,
@@ -58,8 +59,8 @@ const SidebarNavItem = ({
       >
         <Feather name={icon} size={SIDEBAR_METRICS.iconSize} color={foreground} />
         <Text
-          numberOfLines={1}
-          className={`min-w-0 flex-1 text-[16px] ${isActive ? "font-semibold" : "font-normal"}`}
+          numberOfLines={2}
+          className={`min-w-0 flex-1 text-[15px] leading-[20px] ${isActive ? "font-semibold" : "font-normal"}`}
           style={{ color: foreground, marginLeft: SIDEBAR_METRICS.iconGap }}
         >
           {label}

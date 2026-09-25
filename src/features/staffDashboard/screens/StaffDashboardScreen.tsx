@@ -2,12 +2,11 @@ import { useCallback } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
-import { DashboardErrorState } from "@/components/dashboard/admin";
+import { DashboardDate, DashboardErrorState } from "@/components/dashboard/admin";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { useStaffDashboard } from "@/hooks/useStaffDashboard";
 import StaffDashboardBody from "../components/StaffDashboardBody";
-import StaffDashboardGreeting from "../components/StaffDashboardGreeting";
 import StaffDashboardSkeleton from "../components/StaffDashboardSkeleton";
 import { getRoleDashboardConfig, type StaffRole } from "../config/roleDashboardConfig";
 import { useStaffDashboardLayout } from "../hooks/useStaffDashboardLayout";
@@ -53,7 +52,7 @@ const StaffDashboardScreen = ({ role }: { role: StaffRole }) => {
           onLayout={layout.measure}
         >
           <View style={{ gap: layout.isMobile ? 16 : 20 }}>
-            <StaffDashboardGreeting palette={palette} config={config} compact={layout.isMobile} />
+            {!layout.isMobile ? <DashboardDate palette={palette} /> : null}
 
             {error && data ? (
               <DashboardErrorState palette={palette} onRetry={reload} variant="banner" />

@@ -1,6 +1,6 @@
-import { Platform, useWindowDimensions } from "react-native";
+import { Platform } from "react-native";
 
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useResponsive } from "@/hooks/useResponsive";
 
 import DateOfBirthBottomSheet from "./DateOfBirthBottomSheet";
 import DateOfBirthModal from "./DateOfBirthModal";
@@ -14,7 +14,7 @@ type DateOfBirthPickerProps = {
 };
 
 const DateOfBirthPicker = ({ visible, value, onConfirm, onClose }: DateOfBirthPickerProps) => {
-  const { width } = useWindowDimensions();
+  const { isMobile } = useResponsive();
   const draft = useDateOfBirthDraft(value, visible);
 
   const handleConfirm = () => {
@@ -25,7 +25,7 @@ const DateOfBirthPicker = ({ visible, value, onConfirm, onClose }: DateOfBirthPi
 
   const shared = { visible, draft, onCancel: onClose, onConfirm: handleConfirm };
 
-  const isWebOrDesktop = Platform.OS === "web" || width >= BREAKPOINTS.tablet;
+  const isWebOrDesktop = Platform.OS === "web" || !isMobile;
 
   return isWebOrDesktop ? (
     <DateOfBirthModal {...shared} />

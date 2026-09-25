@@ -1,10 +1,11 @@
 import type { ConsultationCategory, MissionScheduleRecord } from "@/services/appointments";
-import { useWindowDimensions, View } from "react-native";
+import { View } from "react-native";
 import type { MissionForm, MissionFormField } from "../../hooks/useMissionForm";
 import MissionScheduleForm from "./MissionScheduleForm";
-import MissionScheduleSheet, { MISSION_SHEET_BREAKPOINT } from "./MissionScheduleSheet";
+import MissionScheduleSheet from "./MissionScheduleSheet";
 import MissionSubmitButton, { MissionSecurityNote } from "./MissionSubmitButton";
 import { useMissionScheduleValidation } from "./useMissionScheduleValidation";
+import { useResponsive } from "@/hooks/useResponsive";
 
 type NewMissionScheduleModalProps = {
   visible: boolean;
@@ -27,8 +28,8 @@ const NewMissionScheduleModal = ({
   onClose,
   onCreate,
 }: NewMissionScheduleModalProps) => {
-  const { width } = useWindowDimensions();
-  const compact = width < MISSION_SHEET_BREAKPOINT;
+  const { isMobile } = useResponsive();
+  const compact = isMobile;
 
   const { errors, isValid } = useMissionScheduleValidation({
     values: form.values,

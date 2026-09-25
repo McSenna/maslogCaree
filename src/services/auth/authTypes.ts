@@ -1,3 +1,4 @@
+import type { UserRole } from "@/config/roleRoutes";
 import type { ClientPlatform, PlatformAccessSummary } from "@/config/platformAccess";
 import type { StoredUser } from "@/utils/storage";
 
@@ -11,7 +12,7 @@ export interface AuthUser {
   civilStatus?: string;
   addressDetails?: ResidentAddress | null;
   email: string;
-  role: "admin" | "doctor" | "midwife" | "bhw" | "resident";
+  role: UserRole;
   verified: boolean;
   dateOfBirth?: string;
   gender?: string;

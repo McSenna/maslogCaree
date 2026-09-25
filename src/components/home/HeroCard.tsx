@@ -1,11 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Animated, {
   FadeIn,
   SlideInUp,
 } from "react-native-reanimated";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useResponsive } from "@/hooks/useResponsive";
 
 const STATS = [
   { value: "10+", label: "Health Workers", icon: "users" as const },
@@ -14,8 +14,8 @@ const STATS = [
 ] as const;
 
 const HeroCard = () => {
-  const { width } = useWindowDimensions();
-  const isTablet = width >= BREAKPOINTS.tablet;
+  const { isMobile } = useResponsive();
+  const isTablet = !isMobile;
 
   return (
     <Animated.View

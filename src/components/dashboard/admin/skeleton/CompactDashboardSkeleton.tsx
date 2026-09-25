@@ -15,8 +15,8 @@ const CompactDashboardSkeleton = ({ palette, metricCards }: Props) => {
   return (
     <View className="gap-5">
       {metricCards}
-      {analyticsSkeleton(palette, undefined, 150)}
-      {activitySkeleton(palette, undefined, 150)}
+      {analyticsSkeleton(palette, undefined, 176)}
+      {activitySkeleton(palette, undefined, 176)}
       <PanelShell palette={palette}>
         <Skeleton className="h-3.5 w-36" />
         <RowSkeleton />

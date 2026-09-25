@@ -18,9 +18,4 @@ export const isPdfDocument = (values: {
       values.idFileName?.toLowerCase().endsWith(".pdf")
   );
 
-export const formatFileSize = (rawSize: string | number | undefined) => {
-  const bytes = Number(rawSize) || 0;
-  if (bytes <= 0) return "";
-  if (bytes > 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  return `${Math.round(bytes / 1024)} KB`;
-};
+export { formatFileSize } from "@/utils/fileSize";

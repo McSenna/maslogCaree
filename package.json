@@ -5,18 +5,17 @@
   "scripts": {
     "start": "expo start",
     "start:clear": "expo start -c",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "lint": "expo lint src app",
-    "backend": "npm run dev --prefix backend",
+    "backend": "npm run dev --prefix ../backend",
     "mobile": "expo start",
-    "dev": "concurrently \"npm run backend\" \"npm run mobile\"",
     "start:dev-client": "expo start --dev-client",
     "start:tunnel": "expo start --dev-client --tunnel",
     "android:local": "expo run:android",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:unit": "node --test \"src/**/__tests__/*.test.ts\""
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -43,8 +42,6 @@
     "expo-system-ui": "~57.0.4",
     "expo-web-browser": "~57.0.3",
     "nativewind": "^4.2.2",
-    "nodemailer": "^8.0.1",
-    "prettier-plugin-tailwindcss": "^0.5.14",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
@@ -64,6 +61,7 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~57.0.2",
     "jest-axe": "^11.0.0",
+    "prettier-plugin-tailwindcss": "^0.5.14",
     "react-refresh": "^0.14.2",
     "typescript": "~6.0.3"
   },

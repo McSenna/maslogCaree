@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Modal, Platform, ScrollView, View } from "react-native";
+import { KeyboardAvoidingView, Modal, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppointmentBooking } from "../hooks/useAppointmentBooking";
 import { APPOINTMENT_COLORS } from "./appointmentTheme";
@@ -26,10 +26,10 @@ const AppointmentModal = ({
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose} transparent={false}>
       <View className="flex-1" style={{ backgroundColor: APPOINTMENT_COLORS.pageBg }}>
-        <KeyboardAvoidingView
-          className="flex-1"
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-        >
+        {/* "padding" on Android too: with edge-to-edge the OS does not reliably
+            resize this window for the keyboard. KeyboardAvoidingView measures the
+            real overlap against its own frame, so it adds nothing when the OS did. */}
+        <KeyboardAvoidingView className="flex-1" behavior="padding">
           <ScrollView
             className="flex-1"
             keyboardShouldPersistTaps="handled"

@@ -1,25 +1,22 @@
 import { useMemo } from "react";
-import { useWindowDimensions } from "react-native";
 import { ROLE_LAYOUT_PADDING } from "@/constants/layout";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useResponsive } from "@/hooks/useResponsive";
 
 export const useRoleScreenInsets = () => {
-  const { width } = useWindowDimensions();
+  const { width, isMobile, pagePadding } = useResponsive();
 
   return useMemo(() => {
-    const isPhone = width < BREAKPOINTS.tablet;
-    const layoutPadding = isPhone ? ROLE_LAYOUT_PADDING.mobile : ROLE_LAYOUT_PADDING.desktop;
-    const desktopGutter = width >= BREAKPOINTS.desktop ? 32 : 24;
+    const layoutPadding = isMobile ? ROLE_LAYOUT_PADDING.mobile : ROLE_LAYOUT_PADDING.desktop;
 
     return {
       width,
-      isPhone,
+      isPhone: isMobile,
       layoutPadding,
-      gutter: Math.max(0, (isPhone ? 16 : desktopGutter) - layoutPadding.horizontal),
-      paddingTop: Math.max(0, (isPhone ? 16 : 24) - layoutPadding.top),
-      paddingBottom: Math.max(0, (isPhone ? 28 : 32) - layoutPadding.bottom),
+      gutter: Math.max(0, pagePadding - layoutPadding.horizontal),
+      paddingTop: Math.max(0, (isMobile ? 16 : 24) - layoutPadding.top),
+      paddingBottom: Math.max(0, (isMobile ? 28 : 32) - layoutPadding.bottom),
     };
-  }, [width]);
+  }, [width, isMobile, pagePadding]);
 };
 
 export type RoleScreenInsets = ReturnType<typeof useRoleScreenInsets>;

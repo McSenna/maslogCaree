@@ -3,12 +3,13 @@ import {
   Modal,
   Pressable,
   Text,
-  useWindowDimensions,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleTheme";
-import { MISSION_SHEET_BREAKPOINT } from "./MissionScheduleSheet";
+import { useResponsive } from "@/hooks/useResponsive";
 
 type MissionPickerModalProps = {
   visible: boolean;
@@ -28,21 +29,26 @@ const MissionPickerModal = ({
   children,
 }: MissionPickerModalProps) => {
   const palette = useMissionSchedulePalette();
-  const { width, height } = useWindowDimensions();
-  const safeArea = useSafeAreaInsets();
-  const isSheet = width < MISSION_SHEET_BREAKPOINT;
+  const { isMobile } = useResponsive();
+  const isSheet = isMobile;
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: isSheet ? 0.9 : 0.88,
+    edgePadding: isSheet ? 0 : 20,
+  });
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType={isSheet ? "slide" : "fade"}
-      onRequestClose={onCancel}
+      onRequestClose={backDismissesKeyboardFirst(layout, onCancel)}
       statusBarTranslucent
     >
-      <View
-        className={`flex-1 ${isSheet ? "justify-end" : "items-center justify-center p-5"}`}
-        style={{ backgroundColor: palette.backdrop }}
+      <SheetViewport
+        layout={layout}
+        style={{ backgroundColor: palette.backdrop, paddingHorizontal: isSheet ? 0 : 20 }}
       >
         <Pressable
           accessibilityRole="button"
@@ -56,7 +62,7 @@ const MissionPickerModal = ({
           style={{
             maxWidth: isSheet ? undefined : 420,
             // Bounded so a tall wheel picker cannot run off a short device.
-            maxHeight: Math.round(height * (isSheet ? 0.9 : 0.88)),
+            maxHeight: layout.maxHeight,
             borderTopLeftRadius: MISSION_RADIUS.sheet,
             borderTopRightRadius: MISSION_RADIUS.sheet,
             borderBottomLeftRadius: isSheet ? 0 : MISSION_RADIUS.sheet,
@@ -96,7 +102,7 @@ const MissionPickerModal = ({
 
           <View
             className="flex-row gap-2.5 px-5 pt-4"
-            style={{ paddingBottom: 16 + (isSheet ? safeArea.bottom : 0) }}
+            style={{ paddingBottom: 16 + (isSheet ? layout.bottomInset : 0) }}
           >
             <Pressable
               onPress={onCancel}
@@ -129,7 +135,7 @@ const MissionPickerModal = ({
             </Pressable>
           </View>
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import type { UserRole } from "@/data/mockUsers";
+import { useMemo, useState } from "react";
+import type { UserRole } from "@/config/roleRoutes";
 import { getProfileTabsForRole, type ProfileTabDefinition } from "../config/profileTabs";
 import type { ProfileTabKey } from "../types/profile.types";
 
@@ -11,12 +11,10 @@ export type ProfileTabsState = {
 
 export const useProfileTabs = (role?: UserRole | null): ProfileTabsState => {
   const tabs = useMemo(() => getProfileTabsForRole(role), [role]);
-  const [activeTab, setActiveTab] = useState<ProfileTabKey>("overview");
+  const [selectedTab, setSelectedTab] = useState<ProfileTabKey>("overview");
 
-  useEffect(() => {
-    const permitted = tabs.some((tab) => tab.key === activeTab);
-    if (!permitted) setActiveTab("overview");
-  }, [tabs, activeTab]);
+  // Fall back to the overview when the selected tab isn't available for this role.
+  const activeTab = tabs.some((tab) => tab.key === selectedTab) ? selectedTab : "overview";
 
-  return { tabs, activeTab, selectTab: setActiveTab };
+  return { tabs, activeTab, selectTab: setSelectedTab };
 };

@@ -229,124 +229,41 @@ Target: **90%+ component coverage** with accessibility tests
 
 ## Animations
 
-### Implementation Status
-✅ **Installed**: `react-native-reanimated` (v4.x)
+MaslogCare's motion is crisp and calm. It exists to confirm an action, show that a state changed, or keep spatial continuity. Nothing loops except loading indicators and the landing hero.
 
-### Animation Utilities
-Location: `src/utils/animations.ts`
+### Tokens (`src/theme/motion.ts`)
 
-#### Preset Animations
-```typescript
-// Card entrance (fade + spring)
-cardEntranceAnimation        // 400ms, spring effect
+| Token | Value | Use |
+| --- | --- | --- |
+| `EASING.out` | `bezier(0.23, 1, 0.32, 1)` | Default for entering, exiting, press and hover |
+| `EASING.inOut` | `bezier(0.77, 0, 0.175, 1)` | Something moving while on screen, such as a toggle knob |
+| `EASING.drawer` | `bezier(0.32, 0.72, 0, 1)` | Bottom sheets, in both directions |
+| `TIMING.pressIn` / `pressOut` | 100 / 200 ms | Press feedback: fast down, slower settle |
+| `TIMING.hover` | 160 ms | Web hover color and border changes (`webTransition(...)`) |
+| `TIMING.enter` / `exit` | 240 / 180 ms | Cards, toasts, panels, list rows |
+| `TIMING.modal` | 260 ms | Sheets and auth cards |
+| `TIMING.page` | 220 ms | Page body fade (web) and tab cross-fade (native) |
+| `PRESS_SCALE` | 0.98 | Buttons and cards. Icon buttons use 0.96 and the bell 0.94 |
 
-// Slide up staggered
-slideUpAnimation(delay)      // 500ms, customizable delay
+### Rules
 
-// Pop in effect
-popInAnimation               // 300ms, zoom + spring
+- Never use `ease-in` on UI, even for exits. Exits use `EASING.out` and are shorter than entrances.
+- Keep UI motion under 300 ms. Only the landing page reveal (380 ms, 60 ms stagger) and chart draw-in run longer.
+- Animate only `transform` and `opacity`. The one exception is the mission-schedule toggle track color.
+- Nothing scales from 0. Entrances start at 0.94 to 0.98 scale or 6 to 12 px away.
+- Dropdowns and the notification panel scale from their trigger (`transformOrigin: "top right"`). Centered modals scale from the center.
+- Every animation checks `useReducedMotion()`. Under reduced motion, movement is dropped and short opacity changes remain.
+- Web hover is color only, applied via `webTransition(...)`. RN Web never fires hover for touch, so phones don't get sticky hover states.
+- Tab and keyboard actions stay fast: bottom-nav press is 0.96 with a 100 ms press-in, and tooltips wait 450 ms for hover intent but appear at once on keyboard focus.
 
-// Bounce entrance
-bounceInAnimation            // 600ms, playful
+### Shared pieces
 
-// Exit animations
-fadeOutAnimation             // 300ms
-slideDownExitAnimation       // 400ms
-```
-
-#### Animation Config
-```typescript
-ANIMATION_CONFIG = {
-  FAST: 150,
-  BASE: 300,
-  SLOW: 500,
-  
-  STAGGER_SMALL: 50,
-  STAGGER_MEDIUM: 100,
-  STAGGER_LARGE: 200,
-  
-  SPRING: {
-    mass: 1,
-    damping: 10,
-    stiffness: 100,
-    overshootClamping: false,
-  }
-}
-```
-
-### Applied Animations
-
-#### HeroCard
-```tsx
-// Outer card: Fade in + spring (500ms)
-<Animated.View entering={FadeIn.duration(500).springify()}>
-  
-  // Content: Slide up with delay (600ms, 200ms delay)
-  <Animated.View entering={SlideInUp.duration(600).delay(200)}>
-    ...
-  </Animated.View>
-</Animated.View>
-```
-
-#### ServiceCard
-```tsx
-// Container: Fade in (400ms, 100ms delay)
-<Animated.View entering={FadeIn.duration(400).delay(100)}>
-  
-  // Card content: Slide up (500ms, 150ms delay)
-  <Animated.View entering={SlideInUp.duration(500).delay(150)}>
-    ...
-  </Animated.View>
-</Animated.View>
-```
-
-### Best Practices
-
-1. **Duration Guidelines**
-   - Quick feedback: 150-250ms
-   - Standard actions: 300-400ms
-   - Entrance/exit: 400-600ms
-   - Complex sequences: 600ms+
-
-2. **Stagger Pattern**
-   - List items: 50-100ms between each
-   - Card grid: 100-150ms between cards
-   - Sections: 200ms+ between major sections
-
-3. **Spring Physics**
-   - Use `.springify()` for bounce effect
-   - Avoid over-animation (keep damping >= 10)
-   - Test on real devices for performance
-
-4. **Performance**
-   - Use `enteringAnimation` instead of `style` transforms
-   - Prefer native animations over JS-driven
-   - Test on mid-range devices (Pixel 4, iPhone 11)
-   - Monitor frame rate (target 60fps)
-
-### Adding New Animations
-
-#### Example: Animated Button
-```tsx
-import Animated, { ZoomIn, ZoomOut } from 'react-native-reanimated';
-
-<Animated.View entering={ZoomIn.duration(300)} exiting={ZoomOut.duration(300)}>
-  <Button title="Click me" />
-</Animated.View>
-```
-
-#### Example: Staggered List
-```tsx
-import { staggeredItemAnimation } from '@/utils/animations';
-
-{items.map((item, idx) => (
-  <Animated.View key={item.id} entering={staggeredItemAnimation(idx)}>
-    <Item data={item} />
-  </Animated.View>
-))}
-```
-
----
+- `useInteractionState()` handles press scale, hover and keyboard focus for any custom pressable.
+- `FadeIn` is opacity plus a 6 px rise, used for one-off reveals.
+- `AnimatedListItem` fades in rows with a 30 ms stagger capped at six rows, slides completed rows out to the left, and lets the remaining rows close the gap.
+- `AppointmentStatusBadge` settles from 0.94 scale when a status changes.
+- `useCountBump(count)` gives a notification badge a small scale settle when its count rises.
+- `useSkeletonPulse(low, high)` is the single loading pulse used by every skeleton.
 
 ## Quality Checklist
 
@@ -370,3 +287,29 @@ import { staggeredItemAnimation } from '@/utils/animations';
 - Storybook RN: https://storybook.js.org/docs/react-native/get-started/install
 - WCAG 2.1: https://www.w3.org/WAI/WCAG21/quickref/
 - jest-axe: https://github.com/nickcolley/jest-axe
+
+---
+
+## Responsive system and shared components
+
+Use these instead of writing per-screen versions.
+
+### Tokens (`src/theme`)
+- `breakpoints.ts`: mobile < 768, tablet 768–1023, desktop ≥ 1024, wide ≥ 1440. `CONTENT_MAX_WIDTH` (1440) and `PAGE_PADDING` (16 / 20 / 28 / 36).
+- `colors.ts`: `getThemeColors(scheme)` returns semantic light/dark colors, including `success`, `warning`, `danger`, `info`, `progress` and `neutral` tones. Read them with `useThemeColors()`.
+- `spacing.ts`, `radius.ts`, `typography.ts`, `shadows.ts`, `motion.ts` (`TIMING`, `PRESS_SCALE`).
+- `webStyle.ts`: typed web-only CSS (cursor, transition, sticky, box-shadow). Never cast styles to `any`.
+
+### Hooks
+- `useResponsive()`: `isMobile`, `isTablet`, `isDesktop`, `isWideDesktop`, `isDesktopWeb`, `breakpoint`, `pagePadding`, `select({ mobile, tablet, desktop, wide })`. Do not compare `useWindowDimensions().width` against numbers in screens.
+- `useDialogPresentation()`: `"sheet"` on phones, `"modal"` otherwise.
+- `useInteractionState()`: press scale, hover and keyboard-focus state for custom pressables.
+
+### Components
+- Buttons (`components/buttons`): `Button` with `primary | secondary | danger | ghost | text`, `IconButton` (web tooltip), plus `PrimaryButton` and similar wrappers. All have hover, press, focus, disabled and loading states.
+- Cards: `Card` (static, or interactive when given `onPress`) and `PressableShell` for turning an existing card into a link.
+- Layout: `ResponsiveContainer` (max width) and `ResponsiveGrid` (measures its own width; `columnOptions` avoids orphan columns).
+- Status: `AppointmentStatusBadge` with `audience="staff" | "resident"`. Labels and tones come from `appointmentStatusModel.ts`.
+- Feedback: `EmptyState`, `ErrorState` (hides technical errors via `friendlyErrorMessage`), `FadeIn`, `AnimatedListItem`.
+- Toasts: call `toast.success(title)` or `toast.error(title, detail)` from anywhere. One `ToastViewport` is mounted in `app/_layout.tsx`, and it sits above the mobile bottom navigation.
+- Forms: `TextField` handles label, focus ring, hover, error below the field, success, disabled, and a password reveal toggle.

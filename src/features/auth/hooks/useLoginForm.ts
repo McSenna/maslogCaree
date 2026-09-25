@@ -1,16 +1,15 @@
 import { useCallback, useState } from "react";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
-import { getDashboardPath } from "@/data/mockUsers";
+import { getDashboardPath } from "@/config/roleRoutes";
 import { PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
-import { showAlert } from "@/utils/notify";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
 
 const EMAIL_REQUIRED = "Please enter your email address or phone number.";
 const PASSWORD_REQUIRED = "Please enter your password.";
 
-export const useLoginForm = () => {
+export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => {
   const { login } = useAuth();
   const router = useRouter();
 
@@ -18,6 +17,7 @@ export const useLoginForm = () => {
   const [password, setPasswordValue] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<{ title: string; message: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPlatformNotice, setShowPlatformNotice] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -25,11 +25,13 @@ export const useLoginForm = () => {
   const setEmail = useCallback((value: string) => {
     setEmailValue(value);
     setEmailError(null);
+    setFormError(null);
   }, []);
 
   const setPassword = useCallback((value: string) => {
     setPasswordValue(value);
     setPasswordError(null);
+    setFormError(null);
   }, []);
 
   const submit = useCallback(async () => {
@@ -43,10 +45,12 @@ export const useLoginForm = () => {
 
     if (missingEmail || missingPassword) return;
 
+    setFormError(null);
     setIsSubmitting(true);
     try {
       const result = await login(email.trim(), password);
       if (result.success && result.role) {
+        onSuccess?.();
         router.replace(getDashboardPath(result.role) as never);
         return;
       }
@@ -57,21 +61,22 @@ export const useLoginForm = () => {
         return;
       }
 
-      const { title, message } = getAuthErrorPresentation(
-        { code: result.code, message: result.error },
-        "Login Failed",
-        result.error ?? "Invalid email or password."
+      setFormError(
+        getAuthErrorPresentation(
+          { code: result.code, message: result.error },
+          "Login failed",
+          result.error ?? "Invalid email or password."
+        )
       );
-      showAlert(title, message);
     } catch (error: unknown) {
-      showAlert(
-        "Login Failed",
-        getApiErrorMessage(error, "An unexpected error occurred. Please try again.")
-      );
+      setFormError({
+        title: "Login failed",
+        message: getApiErrorMessage(error, "An unexpected error occurred. Please try again."),
+      });
     } finally {
       setIsSubmitting(false);
     }
-  }, [isSubmitting, email, password, login, router]);
+  }, [isSubmitting, email, password, login, router, onSuccess]);
 
   const forgotPassword = useCallback(() => setShowForgotPassword(true), []);
 
@@ -82,6 +87,7 @@ export const useLoginForm = () => {
     setPassword,
     emailError,
     passwordError,
+    formError,
     isSubmitting,
     submit,
     forgotPassword,

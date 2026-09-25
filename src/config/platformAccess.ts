@@ -1,5 +1,5 @@
 import { Platform } from "react-native";
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 
 export type ClientPlatform = "web" | "mobile";
 
@@ -12,7 +12,7 @@ export const PLATFORM_ACCESS: Record<UserRole, ClientPlatform[]> = {
   doctor: ["web", "mobile"],
   midwife: ["web", "mobile"],
   bhw: ["web", "mobile"],
-  resident: ["web", "mobile"],
+  resident: ["mobile"],
 };
 
 const FALLBACK_ALLOWED: ClientPlatform[] = ["mobile"];

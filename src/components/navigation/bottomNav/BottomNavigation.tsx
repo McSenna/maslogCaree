@@ -1,5 +1,5 @@
 import { usePathname } from "expo-router";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useOptionalTheme } from "@/contexts/ThemeContext";
 import {
@@ -24,6 +24,9 @@ const BottomNavigation = ({ items, replace = false }: BottomNavigationProps) => 
   const theme = useOptionalTheme();
   const palette = getBottomNavPalette(theme?.resolvedTheme ?? "light");
   const keyboardVisible = useKeyboardVisible();
+  const { width } = useWindowDimensions();
+  const tabWidth = (width - BOTTOM_NAV_METRICS.paddingHorizontal * 2) / Math.max(items.length, 1);
+  const labelSize = tabWidth < 60 ? BOTTOM_NAV_METRICS.labelSizeCompact : BOTTOM_NAV_METRICS.labelSize;
 
   if (items.length === 0 || keyboardVisible) return null;
 
@@ -58,6 +61,7 @@ const BottomNavigation = ({ items, replace = false }: BottomNavigationProps) => 
           isActive={isRouteActive(pathname, item.href)}
           palette={palette}
           replace={replace}
+          labelSize={labelSize}
         />
       ))}
     </View>

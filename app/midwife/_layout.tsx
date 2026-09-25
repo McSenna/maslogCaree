@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import RoleLayout from "@/components/layout/RoleLayout";
-import { screenTransition, useReducedMotion } from "@/design/motion";
+import { screenTransition, useReducedMotion } from "@/theme/motion";
 import RouteGuard from "@/components/layout/RouteGuard";
 import {
   midwifeNavItems,
@@ -14,7 +14,7 @@ const MidwifeLayout = () => {
     <RoleLayout
       sidebarItems={midwifeNavItems}
       bottomNavItems={midwifeBottomNavItems}
-      roleLabel="MidWife"
+      roleLabel="Midwife"
     >
       <RouteGuard role="midwife">
         <Stack screenOptions={{ headerShown: false, ...screenTransition(reducedMotion) }} />

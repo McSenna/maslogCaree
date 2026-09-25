@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 
+import { toast } from "@/components/feedback/toast/toastStore";
+import { isOtpComplete } from "@/components/ui/otpEntry";
 import { useAuth } from "@/contexts/AuthContext";
-import { getDashboardPath } from "@/data/mockUsers";
+import { getDashboardPath } from "@/config/roleRoutes";
 import { resendOtp, verifyOtp } from "@/services/auth";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
-import { showAlert } from "@/utils/notify";
 
-import { useOtpDigits } from "./useOtpDigits";
-
+export const OTP_LENGTH = 6;
 const RESEND_COOLDOWN_SEC = 60;
 
 type Options = {
@@ -21,59 +21,67 @@ export const useOtpVerification = ({ email, onClose, onVerified }: Options) => {
   const router = useRouter();
   const { applyAuthUser } = useAuth();
 
+  const [code, setCodeValue] = useState("");
+  const [focusRequest, setFocusRequest] = useState(0);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const [verified, setVerified] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [verificationError, setVerificationError] = useState("");
   const [showPlatformNotice, setShowPlatformNotice] = useState(false);
 
-  const digits = useOtpDigits(() => {
-    if (verificationError) setVerificationError("");
-  });
-
+  const otpComplete = isOtpComplete(code, OTP_LENGTH);
   const resendDisabled = isResending || resendTimer > 0;
   const finishVerification = () => (onVerified ? onVerified() : onClose());
 
   useEffect(() => {
     if (resendTimer <= 0) return;
-    const id = setInterval(() => {
-      setResendTimer((prev) => (prev <= 1 ? 0 : prev - 1));
-    }, 1000);
+    const id = setInterval(() => setResendTimer((prev) => (prev <= 1 ? 0 : prev - 1)), 1000);
     return () => clearInterval(id);
   }, [resendTimer]);
 
+  const setCode = (next: string) => {
+    setCodeValue(next);
+    if (verificationError) setVerificationError("");
+  };
+
+  const resetCode = () => {
+    setCodeValue("");
+    setFocusRequest((value) => value + 1);
+  };
+
   const handleVerify = async () => {
-    if (isVerifying) return;
+    if (isVerifying || verified) return;
     if (!email?.trim()) {
-      showAlert("Error", "Email not found. Please try registering again.");
+      setVerificationError("We couldn't find your email. Please start the registration again.");
       return;
     }
-    if (!digits.otpComplete) {
-      setVerificationError("Please enter all 6 digits");
+    if (!otpComplete) {
+      setVerificationError(`Enter all ${OTP_LENGTH} digits of the code.`);
       return;
     }
 
     try {
       setIsVerifying(true);
       setVerificationError("");
-      const { token, user } = await verifyOtp(email.trim(), digits.otp);
+      const { token, user } = await verifyOtp(email.trim(), code);
 
       if (!token) {
-        digits.resetOtp();
+        resetCode();
         setShowPlatformNotice(true);
         return;
       }
 
+      setVerified(true);
       applyAuthUser(user, token);
-      showAlert("Success!", "Your email has been verified. Registration complete!");
-      digits.resetOtp();
+      toast.success("Email verified", "Your MaslogCare account is ready.");
       finishVerification();
-      router.replace(getDashboardPath(user.role as any) as any);
+      router.replace(getDashboardPath(user.role));
     } catch (error: unknown) {
       const { message } = getAuthErrorPresentation(
         error,
-        "Verification Failed",
-        "Unable to verify the code. Please check and try again."
+        "Verification failed",
+        "That code didn't work. Check it and try again."
       );
       setVerificationError(message);
     } finally {
@@ -86,33 +94,38 @@ export const useOtpVerification = ({ email, onClose, onVerified }: Options) => {
     try {
       setIsResending(true);
       const result = await resendOtp(email.trim());
-      showAlert("Code Sent", result.message);
-      digits.resetOtp();
+      toast.success("New code sent", result.message);
+      resetCode();
       setVerificationError("");
       setResendTimer(RESEND_COOLDOWN_SEC);
     } catch (error: unknown) {
       const { title, message } = getAuthErrorPresentation(
         error,
-        "Resend Failed",
-        "Unable to resend the code. Please try again."
+        "Couldn't resend the code",
+        "Please try again in a moment."
       );
-      showAlert(title, message);
+      toast.error(title, message);
     } finally {
       setIsResending(false);
     }
   };
 
   const handleClose = () => {
-    digits.resetOtp();
+    setCodeValue("");
     setVerificationError("");
     setResendTimer(0);
+    setVerified(false);
     onClose();
   };
 
   return {
-    ...digits,
+    code,
+    setCode,
+    focusRequest,
+    otpComplete,
     isVerifying,
     isResending,
+    verified,
     resendTimer,
     resendDisabled,
     verificationError,

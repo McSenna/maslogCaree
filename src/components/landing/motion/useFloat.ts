@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Animated } from "react-native";
-import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
 import { FLOAT_DISTANCE, FLOAT_DURATION, floatEasing } from "./landingMotion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type FloatOptions = {
   distance?: number;
@@ -15,7 +16,7 @@ export const useFloat = ({
   delay = 0,
 }: FloatOptions = {}) => {
   const reducedMotion = useReducedMotion();
-  const progress = useRef(new Animated.Value(0)).current;
+  const progress = useAnimatedValue(0);
 
   useEffect(() => {
     if (reducedMotion) {

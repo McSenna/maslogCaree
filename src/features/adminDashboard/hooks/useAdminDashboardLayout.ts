@@ -1,17 +1,20 @@
 import { useState } from "react";
-import { useWindowDimensions } from "react-native";
-import { SIDEBAR_WIDTH } from "@/components/navigation/sidebar/sidebarTheme";
+import { getSidebarWidth } from "@/components/navigation/sidebar/sidebarTheme";
+import { useResponsive } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { DASHBOARD_BREAKPOINTS } from "@/design/adminDashboardTheme";
-import { DENSE_METRIC_MAX_WIDTH, PANEL_FLEX } from "../constants/dashboardLayout";
+import {
+  ANALYTICS_SIDE_BY_SIDE_MIN_WIDTH,
+  DENSE_METRIC_MAX_WIDTH,
+  PANEL_FLEX,
+} from "../constants/dashboardLayout";
 
 export const useAdminDashboardLayout = () => {
-  const { width: windowWidth } = useWindowDimensions();
+  const { width: windowWidth, breakpoint, isMobile } = useResponsive();
   const insets = useRoleScreenInsets();
 
   const [measuredWidth, setMeasuredWidth] = useState(0);
 
-  const isMobile = windowWidth < DASHBOARD_BREAKPOINTS.mobile;
   const gap = isMobile ? 12 : 16;
 
   const availableWidth =
@@ -20,7 +23,7 @@ export const useAdminDashboardLayout = () => {
       280,
       windowWidth -
         insets.layoutPadding.horizontal * 2 -
-        (isMobile ? 0 : SIDEBAR_WIDTH) -
+        getSidebarWidth(breakpoint) -
         insets.gutter * 2
     );
 
@@ -63,6 +66,7 @@ export const useAdminDashboardLayout = () => {
     usersPanelWidth,
     denseMetrics: windowWidth <= DENSE_METRIC_MAX_WIDTH,
     inColumns: !isMobile && panelColumns > 1,
+    analyticsSideBySide: !isMobile && availableWidth >= ANALYTICS_SIDE_BY_SIDE_MIN_WIDTH,
     measuredWidth,
     measure: (event: { nativeEvent: { layout: { width: number } } }) => {
       const next = Math.round(event.nativeEvent.layout.width);

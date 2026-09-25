@@ -39,6 +39,7 @@ export const useIdDocument = (verificationId: string | null | undefined): IdDocu
 
     if (!verificationId) {
       releasePrevious();
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
       setUri(null);
       setError(null);
       setLoading(false);

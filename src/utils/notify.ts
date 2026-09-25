@@ -1,57 +1,32 @@
 import { Alert, Platform } from "react-native";
 
-export type NotifyButtonStyle = "default" | "cancel" | "destructive";
+import { openActionDialog, type DialogAction } from "@/components/feedback/dialog/actionDialogStore";
+import { toast } from "@/components/feedback/toast/toastStore";
 
-export interface NotifyButton {
-  text: string;
-  style?: NotifyButtonStyle;
-  onPress?: () => void;
-}
+export type NotifyButtonStyle = DialogAction["style"];
 
-const joinText = (title: string, message?: string): string =>
-  message ? `${title}\n\n${message}` : title;
+export type NotifyButton = DialogAction;
 
-const isWeb = Platform.OS === "web";
-
-const hasDomDialogs = (): boolean =>
-  typeof window !== "undefined" && typeof window.alert === "function";
-
-const runHandler = (button?: NotifyButton) => {
-  try {
-    button?.onPress?.();
-  } catch (error) {
-    console.error("[notify] alert action failed", error);
+/**
+ * Asks the user to choose between actions. Native keeps the platform alert,
+ * which also stays safe to open pickers from; web gets an in-app dialog because
+ * `window.confirm` can only express two outcomes and ignores destructive styling.
+ * A message with no choices is informational and shows as a toast instead.
+ */
+export const showAlert = (title: string, message?: string, buttons?: NotifyButton[]): void => {
+  if (!buttons?.length) {
+    toast.info(title, message);
+    return;
   }
-};
 
-export const showAlert = (
-  title: string,
-  message?: string,
-  buttons?: NotifyButton[]
-): void => {
-  if (!isWeb) {
+  if (Platform.OS !== "web") {
     Alert.alert(title, message, buttons);
     return;
   }
 
-  if (!hasDomDialogs()) {
-    console.warn(`[notify] ${joinText(title, message)}`);
-    return;
-  }
-
-  const list = buttons ?? [];
-  const confirmable = list.filter((b) => b.style !== "cancel");
-  const cancelButton = list.find((b) => b.style === "cancel");
-
-  if (confirmable.length <= 1 && list.length <= 1) {
-    window.alert(joinText(title, message));
-    runHandler(list[0]);
-    return;
-  }
-
-  const accepted = window.confirm(joinText(title, message));
-  runHandler(accepted ? confirmable[0] : cancelButton);
+  openActionDialog(title, message, buttons);
 };
 
-export const showErrorAlert = (title: string, message: string): void =>
-  showAlert(title, message);
+export const showErrorAlert = (title: string, message: string): void => {
+  toast.error(title, message);
+};

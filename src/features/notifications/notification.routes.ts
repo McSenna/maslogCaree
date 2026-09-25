@@ -1,4 +1,4 @@
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 import type { NotificationCategory, NotificationItem } from "./notification.types";
 import { resolveNotificationVisual } from "./notification.utils";
 
@@ -17,35 +17,36 @@ const ROUTES: Record<UserRole, RoleRoutes> = {
     account: "/resident/profile",
   },
   doctor: {
-    appointment: "/doctor/consultations",
-    medical: "/doctor/patients",
+    appointment: "/doctor/mission",
+    medical: "/doctor/mission",
     inventory: "/doctor/inventory",
   },
   midwife: {
-    appointment: "/midwife/consultations",
-    medical: "/midwife/patients",
+    appointment: "/midwife/mission",
+    medical: "/midwife/mission",
     inventory: "/midwife/inventory",
   },
   bhw: {
-    appointment: "/bhw/visits",
+    appointment: "/bhw/mission",
     medical: "/bhw/residents",
     inventory: "/bhw/inventory",
   },
   admin: {
-    appointment: "/admin/mission",
+    appointment: "/admin/dashboard",
     account: "/admin/users",
     inventory: "/admin/inventory",
   },
 };
 
+export const routeForCategory = (role: string | null | undefined, category: NotificationCategory): string | null =>
+  role && role in ROUTES ? ROUTES[role as UserRole][category] ?? null : null;
+
 export const resolveNotificationDestination = (
   item: NotificationItem,
   role?: string | null
 ): string | null => {
-  if (!role || !(role in ROUTES)) return null;
-
   const { category } = resolveNotificationVisual(item);
-  return ROUTES[role as UserRole][category] ?? null;
+  return routeForCategory(role, category);
 };
 
 export const getNotificationsRoute = (role?: string | null): string | null =>

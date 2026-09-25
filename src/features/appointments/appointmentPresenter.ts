@@ -1,25 +1,11 @@
 import type { AppointmentRecord } from "@/services/appointments";
 import { getServiceLabel } from "@/config/appointmentServices";
+import { getStatusLabel } from "@/components/status/appointmentStatusModel";
 
 export type AppointmentStatus = AppointmentRecord["status"];
 
-export const RESIDENT_STATUS_LABELS: Record<AppointmentStatus, string> = {
-  pending: "Pending",
-  confirmed: "Approved",
-  rescheduled: "Rescheduled",
-  processing: "Being seen",
-  completed: "Completed",
-  declined: "Declined",
-  cancelled: "Cancelled",
-};
-
-export const residentStatusLabel = (status: string | undefined): string => {
-  return RESIDENT_STATUS_LABELS[status as AppointmentStatus] ?? "Unknown";
-};
-
-export const statusToneKey = (status: string | undefined): AppointmentStatus => {
-  return (RESIDENT_STATUS_LABELS[status as AppointmentStatus] ? status : "pending") as AppointmentStatus;
-};
+export const residentStatusLabel = (status: string | undefined): string =>
+  getStatusLabel(status, "resident");
 
 /**
  * A resident may drop any request that has not been acted on yet.

@@ -1,44 +1,47 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import AnimatedListItem from "@/components/animations/AnimatedListItem";
+import Button from "@/components/buttons/Button";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
+import { useThemeColors } from "@/hooks/useThemeColors";
 import type { AppointmentRecord } from "@/services/appointments";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 import { formatSlotLabel } from "../utils/slotLabels";
+import WorkspacePanel, { PanelEmpty } from "./WorkspacePanel";
 
 type BookedTimelinePanelProps = {
   timeline: AppointmentRecord[];
   onReschedule: (appointment: AppointmentRecord) => void;
 };
 
-const BookedTimelinePanel = ({
-  timeline,
-  onReschedule,
-}: BookedTimelinePanelProps) => {
-  return (
-    <View className="rounded-2xl border border-slate-200 bg-white p-4">
-      <Text className="text-lg font-semibold text-slate-900">Booked timeline</Text>
+const BookedTimelinePanel = ({ timeline, onReschedule }: BookedTimelinePanelProps) => {
+  const colors = useThemeColors();
 
+  return (
+    <WorkspacePanel title="Booked timeline">
       {timeline.length === 0 ? (
-        <Text className="mt-2 text-sm text-slate-500">No confirmed slots yet.</Text>
+        <PanelEmpty>No confirmed slots yet.</PanelEmpty>
       ) : (
-        timeline.map((appointment) => (
-          <View key={appointment._id} className="mt-2 border-b border-slate-100 pb-2">
-            <Text className="font-medium text-slate-900">
-              {appointment.slotStart ? formatSlotLabel(appointment.slotStart) : "—"}
+        timeline.map((appointment, index) => (
+          <AnimatedListItem
+            key={appointment._id}
+            index={index}
+            style={{ gap: SPACING.xs, paddingBottom: SPACING.sm, borderBottomWidth: 1, borderBottomColor: colors.divider }}
+          >
+            <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: SPACING.sm }}>
+              <Text style={[TYPE.bodyStrong, { color: colors.heading }]}>
+                {appointment.slotStart ? formatSlotLabel(appointment.slotStart) : "—"}
+              </Text>
+              <AppointmentStatusBadge status={appointment.status} />
+            </View>
+            <Text style={[TYPE.body, { color: colors.body }]}>
+              {appointment.resident?.fullname ?? "Patient"} · {appointment.assignedCategoryKey ?? appointment.consultationType}
             </Text>
-            <Text className="text-sm text-slate-600">
-              {appointment.resident?.fullname ?? "Patient"} ·{" "}
-              {appointment.assignedCategoryKey ?? appointment.consultationType} ·{" "}
-              {appointment.status}
-            </Text>
-            <Pressable
-              onPress={() => onReschedule(appointment)}
-              accessibilityRole="button"
-              className="mt-1 self-start"
-            >
-              <Text className="text-sm font-semibold text-mc-primary">Reschedule</Text>
-            </Pressable>
-          </View>
+            <Button variant="text" size="sm" label="Reschedule" onPress={() => onReschedule(appointment)} />
+          </AnimatedListItem>
         ))
       )}
-    </View>
+    </WorkspacePanel>
   );
 };
 

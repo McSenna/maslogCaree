@@ -7,7 +7,8 @@ import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { AppointmentRecord } from "@/types/appointments.types";
 
 import { appointmentServiceLabel, appointmentWhen } from "../../appointmentPresenter";
-import CancellationReasonPicker, {
+import {
+  CancellationReasonPicker,
   CANCELLATION_REASONS,
   OTHER_REASON,
 } from "./CancellationReasonPicker";

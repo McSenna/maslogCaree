@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 
 type Options = {
   visible: boolean;
@@ -11,13 +12,13 @@ export const useVerificationDecision = ({ visible, onApprove, onReject }: Option
   const [showApproveConfirm, setShowApproveConfirm] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
 
-  useEffect(() => {
+  useSyncOnChange([visible], () => {
     if (!visible) {
       setShowFullIdNumber(false);
       setShowApproveConfirm(false);
       setShowRejectModal(false);
     }
-  }, [visible]);
+  });
 
   return {
     showFullIdNumber,

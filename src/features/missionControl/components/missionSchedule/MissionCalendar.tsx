@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import { Platform, Pressable, Text, View } from "react-native";
 import { fromIsoDateKey, toIsoDateKey } from "../../utils/dateTime";
@@ -34,15 +34,15 @@ const MissionCalendar = ({
 
   const shownMonthKey = `${month.getFullYear()}-${month.getMonth()}`;
   const valueMonthKey = `${selected.getFullYear()}-${selected.getMonth()}`;
-  const lastValueMonth = useRef(valueMonthKey);
+  const [lastValueMonth, setLastValueMonth] = useState(valueMonthKey);
 
-  useEffect(() => {
-    if (valueMonthKey === lastValueMonth.current) return;
-    lastValueMonth.current = valueMonthKey;
+  // Follow the selected date to its month when the value changes from outside.
+  if (valueMonthKey !== lastValueMonth) {
+    setLastValueMonth(valueMonthKey);
     if (valueMonthKey !== shownMonthKey) {
       setMonth(new Date(selected.getFullYear(), selected.getMonth(), 1));
     }
-  }, [valueMonthKey, shownMonthKey, selected]);
+  }
 
   const todayKey = toIsoDateKey(new Date());
   const cells = useMemo(() => buildGrid(month), [month]);

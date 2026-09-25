@@ -136,7 +136,7 @@ export const BarChartHitAreas = ({
           top: 0,
           width: layout.slot,
           height: layout.axisY,
-          ...Platform.select({ web: { cursor: "pointer" } as any }),
+          ...Platform.select({ web: { cursor: "pointer" } }),
         }}
       />
     ))}

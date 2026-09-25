@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import RoleLayout from "@/components/layout/RoleLayout";
 import RouteGuard from "@/components/layout/RouteGuard";
 import { useTheme } from "@/contexts/ThemeContext";
-import { screenTransition, useReducedMotion } from "@/design/motion";
+import { screenTransition, useReducedMotion } from "@/theme/motion";
 import {
   residentNavItems,
   residentBottomNavItems,

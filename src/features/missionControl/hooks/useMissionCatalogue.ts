@@ -10,7 +10,7 @@ import {
   type MissionScheduleRecord,
 } from "@/services/appointments";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
-import { showAlert } from "@/utils/notify";
+import { toast } from "@/components/feedback/toast/toastStore";
 
 export type CategoryAnalyticsRow = {
   _id: { category: string; status: string };
@@ -42,7 +42,7 @@ export const useMissionCatalogue = () => {
       setMissions(nextMissions);
       setPending(nextPending);
     } catch (error: unknown) {
-      showAlert("Unable to Load", getApiErrorMessage(error, "Could not load mission data."));
+      toast.error("Unable to load missions", getApiErrorMessage(error, "Could not load mission data."));
     }
   }, []);
 
@@ -51,19 +51,18 @@ export const useMissionCatalogue = () => {
       setMissionDetail(await fetchMissionDetail(missionId));
       setAnalytics(await fetchCategoryAnalytics(missionId));
     } catch (error: unknown) {
-      showAlert(
-        "Unable to Load",
-        getApiErrorMessage(error, "Could not load this mission schedule.")
-      );
+      toast.error("Unable to load schedule", getApiErrorMessage(error, "Could not load this mission schedule."));
     }
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void refreshLists();
   }, [refreshLists]);
 
   useEffect(() => {
     if (selectedMissionId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
       void loadMissionDetail(selectedMissionId);
     } else {
       setMissionDetail(null);

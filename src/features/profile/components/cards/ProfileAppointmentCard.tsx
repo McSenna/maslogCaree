@@ -7,7 +7,7 @@ import {
   appointmentDetailLines,
   appointmentTitle,
 } from "../../utils/appointmentPresentation";
-import AppointmentStatusPill from "../common/AppointmentStatusPill";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 
 type ProfileAppointmentCardProps = {
   appointment: AppointmentRecord;
@@ -46,7 +46,7 @@ const ProfileAppointmentCard = ({ appointment }: ProfileAppointmentCardProps) =>
           {title}
         </Text>
 
-        <AppointmentStatusPill status={appointment.status} />
+        <AppointmentStatusBadge status={appointment.status} audience="resident" />
       </View>
 
       <View style={{ gap: 6 }}>

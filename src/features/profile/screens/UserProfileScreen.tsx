@@ -1,8 +1,8 @@
 import { useRef } from "react";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { ScrollView, View } from "react-native";
 import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
 import { HelpSupportOverlays } from "@/features/help-center";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useResponsive } from "@/hooks/useResponsive";
 import { PROFILE_MAX_WIDTH, SOCIAL_COLORS } from "../config/profileSocialTheme";
 import { useCardReveal } from "../hooks/useCardReveal";
 import { useProfileScreen } from "../hooks/useProfileScreen";
@@ -12,7 +12,6 @@ import ProfileErrorState from "../components/ProfileErrorState";
 import ProfileNoticeModal from "../components/ProfileNoticeModal";
 import ProfileScreenContent from "../components/ProfileScreenContent";
 import ProfileScreenSkeleton from "../components/ProfileScreenSkeleton";
-import ProfileToastLayer from "../components/ProfileToastLayer";
 import { ChangePasswordDialog } from "../change-password/ChangePasswordDialog";
 
 const UserProfileScreen = () => {
@@ -20,10 +19,10 @@ const UserProfileScreen = () => {
 
   const reveal = useCardReveal(scrollRef);
   const state = useProfileScreen({ onEditProfileStarted: reveal.revealCard });
-  const { width } = useWindowDimensions();
+  const { width, isMobile, isDesktop } = useResponsive();
 
-  const wide = width >= BREAKPOINTS.tablet;
-  const twoColumn = width >= BREAKPOINTS.desktop;
+  const wide = !isMobile;
+  const twoColumn = isDesktop;
   const stacked = width < 380;
 
   const showSkeleton = state.loading || (state.refreshing && !state.profile);
@@ -82,10 +81,9 @@ const UserProfileScreen = () => {
       <ChangePasswordDialog
         visible={state.changePasswordVisible}
         onClose={state.closeChangePassword}
-        onSuccess={() => state.edit.showToast("Password changed successfully.")}
+        onSuccess={() => state.edit.showToast("Password changed")}
       />
 
-      <ProfileToastLayer toast={state.edit.toast} onDismiss={state.edit.hideToast} />
     </View>
   );
 };

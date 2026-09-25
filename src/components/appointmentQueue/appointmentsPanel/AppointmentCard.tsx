@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { QUEUE_RADIUS, type QueuePalette } from "../queueTheme";
-import StatusBadge from "../StatusBadge";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { scheduleFor } from "./appointmentSchedule";
 import QueueAvatar from "./QueueAvatar";
 import RowActions, { type RowActionProps } from "./RowActions";
@@ -63,7 +63,7 @@ const AppointmentCard = ({
         className="flex-row items-center justify-between gap-2 pt-3"
         style={{ borderTopWidth: 1, borderTopColor: palette.divider }}
       >
-        <StatusBadge status={appointment.status} />
+        <AppointmentStatusBadge status={appointment.status} />
         <RowActions appointment={appointment} {...actions} />
       </View>
     </View>

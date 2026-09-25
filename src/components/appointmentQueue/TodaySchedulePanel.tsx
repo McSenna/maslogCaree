@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 import type { AppointmentRecord } from "@/services/appointments";
 import { formatDateTime } from "@/utils/dateFormatter";
 import QueuePanel from "./QueuePanel";
-import StatusBadge from "./StatusBadge";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { useQueuePalette, type QueuePalette } from "./queueTheme";
 
 const ScheduleRow = ({
@@ -44,7 +44,7 @@ const ScheduleRow = ({
             {serviceLabel}
           </Text>
         </View>
-        <StatusBadge status={appointment.status} />
+        <AppointmentStatusBadge status={appointment.status} />
       </View>
     </View>
   );

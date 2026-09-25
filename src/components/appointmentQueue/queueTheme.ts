@@ -3,6 +3,7 @@ import type { Feather } from "@expo/vector-icons";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { AppointmentRecord } from "@/services/appointments";
+import { getStatusLabel } from "@/components/status/appointmentStatusModel";
 
 export const TWO_COLUMN_WIDTH = 1100;
 export const TABLE_WIDTH = 820;
@@ -16,15 +17,19 @@ export const STATUS_ORDER: AppointmentStatus[] = ["pending", "completed", "decli
 
 export const ACTIVE_QUEUE_STATUSES: AppointmentStatus[] = ["confirmed", "rescheduled", "processing"];
 
-export const STATUS_LABELS: Record<AppointmentStatus, string> = {
-  pending: "Pending",
-  confirmed: "Approved",
-  rescheduled: "Rescheduled",
-  processing: "In Progress",
-  completed: "Completed",
-  declined: "Declined",
-  cancelled: "Cancelled",
-};
+const ALL_STATUSES: AppointmentStatus[] = [
+  "pending",
+  "confirmed",
+  "rescheduled",
+  "processing",
+  "completed",
+  "declined",
+  "cancelled",
+];
+
+export const STATUS_LABELS = Object.fromEntries(
+  ALL_STATUSES.map((status) => [status, getStatusLabel(status, "staff")])
+) as Record<AppointmentStatus, string>;
 
 export type StatTone = "blue" | "green" | "purple" | "amber";
 

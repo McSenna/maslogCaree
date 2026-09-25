@@ -1,7 +1,8 @@
 import { useId } from "react";
-import { Modal, Platform, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import { Modal, Platform, Pressable, ScrollView, View } from "react-native";
 
 import { LANDING_COLORS } from "@/config/landingAssets";
+import { useModalFrame } from "@/hooks/useModalFrame";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 
 import AboutMaslogCareContent from "./AboutMaslogCareContent";
@@ -18,14 +19,13 @@ const MAX_WIDTH = 800;
 const WIDE_CONTENT_WIDTH = 700;
 
 const AboutMaslogCareModal = ({ visible, onClose }: AboutMaslogCareModalProps) => {
-  const { width, height } = useWindowDimensions();
+  const frame = useModalFrame(MAX_WIDTH);
   const titleId = useId();
 
   useWebModalBehavior(visible, onClose);
   const attachFocusTrap = useFocusTrap(visible);
 
-  const modalWidth = Math.min(MAX_WIDTH, width - 48);
-  const wide = modalWidth >= WIDE_CONTENT_WIDTH;
+  const wide = frame.width >= WIDE_CONTENT_WIDTH;
   const gutter = wide ? CONTENT_GUTTER.wide : CONTENT_GUTTER.compact;
 
   return (
@@ -35,7 +35,7 @@ const AboutMaslogCareModal = ({ visible, onClose }: AboutMaslogCareModalProps) =
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          padding: 24,
+          padding: 16,
           backgroundColor: "rgba(8, 21, 47, 0.45)",
         }}
       >
@@ -52,8 +52,8 @@ const AboutMaslogCareModal = ({ visible, onClose }: AboutMaslogCareModalProps) =
           accessibilityLabelledBy={titleId}
           {...Platform.select({ web: { role: "dialog", "aria-modal": true } as object })}
           style={{
-            width: modalWidth,
-            maxHeight: Math.round(height * 0.88),
+            width: frame.width,
+            maxHeight: frame.maxHeight,
             borderRadius: ABOUT_RADIUS.modal,
             backgroundColor: LANDING_COLORS.white,
             overflow: "hidden",

@@ -1,19 +1,3 @@
-export const statusLabel = (status?: string): string => {
-  const normalized = (status ?? "").toLowerCase();
-
-  const statusLabels: Record<string, string> = {
-    pending: "Pending",
-    confirmed: "Confirmed",
-    rescheduled: "Rescheduled",
-    declined: "Declined",
-    processing: "In Progress",
-    completed: "Completed",
-    cancelled: "Cancelled",
-  };
-
-  return statusLabels[normalized] ?? (normalized || "Unknown");
-};
-
 export const getAssignedStaffName = (assignedBy: unknown): string => {
   if (!assignedBy || typeof assignedBy !== "object") {
     return "";

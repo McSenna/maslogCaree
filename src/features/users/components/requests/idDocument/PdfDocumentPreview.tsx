@@ -1,6 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { formatFileSize } from "./idDocumentFormat";
+import { formatFileSize } from "@/utils/fileSize";
 
 const PdfDocumentPreview = ({
   frameClass,

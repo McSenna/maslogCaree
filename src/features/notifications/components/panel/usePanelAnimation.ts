@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { Animated, Easing } from "react-native";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { Animated } from "react-native";
+import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
 
-const ANIMATION_OPEN_MS = 220;
-const ANIMATION_CLOSE_MS = 180;
+const ANIMATION_OPEN_MS = TIMING.enter;
+const ANIMATION_CLOSE_MS = TIMING.exit - 30;
 
 export const usePanelAnimation = (visible: boolean, onClose: () => void) => {
+  const reducedMotion = useReducedMotion();
   const [opacity] = useState(() => new Animated.Value(0));
   const [translateY] = useState(() => new Animated.Value(-8));
   const [scale] = useState(() => new Animated.Value(0.96));
@@ -20,8 +21,8 @@ export const usePanelAnimation = (visible: boolean, onClose: () => void) => {
     if (!visible) return;
 
     opacity.setValue(0);
-    translateY.setValue(-8);
-    scale.setValue(0.96);
+    translateY.setValue(reducedMotion ? 0 : -8);
+    scale.setValue(reducedMotion ? 1 : 0.96);
 
     Animated.parallel(
       [
@@ -32,24 +33,24 @@ export const usePanelAnimation = (visible: boolean, onClose: () => void) => {
         Animated.timing(value, {
           toValue,
           duration: ANIMATION_OPEN_MS,
-          easing: Easing.out(Easing.cubic),
+          easing: EASING.out,
           useNativeDriver: USE_NATIVE_DRIVER,
         })
       )
     ).start();
-  }, [visible, opacity, translateY, scale]);
+  }, [visible, reducedMotion, opacity, translateY, scale]);
 
   const animateClose = useCallback(() => {
     Animated.parallel(
       [
         { value: opacity, toValue: 0 },
-        { value: translateY, toValue: -5 },
-        { value: scale, toValue: 0.97 },
+        { value: translateY, toValue: reducedMotion ? 0 : -4 },
+        { value: scale, toValue: reducedMotion ? 1 : 0.98 },
       ].map(({ value, toValue }) =>
         Animated.timing(value, {
           toValue,
           duration: ANIMATION_CLOSE_MS,
-          easing: Easing.in(Easing.cubic),
+          easing: EASING.out,
           useNativeDriver: USE_NATIVE_DRIVER,
         })
       )
@@ -57,7 +58,7 @@ export const usePanelAnimation = (visible: boolean, onClose: () => void) => {
       setModalVisible(false);
       onClose();
     });
-  }, [opacity, translateY, scale, onClose]);
+  }, [reducedMotion, opacity, translateY, scale, onClose]);
 
   return { opacity, translateY, scale, modalVisible, animateClose };
 };

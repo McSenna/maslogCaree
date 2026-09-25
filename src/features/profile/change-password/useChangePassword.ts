@@ -28,9 +28,6 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
   const [errors, setErrors] = useState<ChangePasswordErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
 
   const currentRef = useRef<TextInput>(null);
   const newRef = useRef<TextInput>(null);
@@ -56,9 +53,6 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
     setValues(INITIAL_VALUES);
     setErrors({});
     setIsSubmitting(false);
-    setShowCurrent(false);
-    setShowNew(false);
-    setShowConfirm(false);
   }, []);
 
   const validate = useCallback((): boolean => {
@@ -145,12 +139,6 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
     setValue,
     resetForm,
     handleSubmit,
-    showCurrent,
-    showNew,
-    showConfirm,
-    toggleShowCurrent: () => setShowCurrent((v) => !v),
-    toggleShowNew: () => setShowNew((v) => !v),
-    toggleShowConfirm: () => setShowConfirm((v) => !v),
     currentRef,
     newRef,
     confirmRef,

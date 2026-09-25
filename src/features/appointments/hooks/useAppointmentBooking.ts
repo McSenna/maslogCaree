@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 import { formatResidentReference } from "../components/ResidentInfoCard";
 import { buildServiceOptions } from "./booking/bookingServiceOptions";
 import type { BookingErrors } from "./booking/bookingTypes";
@@ -31,7 +32,8 @@ export const useAppointmentBooking = (visible: boolean, onBooked?: () => void) =
     [user]
   );
 
-  useEffect(() => {
+  // Start each booking from a clean slate.
+  useSyncOnChange([visible], () => {
     if (!visible) return;
     setStep(1);
     setServiceType(null);
@@ -39,6 +41,10 @@ export const useAppointmentBooking = (visible: boolean, onBooked?: () => void) =
     setNotes("");
     setConfirmed(false);
     setErrors({});
+  });
+
+  useEffect(() => {
+    if (!visible) return;
     void loadServices();
   }, [visible, loadServices]);
 

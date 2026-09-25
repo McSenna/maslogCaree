@@ -130,4 +130,24 @@ export const setStoredTheme = (theme: StoredTheme): void => {
     storage.setItem(THEME_KEY, theme);
   } catch {
   }
+
+  // Native `storage` is in-memory only, so without this the choice was lost on every app restart.
+  if (Platform.OS !== "web") {
+    void SecureStore.setItemAsync(THEME_KEY, theme).catch(() => {
+    });
+  }
+};
+
+/** Reads the persisted theme on native, where the synchronous read above starts empty. */
+export const hydrateStoredTheme = async (): Promise<StoredTheme | null> => {
+  if (Platform.OS === "web") return getStoredTheme();
+
+  try {
+    const raw = await SecureStore.getItemAsync(THEME_KEY);
+    if (raw !== "dark" && raw !== "light") return null;
+    storage.setItem(THEME_KEY, raw);
+    return raw;
+  } catch {
+    return null;
+  }
 };

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { fetchProfileInsights } from "../services/profileInsightsService";
 import type { ProfileInsights, ProfileInsightsState } from "../types/profile.types";
@@ -22,6 +22,7 @@ export const useProfileInsights = (role?: UserRole | null): ProfileInsightsState
 
   useEffect(() => {
     if (!role) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
       setInsights(EMPTY_INSIGHTS);
       setLoading(false);
       return;

@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { DispensedItem } from "@/services/medicalRecords";
 
-import DetailSection from "./DetailSection";
+import { DetailSection } from "./DetailSection";
 
 const ITEM_TINT = "#6366F1";
 

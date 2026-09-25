@@ -39,7 +39,7 @@ const DashboardBody = ({
   onViewAllUsers,
   onViewAllActivities,
 }: DashboardBodyProps) => {
-  const { isMobile, gap, panelColumns, inColumns, availableWidth } = layout;
+  const { isMobile, gap, panelColumns, inColumns, analyticsSideBySide } = layout;
 
   const metricGrid = (
     <DashboardMetricGrid
@@ -90,20 +90,24 @@ const DashboardBody = ({
       palette={palette}
       trend={data.registrationTrend ?? []}
       compact={isMobile}
-      fill={!isMobile}
+      fill={analyticsSideBySide}
     />
   );
 
   const activityTrendPanel = (
-    <ActivityTrendPanel palette={palette} trend={data.activityTrend ?? []} compact={isMobile} fill={!isMobile} />
+    <ActivityTrendPanel
+      palette={palette}
+      trend={data.activityTrend ?? []}
+      compact={isMobile}
+      fill={analyticsSideBySide}
+    />
   );
 
   const analyticsRow = (
     <AnalyticsRow
       registrationPanel={registrationPanel}
       activityTrendPanel={activityTrendPanel}
-      isMobile={isMobile}
-      availableWidth={availableWidth}
+      sideBySide={analyticsSideBySide}
       gap={gap}
     />
   );

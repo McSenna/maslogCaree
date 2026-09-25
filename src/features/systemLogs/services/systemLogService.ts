@@ -13,17 +13,17 @@ export * from "../constants/systemLogOptions";
 export * from "../utils/systemLogFormat";
 
 
-export async function fetchSystemLogs(params: SystemLogsQuery = {}): Promise<SystemLogListResponse> {
+export const fetchSystemLogs = async (params: SystemLogsQuery = {}): Promise<SystemLogListResponse> => {
   const response = await api.get<SystemLogListResponse>("/system-logs", { params });
   return response.data;
-}
+};
 
-export async function fetchSystemLogStats(): Promise<SystemLogStatsResponse> {
+export const fetchSystemLogStats = async (): Promise<SystemLogStatsResponse> => {
   const response = await api.get<SystemLogStatsResponse>("/system-logs/stats");
   return response.data;
-}
+};
 
-export async function exportSystemLogs(params: SystemLogsQuery = {}): Promise<void> {
+export const exportSystemLogs = async (params: SystemLogsQuery = {}): Promise<void> => {
   const response = await api.get("/system-logs/export", {
     params,
     responseType: "blob",
@@ -43,4 +43,4 @@ export async function exportSystemLogs(params: SystemLogsQuery = {}): Promise<vo
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
-}
+};

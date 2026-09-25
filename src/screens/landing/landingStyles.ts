@@ -1,4 +1,5 @@
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { webStyle } from "@/theme/webStyle";
 
 export const styles = StyleSheet.create({
   flex: {
@@ -10,13 +11,11 @@ export const styles = StyleSheet.create({
     width: "100%",
     overflow: "hidden",
     backgroundColor: "#F2F7FD",
-    ...Platform.select({
-      web: {
+    ...webStyle({
         height: "100dvh",
         minHeight: "100vh",
         overflowX: "hidden",
-      } as any,
-    }),
+      }),
   },
   desktopFrame: {
     flex: 1,
@@ -55,12 +54,10 @@ export const styles = StyleSheet.create({
 
   mobileRoot: {
     flex: 1,
-    ...Platform.select({
-      web: {
+    ...webStyle({
         height: "100dvh",
         overflow: "hidden",
-      } as any,
-    }),
+      }),
   },
   mobileHeroSection: {
     position: "relative",

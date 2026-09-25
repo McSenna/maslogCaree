@@ -1,10 +1,10 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable, Text, View, useWindowDimensions } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import Animated, { FadeIn, SlideInUp } from "react-native-reanimated";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useResponsive } from "@/hooks/useResponsive";
 
 export type ServiceCardItem = {
-  icon: string;
+  icon: keyof typeof Feather.glyphMap;
   label: string;
   desc: string;
   color: string;
@@ -35,9 +35,8 @@ const ServiceCard = ({
   border,
   shadow,
 }: ServiceCardProps) => {
-  const { width } = useWindowDimensions();
-  const isTablet = width >= BREAKPOINTS.tablet;
-  const isDesktop = width >= BREAKPOINTS.desktop;
+  const { isMobile, isDesktop } = useResponsive();
+  const isTablet = !isMobile;
 
   const flexBasis = isDesktop ? "23%" : "48%";
   const flexMin = isDesktop ? "23%" : "47%";
@@ -68,7 +67,7 @@ const ServiceCard = ({
             className="mb-3 self-start rounded-xl p-2.5"
             style={{ backgroundColor: iconBg }}
           >
-          <Feather name={icon as any} size={isTablet ? 22 : 18} color={color} />
+          <Feather name={icon} size={isTablet ? 22 : 18} color={color} />
         </View>
 
         <Text

@@ -1,111 +1,71 @@
-import { useRef } from "react";
-import { Platform, TextInput, View } from "react-native";
+import { Platform, View } from "react-native";
+import OtpBox from "./otp/OtpBox";
+import type { OtpPalette } from "./otp/otpTypes";
+import { useOtpInput } from "./otp/useOtpInput";
 
-export type OtpPalette = {
-  border: string;
-  primary: string;
-  primarySoft: string;
-  surface: string;
-  text: string;
-  error: string;
-  errorSoft: string;
-};
+export type { OtpPalette } from "./otp/otpTypes";
 
 type OtpCodeInputProps = {
+  /** Digits entered so far; a space marks an empty box between filled ones. */
   value: string;
   onChange: (next: string) => void;
+  /** Called on Enter/Done, only once every box holds a digit. */
+  onSubmit?: (code: string) => void;
   palette: OtpPalette;
   length?: number;
-  onComplete?: (code: string) => void;
   disabled?: boolean;
-  hasError?: boolean;
-  boxHeight?: number;
+  invalid?: boolean;
+  success?: boolean;
+  /** Accessible name of the whole group, e.g. "Verification code". */
+  label: string;
+  /** nativeID of the status message, so screen readers read errors with the field. */
+  describedBy?: string;
+  /** Changing this number moves focus to the first empty box (after resend, expiry…). */
+  focusRequest?: number;
+  reducedMotion?: boolean;
 };
 
 const OtpCodeInput = ({
   value,
   onChange,
+  onSubmit,
   palette,
   length = 6,
-  onComplete,
-  disabled,
-  hasError,
-  boxHeight = 56,
+  disabled = false,
+  invalid = false,
+  success = false,
+  label,
+  describedBy,
+  focusRequest,
+  reducedMotion = false,
 }: OtpCodeInputProps) => {
-  const inputs = useRef<(TextInput | null)[]>([]);
-  const digits = Array.from({ length }, (_, index) => value[index] ?? "");
-
-  const commit = (next: string) => {
-    onChange(next);
-    if (next.length === length) onComplete?.(next);
-  };
-
-  const handleChange = (text: string, index: number) => {
-    const clean = text.replace(/\D/g, "");
-    if (!clean) return;
-
-    const next = (value.slice(0, index) + clean + value.slice(index + clean.length)).slice(
-      0,
-      length
-    );
-
-    commit(next);
-    inputs.current[Math.min(index + clean.length, length - 1)]?.focus();
-  };
-
-  const handleKeyPress = (key: string, index: number) => {
-    if (key !== "Backspace") return;
-    const target = digits[index] ? index : index - 1;
-    if (target < 0) return;
-    commit(value.slice(0, target) + value.slice(target + 1));
-    inputs.current[target]?.focus();
-  };
+  const controller = useOtpInput({ value, onChange, onSubmit, length, focusRequest });
+  const webGroupProps = Platform.OS === "web" ? ({ role: "group", "aria-label": label } as object) : {};
 
   return (
-    <View
-      style={{ flexDirection: "row", justifyContent: "space-between", gap: 8 }}
-      accessibilityLabel="Verification code"
-    >
-      {digits.map((digit, index) => {
-        const filled = Boolean(digit);
-        return (
-          <TextInput
+    <View onLayout={controller.onLayout} style={{ width: "100%" }}>
+      <View
+        {...webGroupProps}
+        accessible={false}
+        style={{ flexDirection: "row", justifyContent: "center", gap: controller.metrics.gap }}
+      >
+        {controller.slots.map((digit, index) => (
+          <OtpBox
             key={index}
-            ref={(element) => {
-              inputs.current[index] = element;
-            }}
-            value={digit}
-            onChangeText={(text) => handleChange(text, index)}
-            onKeyPress={(event) => handleKeyPress(event.nativeEvent.key, index)}
-            editable={!disabled}
-            keyboardType="number-pad"
-            inputMode="numeric"
-            textContentType="oneTimeCode"
-            autoComplete={Platform.OS === "android" ? "sms-otp" : "one-time-code"}
-            maxLength={length}
-            selectTextOnFocus
-            accessibilityLabel={`Digit ${index + 1} of ${length}`}
-            style={{
-              flex: 1,
-              height: boxHeight,
-              textAlign: "center",
-              fontSize: 20,
-              fontWeight: "700",
-              borderRadius: 14,
-              borderWidth: filled || hasError ? 1.5 : 1,
-              borderColor: hasError ? palette.error : filled ? palette.primary : palette.border,
-              backgroundColor: hasError
-                ? palette.errorSoft
-                : filled
-                  ? palette.primarySoft
-                  : palette.surface,
-              color: palette.text,
-              opacity: disabled ? 0.6 : 1,
-              ...Platform.select({ web: { outlineStyle: "none" } as object }),
-            }}
+            index={index}
+            digit={digit}
+            length={length}
+            label={label}
+            palette={palette}
+            controller={controller}
+            disabled={disabled}
+            invalid={invalid}
+            success={success}
+            describedBy={describedBy}
+            reducedMotion={reducedMotion}
           />
-        );
-      })}
+        ))}
+      </View>
     </View>
   );
 };

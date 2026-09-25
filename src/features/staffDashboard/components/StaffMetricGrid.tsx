@@ -1,4 +1,6 @@
+import { useRouter, usePathname, type Href } from "expo-router";
 import { View } from "react-native";
+import PressableShell from "@/components/cards/PressableShell";
 import { MetricCard } from "@/components/dashboard/admin";
 import GridCell from "@/features/adminDashboard/components/GridCell";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
@@ -22,19 +24,35 @@ const StaffMetricGrid = ({
   compact: boolean;
   dense: boolean;
 }) => {
-  const cards = metrics.map((spec) => (
-    <MetricCard
-      key={spec.key}
-      palette={palette}
-      tone={spec.tone}
-      icon={spec.icon}
-      label={spec.label}
-      description={spec.description(data)}
-      value={spec.value(data)}
-      compact={compact}
-      dense={dense}
-    />
-  ));
+  const router = useRouter();
+  const roleBase = usePathname().split("/")[1] ?? "";
+
+  const cards = metrics.map((spec) => {
+    const card = (
+      <MetricCard
+        key={spec.key}
+        palette={palette}
+        tone={spec.tone}
+        icon={spec.icon}
+        label={spec.label}
+        description={spec.description(data)}
+        value={spec.value(data)}
+        compact={compact}
+        dense={dense}
+      />
+    );
+    if (!spec.route || !roleBase) return card;
+    return (
+      <PressableShell
+        key={spec.key}
+        onPress={() => router.push(`/${roleBase}/${spec.route}` as Href)}
+        accessibilityLabel={`${spec.label}: ${spec.value(data)}. ${spec.description(data)}`}
+        accessibilityHint="Opens the appointment queue"
+      >
+        {card}
+      </PressableShell>
+    );
+  });
 
   if (columns === 4) {
     return (

@@ -86,7 +86,7 @@ interface StaffDashboardResponse extends Partial<StaffDashboardData> {
   message: string;
 }
 
-export async function fetchStaffDashboard(): Promise<StaffDashboardData> {
+export const fetchStaffDashboard = async (): Promise<StaffDashboardData> => {
   const { data } = await api.get<StaffDashboardResponse>("/staff/dashboard");
 
   return {
@@ -100,4 +100,4 @@ export async function fetchStaffDashboard(): Promise<StaffDashboardData> {
     recentActivity: data.recentActivity ?? [],
     generatedAt: data.generatedAt ?? new Date().toISOString(),
   };
-}
+};

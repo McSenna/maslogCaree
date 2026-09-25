@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 import type { InventoryItem, StockOutPayload } from "@/features/inventory/services/inventoryService";
 
 export type ReleaseType = NonNullable<StockOutPayload["type"]>;
@@ -10,14 +11,14 @@ export const useReleaseStockForm = (visible: boolean, item: InventoryItem | null
   const [recipient, setRecipient] = useState("");
   const [remarks, setRemarks] = useState("");
 
-  useEffect(() => {
+  useSyncOnChange([visible, item], () => {
     if (!visible) return;
     setQuantity("");
     setType("STOCK_OUT");
     setReason("");
     setRecipient("");
     setRemarks("");
-  }, [visible, item]);
+  });
 
   const available = item?.currentStock ?? 0;
   const quantityNumber = Number(quantity);

@@ -51,7 +51,7 @@ const FloatingGlyph = ({
         borderColor: "rgba(255, 255, 255, 0.85)",
         transform: [{ translateY }],
         ...Platform.select({
-          web: { boxShadow: "0px 10px 26px rgba(8, 21, 47, 0.10)" } as any,
+          web: { boxShadow: "0px 10px 26px rgba(8, 21, 47, 0.10)" },
           default: { elevation: 3 },
         }),
         pointerEvents: "none",

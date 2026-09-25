@@ -1,4 +1,7 @@
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { ScrollView, View } from "react-native";
+
+import { useModalFrame } from "@/hooks/useModalFrame";
+import { useResponsive } from "@/hooks/useResponsive";
 
 import { PROFILE_COLORS, PROFILE_RADIUS, PROFILE_SHADOW } from "../config/profileTheme";
 import { useProfile } from "../hooks/useProfile";
@@ -8,7 +11,6 @@ import ProfileEditConfirmations from "../components/ProfileEditConfirmations";
 import ProfileNoticeModal from "../components/ProfileNoticeModal";
 import ProfileOverlay from "../components/ProfileOverlay";
 import ProfileSkeleton from "../components/ProfileSkeleton";
-import ProfileToastLayer from "../components/ProfileToastLayer";
 import { ChangePasswordDialog } from "../change-password/ChangePasswordDialog";
 import ProfileModalContent from "./profileModal/ProfileModalContent";
 import ProfileModalFooter from "./profileModal/ProfileModalFooter";
@@ -19,15 +21,12 @@ type ProfileModalProps = {
   onClose: () => void;
 };
 
-const TWO_COLUMN_MIN_WIDTH = 1024;
 const MODAL_MAX_WIDTH = 1180;
-const VIEWPORT_MARGIN = 40;
 
 const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
   const state = useProfile({ onAfterLogout: onClose });
-  const { width, height } = useWindowDimensions();
-
-  const twoColumn = width >= TWO_COLUMN_MIN_WIDTH;
+  const frame = useModalFrame(MODAL_MAX_WIDTH);
+  const twoColumn = useResponsive().isDesktop;
   const title = state.profile?.role.title ?? "Profile";
 
   return (
@@ -35,8 +34,8 @@ const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
       <ProfileOverlay visible={visible} onClose={onClose} accessibilityLabel={title}>
         <View
           style={{
-            width: Math.min(MODAL_MAX_WIDTH, width - VIEWPORT_MARGIN),
-            maxHeight: Math.round(height * 0.88),
+            width: frame.width,
+            maxHeight: frame.maxHeight,
             borderRadius: PROFILE_RADIUS.modal,
             backgroundColor: PROFILE_COLORS.surface,
             overflow: "hidden",
@@ -77,10 +76,9 @@ const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
       <ChangePasswordDialog
         visible={state.changePasswordVisible}
         onClose={state.closeChangePassword}
-        onSuccess={() => state.edit.showToast("Password changed successfully.")}
+        onSuccess={() => state.edit.showToast("Password changed")}
       />
 
-      <ProfileToastLayer toast={state.edit.toast} onDismiss={state.edit.hideToast} />
     </>
   );
 };

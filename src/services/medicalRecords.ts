@@ -19,21 +19,21 @@ export type {
   MedicalRecordInput,
 } from "./medicalRecordTypes";
 
-export async function fetchCompletionForms(): Promise<CompletionForm[]> {
+export const fetchCompletionForms = async (): Promise<CompletionForm[]> => {
   const { data } = await api.get<{ success: boolean; forms: CompletionForm[] }>(
     "/appointments/completion-forms"
   );
   return data.forms ?? [];
-}
+};
 
-export async function startProcessing(appointmentId: string): Promise<AppointmentRecord> {
+export const startProcessing = async (appointmentId: string): Promise<AppointmentRecord> => {
   const { data } = await api.patch<{ success: boolean; appointment: AppointmentRecord }>(
     `/appointments/${appointmentId}/processing`
   );
   return data.appointment;
-}
+};
 
-export async function completeAppointment(
+export const completeAppointment = async (
   appointmentId: string,
   medicalRecord: MedicalRecordInput,
   inventoryItems: DispenseInput[] = []
@@ -42,7 +42,7 @@ export async function completeAppointment(
   medicalRecord: MedicalRecord | null;
   alreadyCompleted?: boolean;
   inventoryTransactions: InventoryMovement[];
-}> {
+}> => {
   const { data } = await api.post<{
     success: boolean;
     appointment: AppointmentRecord;
@@ -60,32 +60,32 @@ export async function completeAppointment(
     alreadyCompleted: data.alreadyCompleted,
     inventoryTransactions: data.inventoryTransactions ?? [],
   };
-}
+};
 
-export async function fetchCompletedAppointments(
+export const fetchCompletedAppointments = async (
   options?: { categoryKey?: string }
-): Promise<AppointmentRecord[]> {
+): Promise<AppointmentRecord[]> => {
   const { data } = await api.get<{ success: boolean; appointments: AppointmentRecord[] }>(
     "/appointments/completed",
     { params: options?.categoryKey ? { categoryKey: options.categoryKey } : undefined }
   );
   return data.appointments ?? [];
-}
+};
 
-export async function fetchMedicalRecord(
+export const fetchMedicalRecord = async (
   recordId: string
-): Promise<{ medicalRecord: MedicalRecord; form: CompletionForm }> {
+): Promise<{ medicalRecord: MedicalRecord; form: CompletionForm }> => {
   const { data } = await api.get<{
     success: boolean;
     medicalRecord: MedicalRecord;
     form: CompletionForm;
   }>(`/medical-records/${recordId}`);
   return { medicalRecord: data.medicalRecord, form: data.form };
-}
+};
 
-export async function fetchMyMedicalRecords(): Promise<MedicalRecord[]> {
+export const fetchMyMedicalRecords = async (): Promise<MedicalRecord[]> => {
   const { data } = await api.get<{ success: boolean; medicalRecords: MedicalRecord[] }>(
     "/medical-records/me"
   );
   return data.medicalRecords ?? [];
-}
+};

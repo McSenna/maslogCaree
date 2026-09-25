@@ -1,13 +1,12 @@
 import { Image, Text, View } from "react-native";
+import { landingAssets } from "@/config/landingAssets";
 import { SIDEBAR_METRICS, type SidebarPalette } from "./sidebarTheme";
-
-const BARANGAY_SEAL = require("../../../../assets/images/maslogicon.png");
 
 const SidebarBrand = ({ palette }: { palette: SidebarPalette }) => {
   return (
     <View className="w-full items-center">
       <Image
-        source={BARANGAY_SEAL}
+        source={landingAssets.brandMark}
         accessibilityLabel="Barangay 61 Maslog, Legazpi City seal"
         resizeMode="contain"
         style={{

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Redirect, type Href } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
-import { getDashboardPath } from "@/data/mockUsers";
+import { getDashboardPath } from "@/config/roleRoutes";
 import { isBlockedOnThisPlatform } from "@/config/platformAccess";
 import { forceLogout } from "@/services/authEvents";
 import MaslogCareLandingScreen from "@/screens/MaslogCareLandingScreen";

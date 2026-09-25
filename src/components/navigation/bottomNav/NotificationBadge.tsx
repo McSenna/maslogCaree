@@ -1,4 +1,5 @@
-import { Text, View } from "react-native";
+import { Animated, Text } from "react-native";
+import { useCountBump } from "@/hooks/useCountBump";
 import { BOTTOM_NAV_METRICS, type BottomNavPalette } from "./bottomNavTokens";
 
 type NotificationBadgeProps = {
@@ -10,13 +11,14 @@ type NotificationBadgeProps = {
 const MAX_COUNT = 99;
 
 const NotificationBadge = ({ count, palette, surface }: NotificationBadgeProps) => {
+  const bump = useCountBump(count);
   if (!count || count <= 0) return null;
 
   const display = count > MAX_COUNT ? `${MAX_COUNT}+` : String(count);
   const isWide = display.length > 1;
 
   return (
-    <View
+    <Animated.View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       style={{
@@ -32,6 +34,7 @@ const NotificationBadge = ({ count, palette, surface }: NotificationBadgeProps) 
         backgroundColor: palette.badgeBg,
         alignItems: "center",
         justifyContent: "center",
+        ...bump,
       }}
     >
       <Text
@@ -46,7 +49,7 @@ const NotificationBadge = ({ count, palette, surface }: NotificationBadgeProps) 
       >
         {display}
       </Text>
-    </View>
+    </Animated.View>
   );
 };
 

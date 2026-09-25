@@ -1,11 +1,10 @@
-import { Platform, useWindowDimensions } from "react-native";
 
-import { BREAKPOINTS } from "@/constants/breakpoints";
 
 import AdminSupportReviewMobileSheet from "./review/AdminSupportReviewMobileSheet";
 import AdminSupportReviewModal from "./review/AdminSupportReviewModal";
 import AdminTicketModalFallback from "./review/AdminTicketModalFallback";
 import { useAdminTicketDetails } from "../hooks/useAdminTicketDetails";
+import { useResponsive } from "@/hooks/useResponsive";
 
 type AdminTicketDetailsDialogProps = {
   ticketId: string | null;
@@ -18,30 +17,33 @@ const AdminTicketDetailsDialog = ({
   onClose,
   onChanged,
 }: AdminTicketDetailsDialogProps) => {
-  const { width } = useWindowDimensions();
+  const { isDesktopWeb } = useResponsive();
   const { ticket, loading, busy, error, changeStatus, sendReply } = useAdminTicketDetails(
     ticketId,
     onChanged
   );
 
-  const isDesktop = Platform.OS === "web" && width >= BREAKPOINTS.tablet;
+  const isDesktop = isDesktopWeb;
 
   if (!ticketId) return null;
 
-  if (loading || !ticket) {
-    return <AdminTicketModalFallback loading={loading} error={error} onClose={onClose} />;
-  }
-
+  // Desktop keeps one dialog open from loading through loaded, like the user details modal.
   if (isDesktop) {
     return (
       <AdminSupportReviewModal
         ticket={ticket}
+        loading={loading}
+        error={error}
         busy={busy}
         onClose={onClose}
         onStatusChange={changeStatus}
         onSendReply={sendReply}
       />
     );
+  }
+
+  if (loading || !ticket) {
+    return <AdminTicketModalFallback loading={loading} error={error} onClose={onClose} />;
   }
 
   return (

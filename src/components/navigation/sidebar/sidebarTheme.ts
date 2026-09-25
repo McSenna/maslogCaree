@@ -1,7 +1,10 @@
+import type { Breakpoint } from "@/theme/breakpoints";
 import { useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 
-export const SIDEBAR_WIDTH = 288;
+const SIDEBAR_WIDTHS: Record<Breakpoint, number> = { mobile: 0, tablet: 224, desktop: 256, wide: 272 };
+
+export const getSidebarWidth = (breakpoint: Breakpoint): number => SIDEBAR_WIDTHS[breakpoint];
 
 export const SIDEBAR_METRICS = {
   paddingX: 20,
@@ -9,7 +12,7 @@ export const SIDEBAR_METRICS = {
   itemRadius: 24,
   itemPaddingX: 16,
   itemGap: 10,
-  iconSize: 22,
+  iconSize: 20,
   iconGap: 14,
   sealSize: 89,
 } as const;

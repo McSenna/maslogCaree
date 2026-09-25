@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Animated } from "react-native";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { EASING, TIMING, USE_NATIVE_DRIVER } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 export const useDialogEnter = (visible: boolean) => {
-  const enter = useRef(new Animated.Value(0)).current;
+  const enter = useAnimatedValue(0);
 
   useEffect(() => {
     if (!visible) {
@@ -12,7 +13,8 @@ export const useDialogEnter = (visible: boolean) => {
     }
     Animated.timing(enter, {
       toValue: 1,
-      duration: 180,
+      duration: TIMING.enter,
+      easing: EASING.out,
       useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   }, [visible, enter]);

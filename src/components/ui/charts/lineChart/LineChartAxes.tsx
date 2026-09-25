@@ -14,6 +14,9 @@ type Props = {
   tickColor: string;
   showYAxis: boolean;
   activeIndex: number | null;
+  /** Index whose x label is always emphasised (e.g. the latest point). */
+  emphasisIndex?: number | null;
+  emphasisColor?: string;
 };
 
 const LineChartAxes = ({
@@ -28,6 +31,8 @@ const LineChartAxes = ({
   tickColor,
   showYAxis,
   activeIndex,
+  emphasisIndex = null,
+  emphasisColor,
 }: Props) => {
   return (
     <>
@@ -70,8 +75,8 @@ const LineChartAxes = ({
                 width: boxW,
                 textAlign: "center",
                 fontSize: 10,
-                fontWeight: i === activeIndex ? "600" : "400",
-                color: tickColor,
+                fontWeight: i === activeIndex || i === emphasisIndex ? "600" : "400",
+                color: i === emphasisIndex && emphasisColor ? emphasisColor : tickColor,
               }}
             >
               {lab}

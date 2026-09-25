@@ -1,6 +1,12 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import AnimatedListItem from "@/components/animations/AnimatedListItem";
+import Button from "@/components/buttons/Button";
+import { useThemeColors } from "@/hooks/useThemeColors";
 import type { AppointmentRecord } from "@/services/appointments";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 import { formatPriorityTier } from "../utils/slotLabels";
+import WorkspacePanel, { PanelEmpty } from "./WorkspacePanel";
 
 type PendingQueuePanelProps = {
   pending: AppointmentRecord[];
@@ -8,51 +14,38 @@ type PendingQueuePanelProps = {
   onDecline: (appointment: AppointmentRecord) => void;
 };
 
-const PendingQueuePanel = ({
-  pending,
-  onAssign,
-  onDecline,
-}: PendingQueuePanelProps) => {
-  return (
-    <View className="rounded-2xl border border-slate-200 bg-white p-4">
-      <Text className="text-lg font-semibold text-slate-900">Pending queue (priority)</Text>
-      <Text className="mb-2 text-xs text-slate-500">Sorted: priority tier, then first-come.</Text>
+const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelProps) => {
+  const colors = useThemeColors();
 
+  return (
+    <WorkspacePanel title="Pending queue" subtitle="Sorted by priority tier, then first come, first served.">
       {pending.length === 0 ? (
-        <Text className="text-sm text-slate-500">Queue is empty.</Text>
+        <PanelEmpty>No residents are waiting for a slot.</PanelEmpty>
       ) : (
-        pending.map((appointment) => (
-          <View key={appointment._id} className="mb-3 border-b border-slate-100 pb-3">
-            <Text className="font-semibold text-slate-900">
+        pending.map((appointment, index) => (
+          <AnimatedListItem
+            key={appointment._id}
+            index={index}
+            style={{ gap: SPACING.xs, paddingBottom: SPACING.md, borderBottomWidth: 1, borderBottomColor: colors.divider }}
+          >
+            <Text style={[TYPE.bodyStrong, { color: colors.heading }]}>
               {appointment.resident?.fullname ?? "Resident"}
             </Text>
-            <Text className="text-xs text-slate-500">
-              {formatPriorityTier(appointment.ageTier)} · requested:{" "}
-              {appointment.consultationType}
-              {appointment.isUrgent ? " · URGENT" : ""}
+            <Text style={[TYPE.caption, { color: colors.muted }]}>
+              {formatPriorityTier(appointment.ageTier)} · requested {appointment.consultationType}
+              {appointment.isUrgent ? " · " : ""}
+              {appointment.isUrgent ? <Text style={{ color: colors.danger.fg, fontWeight: "700" }}>Urgent</Text> : null}
             </Text>
-            <Text className="mt-1 text-sm text-slate-700">{appointment.description || "—"}</Text>
+            <Text style={[TYPE.body, { color: colors.body }]}>{appointment.description || "—"}</Text>
 
-            <View className="mt-2 flex-row flex-wrap gap-2">
-              <Pressable
-                onPress={() => onAssign(appointment)}
-                accessibilityRole="button"
-                className="rounded-lg bg-mc-primary px-3 py-2"
-              >
-                <Text className="text-sm font-semibold text-white">Assign slot</Text>
-              </Pressable>
-              <Pressable
-                onPress={() => onDecline(appointment)}
-                accessibilityRole="button"
-                className="rounded-lg border border-red-200 px-3 py-2"
-              >
-                <Text className="text-sm font-semibold text-red-600">Decline</Text>
-              </Pressable>
+            <View style={{ marginTop: SPACING.xs, flexDirection: "row", flexWrap: "wrap", gap: SPACING.sm }}>
+              <Button size="sm" label="Assign slot" icon="calendar" onPress={() => onAssign(appointment)} />
+              <Button size="sm" variant="secondary" label="Decline" onPress={() => onDecline(appointment)} />
             </View>
-          </View>
+          </AnimatedListItem>
         ))
       )}
-    </View>
+    </WorkspacePanel>
   );
 };
 

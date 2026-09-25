@@ -1,7 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Animated, Pressable } from "react-native";
 import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleTheme";
 import { createShadow } from "@/design/shadow";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { EASING, TIMING } from "@/theme/motion";
 
 type ServiceToggleProps = {
   value: boolean;
@@ -17,12 +19,13 @@ const INSET = (TRACK_HEIGHT - KNOB) / 2;
 
 const ServiceToggle = ({ value, onChange, label, disabled = false }: ServiceToggleProps) => {
   const palette = useMissionSchedulePalette();
-  const progress = useRef(new Animated.Value(value ? 1 : 0)).current;
+  const progress = useAnimatedValue(value ? 1 : 0);
 
   useEffect(() => {
     Animated.timing(progress, {
       toValue: value ? 1 : 0,
-      duration: 180,
+      duration: TIMING.hover,
+      easing: EASING.inOut,
       useNativeDriver: false,
     }).start();
   }, [value, progress]);

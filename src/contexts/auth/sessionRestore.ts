@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect } from "react";
 import { CLIENT_PLATFORM, isPlatformAllowed } from "@/config/platformAccess";
 import { getTokenPlatform, isTokenValid } from "@/services/auth";
 import { getStoredUser, type StoredUser } from "@/utils/storage";
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 
 export const canUseDOM =
   typeof window !== "undefined" &&

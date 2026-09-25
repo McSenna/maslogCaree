@@ -51,6 +51,25 @@ export const expandWeekday = (label: string): string => {
   return WEEKDAY_NAMES[label] ?? label;
 };
 
+const MONTH_NAMES: Record<string, string> = {
+  Jan: "January",
+  Feb: "February",
+  Mar: "March",
+  Apr: "April",
+  May: "May",
+  Jun: "June",
+  Jul: "July",
+  Aug: "August",
+  Sep: "September",
+  Oct: "October",
+  Nov: "November",
+  Dec: "December",
+};
+
+export const expandMonth = (label: string): string => {
+  return MONTH_NAMES[label] ?? label;
+};
+
 export type WindowComparison = {
   currentWindow: TrendPoint[];
   currentTotal: number;

@@ -1,8 +1,9 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import { APPOINTMENT_COLORS, APPOINTMENT_METRICS } from "../appointmentTheme";
 import type { SelectOption } from "./selectFieldTypes";
+import { webStyle } from "@/theme/webStyle";
 
 type Props = {
   label: string;
@@ -54,7 +55,7 @@ const SelectTrigger = ({
         borderColor,
         backgroundColor: isDisabled ? "#F7F9FC" : APPOINTMENT_COLORS.white,
         opacity: isDisabled ? 0.75 : 1,
-        ...Platform.select({ web: { cursor: isDisabled ? "default" : "pointer" } as any }),
+        ...webStyle({ cursor: isDisabled ? "default" : "pointer" }),
       }}
     >
       <MaterialCommunityIcons

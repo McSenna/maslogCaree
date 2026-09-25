@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Animated, Easing, Platform, View } from "react-native";
-import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
+import { USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 const CIRCLE_RATIO = 0.8;
 const SHADOW_RATIO = 0.025;
@@ -37,7 +38,7 @@ const EclipseLoader = ({
     boxShadow: `0 ${offset}px 0 0 ${color}`,
   };
 
-  const spin = useRef(new Animated.Value(0)).current;
+  const spin = useAnimatedValue(0);
 
   useEffect(() => {
     if (Platform.OS === "web" || reducedMotion) return;

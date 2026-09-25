@@ -1,14 +1,14 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 
-import { QUEUE_RADIUS, type QueuePalette } from "@/components/appointmentQueue/queueTheme";
+import type { QueuePalette } from "@/components/appointmentQueue/queueTheme";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import type { resolveVisual } from "@/config/serviceVisuals";
 
 type Props = {
   visual: ReturnType<typeof resolveVisual>;
   service: string;
   status: string;
-  tone: QueuePalette["statuses"][keyof QueuePalette["statuses"]];
   when: string;
   palette: QueuePalette;
   onRequestClose: () => void;
@@ -18,7 +18,6 @@ const AppointmentSheetHeader = ({
   visual,
   service,
   status,
-  tone,
   when,
   palette,
   onRequestClose,
@@ -45,15 +44,7 @@ const AppointmentSheetHeader = ({
             >
               {service}
             </Text>
-            <View
-              className="flex-row items-center gap-1.5 px-2.5 py-1"
-              style={{ borderRadius: QUEUE_RADIUS.pill, backgroundColor: tone.bg }}
-            >
-              <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: tone.dot }} />
-              <Text className="text-[11.5px] font-semibold" style={{ color: tone.fg }}>
-                {status}
-              </Text>
-            </View>
+            <AppointmentStatusBadge status={status} audience="resident" />
           </View>
 
           <Text className="text-[12.5px]" style={{ color: palette.muted }}>

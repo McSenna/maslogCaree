@@ -1,15 +1,16 @@
 import { Feather } from "@expo/vector-icons";
-import { useRef } from "react";
+
 import { Animated, Pressable, Text, View } from "react-native";
 import { PROFILE_COLORS, PROFILE_RADIUS } from "../config/profileTheme";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { USE_NATIVE_DRIVER } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type LogoutButtonProps = {
   onPress: () => void;
 };
 
 const LogoutButton = ({ onPress }: LogoutButtonProps) => {
-  const scale = useRef(new Animated.Value(1)).current;
+  const scale = useAnimatedValue(1);
 
   const animate = (toValue: number) =>
     Animated.spring(scale, {

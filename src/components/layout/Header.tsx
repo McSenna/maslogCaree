@@ -1,14 +1,14 @@
 import { usePathname } from "expo-router";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 
 import { useHeaderTopInset } from "@/components/header/useHeaderTopInset";
-import { BREAKPOINTS } from "@/constants/breakpoints";
 import type { CurrentUser } from "@/contexts/AuthContext";
 
 import AppStatusBar from "./AppStatusBar";
 import HeaderActions from "./header/HeaderActions";
 import HeaderBrand from "./header/HeaderBrand";
 import HeaderNav from "./header/HeaderNav";
+import { useResponsive } from "@/hooks/useResponsive";
 
 type HeaderProps = {
   isMobile: boolean;
@@ -20,10 +20,9 @@ const HEADER_SURFACE = "#3f54be";
 
 const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
   const pathname = usePathname();
-  const { width } = useWindowDimensions();
+  const { isDesktop } = useResponsive();
   const topInset = useHeaderTopInset();
 
-  const isDesktop = width >= BREAKPOINTS.desktop;
   const logoSize = isMobile ? 35 : 40;
 
   return (

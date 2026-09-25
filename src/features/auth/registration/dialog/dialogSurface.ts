@@ -1,15 +1,31 @@
+import { clampMinHeight } from "@/components/ui/sheetLayout/sheetGeometry";
+import type { SheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
+
 import { REG_COLORS, REG_RADIUS } from "../registrationTheme";
 
+const PREFERRED_SHEET_HEIGHT = 560;
+const PREFERRED_SHEET_SHARE = 0.7;
+
 /**
- * `height` is the room the sheet actually has: the window minus whatever the
- * keyboard is covering. Both bounds have to shrink with it, or the minimum
- * height alone pushes the form taller than the space left above the keys.
+ * Both bounds come from the shared sheet layout, so they already exclude the
+ * status bar and whatever the keyboard covers. The preferred minimum (which
+ * stops the sheet jumping in height between steps) is clamped to the maximum:
+ * it used to be a fixed share of the window and pushed the sheet under the
+ * status bar once the keyboard took half the screen.
  */
-export const dialogSurfaceStyle = (isSheet: boolean, height: number) => ({
+export const dialogSurfaceStyle = (isSheet: boolean, layout: SheetLayout) => ({
   width: "100%" as const,
   maxWidth: isSheet ? undefined : 760,
-  maxHeight: isSheet ? height * 0.94 : ("92%" as const),
-  minHeight: isSheet ? Math.min(height * 0.7, 560) : undefined,
+  maxHeight: layout.maxHeight,
+  minHeight: isSheet
+    ? clampMinHeight(
+        Math.min(
+          (layout.containerHeight - layout.keyboardOverlap) * PREFERRED_SHEET_SHARE,
+          PREFERRED_SHEET_HEIGHT
+        ),
+        layout.maxHeight
+      )
+    : undefined,
   backgroundColor: REG_COLORS.surface,
   borderTopLeftRadius: isSheet ? REG_RADIUS.sheet : REG_RADIUS.modal,
   borderTopRightRadius: isSheet ? REG_RADIUS.sheet : REG_RADIUS.modal,
@@ -21,10 +37,10 @@ export const dialogSurfaceStyle = (isSheet: boolean, height: number) => ({
   boxShadow: "0px 18px 48px rgba(8, 21, 47, 0.18)",
 });
 
+/** Colour and side margins only: SheetViewport owns the vertical limits. */
 export const dialogBackdropStyle = (isSheet: boolean) => ({
-  flex: 1,
-  justifyContent: isSheet ? ("flex-end" as const) : ("center" as const),
-  alignItems: "center" as const,
   backgroundColor: isSheet ? "rgba(8, 21, 47, 0.38)" : REG_COLORS.overlay,
-  padding: isSheet ? 0 : 24,
+  paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
 });
+
+export const DESKTOP_EDGE = 24;

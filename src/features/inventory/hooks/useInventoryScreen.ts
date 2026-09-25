@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useToast } from "@/components/ui/Toast";
+import { notifyToast } from "@/components/feedback/toast/toastStore";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { DENSE_WINDOW_WIDTH, INVENTORY_LAYOUT } from "../constants/inventoryLayout";
@@ -11,7 +11,6 @@ import { useInventorySelection } from "./useInventorySelection";
 export const useInventoryScreen = () => {
   const { user } = useAuth();
   const insets = useRoleScreenInsets();
-  const { toast, showToast, hideToast } = useToast();
 
   const [contentWidth, setContentWidth] = useState(insets.width);
   const [tableAreaWidth, setTableAreaWidth] = useState(0);
@@ -26,7 +25,7 @@ export const useInventoryScreen = () => {
     applyItemUpdate: data.applyItemUpdate,
     showItem: selection.showItem,
     reload: data.reload,
-    onSuccess: (message) => showToast(message, "success"),
+    onSuccess: (message) => notifyToast(message),
   });
 
   const { clampPage } = query;
@@ -54,8 +53,6 @@ export const useInventoryScreen = () => {
   return {
     user,
     insets,
-    toast,
-    hideToast,
     query,
     data,
     selection,

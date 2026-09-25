@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useState } from "react";
 import { Animated, PanResponder } from "react-native";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { USE_NATIVE_DRIVER } from "@/theme/motion";
+import { useLatestRef } from "@/hooks/useLatestRef";
 
 const DISMISS_DISTANCE = 110;
 const DISMISS_VELOCITY = 0.75;
@@ -22,17 +23,12 @@ export const useSheetPanResponder = ({
   animateOut: (then: () => void) => void;
   onClose: () => void;
 }) => {
-  const onCloseRef = useRef(onClose);
-  useEffect(() => {
-    onCloseRef.current = onClose;
-  }, [onClose]);
+  const onCloseRef = useLatestRef(onClose);
+  const animateOutRef = useLatestRef(animateOut);
 
-  const animateOutRef = useRef(animateOut);
-  useEffect(() => {
-    animateOutRef.current = animateOut;
-  }, [animateOut]);
-
-  return useRef(
+  // Created once. The refs are read only inside gesture callbacks, never during render.
+  // eslint-disable-next-line react-hooks/refs
+  const [panResponder] = useState(() =>
     PanResponder.create({
       onMoveShouldSetPanResponder: (_event, gesture) =>
         gesture.dy > 6 && Math.abs(gesture.dy) > Math.abs(gesture.dx),
@@ -54,5 +50,7 @@ export const useSheetPanResponder = ({
 
       onPanResponderTerminate: () => springBack(translateY),
     })
-  ).current;
+  );
+
+  return panResponder;
 };

@@ -1,11 +1,12 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { Animated, type StyleProp, type ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AnimatedPressable } from "@/components/landing/motion/landingMotion";
 import { useInteractiveLift } from "@/components/landing/motion/useInteractiveLift";
 import { ANDROID_RIPPLE } from "./authCardMetrics";
 import { authCardStyles } from "./authCardStyles";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { USE_NATIVE_DRIVER } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type AuthActionButtonProps = {
   accessibilityLabel: string;
@@ -35,7 +36,7 @@ const AuthActionButton = ({
   children,
 }: AuthActionButtonProps) => {
   const lift = useInteractiveLift({ lift: 2, pressScale: 0.985 });
-  const iconShift = useRef(new Animated.Value(0)).current;
+  const iconShift = useAnimatedValue(0);
 
   useEffect(() => {
     const animation = Animated.spring(iconShift, {

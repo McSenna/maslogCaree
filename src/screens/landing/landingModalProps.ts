@@ -4,8 +4,10 @@ export type LearnMoreProps = {
   onCloseLearnMore: () => void;
 };
 
-export type LandingScreenProps = LearnMoreProps & {
+export type RegistrationProps = {
   onOpenRegister: () => void;
   isRegistrationVisible: boolean;
   onCloseRegister: () => void;
 };
+
+export type LandingScreenProps = LearnMoreProps & RegistrationProps;

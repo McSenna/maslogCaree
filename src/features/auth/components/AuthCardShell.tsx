@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 import { Animated } from "react-native";
 import { useEntrance } from "@/components/landing/motion/useEntrance";
+import { TIMING } from "@/theme/motion";
 import type { AuthCardMetrics } from "./authCardMetricPresets";
 import { authCardStyles as styles } from "./authCardStyles";
 
@@ -20,7 +21,7 @@ const AuthCardShell = ({
   children,
 }: AuthCardShellProps) => {
   const [hovered, setHovered] = useState(false);
-  const entrance = useEntrance({ delay: entranceDelay, distance: 18 });
+  const entrance = useEntrance({ delay: entranceDelay, distance: 10, duration: TIMING.modal });
 
   const allowHover = !isMobile;
 

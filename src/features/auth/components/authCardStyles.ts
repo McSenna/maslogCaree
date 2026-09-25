@@ -2,6 +2,7 @@ import { Platform, StyleSheet } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { AUTH_CARD_MAX_WIDTH } from "./authCardMetricPresets";
 import { FONT_FAMILY } from "./authCardFont";
+import { webStyle } from "@/theme/webStyle";
 
 const BUTTON_BASE = {
   flexDirection: "row",
@@ -9,12 +10,10 @@ const BUTTON_BASE = {
   justifyContent: "center",
   gap: 9,
   borderRadius: 12,
-  ...Platform.select({
-    web: {
+  ...webStyle({
       cursor: "pointer",
       transition: "background-color 180ms ease, box-shadow 180ms ease",
-    } as any,
-  }),
+    }),
 } as const;
 
 export const authCardStyles = StyleSheet.create({
@@ -22,27 +21,22 @@ export const authCardStyles = StyleSheet.create({
     backgroundColor: LANDING_COLORS.white,
     borderWidth: 1,
     borderColor: "#E2EAF4",
-    ...Platform.select({
-      web: {
+    ...(Platform.OS === "web" ? webStyle({
         boxShadow: "0px 14px 40px rgba(8, 21, 47, 0.08)",
         transition: "box-shadow 220ms ease, border-color 220ms ease",
-      } as any,
-      default: {
+      }) : {
         elevation: 5,
         shadowColor: "#08152F",
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.07,
         shadowRadius: 24,
-      },
-    }),
+      }),
   },
   cardHovered: {
-    ...Platform.select({
-      web: {
+    ...webStyle({
         boxShadow: "0px 22px 56px rgba(8, 21, 47, 0.13)",
         borderColor: "#D2E0F2",
-      } as any,
-    }),
+      }),
   },
   cardDesktop: {
     width: "100%",
@@ -78,9 +72,7 @@ export const authCardStyles = StyleSheet.create({
     letterSpacing: 0.1,
   },
   buttonHovered: {
-    ...Platform.select({
-      web: { boxShadow: "0px 10px 22px rgba(8, 21, 47, 0.18)" } as any,
-    }),
+    ...webStyle({ boxShadow: "0px 10px 22px rgba(8, 21, 47, 0.18)" }),
   },
   buttonPressed: {
     opacity: 0.9,
@@ -96,12 +88,10 @@ export const authCardStyles = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: 8,
     borderRadius: 8,
-    ...Platform.select({
-      web: {
+    ...webStyle({
         cursor: "pointer",
         transition: "background-color 160ms ease",
-      } as any,
-    }),
+      }),
   },
   forgotContainerActive: {
     backgroundColor: "rgba(8, 102, 245, 0.08)",

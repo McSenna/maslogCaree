@@ -41,12 +41,15 @@ export const useResidentRegistration = (onComplete?: () => void) => {
 
     if (requiresEmailVerification) {
       setSubmitError("Please verify your email address before continuing.");
+      // A code is already waiting: bring the code dialog back instead of leaving
+      // the user to find the "Enter code" button.
+      if (emailVerification.status === "codeSent") emailVerification.openCodeDialog();
       return false;
     }
 
     form.advance();
     return true;
-  }, [requiresEmailVerification, form, setSubmitError]);
+  }, [requiresEmailVerification, form, setSubmitError, emailVerification]);
 
   const reset = useCallback(() => {
     form.resetForm();

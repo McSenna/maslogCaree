@@ -22,6 +22,7 @@ export const useProfileRefresh = (enabled: boolean): ProfileRefreshState => {
     if (!enabled) return;
 
     let cancelled = false;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     setRefreshing(true);
     setRefreshError(null);
 

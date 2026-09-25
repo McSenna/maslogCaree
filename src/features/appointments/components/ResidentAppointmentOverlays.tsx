@@ -1,10 +1,9 @@
-import Toast, { type ToastState } from "@/components/ui/Toast";
-import ResidentMedicalDetailsDialog from "@/features/medical-records/components/ResidentMedicalDetailsDialog";
+import { ResidentMedicalDetailsDialog } from "@/features/medical-records/components/ResidentMedicalDetailsDialog";
 import type { CompletionForm, MedicalRecord } from "@/services/medicalRecords";
 import type { AppointmentRecord } from "@/types/appointments.types";
 
-import CancelAppointmentDialog from "./cancel/CancelAppointmentDialog";
-import RescheduleAppointmentDialog from "./reschedule/RescheduleAppointmentDialog";
+import { CancelAppointmentDialog } from "./cancel/CancelAppointmentDialog";
+import { RescheduleAppointmentDialog } from "./reschedule/RescheduleAppointmentDialog";
 
 export type ResidentAppointmentOverlaysProps = {
   rescheduleTarget: AppointmentRecord | null;
@@ -25,8 +24,6 @@ export type ResidentAppointmentOverlaysProps = {
   onRetryRecord: () => void;
   onCloseRecord: () => void;
 
-  toast: ToastState;
-  onHideToast: () => void;
 };
 
 /** Every overlay the resident appointment screens share, in one place. */
@@ -46,8 +43,6 @@ const ResidentAppointmentOverlays = ({
   recordError,
   onRetryRecord,
   onCloseRecord,
-  toast,
-  onHideToast,
 }: ResidentAppointmentOverlaysProps) => (
   <>
     <RescheduleAppointmentDialog
@@ -76,7 +71,6 @@ const ResidentAppointmentOverlays = ({
       onClose={onCloseRecord}
     />
 
-    <Toast toast={toast} onDismiss={onHideToast} />
   </>
 );
 

@@ -1,17 +1,18 @@
-import { Feather } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import SelectMenu, { type SelectOption } from "@/components/ui/SelectMenu";
 import SimpleBarChart from "@/components/ui/charts/SimpleBarChart";
-import type { AdminDashboardPalette, TrendDirection } from "@/design/adminDashboardTheme";
+import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import {
   compareTrailingWindows,
   expandWeekday,
   formatActivityCount,
   getBusiestPoint,
+  type Trend,
 } from "@/features/adminDashboard/utils/dashboardAnalytics";
 import type { TrendPoint } from "@/services/adminDashboardService";
-import BusiestDayCard from "./BusiestDayCard";
+import AnalyticsSummary, { type SummaryDelta } from "./analytics/AnalyticsSummary";
+import HighlightStat from "./analytics/HighlightStat";
 import EmptyPanelState from "./EmptyPanelState";
 import PanelCard from "./PanelCard";
 
@@ -36,34 +37,21 @@ const RANGE_COMPARISON: Record<ActivityRange, string> = {
   month: "from the previous 30 days",
 };
 
-const TrendLine = ({
-  palette,
-  direction,
-  percent,
-  comparisonLabel,
-}: {
-  palette: AdminDashboardPalette;
-  direction: TrendDirection | "flat";
-  percent: number;
-  comparisonLabel: string;
-}) => {
-  const color =
-    direction === "up" ? palette.positive : direction === "down" ? palette.negative : palette.subtle;
-  const icon = direction === "up" ? "trending-up" : direction === "down" ? "trending-down" : "minus";
-  const sign = direction === "up" ? "+" : direction === "down" ? "-" : "";
+const events = (count: number) => `${count.toLocaleString()} ${count === 1 ? "event" : "events"}`;
 
-  return (
-    <View className="mt-1.5 flex-row items-center gap-1.5">
-      <Feather name={icon} size={13} color={color} />
-      <Text className="text-[12.5px] font-bold" style={{ color }}>
-        {sign}
-        {percent}%
-      </Text>
-      <Text className="text-[12.5px] font-medium" style={{ color: palette.muted }}>
-        {comparisonLabel}
-      </Text>
-    </View>
-  );
+const periodDelta = (trend: Trend, comparison: string): SummaryDelta => {
+  // A change that rounds to 0% reads as "no change", not as a green or red signal.
+  const direction = trend.percent === 0 ? "flat" : trend.direction;
+  const sign = direction === "up" ? "+" : direction === "down" ? "-" : "";
+  return {
+    direction,
+    value: `${sign}${trend.percent}%`,
+    comparison,
+    accessibilityLabel:
+      direction === "flat"
+        ? `No change ${comparison}`
+        : `${direction === "up" ? "Up" : "Down"} ${trend.percent} percent ${comparison}`,
+  };
 };
 
 const ActivityTrendPanel = ({
@@ -79,48 +67,47 @@ const ActivityTrendPanel = ({
   const busiest = useMemo(() => getBusiestPoint(comparison.currentWindow), [comparison.currentWindow]);
 
   const hasActivity = comparison.currentTotal > 0;
-  const subtitle = busiest
-    ? `Events ${RANGE_NOUN[range]} · busiest ${busiest.label}`
-    : `Events ${RANGE_NOUN[range]}`;
-
   const chartData = comparison.currentWindow.map((point) => ({ label: point.label, value: point.count }));
+
+  const rangeFilter = (
+    <SelectMenu
+      label="Activity range"
+      value={range}
+      options={RANGE_OPTIONS}
+      onChange={setRange}
+      height={34}
+      style={{ minWidth: 128 }}
+    />
+  );
 
   return (
     <PanelCard
       palette={palette}
       title="System Activity"
       icon="bar-chart-2"
-      subtitle={subtitle}
-      headerRight={
-        <SelectMenu
-          label="Activity range"
-          value={range}
-          options={RANGE_OPTIONS}
-          onChange={setRange}
-          height={34}
-          style={{ minWidth: 128 }}
-        />
-      }
+      subtitle={`Events ${RANGE_NOUN[range]}`}
+      headerRight={compact ? undefined : rangeFilter}
       fill={fill}
     >
-      <View className={compact ? "mb-3 gap-3" : "mb-4 flex-row items-start justify-between gap-3"}>
-        <View className="min-w-0">
-          <Text className="text-[28px] font-bold" style={{ color: palette.heading, lineHeight: 34 }}>
-            {formatActivityCount(comparison.currentTotal)}
-          </Text>
-          <TrendLine
+      {/* On phones the filter gets its own line so the title and subtitle are never truncated. */}
+      {compact ? <View className="mb-3 self-start">{rangeFilter}</View> : null}
+
+      <AnalyticsSummary
+        palette={palette}
+        value={formatActivityCount(comparison.currentTotal)}
+        accessibilityLabel={`${events(comparison.currentTotal)} ${RANGE_NOUN[range]}`}
+        delta={periodDelta(comparison.trend, RANGE_COMPARISON[range])}
+        aside={
+          <HighlightStat
             palette={palette}
-            direction={comparison.trend.direction}
-            percent={comparison.trend.percent}
-            comparisonLabel={RANGE_COMPARISON[range]}
+            tone="amber"
+            icon="fire"
+            label="Busiest day"
+            value={busiest ? expandWeekday(busiest.label) : "—"}
+            meta={busiest ? events(busiest.count) : "No activity yet"}
           />
-        </View>
-        <BusiestDayCard
-          palette={palette}
-          day={busiest ? expandWeekday(busiest.label) : null}
-          compact={compact}
-        />
-      </View>
+        }
+      />
 
       {!hasActivity ? (
         <EmptyPanelState
@@ -131,14 +118,13 @@ const ActivityTrendPanel = ({
       ) : (
         <SimpleBarChart
           data={chartData}
-          height={compact ? 180 : 210}
+          height={compact ? 176 : 196}
           accentColor={palette.primary}
           dimColor={palette.bannerArt}
           showLabels={chartData.length <= 10}
-          formatTooltip={(d) => ({
-            title: d.label,
-            meta: `${d.value.toLocaleString()} ${d.value === 1 ? "event" : "events"}`,
-          })}
+          gridDashed
+          tickColor={palette.muted}
+          formatTooltip={(d) => ({ title: expandWeekday(d.label), meta: events(d.value) })}
         />
       )}
     </PanelCard>

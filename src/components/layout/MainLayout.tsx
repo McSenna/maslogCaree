@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Header from "./Header";
 import BottomNav from "./BottomNav";
 import LoginModal from "@/features/auth/components/LoginModal";
 import RegistrationModal from "@/features/auth/components/RegistrationModal";
 import { useAuth } from "@/contexts/AuthContext";
-import { BREAKPOINTS } from "@/constants/breakpoints";
 import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
 import { useAppForegroundLayout } from "@/hooks/useAppForegroundLayout";
+import { useResponsive } from "@/hooks/useResponsive";
 
 type MainLayoutProps = {
   children: React.ReactNode;
@@ -19,8 +19,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const [isRegistrationVisible, setIsRegistrationVisible] = useState(false);
   const [, setResumeTick] = useState(0);
 
-  const { width } = useWindowDimensions();
-  const isMobile = width < BREAKPOINTS.tablet;
+  const { isMobile } = useResponsive();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
 

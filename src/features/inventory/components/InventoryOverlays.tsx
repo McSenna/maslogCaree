@@ -1,4 +1,3 @@
-import Toast, { type ToastState } from "@/components/ui/Toast";
 import type { InventoryActionHandlers } from "./InventoryActions";
 import type { InventoryFilterState } from "./InventoryFilterSheet";
 import type {
@@ -39,8 +38,6 @@ type InventoryOverlaysProps = {
   filters: InventoryFilterState;
   onApplyFilters: (next: InventoryFilterState) => void;
   onCloseFilterSheet: () => void;
-  toast: ToastState;
-  onHideToast: () => void;
 };
 
 const InventoryOverlays = ({
@@ -67,8 +64,6 @@ const InventoryOverlays = ({
   filters,
   onApplyFilters,
   onCloseFilterSheet,
-  toast,
-  onHideToast,
 }: InventoryOverlaysProps) => {
   return (
     <>
@@ -110,7 +105,6 @@ const InventoryOverlays = ({
         onClose={onCloseFilterSheet}
       />
 
-      <Toast toast={toast} onDismiss={onHideToast} />
     </>
   );
 };

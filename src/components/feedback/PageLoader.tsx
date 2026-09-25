@@ -1,5 +1,5 @@
-import { Platform, Text, View, useWindowDimensions } from "react-native";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { Platform, Text, View } from "react-native";
+import { useResponsive } from "@/hooks/useResponsive";
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import EclipseLoader from "./EclipseLoader";
 
@@ -12,9 +12,9 @@ const PageLoader = ({
   label?: string;
   showLabel?: boolean;
 }) => {
-  const { width } = useWindowDimensions();
+  const { width, isMobile } = useResponsive();
   const palette = useQueuePalette();
-  const size = width > 0 && width < BREAKPOINTS.tablet ? SIZE.mobile : SIZE.desktop;
+  const size = width > 0 && isMobile ? SIZE.mobile : SIZE.desktop;
 
   return (
     <View

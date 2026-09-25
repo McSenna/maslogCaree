@@ -1,6 +1,8 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
-import { QUEUE_RADIUS, type QueuePalette } from "@/components/appointmentQueue/queueTheme";
+import type { QueuePalette } from "@/components/appointmentQueue/queueTheme";
+import Card from "@/components/cards/Card";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { getServiceVisual, resolveVisual } from "@/config/serviceVisuals";
 import type { AppointmentRecord } from "@/services/appointments";
 import {
@@ -10,7 +12,6 @@ import {
   canRescheduleAppointment,
   medicalRecordIdOf,
   residentStatusLabel,
-  statusToneKey,
 } from "../appointmentPresenter";
 
 export type AppointmentCardProps = {
@@ -33,7 +34,6 @@ const AppointmentCard = ({
   const visual = resolveVisual(getServiceVisual(appointment.consultationType), palette.isDark);
   const service = appointmentServiceLabel(appointment);
   const status = residentStatusLabel(appointment.status);
-  const tone = palette.statuses[statusToneKey(appointment.status)];
   const when = appointmentWhen(appointment);
   const recordId = medicalRecordIdOf(appointment);
   const isCompleted = appointment.status === "completed";
@@ -41,18 +41,12 @@ const AppointmentCard = ({
   const showCancel = Boolean(onCancel) && canCancelAppointment(appointment);
 
   return (
-    <Pressable
+    <Card
       onPress={() => onOpen(appointment)}
-      accessibilityRole="button"
       accessibilityLabel={`${service}, ${status}, ${when}.${recordId ? " Medical record available." : ""}`}
       accessibilityHint="Opens the appointment details"
-      className="w-full gap-3 p-4 active:opacity-80"
-      style={{
-        borderRadius: QUEUE_RADIUS.card,
-        borderWidth: 1,
-        borderColor: palette.panelBorder,
-        backgroundColor: palette.panelBg,
-      }}
+      elevated={false}
+      style={{ width: "100%", gap: 12 }}
     >
       <View className="w-full flex-row items-start gap-3">
         <View
@@ -75,15 +69,7 @@ const AppointmentCard = ({
           </Text>
         </View>
 
-        <View
-          className="flex-row items-center gap-1.5 px-2.5 py-1"
-          style={{ borderRadius: QUEUE_RADIUS.pill, backgroundColor: tone.bg }}
-        >
-          <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: tone.dot }} />
-          <Text className="text-[11.5px] font-semibold" style={{ color: tone.fg }}>
-            {status}
-          </Text>
-        </View>
+        <AppointmentStatusBadge status={appointment.status} audience="resident" />
       </View>
 
       {appointment.description ? (
@@ -193,7 +179,7 @@ const AppointmentCard = ({
           <Feather name="chevron-right" size={15} color={palette.primary} />
         </View>
       </View>
-    </Pressable>
+    </Card>
   );
 };
 

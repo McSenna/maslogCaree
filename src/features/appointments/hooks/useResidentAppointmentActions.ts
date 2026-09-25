@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { useToast } from "@/components/ui/Toast";
+import { notifyToast } from "@/components/feedback/toast/toastStore";
 import { cancelAppointment } from "@/services/appointmentActionsApi";
 import type { AppointmentRecord } from "@/types/appointments.types";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
@@ -11,7 +11,6 @@ import { getApiErrorMessage } from "@/utils/apiErrorHandler";
  * + toast that follow a successful change.
  */
 export const useResidentAppointmentActions = (refresh: () => Promise<void> | void) => {
-  const { toast, showToast, hideToast } = useToast();
 
   const [rescheduleTarget, setRescheduleTarget] = useState<AppointmentRecord | null>(null);
   const [cancelTarget, setCancelTarget] = useState<AppointmentRecord | null>(null);
@@ -35,7 +34,7 @@ export const useResidentAppointmentActions = (refresh: () => Promise<void> | voi
       try {
         await cancelAppointment(cancelTarget._id, reason);
         setCancelTarget(null);
-        showToast("Appointment cancelled.", "success");
+        notifyToast("Appointment cancelled");
         await refresh();
       } catch (e: unknown) {
         setCancelError(getApiErrorMessage(e, "Unable to cancel appointment."));
@@ -43,18 +42,16 @@ export const useResidentAppointmentActions = (refresh: () => Promise<void> | voi
         setIsCancelling(false);
       }
     },
-    [cancelTarget, isCancelling, refresh, showToast]
+    [cancelTarget, isCancelling, refresh]
   );
 
   const confirmReschedule = useCallback(async () => {
     setRescheduleTarget(null);
-    showToast("Appointment rescheduled successfully.", "success");
+    notifyToast("Appointment rescheduled");
     await refresh();
-  }, [refresh, showToast]);
+  }, [refresh]);
 
   return {
-    toast,
-    hideToast,
     rescheduleTarget,
     startReschedule: setRescheduleTarget,
     closeReschedule: () => setRescheduleTarget(null),

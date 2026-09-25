@@ -1,11 +1,12 @@
-import { Pressable, Text, useWindowDimensions, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import type { ConsultationCategory, MissionScheduleRecord } from "@/services/appointments";
 import type { MissionForm, MissionFormField } from "../../hooks/useMissionForm";
 import MissionScheduleForm from "./MissionScheduleForm";
-import MissionScheduleSheet, { MISSION_SHEET_BREAKPOINT } from "./MissionScheduleSheet";
+import MissionScheduleSheet from "./MissionScheduleSheet";
 import MissionSubmitButton from "./MissionSubmitButton";
 import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleTheme";
 import { useMissionScheduleValidation } from "./useMissionScheduleValidation";
+import { useResponsive } from "@/hooks/useResponsive";
 
 type EditMissionScheduleModalProps = {
   visible: boolean;
@@ -31,8 +32,8 @@ const EditMissionScheduleModal = ({
   onSave,
 }: EditMissionScheduleModalProps) => {
   const palette = useMissionSchedulePalette();
-  const { width } = useWindowDimensions();
-  const compact = width < MISSION_SHEET_BREAKPOINT;
+  const { isMobile } = useResponsive();
+  const compact = isMobile;
 
   const { errors, isValid } = useMissionScheduleValidation({
     values: form.values,

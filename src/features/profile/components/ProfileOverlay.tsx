@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import {
   Animated,
-  Easing,
   Modal,
   Platform,
   Pressable,
@@ -10,7 +9,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type ProfileOverlayProps = {
   visible: boolean;
@@ -20,8 +20,8 @@ type ProfileOverlayProps = {
   dismissOnBackdropPress?: boolean;
 };
 
-const OPEN_MS = 200;
-const CLOSE_MS = 160;
+const OPEN_MS = TIMING.enter;
+const CLOSE_MS = TIMING.exit - 30;
 
 const ProfileOverlay = ({
   visible,
@@ -30,55 +30,57 @@ const ProfileOverlay = ({
   children,
   dismissOnBackdropPress = true,
 }: ProfileOverlayProps) => {
-  const opacity = useRef(new Animated.Value(0)).current;
-  const scale = useRef(new Animated.Value(0.98)).current;
+  const opacity = useAnimatedValue(0);
+  const scale = useAnimatedValue(0.98);
   const [mounted, setMounted] = useState(visible);
   const insets = useSafeAreaInsets();
+  const reducedMotion = useReducedMotion();
+  const restScale = reducedMotion ? 1 : 0.98;
 
   useWebModalBehavior(visible, onClose);
 
+  // Mount synchronously on open; unmount only once the close animation has finished.
+  if (visible && !mounted) setMounted(true);
+
   useEffect(() => {
     if (visible) {
-      setMounted(true);
       opacity.setValue(0);
-      scale.setValue(0.98);
+      scale.setValue(restScale);
 
       Animated.parallel([
         Animated.timing(opacity, {
           toValue: 1,
           duration: OPEN_MS,
-          easing: Easing.out(Easing.cubic),
+          easing: EASING.out,
           useNativeDriver: USE_NATIVE_DRIVER,
         }),
         Animated.timing(scale, {
           toValue: 1,
           duration: OPEN_MS,
-          easing: Easing.out(Easing.cubic),
+          easing: EASING.out,
           useNativeDriver: USE_NATIVE_DRIVER,
         }),
       ]).start();
       return;
     }
 
-    if (!mounted) return;
-
     Animated.parallel([
       Animated.timing(opacity, {
         toValue: 0,
         duration: CLOSE_MS,
-        easing: Easing.in(Easing.cubic),
+        easing: EASING.out,
         useNativeDriver: USE_NATIVE_DRIVER,
       }),
       Animated.timing(scale, {
-        toValue: 0.98,
+        toValue: restScale,
         duration: CLOSE_MS,
-        easing: Easing.in(Easing.cubic),
+        easing: EASING.out,
         useNativeDriver: USE_NATIVE_DRIVER,
       }),
     ]).start(({ finished }) => {
       if (finished) setMounted(false);
     });
-  }, [visible, mounted, opacity, scale]);
+  }, [visible, restScale, opacity, scale]);
 
   if (!mounted) return null;
 

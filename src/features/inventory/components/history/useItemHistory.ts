@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 
 import {
   fetchItemHistory,
@@ -40,11 +41,16 @@ export const useItemHistory = (visible: boolean, item: InventoryItem | null) => 
     [item]
   );
 
-  useEffect(() => {
+  useSyncOnChange([visible, item], () => {
     if (!visible || !item) return;
     setEntries([]);
     setPage(1);
     setTotalPages(1);
+  });
+
+  useEffect(() => {
+    if (!visible || !item) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- fetches history from the API
     void load(1);
   }, [visible, item, load]);
 

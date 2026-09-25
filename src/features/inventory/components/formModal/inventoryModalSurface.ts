@@ -3,20 +3,21 @@ import { createShadow } from "@/design/shadow";
 
 type SurfaceInput = {
   isMobile: boolean;
-  height: number;
+  /** From the shared sheet layout: already below the status bar and above the keyboard. */
+  maxHeight: number;
   cardBg: string;
   cardBorder: string;
 };
 
 export const inventoryModalSurface = ({
   isMobile,
-  height,
+  maxHeight,
   cardBg,
   cardBorder,
 }: SurfaceInput) =>
   isMobile
     ? {
-        maxHeight: height * 0.92,
+        maxHeight,
         borderTopLeftRadius: 24,
         borderTopRightRadius: 24,
         backgroundColor: cardBg,
@@ -30,7 +31,7 @@ export const inventoryModalSurface = ({
       }
     : {
         maxWidth: 460,
-        maxHeight: height * 0.88,
+        maxHeight,
         borderRadius: RADIUS.card,
         backgroundColor: cardBg,
         borderColor: cardBorder,

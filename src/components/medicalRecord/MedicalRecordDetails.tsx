@@ -1,9 +1,11 @@
 import { Feather } from "@expo/vector-icons";
-import { Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import type { CompletionForm, MedicalRecord } from "@/services/medicalRecords";
 
 import {
@@ -15,8 +17,8 @@ import {
   VisitBlock,
 } from "./details/RecordDetailSections";
 import { Block, Row } from "./details/RecordPrimitives";
+import { useResponsive } from "@/hooks/useResponsive";
 
-const SHEET_WIDTH = 768;
 
 const MedicalRecordDetails = ({
   visible,
@@ -32,9 +34,14 @@ const MedicalRecordDetails = ({
   showProviderNotes?: boolean;
 }) => {
   const palette = useQueuePalette();
-  const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const isSheet = width < SHEET_WIDTH;
+  const { isMobile } = useResponsive();
+  const isSheet = isMobile;
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: isSheet ? 0.92 : 0.88,
+    edgePadding: isSheet ? 0 : 16,
+  });
 
   if (!record) return null;
 
@@ -43,12 +50,12 @@ const MedicalRecordDetails = ({
       visible={visible}
       transparent
       animationType={isSheet ? "slide" : "fade"}
-      onRequestClose={onClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <View
-        className={`flex-1 ${isSheet ? "justify-end" : "items-center justify-center p-4"}`}
-        style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
+      <SheetViewport
+        layout={layout}
+        style={{ backgroundColor: "rgba(15,37,87,0.35)", paddingHorizontal: isSheet ? 0 : 16 }}
       >
         <Pressable
           accessibilityRole="button"
@@ -61,7 +68,7 @@ const MedicalRecordDetails = ({
           className="w-full overflow-hidden"
           style={{
             maxWidth: isSheet ? undefined : 620,
-            maxHeight: isSheet ? "92%" : "88%",
+            maxHeight: layout.maxHeight,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             borderBottomLeftRadius: isSheet ? 0 : 24,
@@ -115,7 +122,7 @@ const MedicalRecordDetails = ({
             contentContainerStyle={{
               padding: 16,
               gap: 14,
-              paddingBottom: 16 + (isSheet ? Math.max(insets.bottom, 0) : 0),
+              paddingBottom: 16 + (isSheet ? layout.bottomInset : 0),
             }}
           >
             <CompletedBadge record={record} palette={palette} />
@@ -132,7 +139,7 @@ const MedicalRecordDetails = ({
             ) : null}
           </ScrollView>
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

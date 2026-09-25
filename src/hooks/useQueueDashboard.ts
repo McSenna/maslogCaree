@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   fetchAppointmentsByStatus,
   fetchQueueOverview,
@@ -12,6 +12,9 @@ import {
 } from "@/components/appointmentQueue/queueTheme";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { sortQueueBySlot } from "@/utils/queueOrder";
+import { toast } from "@/components/feedback/toast/toastStore";
+
+const REFRESH_FAILED = "Showing the last loaded data. Try again in a moment.";
 
 type QueueScope = {
   categoryKey?: string;
@@ -32,12 +35,23 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
   const [queueLoading, setQueueLoading] = useState(true);
   const [queueError, setQueueError] = useState<string | null>(null);
 
+  const overviewLoaded = useRef(false);
+  const listLoadedFor = useRef<AppointmentStatus | null>(null);
+  const queueLoaded = useRef(false);
+
+  useEffect(() => {
+    overviewLoaded.current = false;
+    listLoadedFor.current = null;
+    queueLoaded.current = false;
+  }, [categoryKey]);
+
   const loadOverview = useCallback(async () => {
-    setOverviewLoading(true);
+    if (!overviewLoaded.current) setOverviewLoading(true);
     try {
       setOverview(await fetchQueueOverview({ categoryKey }));
+      overviewLoaded.current = true;
     } catch {
-      setOverview(null);
+      if (!overviewLoaded.current) setOverview(null);
     } finally {
       setOverviewLoading(false);
     }
@@ -45,7 +59,8 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
 
   const loadStatusList = useCallback(
     async (status: AppointmentStatus) => {
-      setListLoading(true);
+      const refreshing = listLoadedFor.current === status;
+      if (!refreshing) setListLoading(true);
       setListError(null);
       try {
         setStatusList(
@@ -53,9 +68,15 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
             ? await fetchCompletedAppointments({ categoryKey })
             : await fetchAppointmentsByStatus(status, { categoryKey })
         );
+        listLoadedFor.current = status;
       } catch (error: unknown) {
-        setStatusList([]);
-        setListError(getApiErrorMessage(error, "The appointment list could not be loaded."));
+        const message = getApiErrorMessage(error, "The appointment list could not be loaded.");
+        if (refreshing) {
+          toast.error("Unable to refresh appointments", REFRESH_FAILED);
+        } else {
+          setStatusList([]);
+          setListError(message);
+        }
       } finally {
         setListLoading(false);
       }
@@ -64,16 +85,22 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
   );
 
   const loadQueue = useCallback(async () => {
-    setQueueLoading(true);
+    const refreshing = queueLoaded.current;
+    if (!refreshing) setQueueLoading(true);
     setQueueError(null);
     try {
       const lists = await Promise.all(
         ACTIVE_QUEUE_STATUSES.map((status) => fetchAppointmentsByStatus(status, { categoryKey }))
       );
       setQueue(sortQueueBySlot(lists.flat()));
+      queueLoaded.current = true;
     } catch (error: unknown) {
-      setQueue([]);
-      setQueueError(getApiErrorMessage(error, "The queue could not be loaded."));
+      if (refreshing) {
+        toast.error("Unable to refresh the queue", REFRESH_FAILED);
+      } else {
+        setQueue([]);
+        setQueueError(getApiErrorMessage(error, "The queue could not be loaded."));
+      }
     } finally {
       setQueueLoading(false);
     }
@@ -84,14 +111,17 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
   }, [loadOverview, loadStatusList, activeStatus, loadQueue]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void loadOverview();
   }, [loadOverview]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void loadQueue();
   }, [loadQueue]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void loadStatusList(activeStatus);
   }, [activeStatus, loadStatusList]);
 

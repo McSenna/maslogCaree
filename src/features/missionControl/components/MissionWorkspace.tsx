@@ -1,5 +1,10 @@
-import { Pressable, Text, View } from "react-native";
+import { useState } from "react";
+import { Text, View } from "react-native";
+import Button from "@/components/buttons/Button";
+import { useThemeColors } from "@/hooks/useThemeColors";
 import type { AppointmentRecord } from "@/services/appointments";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 import type { MissionControl } from "../hooks/useMissionControl";
 import BookedTimelinePanel from "./BookedTimelinePanel";
 import MissionAnalyticsPanel from "./MissionAnalyticsPanel";
@@ -12,15 +17,27 @@ type MissionWorkspaceProps = {
 };
 
 const MissionWorkspace = ({ control, onAssign }: MissionWorkspaceProps) => {
+  const colors = useThemeColors();
   const { catalogue, actions, selectedMission, timeline } = control;
+  const [refreshing, setRefreshing] = useState(false);
+
+  const refresh = async () => {
+    setRefreshing(true);
+    try {
+      await catalogue.refreshLists();
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   return (
-    <>
-      <View>
-        <Text className="text-2xl font-bold text-slate-900">Mission &amp; queue</Text>
-        <Text className="mt-1 text-sm text-slate-600">
-          Assign queued patients to validated time slots (no overlaps). New schedules are
-          created from Add Mission.
+    <View style={{ gap: SPACING.lg }}>
+      <View style={{ gap: SPACING.xs }}>
+        <Text accessibilityRole="header" style={[TYPE.headline, { color: colors.heading }]}>
+          Mission &amp; queue
+        </Text>
+        <Text style={[TYPE.body, { color: colors.muted }]}>
+          Assign queued patients to validated time slots (no overlaps). New schedules are created from Add Mission.
         </Text>
       </View>
 
@@ -33,15 +50,10 @@ const MissionWorkspace = ({ control, onAssign }: MissionWorkspaceProps) => {
       />
 
       {selectedMission && catalogue.missionDetail ? (
-        <BookedTimelinePanel
-          timeline={timeline}
-          onReschedule={(appointment) => onAssign(appointment, "reassign")}
-        />
+        <BookedTimelinePanel timeline={timeline} onReschedule={(appointment) => onAssign(appointment, "reassign")} />
       ) : null}
 
-      {catalogue.analytics.length > 0 ? (
-        <MissionAnalyticsPanel rows={catalogue.analytics} />
-      ) : null}
+      {catalogue.analytics.length > 0 ? <MissionAnalyticsPanel rows={catalogue.analytics} /> : null}
 
       <PendingQueuePanel
         pending={catalogue.pending}
@@ -49,14 +61,16 @@ const MissionWorkspace = ({ control, onAssign }: MissionWorkspaceProps) => {
         onDecline={actions.declineAppointment}
       />
 
-      <Pressable
-        onPress={() => void catalogue.refreshLists()}
-        accessibilityRole="button"
-        className="items-center rounded-xl border border-slate-300 py-3"
-      >
-        <Text className="font-medium text-slate-700">Refresh data</Text>
-      </Pressable>
-    </>
+      <Button
+        variant="secondary"
+        icon="refresh-cw"
+        label="Refresh data"
+        loadingLabel="Refreshing…"
+        loading={refreshing}
+        fullWidth
+        onPress={() => void refresh()}
+      />
+    </View>
   );
 };
 

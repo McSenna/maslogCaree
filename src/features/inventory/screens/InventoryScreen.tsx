@@ -4,7 +4,7 @@ import InventoryDesktopLayout from "../components/InventoryDesktopLayout";
 import InventoryEmptyState from "../components/InventoryEmptyState";
 import InventoryMobileLayout from "../components/InventoryMobileLayout";
 import InventoryOverlays from "../components/InventoryOverlays";
-import InventoryStateBlock from "../components/InventoryStateBlock";
+import StateBlock from "@/components/ui/StateBlock";
 import { useInventoryPalette } from "../components/inventoryTheme";
 import { useInventoryScreen } from "../hooks/useInventoryScreen";
 
@@ -20,7 +20,7 @@ const InventoryScreen = () => {
       <View className="flex-1" onLayout={controller.measureContent}>
         {pageTint}
         <View className="flex-1 items-center justify-center p-6">
-          <InventoryStateBlock
+          <StateBlock
             icon="lock"
             tone="neutral"
             title="Inventory is not available for your role"
@@ -79,8 +79,6 @@ const InventoryScreen = () => {
           controller.setFilterSheet(null);
         }}
         onCloseFilterSheet={() => controller.setFilterSheet(null)}
-        toast={controller.toast}
-        onHideToast={controller.hideToast}
       />
     </View>
   );

@@ -1,11 +1,11 @@
-import { ScrollView, useWindowDimensions, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import HealthServices from "@/features/resident/HealthServices";
 import { healthServices } from "@/data/residentDashboardData";
 import { useResidentDashboard } from "@/screens/resident/useResidentDashboard";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useResponsive } from "@/hooks/useResponsive";
 
 const ResidentServicesRoute = () => {
-  const { width } = useWindowDimensions();
+  const { isMobile } = useResponsive();
   const { handlers } = useResidentDashboard();
 
   return (
@@ -15,7 +15,7 @@ const ResidentServicesRoute = () => {
           services={healthServices}
           onViewAll={handlers.onViewAllServices}
           onServicePress={handlers.onService}
-          stacked={width < BREAKPOINTS.tablet}
+          stacked={isMobile}
         />
       </View>
     </ScrollView>

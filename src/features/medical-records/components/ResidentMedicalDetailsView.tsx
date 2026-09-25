@@ -10,20 +10,20 @@ import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { CompletionForm, MedicalRecord } from "@/services/medicalRecords";
 import type { AppointmentRecord } from "@/types/appointments.types";
 
-import AppointmentInfoSection from "./sections/AppointmentInfoSection";
+import { AppointmentInfoSection } from "./sections/AppointmentInfoSection";
 import {
   AssessmentSection,
   RecommendationsSection,
 } from "./sections/AssessmentSections";
-import DetailSection, { KeyValueRow } from "./sections/DetailSection";
-import ItemsGivenSection from "./sections/ItemsGivenSection";
+import { DetailSection, KeyValueRow } from "./sections/DetailSection";
+import { ItemsGivenSection } from "./sections/ItemsGivenSection";
 import {
   DetailsEmpty,
   DetailsError,
   DetailsLoading,
 } from "./sections/MedicalDetailsStates";
-import MedicalRecordSummary from "./sections/MedicalRecordSummary";
-import VitalSignsGrid from "./sections/VitalSignsGrid";
+import { MedicalRecordSummary } from "./sections/MedicalRecordSummary";
+import { VitalSignsGrid } from "./sections/VitalSignsGrid";
 
 export type ResidentMedicalDetailsViewProps = {
   record: MedicalRecord | null;

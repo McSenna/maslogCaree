@@ -1,14 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import {
   AppState,
   type AppStateStatus,
   InteractionManager,
   Platform,
 } from "react-native";
+import { useLatestRef } from "@/hooks/useLatestRef";
 
 export const useAppForegroundLayout = (onForeground?: () => void) => {
-  const onForegroundRef = useRef(onForeground);
-  onForegroundRef.current = onForeground;
+  const onForegroundRef = useLatestRef(onForeground);
 
   useEffect(() => {
     const run = () => {
@@ -22,7 +22,7 @@ export const useAppForegroundLayout = (onForeground?: () => void) => {
     });
 
     return () => sub.remove();
-  }, []);
+  }, [onForegroundRef]);
 
   useEffect(() => {
     if (Platform.OS !== "web" || typeof document === "undefined") return;
@@ -37,5 +37,5 @@ export const useAppForegroundLayout = (onForeground?: () => void) => {
 
     document.addEventListener("visibilitychange", onVisibility);
     return () => document.removeEventListener("visibilitychange", onVisibility);
-  }, []);
+  }, [onForegroundRef]);
 };

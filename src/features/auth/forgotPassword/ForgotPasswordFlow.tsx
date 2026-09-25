@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
-import { Animated, Easing, ScrollView, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useEffect } from "react";
+import { Animated, ScrollView } from "react-native";
 import { useForgotPassword, type ForgotPasswordController } from "./useForgotPassword";
 import StepIndicator from "./components/StepIndicator";
 import FlowHeader from "./flow/FlowHeader";
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+import { SHEET_KEYBOARD_DISMISS_MODE } from "@/components/ui/sheetLayout/sheetScroll";
 import FlowShell from "./flow/FlowShell";
 import {
   EmailSentStep,
@@ -13,9 +13,10 @@ import {
   ResetPasswordStep,
   SuccessStep,
 } from "./components/RecoverySteps";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { useResponsive } from "@/hooks/useResponsive";
 
-const SHEET_BREAKPOINT = 768;
 
 const StepBody = ({ flow }: { flow: ForgotPasswordController }) => {
   switch (flow.step) {
@@ -33,20 +34,27 @@ const StepBody = ({ flow }: { flow: ForgotPasswordController }) => {
 };
 
 const StepTransition = ({ flow }: { flow: ForgotPasswordController }) => {
-  const fade = useRef(new Animated.Value(1)).current;
+  const fade = useAnimatedValue(1);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     fade.setValue(0);
     Animated.timing(fade, {
       toValue: 1,
-      duration: 220,
-      easing: Easing.out(Easing.quad),
+      duration: TIMING.enter,
+      easing: EASING.out,
       useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
-  }, [flow.step, fade]);
+  }, [flow.step, fade, reducedMotion]);
 
   return (
-    <Animated.View style={{ width: "100%", opacity: fade }}>
+    <Animated.View
+      style={{
+        width: "100%",
+        opacity: fade,
+        transform: [{ translateX: fade.interpolate({ inputRange: [0, 1], outputRange: [reducedMotion ? 0 : 10, 0] }) }],
+      }}
+    >
       <StepBody flow={flow} />
     </Animated.View>
   );
@@ -61,9 +69,8 @@ const ForgotPasswordFlow = ({
   onClose: () => void;
   initialEmail?: string;
 }) => {
-  const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const isSheet = width < SHEET_BREAKPOINT;
+  const { isMobile } = useResponsive();
+  const isSheet = isMobile;
 
   const flow = useForgotPassword({ onExit: onClose });
   const { reset, setEmail } = flow;
@@ -82,20 +89,26 @@ const ForgotPasswordFlow = ({
   const canGoBack = flow.step === "sent" || flow.step === "otp";
 
   return (
-    <FlowShell visible={visible} isSheet={isSheet} insets={insets} onRequestClose={requestClose}>
-      <ScrollView
-        style={SHEET_SCROLL_STYLE}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        keyboardDismissMode="on-drag"
-        contentContainerStyle={{ gap: 18, paddingBottom: 4 }}
-      >
+    <FlowShell
+      visible={visible}
+      isSheet={isSheet}
+      onRequestClose={requestClose}
+      header={
         <FlowHeader
           canGoBack={canGoBack}
           dismissible={dismissible}
           onBack={flow.changeEmail}
           onClose={requestClose}
         />
+      }
+    >
+      <ScrollView
+        style={SHEET_SCROLL_STYLE}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={SHEET_KEYBOARD_DISMISS_MODE}
+        contentContainerStyle={{ gap: 18, paddingTop: 18, paddingBottom: 4 }}
+      >
         {flow.step !== "success" ? <StepIndicator step={flow.step} compact={isSheet} /> : null}
         <StepTransition flow={flow} />
       </ScrollView>

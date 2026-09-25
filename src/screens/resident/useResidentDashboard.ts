@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { healthTip } from "@/data/residentDashboardData";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
-import { getTimeGreeting, summarizeResidentAppointments } from "@/utils/residentDashboard";
+import { summarizeResidentAppointments } from "@/utils/residentDashboard";
 import { mapAnnouncements } from "./dashboard/dashboardMappers";
 import { buildStats } from "./dashboard/dashboardStats";
 import { useDashboardData } from "./dashboard/useDashboardData";
@@ -33,9 +33,7 @@ export const useResidentDashboard = () => {
   );
 
   return {
-    firstName: data?.resident.firstName || "Resident",
     profilePhoto: data?.resident.profilePhoto ?? null,
-    greeting: getTimeGreeting(),
     stats,
     nextAppointment: data?.nextAppointment ?? null,
     recentAppointments,

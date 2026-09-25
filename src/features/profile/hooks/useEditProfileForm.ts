@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   EMPTY_EDIT_PROFILE_VALUES,
   PROFILE_EDIT_SECTION_FIELDS,
@@ -28,10 +28,10 @@ const withCompleteName = (fields: EditProfileField[]): EditProfileField[] => {
 export const useEditProfileForm = (section: ProfileEditSection | null) => {
   const [values, setValues] = useState<EditProfileValues>(EMPTY_EDIT_PROFILE_VALUES);
   const [errors, setErrors] = useState<EditProfileErrors>({});
-  const baseline = useRef<EditProfileValues>(EMPTY_EDIT_PROFILE_VALUES);
+  const [baseline, setBaseline] = useState<EditProfileValues>(EMPTY_EDIT_PROFILE_VALUES);
 
   const syncTo = useCallback((initial: EditProfileValues) => {
-    baseline.current = initial;
+    setBaseline(initial);
     setValues(initial);
     setErrors({});
   }, []);
@@ -45,9 +45,9 @@ export const useEditProfileForm = (section: ProfileEditSection | null) => {
     if (!section) return [];
 
     return PROFILE_EDIT_SECTION_FIELDS[section].filter(
-      (field) => values[field].trim() !== baseline.current[field].trim()
+      (field) => values[field].trim() !== baseline[field].trim()
     );
-  }, [section, values]);
+  }, [baseline, section, values]);
 
   const validate = useCallback(() => {
     if (!section) return false;

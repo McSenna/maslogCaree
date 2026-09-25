@@ -1,5 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
+import { webStyle } from "@/theme/webStyle";
 
 export const AUTH_INPUT_COLORS = {
   border: "#D9E3EF",
@@ -36,11 +37,9 @@ export const authInputStyles = StyleSheet.create({
     backgroundColor: AUTH_INPUT_COLORS.surface,
     paddingHorizontal: 16,
     gap: 12,
-    ...Platform.select({
-      web: {
+    ...webStyle({
         transition: "border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease",
-      } as any,
-    }),
+      }),
   },
   containerHovered: {
     borderColor: AUTH_INPUT_COLORS.borderHover,
@@ -48,14 +47,14 @@ export const authInputStyles = StyleSheet.create({
   containerFocused: {
     borderColor: LANDING_COLORS.primaryBlue,
     backgroundColor: LANDING_COLORS.white,
-    ...Platform.select({ web: { boxShadow: FOCUS_RING } as any }),
+    ...webStyle({ boxShadow: FOCUS_RING }),
   },
   containerError: {
     borderColor: AUTH_INPUT_COLORS.error,
     backgroundColor: AUTH_INPUT_COLORS.errorSurface,
   },
   containerErrorFocused: {
-    ...Platform.select({ web: { boxShadow: ERROR_RING } as any }),
+    ...webStyle({ boxShadow: ERROR_RING }),
   },
   containerDisabled: {
     backgroundColor: AUTH_INPUT_COLORS.disabledSurface,
@@ -66,17 +65,16 @@ export const authInputStyles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    minWidth: 0,
     fontFamily: FONT_FAMILY,
     color: LANDING_COLORS.navy,
     paddingVertical: 0,
     borderWidth: 0,
     backgroundColor: "transparent",
-    ...Platform.select({
-      web: {
-        outlineStyle: "none",
-        boxShadow: "none",
-        appearance: "none",
-      } as any,
+    ...webStyle({
+      outlineStyle: "none",
+      boxShadow: "none",
+      appearance: "none",
     }),
   },
   inputDisabled: {
@@ -89,12 +87,10 @@ export const authInputStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
-    ...Platform.select({
-      web: {
+    ...webStyle({
         cursor: "pointer",
         transition: "background-color 160ms ease",
-      } as any,
-    }),
+      }),
   },
   eyeButtonActive: {
     backgroundColor: "rgba(8, 102, 245, 0.10)",

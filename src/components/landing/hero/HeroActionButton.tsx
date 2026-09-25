@@ -1,10 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Animated, Platform, StyleSheet, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { AnimatedPressable } from "../motion/landingMotion";
 import { useInteractiveLift } from "../motion/useInteractiveLift";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { USE_NATIVE_DRIVER } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type HeroActionButtonProps = {
   label: string;
@@ -26,7 +27,7 @@ const HeroActionButton = ({
   height = 52,
 }: HeroActionButtonProps) => {
   const lift = useInteractiveLift({ lift: 2, pressScale: 0.98 });
-  const iconShift = useRef(new Animated.Value(0)).current;
+  const iconShift = useAnimatedValue(0);
 
   const isPrimary = variant === "primary";
   const foreground = isPrimary ? LANDING_COLORS.white : LANDING_COLORS.primaryBlue;
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
       web: {
         cursor: "pointer",
         transition: "background-color 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
-      } as any,
+      },
     }),
   },
   fullWidth: {
@@ -88,13 +89,13 @@ const styles = StyleSheet.create({
   primary: {
     backgroundColor: LANDING_COLORS.primaryBlue,
     ...Platform.select({
-      web: { boxShadow: "0px 8px 20px rgba(8, 102, 245, 0.22)" } as any,
+      web: { boxShadow: "0px 8px 20px rgba(8, 102, 245, 0.22)" },
       default: { elevation: 3 },
     }),
   },
   primaryHovered: {
     ...Platform.select({
-      web: { boxShadow: "0px 14px 28px rgba(8, 102, 245, 0.30)" } as any,
+      web: { boxShadow: "0px 14px 28px rgba(8, 102, 245, 0.30)" },
     }),
   },
   secondary: {
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
   secondaryHovered: {
     borderColor: LANDING_COLORS.primaryBlue,
     ...Platform.select({
-      web: { boxShadow: "0px 10px 22px rgba(8, 21, 47, 0.10)" } as any,
+      web: { boxShadow: "0px 10px 22px rgba(8, 21, 47, 0.10)" },
     }),
   },
   label: {

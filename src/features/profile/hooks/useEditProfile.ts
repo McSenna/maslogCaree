@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/Toast";
+import { notifyToast } from "@/components/feedback/toast/toastStore";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { getCachedAccessToken } from "@/utils/storage";
 import {
@@ -16,7 +16,7 @@ const SAVE_ERROR = "Unable to update your profile right now. Please try again.";
 
 export const useEditProfile = () => {
   const { user, applyAuthUser } = useAuth();
-  const { toast, showToast, hideToast } = useToast();
+  const showToast = notifyToast;
 
   const [section, setSection] = useState<ProfileEditSection | null>(null);
   const [saving, setSaving] = useState(false);
@@ -102,9 +102,7 @@ export const useEditProfile = () => {
     cancelSaveEdit: useCallback(() => setConfirmingSave(false), []),
     changeAvatar: avatar.changeAvatar,
     savingAvatar: avatar.savingAvatar,
-    toast,
     showToast,
-    hideToast,
   };
 };
 

@@ -16,12 +16,11 @@ export type MetricSpec = {
   tone: MetricTone;
   value: (data: StaffDashboardData) => number;
   description: (data: StaffDashboardData) => string;
+  route?: string;
 };
 
 export type RoleDashboardConfig = {
   role: StaffRole;
-  badge: string;
-  tagline: string;
   metrics: MetricSpec[];
   chart: {
     title: string;

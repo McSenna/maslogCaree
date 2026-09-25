@@ -1,4 +1,4 @@
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 import type { ProfileIconName, ProfileTabKey } from "../types/profile.types";
 
 export type ProfileTabDefinition = {

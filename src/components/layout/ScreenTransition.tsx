@@ -3,7 +3,8 @@ import { Animated, Easing, Platform, StyleSheet, View } from "react-native";
 import { usePathname } from "expo-router";
 import PageLoader from "@/components/feedback/PageLoader";
 import { useDelayedLoading } from "@/hooks/useDelayedLoading";
-import { DURATION, ENTER_OFFSET, USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
+import { DURATION, ENTER_OFFSET, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 const useIsomorphicLayoutEffect = Platform.OS === "web" ? useLayoutEffect : useEffect;
 
@@ -13,8 +14,8 @@ const ScreenTransition = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname();
   const reducedMotion = useReducedMotion();
 
-  const opacity = useRef(new Animated.Value(1)).current;
-  const translateY = useRef(new Animated.Value(0)).current;
+  const opacity = useAnimatedValue(1);
+  const translateY = useAnimatedValue(0);
 
   const [settling, setSettling] = useState(false);
 

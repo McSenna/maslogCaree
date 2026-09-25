@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Animated, Platform, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { USE_NATIVE_DRIVER, useReducedMotion } from "@/design/motion";
+import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion, webTransition } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type NavItemLinkProps = {
   label: string;
@@ -15,7 +16,7 @@ const NavItemLink = ({ label, icon, isActive, isDesktop }: NavItemLinkProps) => 
   const [hovered, setHovered] = useState(false);
   const [pressed, setPressed] = useState(false);
 
-  const indicator = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+  const indicator = useAnimatedValue(isActive ? 1 : 0);
 
   useEffect(() => {
     const target = isActive || hovered ? 1 : 0;
@@ -27,7 +28,8 @@ const NavItemLink = ({ label, icon, isActive, isDesktop }: NavItemLinkProps) => 
 
     const animation = Animated.timing(indicator, {
       toValue: target,
-      duration: 180,
+      duration: TIMING.hover,
+      easing: EASING.out,
       useNativeDriver: USE_NATIVE_DRIVER,
     });
 
@@ -58,9 +60,9 @@ const NavItemLink = ({ label, icon, isActive, isDesktop }: NavItemLinkProps) => 
         paddingTop: 8,
         paddingBottom: 6,
         backgroundColor: isActive ? "rgba(255,255,255,0.10)" : "transparent",
-        transform: [{ scale: pressed ? 0.97 : 1 }],
+        transform: [{ scale: pressed && !reducedMotion ? 0.97 : 1 }],
         ...Platform.select({
-          web: { cursor: "pointer", transition: "background-color 180ms ease" } as any,
+          web: { cursor: "pointer", transition: webTransition("background-color", "transform") },
         }),
       }}
     >

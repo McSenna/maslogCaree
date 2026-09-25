@@ -23,6 +23,7 @@ export const useBhwQueue = () => {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void loadCategories();
   }, [loadCategories]);
 

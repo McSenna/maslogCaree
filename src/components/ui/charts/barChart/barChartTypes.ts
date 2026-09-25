@@ -16,5 +16,9 @@ export type SimpleBarChartProps = {
   dimColor?: string;
   showGrid?: boolean;
   showYAxis?: boolean;
+  /** Dashed horizontal grid lines. */
+  gridDashed?: boolean;
+  /** Axis label colour; defaults to the chart palette's tick colour. */
+  tickColor?: string;
   formatTooltip?: (datum: SimpleBarDatum, index: number) => CalloutContent;
 };

@@ -1,5 +1,5 @@
 import { Pressable, Text, View } from "react-native";
-import StatusBadge from "@/components/resident/StatusBadge";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { RESIDENT_COLORS } from "@/components/resident/residentTheme";
 import { formatConsultationTypeLabel } from "@/utils/residentDashboard";
 import type { AppointmentRecord } from "@/services/appointments";
@@ -36,7 +36,7 @@ const TableRow = ({
       </Text>
     </View>
     <View style={{ flex: COLUMNS.status, minWidth: 0 }}>
-      <StatusBadge status={appointment.status} compact />
+      <AppointmentStatusBadge status={appointment.status} audience="resident" />
     </View>
   </Pressable>
 );

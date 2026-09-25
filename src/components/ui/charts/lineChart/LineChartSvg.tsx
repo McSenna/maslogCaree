@@ -22,9 +22,14 @@ type Props = {
   padLeft: number;
   axisY: number;
   showGrid: boolean;
+  gridDashed: boolean;
   showDots: boolean;
+  emphasizeLatest: boolean;
+  gradientId: string;
   activeIndex: number | null;
 };
+
+const HALO_R = END_DOT_R + 5;
 
 const LineChartSvg = ({
   series,
@@ -36,7 +41,10 @@ const LineChartSvg = ({
   padLeft,
   axisY,
   showGrid,
+  gridDashed,
   showDots,
+  emphasizeLatest,
+  gradientId,
   activeIndex,
 }: Props) => {
   const { polylines, areaPaths, pointXs } = geometry;
@@ -46,7 +54,7 @@ const LineChartSvg = ({
       <Defs>
         {series.map((s, i) =>
           s.showArea ? (
-            <LinearGradient key={`grad-${i}`} id={`areaGrad-${i}`} x1="0" y1="0" x2="0" y2="1">
+            <LinearGradient key={`grad-${i}`} id={`${gradientId}-${i}`} x1="0" y1="0" x2="0" y2="1">
               <Stop offset="0%" stopColor={s.color} stopOpacity={palette.isDark ? 0.3 : 0.18} />
               <Stop offset="100%" stopColor={s.color} stopOpacity={0} />
             </LinearGradient>
@@ -66,6 +74,7 @@ const LineChartSvg = ({
               y2={y}
               stroke={palette.gridColor}
               strokeWidth={1}
+              strokeDasharray={gridDashed ? "4 4" : undefined}
             />
           );
         })}
@@ -82,7 +91,7 @@ const LineChartSvg = ({
       ) : null}
 
       {areaPaths.map((ap) => (
-        <Path key={`area-${ap.gradientIndex}`} d={ap.d} fill={`url(#areaGrad-${ap.gradientIndex})`} />
+        <Path key={`area-${ap.gradientIndex}`} d={ap.d} fill={`url(#${gradientId}-${ap.gradientIndex})`} />
       ))}
 
       {polylines.map((p, idx) => (
@@ -103,7 +112,19 @@ const LineChartSvg = ({
         const marked = showDots
           ? p.points.map((pt, di) => ({ pt, di }))
           : [{ pt: p.points[p.points.length - 1], di: p.points.length - 1 }];
-        return marked.map(({ pt, di }) => (
+        const latest = p.points[p.points.length - 1];
+        return [
+          emphasizeLatest && idx === 0 ? (
+            <Circle
+              key={`halo-${idx}`}
+              cx={latest.x}
+              cy={latest.y}
+              r={HALO_R}
+              fill={p.color}
+              fillOpacity={palette.isDark ? 0.28 : 0.16}
+            />
+          ) : null,
+          ...marked.map(({ pt, di }) => (
           <Circle
             key={`dot-${idx}-${di}`}
             cx={pt.x}
@@ -113,7 +134,8 @@ const LineChartSvg = ({
             stroke={palette.surface}
             strokeWidth={2}
           />
-        ));
+          )),
+        ];
       })}
 
       {activeIndex !== null &&

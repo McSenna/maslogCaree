@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 
+const TITLE_MIN_WIDTH = 240;
+
 type PanelCardProps = {
   palette: AdminDashboardPalette;
   title: string;
@@ -37,8 +39,14 @@ const PanelCard = ({
         borderColor: palette.cardBorder,
       }}
     >
-      <View className="mb-3 flex-row items-start justify-between gap-3">
-        <View className="min-w-0 flex-1 flex-row items-center gap-2.5">
+      <View
+        className={`mb-3 flex-row items-start justify-between ${headerRight ? "flex-wrap" : ""}`}
+        style={{ columnGap: 12, rowGap: 10 }}
+      >
+        <View
+          className="flex-row items-center gap-2.5"
+          style={{ flexGrow: 1, flexShrink: 1, flexBasis: headerRight ? TITLE_MIN_WIDTH : 0, minWidth: 0 }}
+        >
           {icon ? (
             <View
               className="h-9 w-9 shrink-0 items-center justify-center rounded-xl"

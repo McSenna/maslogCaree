@@ -1,5 +1,5 @@
 import type { Feather } from "@expo/vector-icons";
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 
 export type HelpIcon = keyof typeof Feather.glyphMap;
 

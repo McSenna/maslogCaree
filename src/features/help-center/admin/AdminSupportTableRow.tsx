@@ -43,7 +43,7 @@ const AdminSupportTableRow = ({ ticket, isLast, onReview }: AdminSupportTableRow
         style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}
       />
 
-      <View pointerEvents="box-none" style={{ width: cols.ticket.width, minWidth: cols.ticket.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
+      <View style={{ pointerEvents: "box-none", width: cols.ticket.width, minWidth: cols.ticket.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
         <View
           style={{
             alignSelf: "flex-start",
@@ -62,8 +62,7 @@ const AdminSupportTableRow = ({ ticket, isLast, onReview }: AdminSupportTableRow
       </View>
 
       <View
-        pointerEvents="box-none"
-        style={{ flex: cols.requester.flex, minWidth: cols.requester.minWidth, flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 12, zIndex: 1 }}
+        style={{ pointerEvents: "box-none", flex: cols.requester.flex, minWidth: cols.requester.minWidth, flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 12, zIndex: 1 }}
       >
         <UserAvatar size={32} initials={initialsFrom(ticket.requesterName)} accessibilityLabel={`${ticket.requesterName} avatar`} fallbackBackgroundColor={palette.primary} />
         <Text numberOfLines={1} style={{ fontSize: 13.5, fontWeight: "600", color: palette.heading, flexShrink: 1 }}>
@@ -71,35 +70,35 @@ const AdminSupportTableRow = ({ ticket, isLast, onReview }: AdminSupportTableRow
         </Text>
       </View>
 
-      <View pointerEvents="box-none" style={{ flex: cols.subject.flex, minWidth: cols.subject.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
+      <View style={{ pointerEvents: "box-none", flex: cols.subject.flex, minWidth: cols.subject.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
         <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "500", color: palette.heading }}>
           {ticket.subject}
         </Text>
       </View>
 
-      <View pointerEvents="box-none" style={{ width: cols.category.width, minWidth: cols.category.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
+      <View style={{ pointerEvents: "box-none", width: cols.category.width, minWidth: cols.category.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
         <Text numberOfLines={1} style={{ fontSize: 12.5, color: palette.body }}>
           {supportCategoryLabel(ticket.category)}
         </Text>
       </View>
 
-      <View pointerEvents="box-none" style={{ width: cols.submitted.width, minWidth: cols.submitted.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
+      <View style={{ pointerEvents: "box-none", width: cols.submitted.width, minWidth: cols.submitted.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
         <Text numberOfLines={1} style={{ fontSize: 12, color: palette.muted, fontVariant: ["tabular-nums"] }}>
           {formatTicketDate(ticket.createdAt)}
         </Text>
       </View>
 
-      <View pointerEvents="box-none" style={{ width: cols.updated.width, minWidth: cols.updated.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
+      <View style={{ pointerEvents: "box-none", width: cols.updated.width, minWidth: cols.updated.minWidth, paddingHorizontal: 12, zIndex: 1 }}>
         <Text numberOfLines={1} style={{ fontSize: 12, color: palette.muted, fontVariant: ["tabular-nums"] }}>
           {formatTicketDate(ticket.lastActivityAt ?? ticket.updatedAt)}
         </Text>
       </View>
 
-      <View pointerEvents="box-none" style={{ width: cols.status.width, minWidth: cols.status.minWidth, paddingHorizontal: 12, alignItems: "center", zIndex: 1 }}>
+      <View style={{ pointerEvents: "box-none", width: cols.status.width, minWidth: cols.status.minWidth, paddingHorizontal: 12, alignItems: "center", zIndex: 1 }}>
         <AdminTicketStatusBadge status={ticket.status} />
       </View>
 
-      <View pointerEvents="box-none" style={{ width: cols.actions.width, minWidth: cols.actions.minWidth, paddingHorizontal: 12, alignItems: "flex-end", zIndex: 2 }}>
+      <View style={{ pointerEvents: "box-none", width: cols.actions.width, minWidth: cols.actions.minWidth, paddingHorizontal: 12, alignItems: "flex-end", zIndex: 2 }}>
         <Pressable
           onPress={(e) => {
             e.stopPropagation?.();

@@ -43,11 +43,8 @@ const DashboardErrorState = ({
         onPress={onRetry}
         accessibilityRole="button"
         accessibilityLabel="Retry loading the dashboard"
-        className="shrink-0 rounded-xl px-5 py-2.5"
-        style={({ pressed }) => ({
-          backgroundColor: palette.primary,
-          opacity: pressed ? 0.85 : 1,
-        })}
+        className="shrink-0 rounded-xl px-5 py-2.5 active:opacity-85"
+        style={{ backgroundColor: palette.primary }}
       >
         <Text className="text-[13px] font-semibold text-white">Retry</Text>
       </Pressable>

@@ -1,6 +1,7 @@
-import { Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
+import { useModalFrame } from "@/hooks/useModalFrame";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 
 import { REG_COLORS } from "../../registration/registrationTheme";
@@ -16,7 +17,7 @@ type DateOfBirthModalProps = {
 };
 
 const DateOfBirthModal = ({ visible, draft, onCancel, onConfirm }: DateOfBirthModalProps) => {
-  const { height } = useWindowDimensions();
+  const frame = useModalFrame(400);
 
   useWebModalBehavior(visible, onCancel);
   const attachFocusTrap = useFocusTrap(visible);
@@ -28,7 +29,7 @@ const DateOfBirthModal = ({ visible, draft, onCancel, onConfirm }: DateOfBirthMo
           flex: 1,
           alignItems: "center",
           justifyContent: "center",
-          padding: 20,
+          padding: 16,
           backgroundColor: "rgba(15, 23, 42, 0.45)",
         }}
       >
@@ -43,9 +44,8 @@ const DateOfBirthModal = ({ visible, draft, onCancel, onConfirm }: DateOfBirthMo
           ref={attachFocusTrap as never}
           accessibilityViewIsModal
           style={{
-            width: "100%",
-            maxWidth: 400,
-            maxHeight: Math.round(height * 0.86),
+            width: frame.width,
+            maxHeight: frame.maxHeight,
             borderRadius: 20,
             backgroundColor: REG_COLORS.surface,
             overflow: "hidden",

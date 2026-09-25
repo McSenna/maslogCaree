@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import type { DetailEntry } from "@/components/medicalRecord/history/recordDetailGroups";
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 
-import DetailSection from "./DetailSection";
+import { DetailSection } from "./DetailSection";
 
 type Props = {
   palette: ResidentDialogPalette;

@@ -1,5 +1,4 @@
-import { useWindowDimensions } from "react-native";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { useResponsive } from "@/hooks/useResponsive";
 import type { AdminUser } from "@/features/users/services/userService";
 import UserDetailsPanel from "./UserDetailsPanel";
 import UserDetailsSheet from "./details/UserDetailsSheet";
@@ -17,9 +16,9 @@ export type UserDetailsProps = {
 };
 
 const UserDetails = (props: UserDetailsProps) => {
-  const { width } = useWindowDimensions();
+  const { isMobile } = useResponsive();
 
-  return width < BREAKPOINTS.tablet ? (
+  return isMobile ? (
     <UserDetailsSheet {...props} />
   ) : (
     <UserDetailsPanel {...props} />

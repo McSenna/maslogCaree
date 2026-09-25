@@ -3,12 +3,11 @@ import {
   assignAppointment,
   fetchAvailableSlots,
   reassignAppointment,
-  suggestNextSlot,
   type AppointmentRecord,
   type ConsultationCategory,
 } from "@/services/appointments";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
-import { showAlert } from "@/utils/notify";
+import { toast } from "@/components/feedback/toast/toastStore";
 
 export type AssignMode = "assign" | "reassign";
 
@@ -48,7 +47,7 @@ export const useSlotAssignment = ({
 
   const loadSlots = useCallback(async () => {
     if (!selectedMissionId || !categoryKey) {
-      showAlert("Select mission", "Choose a mission schedule first, then a category.");
+      toast.error("Choose a mission schedule", "Select a mission schedule first, then a category.");
       return;
     }
 
@@ -59,12 +58,7 @@ export const useSlotAssignment = ({
 
     setLoadingSlots(true);
     try {
-      const suggested = await suggestNextSlot(
-        selectedMissionId,
-        categoryKey,
-        durationParam,
-        excludeAppointmentId
-      );
+      // The slot list already carries the suggested next slot, so one request is enough.
       const pack = await fetchAvailableSlots(
         selectedMissionId,
         categoryKey,
@@ -73,11 +67,10 @@ export const useSlotAssignment = ({
       );
 
       setSlots(pack.availableSlotStarts);
-      if (suggested) setSelectedSlot(suggested);
-      else if (pack.suggestedNextSlotStart) setSelectedSlot(pack.suggestedNextSlotStart);
+      if (pack.suggestedNextSlotStart) setSelectedSlot(pack.suggestedNextSlotStart);
       if (pack.durationMinutes && !duration) setDuration(String(pack.durationMinutes));
     } catch (error: unknown) {
-      showAlert("Slots", getApiErrorMessage(error, "Could not load available time slots."));
+      toast.error("Unable to load time slots", getApiErrorMessage(error, "Could not load available time slots."));
     } finally {
       setLoadingSlots(false);
     }
@@ -85,7 +78,7 @@ export const useSlotAssignment = ({
 
   const submit = useCallback(async () => {
     if (!target || !selectedMissionId || !selectedSlot || !categoryKey) {
-      showAlert("Incomplete", "Choose category and time slot.");
+      toast.error("Choose a category and time slot");
       return;
     }
 
@@ -103,15 +96,9 @@ export const useSlotAssignment = ({
 
       setOpen(false);
       await onAssigned(selectedMissionId);
-      showAlert(
-        "Saved",
-        mode === "assign" ? "Appointment confirmed." : "Appointment rescheduled."
-      );
+      toast.success(mode === "assign" ? "Appointment confirmed" : "Appointment rescheduled");
     } catch (error: unknown) {
-      showAlert(
-        "Could Not Save",
-        getApiErrorMessage(error, "The appointment could not be scheduled.")
-      );
+      toast.error("Unable to schedule appointment", getApiErrorMessage(error, "The appointment could not be scheduled."));
     } finally {
       setSaving(false);
     }

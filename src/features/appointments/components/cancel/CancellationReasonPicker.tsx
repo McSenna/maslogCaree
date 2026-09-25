@@ -2,7 +2,7 @@ import { Text, TextInput, View } from "react-native";
 
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 
-import RadioOption from "./RadioOption";
+import { RadioOption } from "./RadioOption";
 
 export const CANCELLATION_REASONS = [
   "Schedule conflict",

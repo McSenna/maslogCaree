@@ -69,7 +69,8 @@ const BhwQueueScreen = () => {
               canComplete
               busyId={completion.busyId}
               onComplete={completion.openComplete}
-              emptyMessage={`No ${serviceLabel} patients waiting.`}
+              emptyTitle="No residents currently waiting"
+              emptyMessage={`Residents will appear here after entering the ${serviceLabel} queue.`}
             />
 
             <AppointmentsPanel

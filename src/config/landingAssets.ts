@@ -4,8 +4,9 @@ export const landingAssets: {
   barangayBackground: ImageSourcePropType | null;
   brandMark: ImageSourcePropType;
 } = {
-  barangayBackground: require("../../assets/images/maslogbackground.png"),
-  brandMark: require("../../assets/images/maslogicon.png"),
+  // Right-sized copies for in-app use; the full-resolution originals are reserved for app icons.
+  barangayBackground: require("../../assets/images/maslog-background.jpg"),
+  brandMark: require("../../assets/images/maslog-seal.png"),
 };
 
 export const LANDING_COLORS = {

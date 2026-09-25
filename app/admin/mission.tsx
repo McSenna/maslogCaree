@@ -1,12 +1,6 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+import { Redirect } from "expo-router";
 
-export default class mission extends Component {
-  render() {
-    return (
-      <View>
-        <Text>mission</Text>
-      </View>
-    )
-  }
-}
+// Admins don't run mission scheduling; send stray visits back to the dashboard.
+const AdminMission = () => <Redirect href="/admin/dashboard" />;
+
+export default AdminMission;

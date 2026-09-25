@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { showAlert } from "@/utils/notify";
 
 const toDataUri = (asset: ImagePicker.ImagePickerAsset): string | null => {
@@ -27,7 +28,7 @@ export const useProfilePhoto = (onPicked?: () => void) => {
 
       const dataUri = toDataUri(result.assets[0]);
       if (!dataUri) {
-        showAlert("Error", "Could not read image data. Please try a different photo.");
+        toast.error("Couldn't read that photo", "Could not read image data. Please try a different photo.");
         return;
       }
 
@@ -41,7 +42,7 @@ export const useProfilePhoto = (onPicked?: () => void) => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        showAlert(
+        toast.error(
           "Permission needed",
           "Please grant camera roll permissions to upload a profile photo."
         );
@@ -51,7 +52,7 @@ export const useProfilePhoto = (onPicked?: () => void) => {
         await ImagePicker.launchImageLibraryAsync(PICKER_OPTIONS)
       );
     } catch {
-      showAlert("Photo Error", "Failed to pick the image. Please try again.");
+      toast.error("Photo Error", "Failed to pick the image. Please try again.");
     }
   }, [applyResult]);
 
@@ -59,12 +60,12 @@ export const useProfilePhoto = (onPicked?: () => void) => {
     try {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
-        showAlert("Permission needed", "Please grant camera permissions to take a photo.");
+        toast.error("Permission needed", "Please grant camera permissions to take a photo.");
         return;
       }
       applyResult(await ImagePicker.launchCameraAsync(PICKER_OPTIONS));
     } catch {
-      showAlert("Camera Error", "Failed to take the photo. Please try again.");
+      toast.error("Camera Error", "Failed to take the photo. Please try again.");
     }
   }, [applyResult]);
 

@@ -1,9 +1,9 @@
 import { type ReactNode } from "react";
-import { Animated, Keyboard, Modal, Platform, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Animated, Modal, Platform, View } from "react-native";
 
-import { BREAKPOINTS } from "@/constants/breakpoints";
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 
 import SheetHandle from "./bottomSheet/SheetHandle";
@@ -11,10 +11,11 @@ import SheetScrim from "./bottomSheet/SheetScrim";
 import { buildSheetSurfaceStyle } from "./bottomSheet/sheetSurfaceStyle";
 import { useSheetAnimation } from "./bottomSheet/useSheetAnimation";
 import { useSheetPanResponder } from "./bottomSheet/useSheetPanResponder";
-import { useSheetViewport } from "./bottomSheet/useSheetViewport";
+import { useResponsive } from "@/hooks/useResponsive";
 
-const SHEET_MAX_WIDTH = BREAKPOINTS.tablet;
 const MIN_BOTTOM_GAP = 12;
+const DESKTOP_EDGE = 16;
+const DESKTOP_HEIGHT_RATIO = 0.88;
 
 export const SHEET_SCROLL_STYLE = {
   flexGrow: 0,
@@ -54,11 +55,14 @@ const BottomSheet = ({
   applyBottomInset = true,
   onDismissRequest,
 }: BottomSheetProps) => {
-  const { width, height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const isSheet = width < SHEET_MAX_WIDTH;
-  const keyboardInset = useKeyboardInset(visible);
-  const viewport = useSheetViewport(keyboardInset, height);
+  const { height, isMobile } = useResponsive();
+  const isSheet = isMobile;
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: isSheet ? maxHeightRatio : DESKTOP_HEIGHT_RATIO,
+    edgePadding: isSheet ? 0 : DESKTOP_EDGE,
+  });
 
   const { translateY, scrimOpacity, animateOut, requestClose, onSheetLayout } = useSheetAnimation({
     visible,
@@ -73,39 +77,19 @@ const BottomSheet = ({
 
   if (!visible) return null;
 
-  const isKeyboardVisible = keyboardInset > 0 || viewport.systemAlreadyResized;
-  const usableHeight = viewport.availableHeight - viewport.keyboardGap;
-  const ratio = isSheet ? maxHeightRatio : 0.88;
-  const sheetMaxHeight = Math.round(
-    isSheet ? Math.min(usableHeight - insets.top, usableHeight * ratio) : usableHeight * ratio
-  );
-
-  const bottomInset = !isSheet || !applyBottomInset
-    ? 0
-    : isKeyboardVisible
+  const bottomInset =
+    !isSheet || !applyBottomInset || layout.keyboardVisible
       ? 0
-      : Math.max(insets.bottom, MIN_BOTTOM_GAP);
+      : Math.max(layout.bottomInset, MIN_BOTTOM_GAP);
 
-  const handleAndroidBack = () => {
-    if (isKeyboardVisible) {
-      Keyboard.dismiss();
-      return;
-    }
+  const handleAndroidBack = backDismissesKeyboardFirst(layout, () => {
     if (onDismissRequest?.()) return;
     requestClose();
-  };
+  });
 
   return (
     <Modal visible transparent animationType="none" onRequestClose={handleAndroidBack} statusBarTranslucent>
-      <View
-        onLayout={(event) => viewport.onContainerLayout(event.nativeEvent.layout.height)}
-        style={[
-          { flex: 1 },
-          isSheet
-            ? { justifyContent: "flex-end" }
-            : { alignItems: "center", justifyContent: "center", padding: 16 },
-        ]}
-      >
+      <SheetViewport layout={layout} style={isSheet ? null : { paddingHorizontal: DESKTOP_EDGE }}>
         <SheetScrim color={scrim} opacity={isSheet ? scrimOpacity : 1} onPress={requestClose} />
 
         <Animated.View
@@ -117,8 +101,7 @@ const BottomSheet = ({
           style={{
             ...buildSheetSurfaceStyle({
               isSheet,
-              maxHeight: sheetMaxHeight,
-              marginBottom: isSheet ? viewport.keyboardGap : 0,
+              maxHeight: layout.maxHeight,
               desktopWidth,
               surface,
             }),
@@ -138,7 +121,7 @@ const BottomSheet = ({
             <View style={{ height: bottomInset }} />
           )}
         </Animated.View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

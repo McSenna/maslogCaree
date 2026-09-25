@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { AdminUser } from "../services/userService";
 import type { RoleFilter, SortKey, StatusFilter } from "../components/userFilters";
 import { PAGE_SIZE } from "../constants/usersLayout";
@@ -18,9 +18,8 @@ export const useUserFilters = (users: AdminUser[]) => {
 
   const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
 
-  useEffect(() => {
-    setPage((current) => Math.min(current, totalPages));
-  }, [totalPages]);
+  // Keep the page in range when filtering shrinks the result set.
+  if (page > totalPages) setPage(totalPages);
 
   const pageUsers = useMemo(
     () => filteredUsers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),

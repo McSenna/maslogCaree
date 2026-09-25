@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 
 import type {
   InventoryItem,
@@ -22,7 +23,7 @@ export const useAddStockState = (visible: boolean, item: InventoryItem | null) =
   const [storageCondition, setStorageCondition] = useState<StorageCondition>("room-temperature");
   const [remarks, setRemarks] = useState("");
 
-  useEffect(() => {
+  useSyncOnChange([visible, item], () => {
     if (!visible) return;
     setQuantity("");
     setBatchNumber("");
@@ -32,7 +33,7 @@ export const useAddStockState = (visible: boolean, item: InventoryItem | null) =
     setReceivedDate(todayIso());
     setStorageCondition((item?.storageCondition as StorageCondition) || "room-temperature");
     setRemarks("");
-  }, [visible, item]);
+  });
 
   const quantityNumber = Number(quantity);
   const quantityValid =

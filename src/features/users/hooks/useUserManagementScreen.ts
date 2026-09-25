@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useToast } from "@/components/ui/Toast";
+import { notifyToast } from "@/components/feedback/toast/toastStore";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { computeUserMetrics } from "../components/userMetrics";
 import { DENSE_WINDOW_WIDTH, USERS_LAYOUT } from "../constants/usersLayout";
@@ -13,7 +13,7 @@ import { useUserStatusChange } from "./useUserStatusChange";
 
 export const useUserManagementScreen = () => {
   const insets = useRoleScreenInsets();
-  const { toast, showToast, hideToast } = useToast();
+  const showToast = notifyToast;
 
   const [contentWidth, setContentWidth] = useState(insets.width);
   const [tableAreaWidth, setTableAreaWidth] = useState(0);
@@ -53,9 +53,7 @@ export const useUserManagementScreen = () => {
 
   return {
     insets,
-    toast,
     showToast,
-    hideToast,
     section,
     setSection,
     sectionCounts,

@@ -1,18 +1,22 @@
 import type { ReactNode } from "react";
-import { Modal, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Modal, Pressable, ScrollView, View } from "react-native";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { SHEET_KEYBOARD_DISMISS_MODE } from "@/components/ui/sheetLayout/sheetScroll";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 
 import ModalHeader from "./ModalHeader";
+import { useResponsive } from "@/hooks/useResponsive";
 
 export { SectionCard } from "./SectionCard";
 
-export const SHEET_WIDTH = 768;
 
 export const PANEL_TWO_COLUMN_WIDTH = 640;
+
+const DESKTOP_EDGE = 16;
 
 const CompleteModalShell = ({
   visible,
@@ -36,24 +40,31 @@ const CompleteModalShell = ({
   onLayoutWidth?: (width: number) => void;
 }) => {
   const palette = useQueuePalette();
-  const { width, height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  // This form is full of inputs, and KeyboardAvoidingView is inert inside a
-  // statusBarTranslucent modal on Android, so the shell tracks the keyboard.
-  const keyboardInset = useKeyboardInset(visible);
-  const isSheet = width < SHEET_WIDTH;
+  const { isMobile } = useResponsive();
+  const isSheet = isMobile;
+  // This form is full of inputs; the shared layout keeps it above the keyboard
+  // and the sheet below the status bar.
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: isSheet ? 0.94 : 0.9,
+    edgePadding: isSheet ? 0 : DESKTOP_EDGE,
+  });
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType={isSheet ? "slide" : "fade"}
-      onRequestClose={() => dismissible && onRequestClose()}
+      onRequestClose={backDismissesKeyboardFirst(layout, () => dismissible && onRequestClose())}
       statusBarTranslucent
     >
-      <View
-        className={`flex-1 ${isSheet ? "justify-end" : "items-center justify-center p-4"}`}
-        style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
+      <SheetViewport
+        layout={layout}
+        style={{
+          backgroundColor: "rgba(15,37,87,0.35)",
+          paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
+        }}
       >
         <Pressable
           accessibilityRole="button"
@@ -67,10 +78,7 @@ const CompleteModalShell = ({
           onLayout={(event) => onLayoutWidth?.(event.nativeEvent.layout.width)}
           style={{
             maxWidth: isSheet ? undefined : 920,
-            maxHeight: isSheet
-              ? Math.round((height - keyboardInset - insets.top) * 0.94)
-              : Math.round(height * 0.9),
-            marginBottom: isSheet ? keyboardInset : 0,
+            maxHeight: layout.maxHeight,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             borderBottomLeftRadius: isSheet ? 0 : 24,
@@ -97,7 +105,7 @@ const CompleteModalShell = ({
             style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
+            keyboardDismissMode={SHEET_KEYBOARD_DISMISS_MODE}
             contentContainerStyle={{ padding: 16, paddingBottom: 24, gap: 14 }}
           >
             {children}
@@ -110,15 +118,14 @@ const CompleteModalShell = ({
                 backgroundColor: palette.panelBg,
                 borderTopWidth: 1,
                 borderTopColor: palette.divider,
-                paddingBottom:
-                  14 + (isSheet && keyboardInset === 0 ? Math.max(insets.bottom, 0) : 0),
+                paddingBottom: 14 + (isSheet ? layout.bottomInset : 0),
               }}
             >
               {footer}
             </View>
           ) : null}
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

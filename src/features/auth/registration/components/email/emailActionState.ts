@@ -14,7 +14,6 @@ type Input = {
   isVerified: boolean;
   isSending: boolean;
   codeSent: boolean;
-  cooldown: number;
   emailLooksValid: boolean;
 };
 
@@ -22,7 +21,6 @@ export const resolveEmailAction = ({
   isVerified,
   isSending,
   codeSent,
-  cooldown,
   emailLooksValid,
 }: Input): EmailActionState => {
   if (isVerified) {
@@ -35,30 +33,23 @@ export const resolveEmailAction = ({
     };
   }
 
+  // Once a code is out, this reopens the code dialog (resending lives in the dialog).
+  if (codeSent) {
+    return {
+      label: "Enter code",
+      tone: "active",
+      disabled: false,
+      icon: "hash",
+      accessibilityLabel: "Enter verification code",
+    };
+  }
+
   if (isSending) {
     return {
-      label: codeSent ? "Resending" : "Sending",
+      label: "Sending",
       tone: "busy",
       disabled: true,
       accessibilityLabel: "Sending verification code",
-    };
-  }
-
-  if (codeSent && cooldown > 0) {
-    return {
-      label: `Resend in ${cooldown}s`,
-      tone: "idle",
-      disabled: true,
-      accessibilityLabel: `Resend available in ${cooldown} seconds`,
-    };
-  }
-
-  if (codeSent) {
-    return {
-      label: "Resend code",
-      tone: "active",
-      disabled: false,
-      accessibilityLabel: "Resend verification code",
     };
   }
 

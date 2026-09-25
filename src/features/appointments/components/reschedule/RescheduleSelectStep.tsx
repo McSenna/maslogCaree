@@ -6,8 +6,8 @@ import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { AppointmentRecord, RescheduleOptionSchedule } from "@/types/appointments.types";
 
 import { appointmentServiceLabel, appointmentWhen } from "../../appointmentPresenter";
-import RescheduleDateList from "./RescheduleDateList";
-import RescheduleTimeGrid from "./RescheduleTimeGrid";
+import { RescheduleDateList } from "./RescheduleDateList";
+import { RescheduleTimeGrid } from "./RescheduleTimeGrid";
 
 type Props = {
   palette: ResidentDialogPalette;

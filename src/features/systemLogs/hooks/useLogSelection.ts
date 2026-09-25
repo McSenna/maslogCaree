@@ -1,23 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 import type { SystemLog } from "../services/systemLogService";
 
 export const useLogSelection = (logs: SystemLog[], isDesktop: boolean, filterKey: string) => {
   const [selectedLog, setSelectedLog] = useState<SystemLog | null>(null);
   const [sheetVisible, setSheetVisible] = useState(false);
-  const hasAutoSelectedRef = useRef(false);
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
-  useEffect(() => {
-    if (!isDesktop) return;
-    if (hasAutoSelectedRef.current) return;
-    if (logs.length > 0) {
-      setSelectedLog(logs[0]);
-      hasAutoSelectedRef.current = true;
-    }
-  }, [isDesktop, logs]);
+  // On desktop, preselect the first log once per filter so the detail panel isn't empty.
+  useSyncOnChange([isDesktop, logs], () => {
+    if (!isDesktop || hasAutoSelected || logs.length === 0) return;
+    setSelectedLog(logs[0]);
+    setHasAutoSelected(true);
+  });
 
-  useEffect(() => {
-    hasAutoSelectedRef.current = false;
-  }, [filterKey]);
+  useSyncOnChange([filterKey], () => setHasAutoSelected(false));
 
   const selectLog = useCallback(
     (log: SystemLog) => {

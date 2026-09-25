@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
-import ResidentMedicalDetailsDialog from "@/features/medical-records/components/ResidentMedicalDetailsDialog";
+import { ResidentMedicalDetailsDialog } from "@/features/medical-records/components/ResidentMedicalDetailsDialog";
 import MedicalRecordCard from "@/components/medicalRecord/history/MedicalRecordCard";
 import MedicalRecordEmptyState from "@/components/medicalRecord/history/MedicalRecordEmptyState";
 import MedicalRecordFilters, {

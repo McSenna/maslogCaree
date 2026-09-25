@@ -1,8 +1,9 @@
-import { Feather } from "@expo/vector-icons";
 import { ScrollView, Text, View } from "react-native";
 import { useMemo } from "react";
+import { useRouter } from "expo-router";
 
-import InfoCard from "@/components/ui/InfoCard";
+import EmptyState from "@/components/feedback/EmptyState";
+import ErrorState from "@/components/feedback/ErrorState";
 import { Skeleton, StatCardSkeleton } from "@/components/ui/Skeleton";
 import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -14,13 +15,14 @@ import MedicalRecordsLink from "@/features/resident/records/MedicalRecordsLink";
 import RecordCard from "@/features/resident/records/RecordCard";
 import StatCard from "@/features/resident/records/StatCard";
 import { formatWhen } from "@/features/resident/records/recordPresentation";
-import ResidentMedicalDetailsDialog from "@/features/medical-records/components/ResidentMedicalDetailsDialog";
+import { ResidentMedicalDetailsDialog } from "@/features/medical-records/components/ResidentMedicalDetailsDialog";
 import { medicalRecordIdOf } from "@/features/appointments/appointmentPresenter";
 import type { AppointmentRecord } from "@/types/appointments.types";
 
 const ResidentRecords = () => {
   const { classes } = useTheme();
-  const { appointments, loading, error } = useResidentAppointments();
+  const router = useRouter();
+  const { appointments, loading, error, refresh } = useResidentAppointments();
   const recordViewer = useMedicalRecordViewer();
 
   const sorted = useMemo(() => {
@@ -64,16 +66,14 @@ const ResidentRecords = () => {
               <Skeleton className="h-24 w-full rounded-2xl" />
               <Skeleton className="h-24 w-full rounded-2xl" />
             </View>
-          ) : error ? (
-            <View className="flex-row items-start gap-3 rounded-2xl border border-rose-100 bg-rose-50 p-4">
-              <Feather name="alert-circle" size={18} color="#E11D48" />
-              <Text className="flex-1 text-sm leading-5 text-rose-700">{error}</Text>
-            </View>
+          ) : error && sorted.length === 0 ? (
+            <ErrorState title="Unable to load your records" message={error} onRetry={() => void refresh()} />
           ) : sorted.length === 0 ? (
-            <InfoCard
+            <EmptyState
+              icon="file-text"
               title="No records yet"
-              description="When you book appointments, they will show up here as your health timeline."
-              icon={<Feather name="file-text" size={18} color="#2D5BFF" />}
+              description="Your appointments and what your health worker recorded will build your health timeline here."
+              action={{ label: "Book appointment", onPress: () => router.push("/resident/appointments") }}
             />
           ) : (
             <View className="gap-5">

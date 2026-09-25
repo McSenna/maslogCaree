@@ -7,11 +7,7 @@ export const supportCategoryLabel = (categoryId: SupportCategoryId | ""): string
 export const supportStatusLabel = (status: SupportStatus): string =>
   SUPPORT_STATUS_LABELS[status] ?? "Open";
 
-export const formatFileSize = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-};
+export { formatFileSize } from "@/utils/fileSize";
 
 export const fileExtensionOf = (fileName: string): string =>
   fileName.includes(".") ? fileName.split(".").pop()!.toLowerCase() : "";

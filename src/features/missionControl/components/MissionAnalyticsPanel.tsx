@@ -1,24 +1,32 @@
 import { Text, View } from "react-native";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 import type { CategoryAnalyticsRow } from "../hooks/useMissionCatalogue";
+import WorkspacePanel from "./WorkspacePanel";
 
 type MissionAnalyticsPanelProps = {
   rows: CategoryAnalyticsRow[];
 };
 
 const MissionAnalyticsPanel = ({ rows }: MissionAnalyticsPanelProps) => {
+  const colors = useThemeColors();
+
   return (
-    <View className="rounded-2xl border border-slate-200 bg-white p-4">
-      <Text className="text-lg font-semibold text-slate-900">Analytics (this mission)</Text>
+    <WorkspacePanel title="This mission at a glance">
       {rows.map((row) => (
-        <Text
+        <View
           key={`${row._id.category}-${row._id.status}`}
-          className="mt-1 text-sm text-slate-700"
+          style={{ flexDirection: "row", alignItems: "center", gap: SPACING.sm }}
         >
-          {row._id.category} · {row._id.status}: {row.count}
-        </Text>
+          <Text style={[TYPE.body, { flex: 1, minWidth: 0, color: colors.body }]}>{row._id.category}</Text>
+          <AppointmentStatusBadge status={row._id.status} />
+          <Text style={[TYPE.bodyStrong, { minWidth: 28, textAlign: "right", color: colors.heading }]}>{row.count}</Text>
+        </View>
       ))}
-    </View>
+    </WorkspacePanel>
   );
-}
+};
 
 export default MissionAnalyticsPanel;

@@ -3,11 +3,10 @@ import { plural, progressCaption } from "./dashboardConfigTypes";
 
 export const DOCTOR: RoleDashboardConfig = {
   role: "doctor",
-  badge: "Doctor",
-  tagline: "Here's your clinical overview for today.",
   metrics: [
     {
       key: "today",
+      route: "mission",
       label: "Today's Patients",
       icon: "users",
       tone: "blue",
@@ -16,6 +15,7 @@ export const DOCTOR: RoleDashboardConfig = {
     },
     {
       key: "waiting",
+      route: "mission",
       label: "Waiting in Queue",
       icon: "clock",
       tone: "pink",
@@ -25,6 +25,7 @@ export const DOCTOR: RoleDashboardConfig = {
     },
     {
       key: "completed",
+      route: "mission",
       label: "Completed Today",
       icon: "check-circle",
       tone: "green",
@@ -33,6 +34,7 @@ export const DOCTOR: RoleDashboardConfig = {
     },
     {
       key: "upcoming",
+      route: "mission",
       label: "Upcoming",
       icon: "calendar",
       tone: "purple",

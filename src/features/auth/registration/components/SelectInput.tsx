@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Feather } from "@expo/vector-icons";
-import { useWindowDimensions } from "react-native";
 import FieldShell from "./FieldShell";
 import SelectOptionsSheet from "./selectInput/SelectOptionsSheet";
 import SelectTrigger from "./selectInput/SelectTrigger";
+import { useResponsive } from "@/hooks/useResponsive";
 
 type SelectInputProps<T extends string> = {
   label: string;
@@ -19,7 +19,6 @@ type SelectInputProps<T extends string> = {
   height: number;
 };
 
-const SHEET_BREAKPOINT = 768;
 
 const SelectInput = <T extends string>({
   label,
@@ -35,8 +34,8 @@ const SelectInput = <T extends string>({
   height,
 }: SelectInputProps<T>) => {
   const [open, setOpen] = useState(false);
-  const { width } = useWindowDimensions();
-  const isSheet = width < SHEET_BREAKPOINT;
+  const { isMobile } = useResponsive();
+  const isSheet = isMobile;
 
   const selected = options.find((option) => option.value === value);
 

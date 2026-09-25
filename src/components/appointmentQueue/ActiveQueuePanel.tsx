@@ -2,6 +2,8 @@ import { Text, View } from "react-native";
 
 import type { AppointmentRecord } from "@/services/appointments";
 
+import AnimatedListItem from "@/components/animations/AnimatedListItem";
+
 import QueuePanel from "./QueuePanel";
 import { QUEUE_RADIUS, useQueuePalette } from "./queueTheme";
 import QueueRow from "./activeQueue/QueueRow";
@@ -18,6 +20,7 @@ const ActiveQueuePanel = ({
   onComplete,
   onView,
   emptyMessage,
+  emptyTitle = "No one is waiting",
 }: {
   appointments: AppointmentRecord[];
   serviceLabels: Record<string, string>;
@@ -29,6 +32,7 @@ const ActiveQueuePanel = ({
   onComplete: (appointment: AppointmentRecord) => void;
   onView?: (appointment: AppointmentRecord) => void;
   emptyMessage: string;
+  emptyTitle?: string;
 }) => {
   const palette = useQueuePalette();
 
@@ -46,26 +50,27 @@ const ActiveQueuePanel = ({
   return (
     <QueuePanel icon="users" title="Active Queue" trailing={trailing} bodyPadding={false}>
       {loading ? (
-        <QueueLoadingState palette={palette} />
+        <QueueLoadingState />
       ) : error ? (
-        <QueueErrorState palette={palette} error={error} onRetry={onRetry} />
+        <QueueErrorState error={error} onRetry={onRetry} />
       ) : appointments.length === 0 ? (
-        <QueueEmptyState palette={palette} message={emptyMessage} />
+        <QueueEmptyState title={emptyTitle} message={emptyMessage} />
       ) : (
         <View className="w-full">
           {appointments.map((appointment, i) => (
-            <QueueRow
-              key={appointment._id}
-              appointment={appointment}
-              index={i + 1}
-              serviceLabel={serviceLabels[appointment.consultationType] ?? appointment.consultationType}
-              isLast={i === appointments.length - 1}
-              canComplete={canComplete}
-              busy={busyId === appointment._id}
-              onComplete={onComplete}
-              onView={onView}
-              palette={palette}
-            />
+            <AnimatedListItem key={appointment._id} index={i}>
+              <QueueRow
+                appointment={appointment}
+                index={i + 1}
+                serviceLabel={serviceLabels[appointment.consultationType] ?? appointment.consultationType}
+                isLast={i === appointments.length - 1}
+                canComplete={canComplete}
+                busy={busyId === appointment._id}
+                onComplete={onComplete}
+                onView={onView}
+                palette={palette}
+              />
+            </AnimatedListItem>
           ))}
         </View>
       )}

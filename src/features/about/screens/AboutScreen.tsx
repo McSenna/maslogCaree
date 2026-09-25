@@ -1,5 +1,4 @@
-import { ScrollView, useWindowDimensions } from "react-native";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { ScrollView } from "react-native";
 import { useOrganizations } from "@/hooks/useOrganizations";
 import AboutHero from "../components/AboutHero";
 import AboutSecurityNote from "../components/AboutSecurityNote";
@@ -7,13 +6,13 @@ import CommunitySection from "../components/CommunitySection";
 import HealthcareTeamSection from "../components/HealthcareTeamSection";
 import MissionSection from "../components/MissionSection";
 import { HC } from "../constants/aboutTheme";
+import { useResponsive } from "@/hooks/useResponsive";
 
 const AboutScreen = () => {
-  const { width } = useWindowDimensions();
-  const isTablet = width >= BREAKPOINTS.tablet;
-  const isDesktop = width >= BREAKPOINTS.desktop;
+  const { isMobile, isDesktop } = useResponsive();
+  const isTablet = !isMobile;
 
-  const { orgMembers, loading, error } = useOrganizations();
+  const { orgMembers, loading, error, retry } = useOrganizations();
 
   return (
     <ScrollView
@@ -33,6 +32,7 @@ const AboutScreen = () => {
         members={orgMembers}
         loading={loading}
         error={error}
+        onRetry={retry}
         isTablet={isTablet}
       />
       <AboutSecurityNote isTablet={isTablet} />

@@ -6,10 +6,12 @@ import SidebarBranding from "./sidebar/SidebarBranding";
 import SidebarDecorations from "./sidebar/SidebarDecorations";
 import SidebarHeader from "./sidebar/SidebarHeader";
 import SidebarNavItem from "./sidebar/SidebarNavItem";
-import { SIDEBAR_METRICS, SIDEBAR_WIDTH, useSidebarPalette } from "./sidebar/sidebarTheme";
+import { SIDEBAR_METRICS, getSidebarWidth, useSidebarPalette } from "./sidebar/sidebarTheme";
+import { useResponsive } from "@/hooks/useResponsive";
 
 export type NavItem = {
   label: string;
+  shortLabel?: string;
   href: string;
   icon: keyof typeof Feather.glyphMap;
 };
@@ -27,6 +29,8 @@ const isCurrentRoute = (pathname: string, href: string): boolean => {
 };
 
 const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
+  const { breakpoint, isTablet } = useResponsive();
+  const sidebarWidth = getSidebarWidth(breakpoint);
   const pathname = usePathname();
   const palette = useSidebarPalette();
 
@@ -34,7 +38,7 @@ const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
     <View
       className="h-full shrink-0 overflow-hidden border-r"
       style={{
-        width: SIDEBAR_WIDTH,
+        width: sidebarWidth,
         backgroundColor: palette.surface,
         borderRightColor: palette.border,
       }}
@@ -44,7 +48,7 @@ const SidebarNavigation = ({ items, roleLabel }: SidebarNavigationProps) => {
       <View
         className="flex-1"
         style={{
-          paddingHorizontal: SIDEBAR_METRICS.paddingX,
+          paddingHorizontal: isTablet ? 12 : SIDEBAR_METRICS.paddingX,
           paddingTop: 24,
           paddingBottom: 34,
         }}

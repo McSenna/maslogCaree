@@ -1,12 +1,14 @@
 import type { ReactNode } from "react";
-import { Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 
 import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleTheme";
+import { useResponsive } from "@/hooks/useResponsive";
 
 type MissionScheduleSheetProps = {
   visible: boolean;
@@ -17,9 +19,9 @@ type MissionScheduleSheetProps = {
   footer: ReactNode;
 };
 
-export const MISSION_SHEET_BREAKPOINT = 768;
 
 const DESKTOP_WIDTH = 720;
+const DESKTOP_EDGE = 20;
 
 const MissionScheduleSheet = ({
   visible,
@@ -30,22 +32,29 @@ const MissionScheduleSheet = ({
   footer,
 }: MissionScheduleSheetProps) => {
   const palette = useMissionSchedulePalette();
-  const { width, height } = useWindowDimensions();
-  const safeArea = useSafeAreaInsets();
-  const isSheet = width < MISSION_SHEET_BREAKPOINT;
-  const keyboardInset = useKeyboardInset(visible);
+  const { isMobile } = useResponsive();
+  const isSheet = isMobile;
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: isSheet ? 0.94 : 0.88,
+    edgePadding: isSheet ? 0 : DESKTOP_EDGE,
+  });
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType={isSheet ? "slide" : "fade"}
-      onRequestClose={onClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <View
-        className={`flex-1 ${isSheet ? "justify-end" : "items-center justify-center p-5"}`}
-        style={{ backgroundColor: palette.backdrop }}
+      <SheetViewport
+        layout={layout}
+        style={{
+          backgroundColor: palette.backdrop,
+          paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
+        }}
       >
         <Pressable
           accessibilityRole="button"
@@ -58,10 +67,7 @@ const MissionScheduleSheet = ({
           className="w-full overflow-hidden"
           style={{
             maxWidth: isSheet ? undefined : DESKTOP_WIDTH,
-            maxHeight: isSheet
-              ? Math.round((height - keyboardInset - safeArea.top) * 0.94)
-              : Math.round(height * 0.88),
-            marginBottom: isSheet ? keyboardInset : 0,
+            maxHeight: layout.maxHeight,
             borderTopLeftRadius: MISSION_RADIUS.sheet,
             borderTopRightRadius: MISSION_RADIUS.sheet,
             borderBottomLeftRadius: isSheet ? 0 : MISSION_RADIUS.sheet,
@@ -122,13 +128,13 @@ const MissionScheduleSheet = ({
               borderTopWidth: 1,
               borderTopColor: palette.divider,
               backgroundColor: palette.surface,
-              paddingBottom: 14 + (isSheet && keyboardInset === 0 ? safeArea.bottom : 0),
+              paddingBottom: 14 + (isSheet ? layout.bottomInset : 0),
             }}
           >
             {footer}
           </View>
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

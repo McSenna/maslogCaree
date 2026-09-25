@@ -1,16 +1,19 @@
 import type { Feather } from "@expo/vector-icons";
 import type { ReactNode } from "react";
-import { Modal, Pressable, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Modal, Pressable, View } from "react-native";
 
-import { BREAKPOINTS } from "@/constants/breakpoints";
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 
 import { useInventoryPalette } from "./inventoryTheme";
 import InventoryModalBody from "./formModal/InventoryModalBody";
 import InventoryModalFooter from "./formModal/InventoryModalFooter";
 import InventoryModalHeader from "./formModal/InventoryModalHeader";
 import { inventoryModalSurface } from "./formModal/inventoryModalSurface";
+import { useResponsive } from "@/hooks/useResponsive";
+
+const DESKTOP_EDGE = 16;
 
 type InventoryFormModalProps = {
   visible: boolean;
@@ -40,26 +43,28 @@ const InventoryFormModal = ({
   children,
 }: InventoryFormModalProps) => {
   const palette = useInventoryPalette();
-  const { height, width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const keyboardInset = useKeyboardInset(visible);
-
-  const isMobile = width < BREAKPOINTS.tablet;
-  // The form fields need the keyboard accounted for in the sheet's own height:
-  // KeyboardAvoidingView cannot do it inside a statusBarTranslucent modal.
-  const availableHeight = isMobile ? height - keyboardInset - insets.top : height;
+  const { isMobile } = useResponsive();
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isMobile ? "sheet" : "centered",
+    maxHeightRatio: isMobile ? 0.92 : 0.88,
+    edgePadding: isMobile ? 0 : DESKTOP_EDGE,
+  });
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType={isMobile ? "slide" : "fade"}
-      onRequestClose={onClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <View
-        className={`flex-1 ${isMobile ? "justify-end" : "items-center justify-center p-4"}`}
-        style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
+      <SheetViewport
+        layout={layout}
+        style={{
+          backgroundColor: "rgba(15,37,87,0.35)",
+          paddingHorizontal: isMobile ? 0 : DESKTOP_EDGE,
+        }}
       >
         <Pressable
           accessibilityRole="button"
@@ -70,15 +75,12 @@ const InventoryFormModal = ({
 
         <View
           className={`w-full overflow-hidden ${isMobile ? "" : "border"}`}
-          style={[
-            inventoryModalSurface({
-              isMobile,
-              height: availableHeight,
-              cardBg: palette.cardBg,
-              cardBorder: palette.cardBorder,
-            }),
-            isMobile ? { marginBottom: keyboardInset } : null,
-          ]}
+          style={inventoryModalSurface({
+            isMobile,
+            maxHeight: layout.maxHeight,
+            cardBg: palette.cardBg,
+            cardBorder: palette.cardBorder,
+          })}
         >
           {isMobile ? (
             <View className="items-center pb-1 pt-2.5">
@@ -116,7 +118,7 @@ const InventoryFormModal = ({
             onClose={onClose}
           />
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

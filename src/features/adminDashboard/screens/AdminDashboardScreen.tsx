@@ -4,8 +4,8 @@ import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import {
   AdminDashboardSkeleton,
+  DashboardDate,
   DashboardErrorState,
-  DashboardIntro,
 } from "@/components/dashboard/admin";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
@@ -63,7 +63,7 @@ const AdminDashboardScreen = () => {
           onLayout={layout.measure}
         >
           <View className={isMobile ? "gap-4" : "gap-5"}>
-            <DashboardIntro palette={palette} compact={isMobile} />
+            {!isMobile ? <DashboardDate palette={palette} /> : null}
 
             {error && data ? (
               <DashboardErrorState palette={palette} onRetry={reload} variant="banner" />
@@ -75,6 +75,7 @@ const AdminDashboardScreen = () => {
                 compact={isMobile}
                 metricColumns={layout.metricColumns}
                 panelColumns={layout.panelColumns}
+                analyticsSideBySide={layout.analyticsSideBySide}
                 gap={layout.gap}
               />
             ) : null}
@@ -94,7 +95,7 @@ const AdminDashboardScreen = () => {
               />
             ) : null}
           </View>
-        </View> 
+        </View>
       </ScrollView>
     </View>
   );

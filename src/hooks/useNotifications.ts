@@ -107,6 +107,7 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
   }, [user]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void load(true);
   }, [load]);
 

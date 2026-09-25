@@ -38,7 +38,7 @@ const LineChartHitAreas = ({
             top: 0,
             width: Math.max(24, step),
             height: axisY,
-            ...Platform.select({ web: { cursor: "pointer" } as any }),
+            ...Platform.select({ web: { cursor: "pointer" } }),
           }}
         />
       ))}

@@ -80,7 +80,7 @@ export type AppointmentRecord = {
   processingAt?: string | null;
   completedAt?: string | null;
   completedBy?: { _id?: string; fullname?: string; role?: string } | null;
-  medicalRecord?: string | { _id: string; [key: string]: any } | null;
+  medicalRecord?: string | { _id: string; [key: string]: unknown } | null;
   statusHistory?: {
     status: AppointmentRecord["status"];
     timestamp: string;

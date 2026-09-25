@@ -1,8 +1,9 @@
-import { Feather } from "@expo/vector-icons";
-import { Text, View } from "react-native";
 import SimpleLineChart from "@/components/ui/charts/SimpleLineChart";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { expandMonth } from "@/features/adminDashboard/utils/dashboardAnalytics";
 import type { TrendPoint } from "@/services/adminDashboardService";
+import AnalyticsSummary, { type SummaryDelta } from "./analytics/AnalyticsSummary";
+import HighlightStat from "./analytics/HighlightStat";
 import EmptyPanelState from "./EmptyPanelState";
 import PanelCard from "./PanelCard";
 
@@ -13,6 +14,23 @@ type RegistrationTrendPanelProps = {
   fill?: boolean;
 };
 
+const registrations = (count: number) => `${count.toLocaleString()} ${count === 1 ? "registration" : "registrations"}`;
+
+const monthOverMonth = (trend: TrendPoint[]): SummaryDelta | null => {
+  if (trend.length < 2) return null;
+  const delta = trend[trend.length - 1].count - trend[trend.length - 2].count;
+  const direction = delta > 0 ? "up" : delta < 0 ? "down" : "flat";
+  return {
+    direction,
+    value: `${delta > 0 ? "+" : ""}${delta}`,
+    comparison: "vs last month",
+    accessibilityLabel:
+      delta === 0
+        ? "Same as last month"
+        : `${Math.abs(delta)} ${delta > 0 ? "more" : "fewer"} than last month`,
+  };
+};
+
 const RegistrationTrendPanel = ({
   palette,
   trend,
@@ -20,30 +38,7 @@ const RegistrationTrendPanel = ({
   fill = false,
 }: RegistrationTrendPanelProps) => {
   const total = trend.reduce((sum, point) => sum + point.count, 0);
-  const latest = trend.length > 0 ? trend[trend.length - 1].count : 0;
-  const previous = trend.length > 1 ? trend[trend.length - 2].count : 0;
-  const delta = latest - previous;
-  const isUp = delta >= 0;
-  const deltaColor = isUp ? palette.positive : palette.negative;
-
-  const trendBadge =
-    trend.length > 1 ? (
-      <View
-        className="flex-row items-center gap-1 rounded-full px-2.5 py-1"
-        style={{ backgroundColor: palette.bannerBg }}
-      >
-        <Feather name={isUp ? "trending-up" : "trending-down"} size={12} color={deltaColor} />
-        <Text className="text-[12px] font-semibold" style={{ color: deltaColor }}>
-          {isUp ? "+" : ""}
-          {delta}
-        </Text>
-        {!compact ? (
-          <Text className="text-[12px] font-medium" style={{ color: palette.muted }}>
-            vs last month
-          </Text>
-        ) : null}
-      </View>
-    ) : null;
+  const latest = trend.length > 0 ? trend[trend.length - 1] : null;
 
   return (
     <PanelCard
@@ -51,20 +46,32 @@ const RegistrationTrendPanel = ({
       title="User Registrations"
       icon="user-plus"
       subtitle="New accounts · last 6 months"
-      headerRight={trendBadge}
       fill={fill}
     >
-      <View className="mb-4">
-        <Text className="text-[28px] font-bold" style={{ color: palette.heading, lineHeight: 34 }}>
-          {total.toLocaleString()}
-        </Text>
-      </View>
+      <AnalyticsSummary
+        palette={palette}
+        value={total.toLocaleString()}
+        accessibilityLabel={`${total} new accounts in the last 6 months`}
+        delta={monthOverMonth(trend)}
+        aside={
+          latest ? (
+            <HighlightStat
+              palette={palette}
+              tone="blue"
+              icon="calendar-month-outline"
+              label="Latest month"
+              value={expandMonth(latest.label)}
+              meta={`${latest.count.toLocaleString()} new ${latest.count === 1 ? "account" : "accounts"}`}
+            />
+          ) : null
+        }
+      />
 
-      {trend.length === 0 ? (
+      {total === 0 ? (
         <EmptyPanelState
           palette={palette}
           icon="user-plus"
-          message="No registrations recorded yet."
+          message="No registrations in the last 6 months."
         />
       ) : (
         <SimpleLineChart
@@ -72,14 +79,14 @@ const RegistrationTrendPanel = ({
           series={[
             { values: trend.map((point) => point.count), color: palette.primary, showArea: true },
           ]}
-          height={compact ? 180 : 210}
+          height={compact ? 176 : 196}
           showLegend={false}
+          gridDashed
+          tickColor={palette.muted}
+          emphasizeLatest
           formatTooltip={(index) => {
             const point = trend[index];
-            return {
-              title: point.label,
-              meta: `${point.count} ${point.count === 1 ? "registration" : "registrations"}`,
-            };
+            return { title: expandMonth(point.label), meta: registrations(point.count) };
           }}
         />
       )}

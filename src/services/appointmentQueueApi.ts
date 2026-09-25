@@ -7,46 +7,46 @@ import type {
   ServiceProvider,
 } from "@/types/appointments.types";
 
-export async function fetchConsultationCategories(): Promise<ConsultationCategory[]> {
+export const fetchConsultationCategories = async (): Promise<ConsultationCategory[]> => {
   const { data } = await api.get<{ success: boolean; categories: ConsultationCategory[] }>(
     "/consultation-categories"
   );
   return data.categories ?? [];
-}
+};
 
-export async function fetchServiceProviders(serviceType: string): Promise<ServiceProvider[]> {
+export const fetchServiceProviders = async (serviceType: string): Promise<ServiceProvider[]> => {
   const { data } = await api.get<{ success: boolean; providers: ServiceProvider[] }>(
     "/appointment-providers",
     { params: { serviceType } }
   );
   return data.providers ?? [];
-}
+};
 
-export async function createResidentAppointment(body: {
+export const createResidentAppointment = async (body: {
   consultationType: string;
   description: string;
   additionalNotes?: string;
   preferredProvider?: string | null;
   isUrgent?: boolean;
-}): Promise<{ message?: string; appointment: AppointmentRecord }> {
+}): Promise<{ message?: string; appointment: AppointmentRecord }> => {
   const { data } = await api.post<{
     success: boolean;
     message?: string;
     appointment: AppointmentRecord;
   }>("/appointments", body);
   return data;
-}
+};
 
-export async function fetchMyAppointments(): Promise<AppointmentRecord[]> {
+export const fetchMyAppointments = async (): Promise<AppointmentRecord[]> => {
   const { data } = await api.get<{ success: boolean; appointments: AppointmentRecord[] }>(
     "/appointments/me"
   );
   return data.appointments ?? [];
-}
+};
 
-export async function fetchQueueOverview(
+export const fetchQueueOverview = async (
   options?: { categoryKey?: string }
-): Promise<QueueOverview> {
+): Promise<QueueOverview> => {
   const { data } = await api.get<{ success: boolean } & QueueOverview>(
     "/appointments/overview",
     { params: options?.categoryKey ? { categoryKey: options.categoryKey } : undefined }
@@ -58,12 +58,12 @@ export async function fetchQueueOverview(
     schedule: data.schedule ?? [],
     breakdown: data.breakdown ?? [],
   };
-}
+};
 
-export async function fetchAppointmentsByStatus(
+export const fetchAppointmentsByStatus = async (
   status: AppointmentRecord["status"],
   options?: { categoryKey?: string }
-): Promise<AppointmentRecord[]> {
+): Promise<AppointmentRecord[]> => {
   const { data } = await api.get<{ success: boolean; appointments: AppointmentRecord[] }>(
     "/appointments",
     {
@@ -73,11 +73,11 @@ export async function fetchAppointmentsByStatus(
     }
   );
   return data.appointments ?? [];
-}
+};
 
-export async function fetchPendingAppointments(): Promise<AppointmentRecord[]> {
+export const fetchPendingAppointments = async (): Promise<AppointmentRecord[]> => {
   const { data } = await api.get<{ success: boolean; appointments: AppointmentRecord[] }>(
     "/appointments/pending"
   );
   return data.appointments ?? [];
-}
+};

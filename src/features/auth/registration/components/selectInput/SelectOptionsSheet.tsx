@@ -1,8 +1,10 @@
 import { Feather } from "@expo/vector-icons";
-import { Modal, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Modal, Pressable, ScrollView, Text, View } from "react-native";
 
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 
 import { REG_COLORS, REG_RADIUS } from "../../registrationTheme";
 
@@ -23,25 +25,24 @@ const SelectOptionsSheet = <T extends string>({
   onSelect: (value: T) => void;
   onClose: () => void;
 }) => {
-  const insets = useSafeAreaInsets();
-  const { height } = useWindowDimensions();
+  const layout = useSheetLayout({
+    enabled: open,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: 0.7,
+    edgePadding: isSheet ? 0 : 24,
+  });
 
   return (
     <Modal
       visible={open}
       transparent
       animationType={isSheet ? "slide" : "fade"}
-      onRequestClose={onClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: REG_COLORS.overlay,
-          justifyContent: isSheet ? "flex-end" : "center",
-          alignItems: "center",
-          padding: isSheet ? 0 : 24,
-        }}
+      <SheetViewport
+        layout={layout}
+        style={{ backgroundColor: REG_COLORS.overlay, paddingHorizontal: isSheet ? 0 : 24 }}
       >
         {/*
           The backdrop is its own layer behind the sheet. While the sheet sat
@@ -60,7 +61,7 @@ const SelectOptionsSheet = <T extends string>({
           style={{
             width: "100%",
             maxWidth: isSheet ? undefined : 380,
-            maxHeight: Math.round(height * 0.7),
+            maxHeight: layout.maxHeight,
             backgroundColor: REG_COLORS.surface,
             borderTopLeftRadius: REG_RADIUS.sheet,
             borderTopRightRadius: REG_RADIUS.sheet,
@@ -88,7 +89,7 @@ const SelectOptionsSheet = <T extends string>({
             style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
-              paddingBottom: isSheet ? Math.max(insets.bottom, 12) + 8 : 10,
+              paddingBottom: isSheet ? Math.max(layout.bottomInset, 12) + 8 : 10,
             }}
           >
             {options.map((option) => {
@@ -122,7 +123,7 @@ const SelectOptionsSheet = <T extends string>({
             })}
           </ScrollView>
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

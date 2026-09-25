@@ -1,5 +1,6 @@
 import { ActivityIndicator, Text, View } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
+import InlineAlert from "@/components/feedback/InlineAlert";
 import AuthDivider from "@/components/landing/AuthDivider";
 import AuthField from "@/components/landing/AuthField";
 import AuthHeader from "@/components/landing/AuthHeader";
@@ -83,6 +84,7 @@ const AuthCard = ({
           onSubmitEditing={() => void form.submit()}
           error={form.passwordError}
         />
+        {form.formError ? <InlineAlert title={form.formError.title} message={form.formError.message} /> : null}
       </View>
 
       <AuthActionButton

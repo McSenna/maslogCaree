@@ -8,7 +8,7 @@ import IdImagePreview from "./IdImagePreview";
 import IdPdfPreview from "./IdPdfPreview";
 import IdPreviewActions from "./IdPreviewActions";
 import IdUploadDropzone from "./IdUploadDropzone";
-import IdZoomModal from "./IdZoomModal";
+import ImageZoomModal from "@/components/ui/ImageZoomModal";
 import { formatFileSize, isPdfDocument } from "./idDocumentFormat";
 import { useIdDocumentUpload } from "./useIdDocumentUpload";
 
@@ -39,7 +39,7 @@ const IdDocumentField = ({ form }: Props) => {
       >
         {Platform.OS === "web" && (
           <input
-            ref={fileInputRef as any}
+            ref={fileInputRef}
             type="file"
             accept="image/jpeg,image/png,image/jpg,application/pdf"
             style={{ display: "none" }}
@@ -83,10 +83,12 @@ const IdDocumentField = ({ form }: Props) => {
       </FieldShell>
 
       {previewZoomOpen && !isPdf && (
-        <IdZoomModal
+        <ImageZoomModal
           visible={previewZoomOpen}
           uri={values.idDocument}
           onClose={() => setPreviewZoomOpen(false)}
+          accessibilityLabel="Your government ID, enlarged"
+          maxImageWidth={800}
         />
       )}
     </>

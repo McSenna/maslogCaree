@@ -5,6 +5,7 @@ import { useMountProgress } from "@/hooks/useMountProgress";
 
 import ChartCallout from "./ChartCallout";
 import { useChartPalette } from "./chartPalette";
+import { useSvgId } from "./useSvgId";
 import LineChartAxes from "./lineChart/LineChartAxes";
 import LineChartHitAreas from "./lineChart/LineChartHitAreas";
 import LineChartLegend from "./lineChart/LineChartLegend";
@@ -31,9 +32,15 @@ const SimpleLineChart = ({
   showYAxis = true,
   showLegend = true,
   baselineAtZero = true,
+  gridDashed = false,
+  tickColor: tickColorOverride,
+  emphasizeLatest = false,
   formatTooltip,
 }: SimpleLineChartProps) => {
   const palette = useChartPalette();
+  const tickColor = tickColorOverride ?? palette.tickColor;
+  const gradientId = useSvgId("lineArea");
+  const latestIndex = emphasizeLatest ? labels.length - 1 : null;
 
   const [chartW, setChartW] = useState(0);
 
@@ -91,7 +98,10 @@ const SimpleLineChart = ({
             padLeft={padLeft}
             axisY={axisY}
             showGrid={showGrid}
+            gridDashed={gridDashed}
             showDots={showDots}
+            emphasizeLatest={emphasizeLatest}
+            gradientId={gradientId}
             activeIndex={activeIndex}
           />
 
@@ -104,9 +114,11 @@ const SimpleLineChart = ({
             innerH={innerH}
             padLeft={padLeft}
             axisY={axisY}
-            tickColor={palette.tickColor}
+            tickColor={tickColor}
             showYAxis={showYAxis}
             activeIndex={activeIndex}
+            emphasisIndex={latestIndex}
+            emphasisColor={series[0]?.color}
           />
 
           <LineChartHitAreas
@@ -133,7 +145,7 @@ const SimpleLineChart = ({
       ) : null}
 
       {hasLegend && (
-        <LineChartLegend series={series} padLeft={padLeft} tickColor={palette.tickColor} />
+        <LineChartLegend series={series} padLeft={padLeft} tickColor={tickColor} />
       )}
     </View>
   );

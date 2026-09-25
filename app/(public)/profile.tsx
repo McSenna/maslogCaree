@@ -1,6 +1,6 @@
 import { Redirect, type Href } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
-import { getProfilePath } from "@/data/mockUsers";
+import { getProfilePath } from "@/config/roleRoutes";
 
 const ProfileRedirect = () => {
   const { user, isLoading } = useAuth();

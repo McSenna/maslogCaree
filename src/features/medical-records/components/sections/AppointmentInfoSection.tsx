@@ -3,7 +3,7 @@ import type { AppointmentRecord } from "@/types/appointments.types";
 import type { MedicalRecord } from "@/services/medicalRecords";
 
 import { formatDateTime, shortReference } from "../recordFormat";
-import DetailSection, { KeyValueRow } from "./DetailSection";
+import { DetailSection, KeyValueRow } from "./DetailSection";
 import { View } from "react-native";
 
 type Props = {

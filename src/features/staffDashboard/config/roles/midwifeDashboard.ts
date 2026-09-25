@@ -3,11 +3,10 @@ import { byKey, progressCaption } from "./dashboardConfigTypes";
 
 export const MIDWIFE: RoleDashboardConfig = {
   role: "midwife",
-  badge: "Midwife",
-  tagline: "Here's your maternal and immunisation care for today.",
   metrics: [
     {
       key: "today",
+      route: "mission",
       label: "Patients Today",
       icon: "users",
       tone: "blue",
@@ -16,6 +15,7 @@ export const MIDWIFE: RoleDashboardConfig = {
     },
     {
       key: "waiting",
+      route: "mission",
       label: "Waiting in Queue",
       icon: "clock",
       tone: "pink",
@@ -25,6 +25,7 @@ export const MIDWIFE: RoleDashboardConfig = {
     },
     {
       key: "prenatal",
+      route: "mission",
       label: "Prenatal Today",
       icon: "heart",
       tone: "purple",
@@ -33,6 +34,7 @@ export const MIDWIFE: RoleDashboardConfig = {
     },
     {
       key: "immunization",
+      route: "mission",
       label: "Immunisations Today",
       icon: "shield",
       tone: "green",

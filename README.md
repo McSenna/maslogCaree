@@ -1,50 +1,64 @@
-# Welcome to your Expo app 👋
+# MaslogCare — mobile & web app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+The client for MaslogCare, the Barangay 61 Maslog (Legazpi City) health-center system. It's one Expo / React Native codebase that ships to Android, iOS and the web. Residents book and track appointments, and staff (admin, doctor, midwife, BHW) run the queue, missions, inventory and records.
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Getting started
 
 ```bash
-npm run reset-project
+npm install
+cp .env.example .env        # or create .env — see "Environment" below
+npm start                   # Expo dev server (press w for web, a for Android)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Run the API in `../backend` alongside it (`npm run backend` from here, or `npm run dev` there).
 
-## Learn more
+## Scripts
 
-To learn more about developing your project with Expo, look at the following resources:
+| Script | What it does |
+| --- | --- |
+| `npm start` / `npm run web` / `npm run android` | Start the Expo dev server |
+| `npm run start:dev-client` | Start for a development build (`expo-dev-client`) |
+| `npm run backend` | Start the API in `../backend` with nodemon |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint (Expo config + React Compiler rules) |
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Run `npm run typecheck && npm run lint` before you push. Both should be clean.
 
-## Join the community
+## Environment
 
-Join our community of developers creating universal apps.
+| Variable | Purpose |
+| --- | --- |
+| `EXPO_PUBLIC_API_URL` | API base URL. `/api` is appended if missing; defaults to `http://localhost:5000/api` |
+| `EXPO_PUBLIC_RESIDENT_BARANGAY` / `_CITY_MUNICIPALITY` / `_PROVINCE` | Locality shown on sign-up. Must match the backend's `RESIDENT_*` values |
+| `EXPO_PUBLIC_EAS_PROJECT_ID` | Optional fallback for the push-notification project id |
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Everything prefixed `EXPO_PUBLIC_` is bundled into the app, so never put secrets here.
+
+## Project layout
+
+```
+app/                  Routes (expo-router). Files here are thin wrappers around screens.
+  (public)/           Landing, about, announcements
+  admin|doctor|midwife|bhw|resident/   One folder per role, each guarded by <RouteGuard>
+src/
+  features/<name>/    Feature modules: components, hooks, services, types, utils, screens
+  components/         Shared UI — ui/ (primitives, sheets, dialogs, charts), layout/, navigation/
+  hooks/              Cross-feature hooks (see below)
+  services/           API client (axios + auth interceptors) and shared API calls
+  contexts/           Auth, theme, notifications providers
+  config/             Role routes, nav config, platform access, static content
+  design/             Motion and theme tokens
+  utils/              Pure helpers (dates, file sizes, API errors, storage)
+```
+
+New feature code goes in `src/features/<feature>/`. Only promote something to `src/components` or `src/hooks` once a second feature needs it.
+
+## Conventions
+
+- **Imports:** use the `@/` alias for anything under `src/`. Prefer named exports.
+- **Roles and routes:** `UserRole` and the typed route helpers (`getDashboardPath`, `getProfilePath`, `getNotificationsPath`) live in `src/config/roleRoutes.ts`.
+- **Animated values:** use `useAnimatedValue(initial)` from `@/hooks/useAnimatedValue`, not `useRef(new Animated.Value())`. It is web-safe and never reads refs during render.
+- **Latest-callback refs:** use `useLatestRef(fn)` when a long-lived listener needs the current callback.
+- **Resetting state when a modal opens or a prop changes:** use `useSyncOnChange(deps, sync)` instead of a `useEffect` that calls setters. The new state is in place before paint, so a reopened form never flashes old values.
+- **Data fetching in effects** is fine. Mark the call with `// eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch …` so intentional cases stay distinguishable from accidental ones.
+- **Images:** bundle right-sized assets. `assets/images/maslog-seal.png` (320 px) and `maslog-background.jpg` are for in-app use. The full-resolution `maslogicon.png` is only for app icons in `app.json`.

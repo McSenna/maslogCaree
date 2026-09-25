@@ -1,6 +1,7 @@
 import { View } from "react-native";
 
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { ANALYTICS_FLEX } from "@/features/adminDashboard/constants/dashboardLayout";
 
 import {
   activitiesPanel,
@@ -14,10 +15,17 @@ type Props = {
   palette: AdminDashboardPalette;
   metricCards: React.ReactNode;
   panelColumns: 1 | 2 | 3;
+  analyticsSideBySide: boolean;
   gap: number;
 };
 
-const WideDashboardSkeleton = ({ palette, metricCards, panelColumns, gap }: Props) => {
+const WideDashboardSkeleton = ({
+  palette,
+  metricCards,
+  panelColumns,
+  analyticsSideBySide,
+  gap,
+}: Props) => {
   const chart = chartPanel(palette, panelColumns === 1 ? undefined : 1);
   const users = usersPanel(palette, panelColumns === 1 ? undefined : 1);
   const activities = activitiesPanel(palette, panelColumns === 3 ? 1 : undefined);
@@ -38,10 +46,17 @@ const WideDashboardSkeleton = ({ palette, metricCards, panelColumns, gap }: Prop
   return (
     <View className="gap-5">
       {metricCards}
-      <View style={{ flexDirection: "row", gap }}>
-        {analyticsSkeleton(palette, 1.9)}
-        {activitySkeleton(palette, 1)}
-      </View>
+      {analyticsSideBySide ? (
+        <View style={{ flexDirection: "row", gap }}>
+          {analyticsSkeleton(palette, ANALYTICS_FLEX.registrations)}
+          {activitySkeleton(palette, ANALYTICS_FLEX.activity)}
+        </View>
+      ) : (
+        <View style={{ gap }}>
+          {analyticsSkeleton(palette)}
+          {activitySkeleton(palette)}
+        </View>
+      )}
       <View style={{ flexDirection: "row", gap }}>
         {chart}
         {users}

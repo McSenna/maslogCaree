@@ -11,6 +11,7 @@ type AdminDashboardSkeletonProps = {
   compact: boolean;
   metricColumns: 2 | 4;
   panelColumns: 1 | 2 | 3;
+  analyticsSideBySide: boolean;
   gap: number;
 };
 
@@ -19,6 +20,7 @@ const AdminDashboardSkeleton = ({
   compact,
   metricColumns,
   panelColumns,
+  analyticsSideBySide,
   gap,
 }: AdminDashboardSkeletonProps) => {
   const metricCards =
@@ -51,6 +53,7 @@ const AdminDashboardSkeleton = ({
       palette={palette}
       metricCards={metricCards}
       panelColumns={panelColumns}
+      analyticsSideBySide={analyticsSideBySide}
       gap={gap}
     />
   );

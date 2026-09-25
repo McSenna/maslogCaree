@@ -8,6 +8,7 @@ export const useOrganizations = () => {
   const [orgMembers, setOrgMembers] = useState<OrganizationMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let isMounted = true;
@@ -15,6 +16,7 @@ export const useOrganizations = () => {
     const run = async () => {
       try {
         setLoading(true);
+        setError(null);
         const members = await fetchOrganizationMembers();
         if (isMounted) setOrgMembers(members);
       } catch (e: unknown) {
@@ -31,8 +33,8 @@ export const useOrganizations = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [attempt]);
 
-  return { orgMembers, loading, error };
+  return { orgMembers, loading, error, retry: () => setAttempt((value) => value + 1) };
 };
 

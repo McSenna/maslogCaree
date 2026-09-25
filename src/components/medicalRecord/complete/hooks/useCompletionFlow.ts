@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 
 import type { AppointmentRecord } from "@/services/appointments";
 import { completeAppointment, type CompletionForm } from "@/services/medicalRecords";
@@ -36,7 +37,7 @@ export const useCompletionFlow = ({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [result, setResult] = useState<CompletionResult | null>(null);
 
-  useEffect(() => {
+  useSyncOnChange([visible, form, reset], () => {
     if (!visible) return;
     reset(form);
     dispensed.reset();
@@ -45,8 +46,7 @@ export const useCompletionFlow = ({
     setSaving(false);
     setSubmitError(null);
     setResult(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, form, reset]);
+  });
 
   const handleReview = useCallback(() => {
     setSubmitError(null);

@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -11,7 +12,12 @@ import {
   getDashboardThemeClasses,
   type DashboardThemeClasses,
 } from "@/design/dashboardTheme";
-import { getStoredTheme, setStoredTheme, type StoredTheme } from "@/utils/storage";
+import {
+  getStoredTheme,
+  hydrateStoredTheme,
+  setStoredTheme,
+  type StoredTheme,
+} from "@/utils/storage";
 
 type ThemeContextValue = {
   theme: StoredTheme;
@@ -28,22 +34,31 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     () => getStoredTheme() ?? "light"
   );
 
+  // On web the synchronous read above already has the right theme. On native it
+  // starts empty until SecureStore answers, so apply the saved choice once it does
+  // (unless the user already picked one), and only persist the default for first-time users.
+  const userPickedRef = useRef(false);
+
   useEffect(() => {
-    const stored = getStoredTheme();
-    if (stored) {
-      setThemeState(stored);
-      return;
-    }
-    setThemeState("light");
-    setStoredTheme("light");
+    let cancelled = false;
+    void hydrateStoredTheme().then((saved) => {
+      if (cancelled || userPickedRef.current) return;
+      if (saved) setThemeState(saved);
+      else setStoredTheme("light");
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const setTheme = useCallback((t: StoredTheme) => {
+    userPickedRef.current = true;
     setThemeState(t);
     setStoredTheme(t);
   }, []);
 
   const toggleTheme = useCallback(() => {
+    userPickedRef.current = true;
     setThemeState((prev) => {
       const next = prev === "dark" ? "light" : "dark";
       setStoredTheme(next);

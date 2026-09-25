@@ -1,7 +1,8 @@
 import { useCallback, useId } from "react";
-import { Modal, Platform, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
+import { Modal, Platform, Pressable, ScrollView, View } from "react-native";
 
 import { useResidentDialogPalette } from "@/design/residentDialogTheme";
+import { useModalFrame } from "@/hooks/useModalFrame";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 
 import DialogFooter from "../DialogFooter";
@@ -26,7 +27,7 @@ export const DialogModalShell = ({
   maxWidth = 560,
   onDismissRequest,
 }: DialogShellProps) => {
-  const { width, height } = useWindowDimensions();
+  const frame = useModalFrame(maxWidth);
   const palette = useResidentDialogPalette();
   const titleId = useId();
 
@@ -56,7 +57,7 @@ export const DialogModalShell = ({
           {...Platform.select({
             web: { role: "dialog", "aria-modal": true, "aria-labelledby": titleId } as object,
           })}
-          style={buildDialogSurfaceStyle(palette, width, height, maxWidth)}
+          style={buildDialogSurfaceStyle(palette, frame)}
         >
           <DialogHeader
             palette={palette}

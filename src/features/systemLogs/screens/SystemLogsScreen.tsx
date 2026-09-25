@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { RefreshControl, ScrollView, useWindowDimensions, View } from "react-native";
+import { RefreshControl, ScrollView, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
-import { BREAKPOINTS } from "@/constants/breakpoints";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import LogDetailsBottomSheet from "../components/LogDetailsBottomSheet";
 import LogSummaryCards from "../components/LogSummaryCards";
@@ -16,12 +15,12 @@ import DesktopLogsView from "./DesktopLogsView";
 import LogFiltersToolbar from "./LogFiltersToolbar";
 import { buildFallback, buildMobileContent } from "./LogsListContent";
 import MobileLogsView from "./MobileLogsView";
+import { useResponsive } from "@/hooks/useResponsive";
 
 const SystemLogsScreen = () => {
   const palette = useSystemLogsPalette();
-  const { width: windowWidth } = useWindowDimensions();
+  const { isDesktop } = useResponsive();
   const insets = useRoleScreenInsets();
-  const isDesktop = windowWidth >= BREAKPOINTS.desktop;
 
   const { search: searchParam } = useLocalSearchParams<{ search?: string | string[] }>();
   const initialSearch = (Array.isArray(searchParam) ? searchParam[0] : searchParam) ?? "";

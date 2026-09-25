@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import DashboardCard from "@/components/resident/DashboardCard";
 import SectionHeader from "@/components/resident/SectionHeader";
-import StatusBadge from "@/components/resident/StatusBadge";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { CARD, RESIDENT_COLORS } from "@/components/resident/residentTheme";
 import { splitAppointmentDate } from "@/data/residentDashboardData";
 import { formatConsultationTypeLabel } from "@/utils/residentDashboard";
@@ -127,12 +127,12 @@ const UpcomingAppointment = ({
 
           {stacked ? (
             <View className="w-full flex-row items-center gap-2.5">
-              <StatusBadge status={appointment.status} />
+              <AppointmentStatusBadge status={appointment.status} audience="resident" size="md" />
               {detailsButton}
             </View>
           ) : (
             <View className="shrink-0 items-end gap-2.5">
-              <StatusBadge status={appointment.status} />
+              <AppointmentStatusBadge status={appointment.status} audience="resident" size="md" />
               {detailsButton}
             </View>
           )}

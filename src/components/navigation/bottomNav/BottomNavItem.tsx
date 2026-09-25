@@ -1,8 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useNavLinkPress } from "../useNavLinkPress";
-import { useEffect, useRef } from "react";
-import { Animated, Pressable, View } from "react-native";
+import { useEffect } from "react";
+import { Animated, Pressable, Text, View } from "react-native";
 import { BOTTOM_NAV_ROW_HEIGHT } from "@/constants/layout";
 import NotificationBadge from "./NotificationBadge";
 import {
@@ -11,13 +11,15 @@ import {
   type BottomNavPalette,
 } from "./bottomNavTokens";
 import type { BottomNavEntry } from "./types";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type BottomNavItemProps = {
   item: BottomNavEntry;
   isActive: boolean;
   palette: BottomNavPalette;
   replace?: boolean;
+  labelSize?: number;
 };
 
 const BottomNavItem = ({
@@ -25,29 +27,34 @@ const BottomNavItem = ({
   isActive,
   palette,
   replace = false,
+  labelSize = BOTTOM_NAV_METRICS.labelSize,
 }: BottomNavItemProps) => {
-  const activeAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
-  const pressAnim = useRef(new Animated.Value(1)).current;
+  const reducedMotion = useReducedMotion();
+  const activeAnim = useAnimatedValue(isActive ? 1 : 0);
+  const pressAnim = useAnimatedValue(1);
 
   useEffect(() => {
     Animated.timing(activeAnim, {
       toValue: isActive ? 1 : 0,
       duration: BOTTOM_NAV_TIMING.active,
+      easing: EASING.out,
       useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   }, [isActive, activeAnim]);
 
   const animatePress = (toValue: number) => {
+    if (reducedMotion) return;
     Animated.timing(pressAnim, {
       toValue,
-      duration: BOTTOM_NAV_TIMING.press,
+      duration: toValue < 1 ? TIMING.pressIn : TIMING.pressOut,
+      easing: EASING.out,
       useNativeDriver: USE_NATIVE_DRIVER,
     }).start();
   };
 
   const iconScale = activeAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [1, 1.06],
+    outputRange: [1, reducedMotion ? 1 : 1.06],
   });
 
   const color = isActive ? palette.active : palette.inactive;
@@ -58,14 +65,14 @@ const BottomNavItem = ({
     <Link href={item.href as never} asChild replace={replace} onPress={handlePress}>
       <Pressable
         accessibilityRole="tab"
-        accessibilityLabel={item.accessibilityLabel ?? `${item.label} tab`}
+        accessibilityLabel={item.accessibilityLabel ?? item.label}
         accessibilityState={{ selected: isActive }}
         accessibilityHint={
           item.badgeCount && item.badgeCount > 0
             ? `${item.badgeCount} unread`
             : undefined
         }
-        onPressIn={() => animatePress(0.94)}
+        onPressIn={() => animatePress(0.96)}
         onPressOut={() => animatePress(1)}
         android_ripple={{
           color: `${palette.active}14`,
@@ -86,6 +93,8 @@ const BottomNavItem = ({
           style={{
             alignItems: "center",
             justifyContent: "center",
+            maxWidth: "100%",
+            paddingHorizontal: 2,
             transform: [{ scale: pressAnim }],
           }}
         >
@@ -132,6 +141,20 @@ const BottomNavItem = ({
               />
             </Animated.View>
           </View>
+          <Text
+            numberOfLines={1}
+            maxFontSizeMultiplier={1.2}
+            style={{
+              marginTop: 2,
+              maxWidth: "100%",
+              fontSize: labelSize,
+              lineHeight: labelSize + 3,
+              fontWeight: isActive ? "700" : "500",
+              color,
+            }}
+          >
+            {item.shortLabel ?? item.label}
+          </Text>
         </Animated.View>
       </Pressable>
     </Link>

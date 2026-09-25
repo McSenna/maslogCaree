@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Text, View } from "react-native";
+import { Text, View, type LayoutChangeEvent } from "react-native";
 
 import { PROFILE_COLORS, PROFILE_TYPE } from "../../config/profileTheme";
 import type { ProfileData } from "../../utils/profileData";
@@ -12,7 +12,7 @@ type Props = {
   profile: ProfileData;
   photo: ReactNode;
   size: { width: number; height: number };
-  onLayout: (e: any) => void;
+  onLayout: (e: LayoutChangeEvent) => void;
   surface: object;
   onEditProfile?: () => void;
 };

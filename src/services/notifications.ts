@@ -16,10 +16,10 @@ type NotificationsResponse = {
   nextCursor?: string | null;
 };
 
-export async function fetchNotifications(params?: {
+export const fetchNotifications = async (params?: {
   cursor?: string | null;
   limit?: number;
-}): Promise<NotificationPage> {
+}): Promise<NotificationPage> => {
   const { data } = await api.get<NotificationsResponse>("/notifications", {
     params: {
       ...(params?.cursor ? { cursor: params.cursor } : null),
@@ -33,19 +33,19 @@ export async function fetchNotifications(params?: {
     hasMore: Boolean(data.hasMore),
     nextCursor: data.nextCursor ?? null,
   };
-}
+};
 
-export async function markNotificationRead(
+export const markNotificationRead = async (
   id: string
-): Promise<{ updated: boolean; unreadCount: number | null }> {
+): Promise<{ updated: boolean; unreadCount: number | null }> => {
   const { data } = await api.patch<{ updated: boolean; unreadCount?: number }>(
     `/notifications/${id}/read`
   );
 
   return { updated: Boolean(data.updated), unreadCount: data.unreadCount ?? null };
-}
+};
 
-export async function markAllNotificationsRead(): Promise<{ modifiedCount: number }> {
+export const markAllNotificationsRead = async (): Promise<{ modifiedCount: number }> => {
   const { data } = await api.patch<{ modifiedCount: number }>(`/notifications/read-all`);
   return { modifiedCount: data.modifiedCount ?? 0 };
-}
+};

@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Animated, Platform, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { useInteractiveLift } from "./motion/useInteractiveLift";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { USE_NATIVE_DRIVER } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 export type FeatureMetrics = {
   iconBox: number;
@@ -32,7 +33,7 @@ const FeatureItem = ({
   metrics,
 }: FeatureItemProps) => {
   const lift = useInteractiveLift({ lift: 3, pressScale: 1 });
-  const iconScale = useRef(new Animated.Value(1)).current;
+  const iconScale = useAnimatedValue(1);
 
   useEffect(() => {
     const animation = Animated.spring(iconScale, {
@@ -117,14 +118,14 @@ const styles = StyleSheet.create({
     ...Platform.select({
       web: {
         transition: "background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease",
-      } as any,
+      },
     }),
   },
   rowHovered: {
     backgroundColor: "rgba(255, 255, 255, 0.72)",
     borderColor: "#DCE8F8",
     ...Platform.select({
-      web: { boxShadow: "0px 12px 28px rgba(8, 21, 47, 0.08)" } as any,
+      web: { boxShadow: "0px 12px 28px rgba(8, 21, 47, 0.08)" },
     }),
   },
   iconBox: {

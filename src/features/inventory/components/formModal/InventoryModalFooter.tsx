@@ -1,7 +1,6 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { useSheetLayoutContext } from "@/components/ui/sheetLayout/SheetLayoutContext";
 
 import { CONTROL_HEIGHT, RADIUS, useInventoryPalette } from "../inventoryTheme";
 
@@ -23,11 +22,10 @@ const InventoryModalFooter = ({
   onClose,
 }: Props) => {
   const palette = useInventoryPalette();
-  const insets = useSafeAreaInsets();
-  // The sheet already sits on top of the keyboard, so the home-indicator gap
-  // would only add dead space between the buttons and the keys.
-  const keyboardInset = useKeyboardInset();
-  const bottomGap = keyboardInset > 0 ? 12 : Math.max(insets.bottom, 12) + 4;
+  // Home-indicator padding while the keyboard is closed, none while it is up
+  // (that would be dead space between the buttons and the keys).
+  const sheet = useSheetLayoutContext();
+  const bottomGap = sheet?.keyboardVisible ? 12 : Math.max(sheet?.bottomInset ?? 0, 12) + 4;
 
   return (
     <View

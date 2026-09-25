@@ -1,42 +1,52 @@
 import type { ReactNode } from "react";
-import { Modal, Pressable, View, useWindowDimensions } from "react-native";
-import type { EdgeInsets } from "react-native-safe-area-context";
+import { Modal, Pressable, View } from "react-native";
 
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
+import { createShadow } from "@/design/shadow";
 
 import { RECOVERY_COLORS as C, RECOVERY_RADIUS as R } from "../recoveryTheme";
-import { createShadow } from "@/design/shadow";
+
+const DESKTOP_EDGE = 20;
 
 const FlowShell = ({
   visible,
   isSheet,
-  insets,
   onRequestClose,
+  header,
   children,
 }: {
   visible: boolean;
   isSheet: boolean;
-  insets: EdgeInsets;
   onRequestClose: () => void;
+  /** Stays pinned above the scrolling steps so Back / Close are always reachable. */
+  header: ReactNode;
   children: ReactNode;
 }) => {
-  const { height } = useWindowDimensions();
-  // Email, OTP and new-password fields all live in here, and
-  // KeyboardAvoidingView is inert inside a statusBarTranslucent modal on
-  // Android, so the shell tracks the keyboard itself.
-  const keyboardInset = useKeyboardInset(visible);
+  // Email, OTP and new-password fields all live in here; the shared sheet layout
+  // keeps them above the keyboard and the sheet below the status bar.
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: isSheet ? 0.92 : 0.9,
+    edgePadding: isSheet ? 0 : DESKTOP_EDGE,
+  });
 
   return (
     <Modal
       visible={visible}
       transparent
       animationType={isSheet ? "slide" : "fade"}
-      onRequestClose={onRequestClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onRequestClose)}
       statusBarTranslucent
     >
-      <View
-        className={`flex-1 ${isSheet ? "justify-end" : "items-center justify-center p-5"}`}
-        style={{ backgroundColor: "rgba(15,23,42,0.45)" }}
+      <SheetViewport
+        layout={layout}
+        style={{
+          backgroundColor: "rgba(15,23,42,0.45)",
+          paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
+        }}
       >
         <Pressable
           accessibilityRole="button"
@@ -49,10 +59,7 @@ const FlowShell = ({
           className="w-full overflow-hidden"
           style={{
             maxWidth: isSheet ? undefined : 520,
-            maxHeight: isSheet
-              ? Math.round((height - keyboardInset - insets.top) * 0.92)
-              : Math.round(height * 0.9),
-            marginBottom: isSheet ? keyboardInset : 0,
+            maxHeight: layout.maxHeight,
             borderTopLeftRadius: isSheet ? R.sheet : R.modal,
             borderTopRightRadius: isSheet ? R.sheet : R.modal,
             borderBottomLeftRadius: isSheet ? 0 : R.modal,
@@ -63,9 +70,9 @@ const FlowShell = ({
             paddingHorizontal: isSheet ? 20 : 30,
             paddingTop: isSheet ? 12 : 24,
             paddingBottom: isSheet
-              ? keyboardInset > 0
+              ? layout.keyboardVisible
                 ? 16
-                : Math.max(insets.bottom, 16) + 8
+                : Math.max(layout.bottomInset, 16) + 8
               : 26,
             ...createShadow({
               color: "#0F172A",
@@ -82,9 +89,10 @@ const FlowShell = ({
             </View>
           ) : null}
 
+          {header}
           {children}
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

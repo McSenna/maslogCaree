@@ -1,16 +1,18 @@
-import { useMemo, type ReactNode } from "react";
-import { useWindowDimensions, View } from "react-native";
+import { useEffect, useMemo, type ReactNode } from "react";
+import { View } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { getNotificationsPath, type UserRole } from "@/data/mockUsers";
-import { BREAKPOINTS } from "@/constants/breakpoints";
+import { getNotificationsPath, type UserRole } from "@/config/roleRoutes";
+import { useResponsive } from "@/hooks/useResponsive";
+import { setToastBottomOffset } from "@/components/feedback/toast/toastStore";
 import { ROLE_LAYOUT_PADDING } from "@/constants/layout";
 import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
 import AppHeader from "@/components/header/AppHeader";
 import { getHeaderPalette } from "@/components/header/headerTokens";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import AppStatusBar from "./AppStatusBar";
+import ResponsiveContainer from "./ResponsiveContainer";
 import ScreenTransition from "./ScreenTransition";
 import RoleBottomNav from "../navigation/RoleBottomNav";
 import SidebarNavigation from "../navigation/SidebarNavigation";
@@ -32,17 +34,18 @@ const RoleLayout = ({
   bottomNavItems,
   roleLabel,
 }: RoleLayoutProps) => {
-  const { width } = useWindowDimensions();
+  const { isMobile } = useResponsive();
   const bottomNav = useBottomNavMetrics();
 
   const { user } = useAuth();
   const { unreadCount } = useNotificationsContext();
+  const notificationsPath = user ? getNotificationsPath(user.role as UserRole) : undefined;
+  const navHasNotifications = bottomNavItems.some((item) => item.href === notificationsPath);
+
   const notificationBadges = useMemo(
     () => (user ? { [getNotificationsPath(user.role as UserRole)]: unreadCount } : undefined),
     [user, unreadCount]
   );
-
-  const isMobile = width < BREAKPOINTS.tablet;
 
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -53,6 +56,11 @@ const RoleLayout = ({
   const safeBg = headerPalette.background;
 
   const mobileBottomPadding = bottomNav.contentPadding;
+
+  useEffect(() => {
+    setToastBottomOffset(isMobile ? bottomNav.height - bottomNav.bottomInset : 0);
+    return () => setToastBottomOffset(0);
+  }, [isMobile, bottomNav.height, bottomNav.bottomInset]);
 
   return (
     <View
@@ -66,7 +74,10 @@ const RoleLayout = ({
       <View className="flex-1 w-full min-w-0" style={{ backgroundColor: pageSurface }}>
 
         <View className="w-full md:hidden">
-          <AppHeader variant="mobile" />
+          <AppHeader
+            variant="mobile"
+            mobileNotificationsHref={navHasNotifications ? undefined : notificationsPath}
+          />
         </View>
 
         <View className="flex-1 flex-row w-full min-w-0">
@@ -92,8 +103,9 @@ const RoleLayout = ({
                 : ROLE_LAYOUT_PADDING.desktop.bottom,
             }}
           >
- 
-            <ScreenTransition>{children}</ScreenTransition>
+            <ResponsiveContainer padded={false} style={{ flex: 1 }}>
+              <ScreenTransition>{children}</ScreenTransition>
+            </ResponsiveContainer>
           </View>
           </View>
         </View>

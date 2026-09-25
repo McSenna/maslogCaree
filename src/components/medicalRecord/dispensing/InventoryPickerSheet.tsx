@@ -1,8 +1,9 @@
-import { ActivityIndicator, FlatList, Modal, Pressable, Text, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ActivityIndicator, FlatList, Modal, Pressable, Text, View } from "react-native";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import type { InventoryCategory, InventoryItem } from "@/features/inventory/services/inventoryService";
 
 import InventoryPickerRow from "./InventoryPickerRow";
@@ -12,8 +13,9 @@ import {
   PickerSearchBar,
 } from "./picker/PickerChrome";
 import { useInventorySearch } from "./picker/useInventorySearch";
+import { useResponsive } from "@/hooks/useResponsive";
 
-const SHEET_WIDTH = 768;
+const DESKTOP_EDGE = 16;
 
 const InventoryPickerSheet = ({
   visible,
@@ -33,11 +35,16 @@ const InventoryPickerSheet = ({
   searchPlaceholder?: string;
 }) => {
   const palette = useQueuePalette();
-  const { width, height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const keyboardInset = useKeyboardInset(visible);
-  const isSheet = width < SHEET_WIDTH;
-  const availableHeight = height - (isSheet ? keyboardInset + insets.top : 0);
+  const { isMobile } = useResponsive();
+  const isSheet = isMobile;
+  // A fixed height (not just a maximum) keeps the list from jumping while the
+  // search filters it; the layout caps it below the status bar and above the keys.
+  const layout = useSheetLayout({
+    enabled: visible,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: isSheet ? 0.78 : 0.76,
+    edgePadding: isSheet ? 0 : DESKTOP_EDGE,
+  });
 
   const picker = useInventorySearch(visible, category);
 
@@ -46,12 +53,15 @@ const InventoryPickerSheet = ({
       visible={visible}
       transparent
       animationType={isSheet ? "slide" : "fade"}
-      onRequestClose={onClose}
+      onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <View
-        className={`flex-1 ${isSheet ? "justify-end" : "items-center justify-center p-4"}`}
-        style={{ backgroundColor: "rgba(15,37,87,0.35)" }}
+      <SheetViewport
+        layout={layout}
+        style={{
+          backgroundColor: "rgba(15,37,87,0.35)",
+          paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
+        }}
       >
         <Pressable
           accessibilityRole="button"
@@ -64,8 +74,7 @@ const InventoryPickerSheet = ({
           className="w-full overflow-hidden"
           style={{
             maxWidth: isSheet ? undefined : 560,
-            height: Math.round(availableHeight * (isSheet ? 0.78 : 0.76)),
-            marginBottom: isSheet ? keyboardInset : 0,
+            height: layout.maxHeight,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
             borderBottomLeftRadius: isSheet ? 0 : 24,
@@ -105,7 +114,7 @@ const InventoryPickerSheet = ({
             contentContainerStyle={{
               paddingHorizontal: 12,
               gap: 2,
-              paddingBottom: 12 + (isSheet && keyboardInset === 0 ? Math.max(insets.bottom, 0) : 0),
+              paddingBottom: 12 + (isSheet ? layout.bottomInset : 0),
             }}
             renderItem={({ item }) => (
               <InventoryPickerRow
@@ -128,7 +137,7 @@ const InventoryPickerSheet = ({
             }
           />
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };

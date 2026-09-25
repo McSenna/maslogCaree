@@ -1,4 +1,4 @@
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 
 const ROLE_LABELS: Record<UserRole, string> = {
   admin: "Admin",

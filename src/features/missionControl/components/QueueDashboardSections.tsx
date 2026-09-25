@@ -37,7 +37,8 @@ const QueueDashboardSections = ({
           canComplete
           busyId={completion.busyId}
           onComplete={completion.openComplete}
-          emptyMessage="Nobody is waiting to be seen."
+          emptyTitle="No patients waiting"
+          emptyMessage="Approved appointments for today will appear here in queue order."
         />
 
         <AppointmentsPanel

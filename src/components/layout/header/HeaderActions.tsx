@@ -4,13 +4,15 @@ import { Pressable, Text, View } from "react-native";
 
 import UserAvatar from "@/components/ui/UserAvatar";
 import type { CurrentUser } from "@/contexts/AuthContext";
-import { getDashboardPath, getProfilePath } from "@/data/mockUsers";
+import { getDashboardPath, getProfilePath } from "@/config/roleRoutes";
 
 type Props = {
   isMobile: boolean;
   user?: CurrentUser | null;
   onPressLogin: () => void;
 };
+
+const PILL_TEXT = "#0C1F6E";
 
 const pillStyle = (isMobile: boolean) => ({ pressed }: { pressed: boolean }) => ({
   flexDirection: "row" as const,
@@ -49,7 +51,9 @@ const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
       {user ? (
         <>
           <Pressable
-            onPress={() => router.push(getProfilePath(user.role) as any)}
+            onPress={() => router.push(getProfilePath(user.role))}
+            accessibilityRole="button"
+            accessibilityLabel="Open profile"
             style={({ pressed }) => ({
               width: 40,
               height: 40,
@@ -71,27 +75,29 @@ const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
           </Pressable>
 
           <Pressable
-            onPress={() => router.push(getDashboardPath(user.role) as any)}
+            onPress={() => router.push(getDashboardPath(user.role))}
+            accessibilityRole="button"
+            accessibilityLabel="Go to dashboard"
             style={pillStyle(isMobile)}
           >
             <PillIcon name="layout" />
 
             {!isMobile && (
-              <Text style={{ fontSize: 14, fontWeight: "700", color: "#0C1F6E" }}>
+              <Text style={{ fontSize: 14, fontWeight: "700", color: PILL_TEXT }}>
                 Dashboard
               </Text>
             )}
           </Pressable>
         </>
       ) : (
-        <Pressable onPress={onPressLogin} style={pillStyle(isMobile)}>
+        <Pressable onPress={onPressLogin} accessibilityRole="button" accessibilityLabel="Log in" style={pillStyle(isMobile)}>
           <PillIcon name="user" />
 
           <Text
             style={{
               fontSize: isMobile ? 13 : 14,
               fontWeight: "700",
-              color: "rgba(255,255,255,0.50)",
+              color: PILL_TEXT,
             }}
           >
             Login

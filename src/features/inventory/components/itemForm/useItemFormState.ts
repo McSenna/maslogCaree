@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 
 import type {
   InventoryCategory,
@@ -18,7 +19,7 @@ export const useItemFormState = (visible: boolean, item: InventoryItem | null) =
   const [supplier, setSupplier] = useState<string>("none");
   const [description, setDescription] = useState("");
 
-  useEffect(() => {
+  useSyncOnChange([visible, item], () => {
     if (!visible) return;
     setName(item?.name ?? "");
     setSpecification(item?.specification ?? "");
@@ -29,7 +30,7 @@ export const useItemFormState = (visible: boolean, item: InventoryItem | null) =
     setStorageCondition((item?.storageCondition as StorageCondition) || "room-temperature");
     setSupplier(item?.supplier?._id ?? "none");
     setDescription(item?.description ?? "");
-  }, [visible, item]);
+  });
 
   const reorderNumber = Number(reorderLevel);
   const reorderValid =

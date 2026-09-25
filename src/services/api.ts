@@ -1,4 +1,4 @@
-import axios from "axios";
+import { create as createAxios } from "axios";
 
 import { CLIENT_PLATFORM } from "@/config/platformAccess";
 import { getCachedAccessToken, getStoredUser } from "@/utils/storage";
@@ -16,7 +16,7 @@ const baseURL =
       ? normalized
       : `${normalized}/api`;
 
-const apiClient = axios.create({
+const apiClient = createAxios({
   baseURL,
   timeout: 15000,
   headers: {

@@ -17,7 +17,7 @@ const PlatformAccessAction = forwardRef<View, { label: string; onPress: () => vo
         height: 50,
         borderRadius: 12,
         backgroundColor: LANDING_COLORS.primaryBlue,
-        ...Platform.select({ web: { cursor: "pointer" } as any }),
+        ...Platform.select({ web: { cursor: "pointer" } }),
       }}
     >
       <Text style={{ color: "#FFFFFF", fontSize: 15.5, fontWeight: "700" }}>{label}</Text>

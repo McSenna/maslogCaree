@@ -57,6 +57,7 @@ export const useAdminDashboard = (
   const refresh = useCallback(() => load("refresh"), [load]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void load("initial");
   }, [load]);
 

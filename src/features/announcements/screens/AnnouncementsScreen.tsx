@@ -1,17 +1,16 @@
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import ScreenScroll from "@/components/layout/ScreenScroll";
-import { BREAKPOINTS } from "@/constants/breakpoints";
 import AnnouncementCard from "../components/AnnouncementCard";
 import AnnouncementSectionLabel from "../components/AnnouncementSectionLabel";
 import AnnouncementsFooterNote from "../components/AnnouncementsFooterNote";
 import AnnouncementsHero from "../components/AnnouncementsHero";
 import FeaturedAnnouncementCard from "../components/FeaturedAnnouncementCard";
 import { ANNOUNCEMENTS } from "../data/announcements";
+import { useResponsive } from "@/hooks/useResponsive";
 
 const AnnouncementsScreen = () => {
-  const { width } = useWindowDimensions();
-  const isTablet = width >= BREAKPOINTS.tablet;
-  const isDesktop = width >= BREAKPOINTS.desktop;
+  const { isMobile, isDesktop } = useResponsive();
+  const isTablet = !isMobile;
 
   const [featured, ...upcoming] = ANNOUNCEMENTS;
 

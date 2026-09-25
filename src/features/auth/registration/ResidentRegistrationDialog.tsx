@@ -1,24 +1,31 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Animated, Modal, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-
-import { useKeyboardInset } from "@/hooks/useKeyboardInset";
+import {
+  Animated,
+  Modal,
+  Pressable,
+  ScrollView,
+} from "react-native";
+import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { SHEET_KEYBOARD_DISMISS_MODE } from "@/components/ui/sheetLayout/sheetScroll";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 
 import DateOfBirthPicker from "../components/datePicker/DateOfBirthPicker";
 import OtpVerificationModal from "../components/OtpVerificationModal";
 import RegistrationSuccess from "./components/RegistrationSuccess";
+import EmailVerificationModal from "./components/email/EmailVerificationModal";
 import DialogFooter from "./dialog/DialogFooter";
 import DialogHeader from "./dialog/DialogHeader";
 import StepBody from "./dialog/StepBody";
 import { DatePickerHostProvider, type DatePickerRequest } from "./dialog/datePickerHost";
-import { dialogBackdropStyle, dialogSurfaceStyle } from "./dialog/dialogSurface";
+import { DESKTOP_EDGE, dialogBackdropStyle, dialogSurfaceStyle } from "./dialog/dialogSurface";
 import { useDialogDismiss } from "./dialog/useDialogDismiss";
 import { REG_METRICS } from "./registrationTheme";
 import { useResidentRegistration } from "./useResidentRegistration";
 import type { StepLayout } from "./steps/stepLayout";
+import { useResponsive } from "@/hooks/useResponsive";
 
-const SHEET_BREAKPOINT = 768;
 const TWO_COLUMN_BREAKPOINT = 640;
 
 type ResidentRegistrationDialogProps = {
@@ -30,13 +37,15 @@ const ResidentRegistrationDialog = ({
   visible,
   onClose,
 }: ResidentRegistrationDialogProps) => {
-  const { width, height } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  // KeyboardAvoidingView does nothing inside a statusBarTranslucent modal on
-  // Android, which left the keyboard sitting over the step's inputs.
-  const keyboardInset = useKeyboardInset(visible);
-  const isSheet = width < SHEET_BREAKPOINT;
-  const availableHeight = isSheet ? height - keyboardInset - insets.top : height;
+  const { width, isMobile } = useResponsive();
+  const isSheet = isMobile;
+  // Safe area, keyboard and height limits for the sheet (see useSheetLayout).
+  const sheetLayout = useSheetLayout({
+    enabled: visible,
+    variant: isSheet ? "sheet" : "centered",
+    maxHeightRatio: isSheet ? 0.94 : 0.92,
+    edgePadding: isSheet ? 0 : DESKTOP_EDGE,
+  });
 
   const form = useResidentRegistration(onClose);
   const { reset, hasUnsavedInput, isSubmitting, isSucceeded } = form;
@@ -83,10 +92,10 @@ const ResidentRegistrationDialog = ({
         visible={visible}
         transparent
         animationType={isSheet ? "slide" : "fade"}
-        onRequestClose={requestClose}
+        onRequestClose={backDismissesKeyboardFirst(sheetLayout, requestClose)}
         statusBarTranslucent
       >
-        <View style={dialogBackdropStyle(isSheet)}>
+        <SheetViewport layout={sheetLayout} style={dialogBackdropStyle(isSheet)}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Close registration"
@@ -98,8 +107,7 @@ const ResidentRegistrationDialog = ({
             ref={attachFocusTrap as never}
             accessibilityViewIsModal
             style={{
-              ...dialogSurfaceStyle(isSheet, availableHeight),
-              marginBottom: isSheet ? keyboardInset : 0,
+              ...dialogSurfaceStyle(isSheet, sheetLayout),
               transform: [{ translateY: dragY }],
             }}
           >
@@ -115,7 +123,7 @@ const ResidentRegistrationDialog = ({
               style={{ flexGrow: 1, flexShrink: 1 }}
               showsVerticalScrollIndicator={!isSheet}
               keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="on-drag"
+              keyboardDismissMode={SHEET_KEYBOARD_DISMISS_MODE}
               contentContainerStyle={{
                 paddingHorizontal: horizontalPadding,
                 paddingTop: 20,
@@ -145,7 +153,7 @@ const ResidentRegistrationDialog = ({
               />
             ) : null}
           </Animated.View>
-        </View>
+        </SheetViewport>
       </Modal>
 
       <DateOfBirthPicker
@@ -153,6 +161,12 @@ const ResidentRegistrationDialog = ({
         value={dateRequest?.value ?? ""}
         onConfirm={(isoDate) => dateRequest?.onConfirm(isoDate)}
         onClose={closeDatePicker}
+      />
+
+      <EmailVerificationModal
+        visible={visible && form.emailVerification.isCodeDialogOpen}
+        email={form.values.email}
+        verification={form.emailVerification}
       />
 
       <OtpVerificationModal

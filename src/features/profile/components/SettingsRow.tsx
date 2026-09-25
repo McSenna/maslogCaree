@@ -1,9 +1,10 @@
 import { Feather } from "@expo/vector-icons";
-import { useRef } from "react";
+
 import { Animated, Pressable, Text, View } from "react-native";
 import { PROFILE_COLORS, PROFILE_TYPE } from "../config/profileTheme";
 import SettingsRowAccessory from "./settingsRow/SettingsRowAccessory";
-import { USE_NATIVE_DRIVER } from "@/design/motion";
+import { USE_NATIVE_DRIVER } from "@/theme/motion";
+import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 export type SettingsRowSize = "regular" | "large";
 
@@ -35,7 +36,7 @@ const SettingsRow = ({
 }: SettingsRowProps) => {
   const metrics = SIZES[size];
   const isLarge = size === "large";
-  const scale = useRef(new Animated.Value(1)).current;
+  const scale = useAnimatedValue(1);
 
   const animate = (toValue: number) =>
     Animated.spring(scale, {

@@ -6,6 +6,7 @@ import type {
   SupportTicket,
   SupportTicketPage,
 } from "../types/support.types";
+import { toTicketPage } from "./ticketPage";
 
 export type AdminTicketQuery = {
   status?: SupportStatus | "all";
@@ -29,11 +30,11 @@ const toParams = (query: AdminTicketQuery) => ({
 export const fetchAdminSupportTickets = async (
   query: AdminTicketQuery
 ): Promise<SupportTicketPage> => {
-  const { data } = await api.get<SupportTicketPage>("/admin/support/tickets", {
+  const { data } = await api.get<Partial<SupportTicketPage>>("/admin/support/tickets", {
     params: toParams(query),
   });
 
-  return data;
+  return toTicketPage(data, query.page ?? 1);
 };
 
 export const fetchAdminSupportTicket = async (ticketId: string): Promise<SupportTicket> => {

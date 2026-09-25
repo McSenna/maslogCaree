@@ -1,4 +1,4 @@
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 import type { AuthUser, RegisterPayload } from "@/services/auth";
 import type { ClientPlatform } from "@/config/platformAccess";
 

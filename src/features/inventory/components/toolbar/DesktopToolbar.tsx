@@ -18,7 +18,7 @@ const DesktopToolbar = (props: InventoryToolbarFilters) => (
       onChangeText={props.onSearchChange}
       placeholder={SEARCH_PLACEHOLDER}
       accessibilityLabel="Search inventory"
-      style={{ flex: 34, minWidth: 260 }}
+      style={{ flex: 34, minWidth: 180 }}
     />
     <SelectMenu
       label="Filter by category"

@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { useId } from "react";
-import { Modal, Platform, Pressable, ScrollView, Text, View, useWindowDimensions } from "react-native";
+import { Modal, Platform, Pressable, ScrollView, Text, View } from "react-native";
 
+import { useModalFrame } from "@/hooks/useModalFrame";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 import { PROFILE_COLORS as C, PROFILE_RADIUS, PROFILE_SHADOW } from "../config/profileTheme";
 import { ChangePasswordForm } from "./ChangePasswordForm";
@@ -20,7 +21,7 @@ export const ChangePasswordModal = ({
   onClose,
   onSuccess,
 }: ChangePasswordModalProps) => {
-  const { width, height } = useWindowDimensions();
+  const frame = useModalFrame(MODAL_WIDTH);
   const titleId = useId();
 
   const changePasswordState = useChangePassword({
@@ -40,8 +41,6 @@ export const ChangePasswordModal = ({
   const attachFocusTrap = useFocusTrap(visible);
 
   if (!visible) return null;
-
-  const modalWidth = Math.min(MODAL_WIDTH, width - 32);
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={handleClose}>
@@ -67,8 +66,8 @@ export const ChangePasswordModal = ({
           accessibilityLabelledBy={titleId}
           {...Platform.select({ web: { role: "dialog", "aria-modal": true } as object })}
           style={{
-            width: modalWidth,
-            maxHeight: Math.round(height * 0.9),
+            width: frame.width,
+            maxHeight: frame.maxHeight,
             borderRadius: PROFILE_RADIUS.modal,
             backgroundColor: C.surface,
             overflow: "hidden",

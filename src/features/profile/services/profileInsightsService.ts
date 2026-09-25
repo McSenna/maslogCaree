@@ -1,4 +1,4 @@
-import type { UserRole } from "@/data/mockUsers";
+import type { UserRole } from "@/config/roleRoutes";
 import { fetchMyAppointments, fetchQueueOverview } from "@/services/appointments";
 import { fetchMyMedicalRecords } from "@/services/medicalRecords";
 import { fetchNotifications } from "@/services/notifications";

@@ -1,25 +1,23 @@
 import type { ReactNode } from "react";
 import { View } from "react-native";
-import { DASHBOARD_BREAKPOINTS } from "@/design/adminDashboardTheme";
+import { ANALYTICS_FLEX } from "../../constants/dashboardLayout";
 import GridCell from "../GridCell";
 
 const AnalyticsRow = ({
   registrationPanel,
   activityTrendPanel,
-  isMobile,
-  availableWidth,
+  sideBySide,
   gap,
 }: {
   registrationPanel: ReactNode;
   activityTrendPanel: ReactNode;
-  isMobile: boolean;
-  availableWidth: number;
+  sideBySide: boolean;
   gap: number;
 }) =>
-  !isMobile && availableWidth >= DASHBOARD_BREAKPOINTS.twoPanelColumns ? (
+  sideBySide ? (
     <View style={{ flexDirection: "row", gap }}>
-      <GridCell flex={1.9}>{registrationPanel}</GridCell>
-      <GridCell flex={1}>{activityTrendPanel}</GridCell>
+      <GridCell flex={ANALYTICS_FLEX.registrations}>{registrationPanel}</GridCell>
+      <GridCell flex={ANALYTICS_FLEX.activity}>{activityTrendPanel}</GridCell>
     </View>
   ) : (
     <View style={{ gap }}>
