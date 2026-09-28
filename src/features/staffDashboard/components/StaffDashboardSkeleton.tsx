@@ -56,12 +56,14 @@ const StaffDashboardSkeleton = ({
   palette,
   metricColumns,
   twoPanelRow,
+  wideLayout = false,
   gap,
   showSplit,
 }: {
   palette: AdminDashboardPalette;
   metricColumns: 2 | 4;
   twoPanelRow: boolean;
+  wideLayout?: boolean;
   gap: number;
   showSplit: boolean;
 }) => {
@@ -105,13 +107,33 @@ const StaffDashboardSkeleton = ({
   );
 
   const list = (
-    <PanelShell palette={palette}>
+    <PanelShell palette={palette} flex={wideLayout ? 1 : undefined}>
       <Skeleton className="h-3.5 w-36" />
       <RowSkeleton />
       <RowSkeleton />
       <RowSkeleton />
     </PanelShell>
   );
+
+  if (wideLayout && !showSplit) {
+    return (
+      <View style={{ gap }}>
+        {metrics}
+        <View style={{ flexDirection: "row", gap }}>
+          <PanelShell palette={palette} flex={2}>
+            <Skeleton className="h-3.5 w-40" />
+            <Skeleton className="h-7 w-20" />
+            <Skeleton className="h-[180px] w-full" style={{ borderRadius: 12 }} />
+          </PanelShell>
+          {list}
+        </View>
+        <View style={{ flexDirection: "row", gap }}>
+          {list}
+          {list}
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={{ gap }}>
@@ -129,8 +151,18 @@ const StaffDashboardSkeleton = ({
         </View>
       )}
 
-      {list}
-      {list}
+      {wideLayout ? (
+        <View style={{ flexDirection: "row", gap }}>
+          {list}
+          {list}
+          {list}
+        </View>
+      ) : (
+        <>
+          {list}
+          {list}
+        </>
+      )}
     </View>
   );
 };

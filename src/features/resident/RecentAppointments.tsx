@@ -11,6 +11,7 @@ type RecentAppointmentsProps = {
   onViewAll: () => void;
   onAppointmentPress: (appointment: AppointmentRecord) => void;
   stacked?: boolean;
+  fill?: boolean;
 };
 
 const RecentAppointments = ({
@@ -18,8 +19,9 @@ const RecentAppointments = ({
   onViewAll,
   onAppointmentPress,
   stacked = false,
+  fill = false,
 }: RecentAppointmentsProps) => (
-  <DashboardCard>
+  <DashboardCard fill={fill}>
     <SectionHeader title="Recent Appointments" actionLabel="View All" onActionPress={onViewAll} />
 
     {appointments.length === 0 ? (

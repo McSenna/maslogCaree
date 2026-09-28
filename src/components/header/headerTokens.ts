@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import { PALETTE } from "@/theme/palette";
 
 export type HeaderPalette = {
   background: string;
@@ -22,13 +23,13 @@ export const HEADER_COLORS: Record<"light" | "dark", HeaderPalette> = {
     background: "#FFFFFF",
     border: "#E8EEF5",
     divider: "#E5EAF2",
-    brand: "#1677FF",
+    brand: PALETTE.blue[600],
     title: "#0F2557",
     muted: "#64748B",
     icon: "#0F2557",
     avatarRing: "#E5EAF2",
     avatarFallbackBg: "#E7F1FF",
-    avatarFallbackIcon: "#1677FF",
+    avatarFallbackIcon: PALETTE.blue[600],
     menuBg: "#FFFFFF",
     menuBorder: "#E5EAF2",
     menuHover: "#F1F6FD",

@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
-import { DashboardDate, DashboardErrorState } from "@/components/dashboard/admin";
+import { DashboardErrorState } from "@/components/dashboard/admin";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { useStaffDashboard } from "@/hooks/useStaffDashboard";
@@ -48,27 +48,34 @@ const StaffDashboardScreen = ({ role }: { role: StaffRole }) => {
         }
       >
         <View
-          style={{ width: "100%", maxWidth: 1920, alignSelf: "center", minWidth: 0 }}
+          style={{ width: "100%", alignSelf: "center", minWidth: 0 }}
           onLayout={layout.measure}
         >
           <View style={{ gap: layout.isMobile ? 16 : 20 }}>
-            {!layout.isMobile ? <DashboardDate palette={palette} /> : null}
-
             {error && data ? (
-              <DashboardErrorState palette={palette} onRetry={reload} variant="banner" />
+              <DashboardErrorState
+                palette={palette}
+                onRetry={refresh}
+                retrying={refreshing}
+                message={error}
+                variant="banner"
+              />
             ) : null}
 
             {loading && !data ? (
               <StaffDashboardSkeleton
                 palette={palette}
                 metricColumns={layout.metricColumns}
-                twoPanelRow={layout.twoPanelRow}
+                twoPanelRow={layout.chartSideBySide}
+                wideLayout={layout.wideLayout}
                 gap={layout.gap}
                 showSplit={config.showServiceSplit}
               />
             ) : null}
 
-            {error && !data ? <DashboardErrorState palette={palette} onRetry={reload} /> : null}
+            {error && !data && !loading ? (
+              <DashboardErrorState palette={palette} onRetry={reload} message={error} />
+            ) : null}
 
             {data ? (
               <StaffDashboardBody

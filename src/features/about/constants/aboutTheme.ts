@@ -1,3 +1,5 @@
+import { PALETTE } from "@/theme/palette";
+
 export const HC = {
   teal: "#0B7A75",
   tealLight: "#14A89F",
@@ -14,7 +16,7 @@ export const HC = {
   white: "#FFFFFF",
   offWhite: "#F4F9F9",
   slate: "#64748B",
-  slateLight: "#94A3B8",
+  slateLight: PALETTE.slate[500],
   border: "#D1EAE9",
   shadow: "#0B7A75",
 };

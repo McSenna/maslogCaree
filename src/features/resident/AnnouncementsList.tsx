@@ -9,6 +9,7 @@ type AnnouncementsListProps = {
   announcements: Announcement[];
   onViewAll: () => void;
   onAnnouncementPress: (announcement: Announcement) => void;
+  fill?: boolean;
 };
 
 const AnnouncementItem = ({
@@ -61,8 +62,9 @@ const AnnouncementsList = ({
   announcements,
   onViewAll,
   onAnnouncementPress,
+  fill = false,
 }: AnnouncementsListProps) => (
-  <DashboardCard>
+  <DashboardCard fill={fill}>
     <SectionHeader title="Latest Announcements" actionLabel="View All" onActionPress={onViewAll} />
 
     {announcements.length === 0 ? (

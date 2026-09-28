@@ -6,7 +6,7 @@ export const AUTH_INPUT_COLORS = {
   border: "#D9E3EF",
   borderHover: "#B9CBE4",
   surface: "#F8FAFC",
-  placeholder: "#8A9BA8",
+  placeholder: "#64748B",
   icon: "#64748B",
   error: "#DC2626",
   errorSurface: "#FEF7F7",
@@ -16,7 +16,7 @@ export const AUTH_INPUT_COLORS = {
   label: "#334155",
 } as const;
 
-export const FOCUS_RING = "0px 0px 0px 3px rgba(8, 102, 245, 0.16)";
+export const FOCUS_RING = "0px 0px 0px 3px rgba(21, 101, 216, 0.16)";
 
 export const ERROR_RING = "0px 0px 0px 3px rgba(220, 38, 38, 0.14)";
 
@@ -93,6 +93,6 @@ export const authInputStyles = StyleSheet.create({
       }),
   },
   eyeButtonActive: {
-    backgroundColor: "rgba(8, 102, 245, 0.10)",
+    backgroundColor: "rgba(21, 101, 216, 0.10)",
   },
 });

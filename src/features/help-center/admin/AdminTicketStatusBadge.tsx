@@ -5,6 +5,7 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import { supportStatusLabel } from "../utils/support.utils";
 import type { SupportStatus } from "../types/support.types";
+import { PALETTE } from "@/theme/palette";
 
 type AdminTicketStatusBadgeProps = {
   status: SupportStatus;
@@ -16,8 +17,8 @@ const getStatusTone = (status: SupportStatus, isDark: boolean) => {
       return {
         bg: isDark ? "rgba(2, 132, 199, 0.16)" : "#E0F2FE",
         border: isDark ? "rgba(56, 189, 248, 0.3)" : "#BAE6FD",
-        text: isDark ? "#38BDF8" : "#0284C7",
-        dot: "#0284C7",
+        text: isDark ? "#38BDF8" : PALETTE.blue[600],
+        dot: PALETTE.blue[600],
       };
     case "in_review":
       return {

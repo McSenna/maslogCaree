@@ -4,6 +4,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { AppointmentRecord } from "@/services/appointments";
 import { getStatusLabel } from "@/components/status/appointmentStatusModel";
+import { PALETTE } from "@/theme/palette";
 
 export const TWO_COLUMN_WIDTH = 1100;
 export const TABLE_WIDTH = 820;
@@ -53,30 +54,31 @@ export const useQueuePalette = () => {
 
   return useMemo(() => {
     const isDark = resolvedTheme === "dark";
+    const base = getAdminDashboardPalette(resolvedTheme);
 
     return {
       isDark,
-      pageBg: getAdminDashboardPalette(resolvedTheme).pageBg,
-      rowHover: isDark ? "#0B1220" : "#F5F9FF",
-      panelBg: isDark ? "#0F172A" : "#FFFFFF",
-      panelBorder: isDark ? "#1E293B" : "#E4ECF5",
-      divider: isDark ? "#1E293B" : "#EEF3FA",
-      heading: isDark ? "#F8FAFC" : "#0F2A65",
-      body: isDark ? "#CBD5E1" : "#334155",
-      muted: isDark ? "#94A3B8" : "#64748B",
-      subtle: isDark ? "#64748B" : "#94A3B8",
-      primary: isDark ? "#60A5FA" : "#1F7AF8",
-      primarySoft: isDark ? "rgba(37,99,235,0.16)" : "#EAF4FF",
+      pageBg: base.pageBg,
+      rowHover: isDark ? "#0B1220" : PALETTE.blue[50],
+      panelBg: base.cardBg,
+      panelBorder: base.cardBorder,
+      divider: base.divider,
+      heading: base.heading,
+      body: base.body,
+      muted: base.muted,
+      subtle: base.subtle,
+      primary: base.primary,
+      primarySoft: isDark ? "rgba(21,101,216,0.18)" : PALETTE.blue[50],
       tones: {
-        blue: { bg: isDark ? "rgba(37,99,235,0.16)" : "#EAF2FF", fg: isDark ? "#93C5FD" : "#1F7AF8" },
-        green: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#10B981" },
+        blue: { bg: isDark ? "rgba(21,101,216,0.18)" : PALETTE.blue[50], fg: isDark ? PALETTE.blue[300] : PALETTE.blue[600] },
+        green: { bg: isDark ? "rgba(19,147,132,0.16)" : PALETTE.teal[50], fg: isDark ? PALETTE.teal[300] : PALETTE.teal[600] },
         purple: { bg: isDark ? "rgba(139,92,246,0.16)" : "#F1ECFF", fg: isDark ? "#C4B5FD" : "#8B5CF6" },
         amber: { bg: isDark ? "rgba(245,158,11,0.14)" : "#FFF4E0", fg: isDark ? "#FCD34D" : "#F59E0B" },
       } as Record<StatTone, { bg: string; fg: string }>,
       statuses: {
         pending: { bg: isDark ? "rgba(245,158,11,0.16)" : "#FFF4E0", fg: isDark ? "#FCD34D" : "#B45309", dot: "#F59E0B" },
         confirmed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },
-        rescheduled: { bg: isDark ? "rgba(37,99,235,0.16)" : "#EAF2FF", fg: isDark ? "#93C5FD" : "#1D4ED8", dot: "#1F7AF8" },
+        rescheduled: { bg: isDark ? "rgba(37,99,235,0.16)" : "#EAF2FF", fg: isDark ? "#93C5FD" : PALETTE.blue[700], dot: PALETTE.blue[600] },
         declined: { bg: isDark ? "rgba(239,68,68,0.14)" : "#FEF1F1", fg: isDark ? "#FCA5A5" : "#B91C1C", dot: "#EF4444" },
         processing: { bg: isDark ? "rgba(139,92,246,0.16)" : "#F1ECFF", fg: isDark ? "#C4B5FD" : "#6D28D9", dot: "#8B5CF6" },
         completed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },

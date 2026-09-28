@@ -54,7 +54,7 @@ const AdminSupportEmptyState = ({ hasFilters, onClearFilters }: AdminSupportEmpt
       >
         {hasFilters
           ? "There are currently no support requests matching your search query or filters."
-          : "All resident and user support concerns have been processed. Great job!"}
+          : "Every support request has been handled. New requests will appear here."}
       </Text>
 
       {hasFilters && onClearFilters ? (

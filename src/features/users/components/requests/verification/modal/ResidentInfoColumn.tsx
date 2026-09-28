@@ -6,6 +6,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import type { UserRequestDetail } from "../../../../services/userRequestsService";
 import InfoTile from "./InfoTile";
 import VerificationStatusPill from "./VerificationStatusPill";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   resident?: UserRequestDetail["resident"];
@@ -33,7 +34,7 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
     <View className="flex-1 gap-4">
       <View className="flex-row items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
         <View className="flex-row items-center gap-2">
-          <Feather name="user" size={15} color="#2563EB" />
+          <Feather name="user" size={15} color={PALETTE.blue[600]} />
           <Text className="text-[14px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
             Resident Information
           </Text>

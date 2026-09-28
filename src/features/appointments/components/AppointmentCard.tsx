@@ -13,6 +13,7 @@ import {
   medicalRecordIdOf,
   residentStatusLabel,
 } from "../appointmentPresenter";
+import { PALETTE } from "@/theme/palette";
 
 export type AppointmentCardProps = {
   appointment: AppointmentRecord;
@@ -100,17 +101,17 @@ const AppointmentCard = ({
                 paddingHorizontal: 10,
                 paddingVertical: 6,
                 borderRadius: 8,
-                backgroundColor: palette.isDark ? "rgba(2, 132, 199, 0.2)" : "rgba(2, 132, 199, 0.1)",
+                backgroundColor: palette.primarySoft,
                 borderWidth: 1,
-                borderColor: palette.isDark ? "rgba(2, 132, 199, 0.4)" : "rgba(2, 132, 199, 0.25)",
+                borderColor: palette.isDark ? "rgba(90, 150, 242, 0.4)" : PALETTE.blue[200],
               }}
             >
               <MaterialCommunityIcons
                 name="clipboard-pulse-outline"
                 size={14}
-                color="#0284C7"
+                color={palette.primary}
               />
-              <Text style={{ fontSize: 12, fontWeight: "600", color: "#0284C7" }}>
+              <Text style={{ fontSize: 12, fontWeight: "600", color: palette.primary }}>
                 View Medical Details
               </Text>
             </Pressable>
@@ -132,13 +133,13 @@ const AppointmentCard = ({
                 paddingHorizontal: 10,
                 paddingVertical: 6,
                 borderRadius: 8,
-                backgroundColor: palette.isDark ? "rgba(2, 132, 199, 0.15)" : "#F0F9FF",
+                backgroundColor: palette.primarySoft,
                 borderWidth: 1,
-                borderColor: palette.isDark ? "rgba(2, 132, 199, 0.3)" : "#BAE6FD",
+                borderColor: palette.isDark ? "rgba(90, 150, 242, 0.4)" : PALETTE.blue[200],
               }}
             >
-              <Feather name="calendar" size={13} color="#0284C7" />
-              <Text style={{ fontSize: 12, fontWeight: "600", color: "#0284C7" }}>
+              <Feather name="calendar" size={13} color={palette.primary} />
+              <Text style={{ fontSize: 12, fontWeight: "600", color: palette.primary }}>
                 Reschedule
               </Text>
             </Pressable>

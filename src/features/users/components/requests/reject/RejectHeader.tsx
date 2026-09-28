@@ -28,6 +28,9 @@ const RejectHeader = ({
     <Pressable
       onPress={loading ? undefined : onCancel}
       accessibilityRole="button"
+      accessibilityLabel="Close"
+      accessibilityState={{ disabled: loading }}
+      hitSlop={8}
       className="w-7 h-7 rounded-full items-center justify-center bg-slate-100 dark:bg-slate-800"
     >
       <Feather name="x" size={14} color="#64748B" />

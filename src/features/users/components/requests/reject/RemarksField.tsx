@@ -1,4 +1,5 @@
 import { Text, TextInput, View } from "react-native";
+import { PALETTE } from "@/theme/palette";
 
 const RemarksField = ({
   remarks,
@@ -23,7 +24,7 @@ const RemarksField = ({
       value={remarks}
       onChangeText={onChangeText}
       placeholder="Enter remarks explaining what the resident needs to correct..."
-      placeholderTextColor="#94A3B8"
+      placeholderTextColor={PALETTE.slate[500]}
       multiline
       numberOfLines={3}
       style={{

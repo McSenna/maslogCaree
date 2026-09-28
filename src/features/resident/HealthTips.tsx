@@ -10,6 +10,7 @@ type HealthTipsProps = {
   onSeeMore: () => void;
   onLearnMore: () => void;
   stacked?: boolean;
+  fill?: boolean;
 };
 
 const TipsArtwork = ({ size }: { size: number }) => (
@@ -65,8 +66,8 @@ const TipsArtwork = ({ size }: { size: number }) => (
   </View>
 );
 
-const HealthTips = ({ tip, onSeeMore, onLearnMore, stacked = false }: HealthTipsProps) => (
-  <DashboardCard>
+const HealthTips = ({ tip, onSeeMore, onLearnMore, stacked = false, fill = false }: HealthTipsProps) => (
+  <DashboardCard fill={fill}>
     <SectionHeader title="Health Tips" actionLabel="See More" onActionPress={onSeeMore} />
 
     <View className={`mt-3.5 w-full ${stacked ? "gap-3" : "flex-row items-center gap-3"}`}>

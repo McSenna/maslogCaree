@@ -5,6 +5,7 @@ import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { getStatusLabel } from "@/components/status/appointmentStatusModel";
 
 import { STATUS_ICON, STATUS_TONE } from "./recordPresentation";
+import { PALETTE } from "@/theme/palette";
 
 export type RecordCardProps = {
   typeLabel: string;
@@ -70,13 +71,13 @@ const RecordCard = ({
             <MaterialCommunityIcons
               name="clipboard-pulse-outline"
               size={14}
-              color="#0284C7"
+              color={PALETTE.blue[600]}
             />
             <Text className="text-xs font-semibold text-sky-700">
               View Medical Details
             </Text>
           </View>
-          <Feather name="chevron-right" size={16} color="#0284C7" />
+          <Feather name="chevron-right" size={16} color={PALETTE.blue[600]} />
         </View>
       ) : null}
     </>

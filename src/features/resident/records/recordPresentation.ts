@@ -1,5 +1,6 @@
 import type { ComponentProps } from "react";
 import type { Feather } from "@expo/vector-icons";
+import { PALETTE } from "@/theme/palette";
 
 export type IconName = ComponentProps<typeof Feather>["name"];
 
@@ -40,7 +41,7 @@ export const STATUS_TONE: Record<string, { bg: string; text: string; icon: strin
 export type StatTone = "blue" | "amber" | "teal";
 
 export const STAT_TONE: Record<StatTone, { bg: string; icon: string; value: string }> = {
-  blue: { bg: "bg-blue-50", icon: "#2D5BFF", value: "text-blue-600" },
+  blue: { bg: "bg-blue-50", icon: PALETTE.blue[600], value: "text-blue-600" },
   amber: { bg: "bg-amber-50", icon: "#D97706", value: "text-amber-600" },
   teal: { bg: "bg-teal-50", icon: "#0D9488", value: "text-teal-600" },
 };

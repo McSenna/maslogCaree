@@ -89,3 +89,38 @@ export const compareTrailingWindows = (trend: TrendPoint[], windowSize: number):
     trend: calculateTrend(currentTotal, previousTotal),
   };
 };
+
+/** The backend keys monthly buckets as `YYYY-M` (e.g. "2026-9"); month is 1-based. */
+export const parseMonthKey = (key: string): { year: number; month: number } | null => {
+  const match = /^(\d{4})-(\d{1,2})$/.exec(key);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  return month >= 1 && month <= 12 ? { year, month } : null;
+};
+
+/** "September 2026", falling back to the expanded label when the key can't be read. */
+export const formatMonthYear = (point: TrendPoint): string => {
+  const parsed = parseMonthKey(point.key);
+  return parsed ? `${expandMonth(point.label)} ${parsed.year}` : expandMonth(point.label);
+};
+
+/** True for the bucket of the month that is still in progress, whose count is month-to-date. */
+export const isCurrentMonth = (point: TrendPoint, now: Date = new Date()): boolean => {
+  const parsed = parseMonthKey(point.key);
+  return parsed !== null && parsed.year === now.getFullYear() && parsed.month === now.getMonth() + 1;
+};
+
+/** "Apr – Sep 2026", or "Nov 2025 – Apr 2026" when the window crosses a year. */
+export const monthRangeLabel = (points: TrendPoint[]): string => {
+  if (points.length === 0) return "";
+  const first = points[0];
+  const last = points[points.length - 1];
+  const a = parseMonthKey(first.key);
+  const b = parseMonthKey(last.key);
+  if (!a || !b) return `${first.label} – ${last.label}`;
+  if (points.length === 1) return `${last.label} ${b.year}`;
+  return a.year === b.year
+    ? `${first.label} – ${last.label} ${b.year}`
+    : `${first.label} ${a.year} – ${last.label} ${b.year}`;
+};

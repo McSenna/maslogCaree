@@ -1,4 +1,5 @@
 import type { StoredTheme } from "@/utils/storage";
+import { PALETTE } from "@/theme/palette";
 
 export type BottomNavPalette = {
   surface: string;
@@ -14,7 +15,7 @@ export type BottomNavPalette = {
 const LIGHT: BottomNavPalette = {
   surface: "#FFFFFF",
   border: "#E2E8F0",
-  active: "#2563EB",
+  active: PALETTE.blue[600],
   activePill: "#EFF6FF",
   inactive: "#64748B",
   shadow: "0px -2px 14px rgba(15, 23, 42, 0.06)",

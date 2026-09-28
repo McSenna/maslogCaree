@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { PALETTE } from "@/theme/palette";
 
 type AdminSupportHeaderProps = {
   total: number;
@@ -45,7 +46,7 @@ const AdminSupportHeader = ({ total, refreshing, onRefresh }: AdminSupportHeader
               style={{
                 fontSize: 12,
                 fontWeight: "600",
-                color: palette.isDark ? "#38BDF8" : "#0284C7",
+                color: palette.isDark ? "#38BDF8" : PALETTE.blue[600],
               }}
             >
               {total} {total === 1 ? "Ticket" : "Tickets"}

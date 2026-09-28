@@ -1,5 +1,6 @@
 import { useEffect, useMemo, type ReactNode } from "react";
 import { View } from "react-native";
+import { usePathname } from "expo-router";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,7 +11,8 @@ import { ROLE_LAYOUT_PADDING } from "@/constants/layout";
 import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
 import AppHeader from "@/components/header/AppHeader";
 import { getHeaderPalette } from "@/components/header/headerTokens";
-import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { DASHBOARD_MAX_WIDTH, getAdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { CONTENT_MAX_WIDTH } from "@/theme/breakpoints";
 import AppStatusBar from "./AppStatusBar";
 import ResponsiveContainer from "./ResponsiveContainer";
 import ScreenTransition from "./ScreenTransition";
@@ -35,6 +37,7 @@ const RoleLayout = ({
   roleLabel,
 }: RoleLayoutProps) => {
   const { isMobile } = useResponsive();
+  const isDashboard = usePathname().endsWith("/dashboard");
   const bottomNav = useBottomNavMetrics();
 
   const { user } = useAuth();
@@ -103,7 +106,11 @@ const RoleLayout = ({
                 : ROLE_LAYOUT_PADDING.desktop.bottom,
             }}
           >
-            <ResponsiveContainer padded={false} style={{ flex: 1 }}>
+            <ResponsiveContainer
+              padded={false}
+              maxWidth={isDashboard ? DASHBOARD_MAX_WIDTH : CONTENT_MAX_WIDTH}
+              style={{ flex: 1 }}
+            >
               <ScreenTransition>{children}</ScreenTransition>
             </ResponsiveContainer>
           </View>

@@ -6,6 +6,7 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import { formatTicketDateTime } from "../../utils/support.utils";
 import type { SupportMessage } from "../../types/support.types";
+import { PALETTE } from "@/theme/palette";
 
 type AdminSupportConversationProps = {
   messages: SupportMessage[];
@@ -87,7 +88,7 @@ const AdminSupportConversation = ({ messages }: AdminSupportConversationProps) =
                           color: isStaff
                             ? palette.isDark
                               ? "#38BDF8"
-                              : "#0284C7"
+                              : PALETTE.blue[600]
                             : palette.muted,
                         }}
                       >

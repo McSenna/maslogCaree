@@ -13,6 +13,7 @@ type UpcomingAppointmentProps = {
   onViewAll: () => void;
   onViewDetails: (appointment: NextAppointment) => void;
   stacked?: boolean;
+  fill?: boolean;
 };
 
 const formatSlotTime = (iso: string | null): string => {
@@ -36,6 +37,7 @@ const UpcomingAppointment = ({
   onViewAll,
   onViewDetails,
   stacked = false,
+  fill = false,
 }: UpcomingAppointmentProps) => {
   const detailsButton = appointment ? (
     <Pressable
@@ -57,7 +59,7 @@ const UpcomingAppointment = ({
   ) : null;
 
   return (
-    <DashboardCard>
+    <DashboardCard fill={fill}>
       <SectionHeader title="My Upcoming Appointment" actionLabel="View All" onActionPress={onViewAll} />
 
       {!appointment ? (

@@ -23,6 +23,7 @@ const SelectField = ({
             <Pressable
               key={option.value}
               onPress={() => !disabled && onChange(selected ? null : option.value)}
+              hitSlop={{ top: 6, bottom: 6 }}
               accessibilityRole="radio"
               accessibilityState={{ selected, disabled }}
               accessibilityLabel={option.label}

@@ -44,6 +44,16 @@ export const fetchMyAppointments = async (): Promise<AppointmentRecord[]> => {
   return data.appointments ?? [];
 };
 
+// The stat cards index these objects by key, so a response without them must
+// read as zeros rather than crash the whole role shell.
+const EMPTY_QUEUE_STATS: QueueOverview["stats"] = { today: 0, pending: 0, upcoming: 0, declined: 0 };
+const EMPTY_STATUS_COUNTS: QueueOverview["statusCounts"] = {
+  pending: 0,
+  confirmed: 0,
+  rescheduled: 0,
+  declined: 0,
+};
+
 export const fetchQueueOverview = async (
   options?: { categoryKey?: string }
 ): Promise<QueueOverview> => {
@@ -53,8 +63,8 @@ export const fetchQueueOverview = async (
   );
   return {
     queueRole: data.queueRole,
-    stats: data.stats,
-    statusCounts: data.statusCounts,
+    stats: { ...EMPTY_QUEUE_STATS, ...data.stats },
+    statusCounts: { ...EMPTY_STATUS_COUNTS, ...data.statusCounts },
     schedule: data.schedule ?? [],
     breakdown: data.breakdown ?? [],
   };

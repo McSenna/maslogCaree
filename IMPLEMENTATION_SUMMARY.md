@@ -27,7 +27,7 @@ padding: var(--spacing-lg);
 
 // Inline styles (recommended for RN)
 style={{
-  backgroundColor: "#3757FF",
+  backgroundColor: "#1565D8",
   padding: 16,
   borderRadius: 16,
 }}

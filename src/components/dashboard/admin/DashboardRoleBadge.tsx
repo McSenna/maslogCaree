@@ -1,5 +1,10 @@
 import { Text, View } from "react-native";
-import { ROLE_BADGE_TINTS, ROLE_COLORS, ROLE_LABELS } from "@/design/adminDashboardTheme";
+import {
+  ROLE_BADGE_TINTS,
+  ROLE_COLORS,
+  ROLE_LABELS,
+  ROLE_TEXT_COLORS,
+} from "@/design/adminDashboardTheme";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 
 type DashboardRoleBadgeProps = {
@@ -10,12 +15,13 @@ type DashboardRoleBadgeProps = {
 
 const DashboardRoleBadge = ({ role, palette, isDark }: DashboardRoleBadgeProps) => {
   const color = ROLE_COLORS[role] ?? palette.primary;
+  const textColor = ROLE_TEXT_COLORS[isDark ? "dark" : "light"][role] ?? palette.primary;
   const label = ROLE_LABELS[role] ?? role;
   const background = isDark ? `${color}26` : ROLE_BADGE_TINTS[role] ?? palette.divider;
 
   return (
     <View className="self-start rounded-full px-2 py-0.5" style={{ backgroundColor: background }}>
-      <Text className="text-[10.5px] font-semibold" style={{ color }}>
+      <Text className="text-[10.5px] font-semibold" style={{ color: textColor }}>
         {label}
       </Text>
     </View>

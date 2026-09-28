@@ -1,4 +1,5 @@
 import type { Feather } from "@expo/vector-icons";
+import { PALETTE } from "@/theme/palette";
 
 export type Announcement = {
   title: string;
@@ -26,7 +27,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
     date: "March 25, 2026",
     description: "Free vaccination for children ages 0–5 at the Barangay Health Center.",
     icon: "shield",
-    color: "#2D5BFF",
+    color: PALETTE.blue[600],
     bg: "#EFF6FF",
     tag: "Vaccination",
   },

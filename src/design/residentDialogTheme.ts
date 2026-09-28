@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { useTheme } from "@/contexts/ThemeContext";
+import { PALETTE } from "@/theme/palette";
 
 /**
  * Shared tokens for the resident overlays (medical details, reschedule,
@@ -24,7 +25,7 @@ export const useResidentDialogPalette = () => {
       body: isDark ? "#CBD5E1" : "#334155",
       muted: isDark ? "#94A3B8" : "#64748B",
 
-      accent: "#0284C7",
+      accent: PALETTE.blue[600],
       accentSoft: isDark ? "rgba(2,132,199,0.18)" : "rgba(2,132,199,0.10)",
       accentBorder: isDark ? "rgba(2,132,199,0.40)" : "rgba(2,132,199,0.25)",
 

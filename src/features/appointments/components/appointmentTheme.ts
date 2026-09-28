@@ -1,7 +1,9 @@
+import { PALETTE } from "@/theme/palette";
+
 export const APPOINTMENT_COLORS = {
-  primary: "#1D4ED8",
+  primary: PALETTE.blue[700],
   primaryDeep: "#1E3A8A",
-  primaryBright: "#2563EB",
+  primaryBright: PALETTE.blue[600],
   surfaceTint: "#EFF6FF",
   surfaceTintStrong: "#E0EAFB",
   white: "#FFFFFF",
@@ -11,7 +13,7 @@ export const APPOINTMENT_COLORS = {
   divider: "#E8EEF8",
   bodyText: "#1E3A8A",
   mutedText: "#64748B",
-  placeholder: "#9AA8BE",
+  placeholder: "#64748B",
   successBg: "#DCFCE7",
   success: "#16A34A",
   actionGreen: "#15803D",

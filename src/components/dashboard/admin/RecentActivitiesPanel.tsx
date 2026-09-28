@@ -9,6 +9,8 @@ import {
 import { formatDateTime } from "@/utils/dateFormatter";
 import EmptyPanelState from "./EmptyPanelState";
 import PanelCard from "./PanelCard";
+import { PALETTE } from "@/theme/palette";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type RecentActivitiesPanelProps = {
   palette: AdminDashboardPalette;
@@ -32,9 +34,9 @@ const activityVisual = (action: string): ActivityVisual => {
     case "PLATFORM_ACCESS_DENIED":
       return { icon: "smartphone", color: "#F59E0B", tint: "#FEF3C7" };
     case "USER_CREATED":
-      return { icon: "user-plus", color: "#1677FF", tint: "#E5F0FF" };
+      return { icon: "user-plus", color: PALETTE.blue[600], tint: "#E5F0FF" };
     case "USER_UPDATED":
-      return { icon: "edit-2", color: "#1677FF", tint: "#E5F0FF" };
+      return { icon: "edit-2", color: PALETTE.blue[600], tint: "#E5F0FF" };
     case "USER_DELETED":
       return { icon: "user-x", color: "#F43F5E", tint: "#FFE4E9" };
     case "USER_ROLE_CHANGED":
@@ -46,7 +48,7 @@ const activityVisual = (action: string): ActivityVisual => {
     case "RECORD_CREATED":
     case "RECORD_UPDATED":
     case "RECORD_VIEWED":
-      return { icon: "file-text", color: "#1677FF", tint: "#E5F0FF" };
+      return { icon: "file-text", color: PALETTE.blue[600], tint: "#E5F0FF" };
     case "SCHEDULE_CREATED":
     case "SCHEDULE_UPDATED":
     case "SCHEDULE_DELETED":
@@ -63,10 +65,14 @@ const RecentActivitiesPanel = ({
   onViewAll,
   fill = false,
 }: RecentActivitiesPanelProps) => {
+  const isDark = useTheme().resolvedTheme === "dark";
+
   return (
     <PanelCard
       palette={palette}
       title="Recent Activities"
+      icon="activity"
+      subtitle="Latest sign-ins and account changes"
       onViewAll={onViewAll}
       fill={fill}
     >
@@ -84,10 +90,11 @@ const RecentActivitiesPanel = ({
                   <View className="h-px w-full" style={{ backgroundColor: palette.divider }} />
                 ) : null}
 
-                <View className="flex-row items-start gap-3 py-2.5">
+                <View className={`flex-row items-start gap-3 ${compact ? "py-2.5" : "py-2"}`}>
                   <View
                     className="h-9 w-9 shrink-0 items-center justify-center rounded-full"
-                    style={{ backgroundColor: visual.tint }}
+                    // The light tints glare on dark cards; a translucent wash of the icon colour works on both.
+                    style={{ backgroundColor: isDark ? `${visual.color}29` : visual.tint }}
                   >
                     <Feather name={visual.icon} size={16} color={visual.color} />
                   </View>

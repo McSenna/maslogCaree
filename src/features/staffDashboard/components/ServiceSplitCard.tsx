@@ -7,6 +7,8 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { calculatePercentage } from "@/features/adminDashboard/utils/dashboardAnalytics";
 import type { ServiceBreakdownEntry } from "@/services/staffDashboardService";
 
+const visits = (n: number) => `${n.toLocaleString()} ${n === 1 ? "visit" : "visits"}`;
+
 const ServiceSplitCard = ({
   palette,
   breakdown,
@@ -20,6 +22,11 @@ const ServiceSplitCard = ({
   const isDark = resolvedTheme === "dark";
 
   const total = breakdown.reduce((sum, entry) => sum + entry.completed, 0);
+  const rows = breakdown.map((entry) => ({
+    ...entry,
+    percent: calculatePercentage(entry.completed, total),
+    color: serviceColor(entry.key, isDark, palette.primary),
+  }));
 
   return (
     <PanelCard
@@ -28,7 +35,6 @@ const ServiceSplitCard = ({
       icon="pie-chart"
       subtitle="Completed visits · last 30 days"
       fill={fill}
-      centerContent
     >
       {total <= 0 ? (
         <EmptyPanelState
@@ -37,54 +43,71 @@ const ServiceSplitCard = ({
           message="No completed visits in the last 30 days."
         />
       ) : (
-        <View className="w-full gap-4">
-          {breakdown.map((entry) => {
-            const percent = calculatePercentage(entry.completed, total);
-            const color = serviceColor(entry.key, isDark, palette.primary);
+        <View className="w-full gap-5">
+          <View>
+            <Text
+              className="text-[30px] font-bold"
+              accessibilityLabel={`${visits(total)} completed in the last 30 days`}
+              style={{ color: palette.heading, lineHeight: 36, fontVariant: ["tabular-nums"] }}
+            >
+              {total.toLocaleString()}
+            </Text>
+            <Text className="text-[12.5px] font-medium" style={{ color: palette.muted }}>
+              completed across {rows.length} {rows.length === 1 ? "service" : "services"}
+            </Text>
+          </View>
 
-            return (
+          {/* One bar split by share, so the proportions are read against the same whole. */}
+          <View
+            className="h-3 w-full flex-row overflow-hidden rounded-full"
+            style={{ backgroundColor: palette.divider, gap: 2 }}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          >
+            {rows
+              .filter((row) => row.completed > 0)
+              .map((row) => (
+                <View key={row.key} style={{ flexGrow: row.completed, backgroundColor: row.color }} />
+              ))}
+          </View>
+
+          <View className="w-full">
+            {rows.map((row, index) => (
               <View
-                key={entry.key}
-                className="w-full gap-2"
-                accessibilityRole="text"
-                accessibilityLabel={`${entry.label}: ${entry.completed} completed, ${percent} percent`}
+                key={row.key}
+                className="w-full flex-row items-center gap-3 py-2.5"
+                style={{ borderTopWidth: index > 0 ? 1 : 0, borderColor: palette.divider }}
+                accessible
+                accessibilityLabel={`${row.label}: ${visits(row.completed)} completed, ${row.percent} percent. ${row.today} scheduled today.`}
               >
-                <View className="flex-row items-center gap-2.5">
-                  <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+                <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: row.color }} />
+                <View className="min-w-0 flex-1">
                   <Text
-                    className="min-w-0 flex-1 text-[13px] font-medium"
+                    className="text-[13.5px] font-semibold"
                     numberOfLines={1}
-                    style={{ color: palette.body }}
+                    style={{ color: palette.heading }}
                   >
-                    {entry.label}
+                    {row.label}
                   </Text>
-                  <Text className="text-[13px] font-bold tabular-nums" style={{ color: palette.heading }}>
-                    {percent}%
-                  </Text>
-                  <Text
-                    className="w-8 text-right text-[12px] font-medium tabular-nums"
-                    style={{ color: palette.subtle }}
-                  >
-                    {entry.completed}
+                  <Text className="text-[12px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
+                    {row.today} scheduled today
                   </Text>
                 </View>
-
-                <View
-                  className="h-2 w-full overflow-hidden rounded-full"
-                  style={{ backgroundColor: palette.divider }}
+                <Text
+                  className="text-[13.5px] font-bold"
+                  style={{ color: palette.heading, fontVariant: ["tabular-nums"] }}
                 >
-                  <View
-                    style={{
-                      width: `${Math.max(percent, entry.completed > 0 ? 2 : 0)}%`,
-                      height: "100%",
-                      borderRadius: 999,
-                      backgroundColor: color,
-                    }}
-                  />
-                </View>
+                  {row.completed.toLocaleString()}
+                </Text>
+                <Text
+                  className="w-11 text-right text-[12.5px] font-semibold"
+                  style={{ color: palette.subtle, fontVariant: ["tabular-nums"] }}
+                >
+                  {row.percent}%
+                </Text>
               </View>
-            );
-          })}
+            ))}
+          </View>
         </View>
       )}
     </PanelCard>

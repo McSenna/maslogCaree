@@ -76,6 +76,7 @@ const MedicalRecordFilters = ({
             <Pressable
               key={filter.key}
               onPress={() => onChange({ ...value, service: filter.key })}
+              hitSlop={{ top: 6, bottom: 6 }}
               accessibilityRole="button"
               accessibilityState={{ selected: active }}
               accessibilityLabel={`Show ${filter.label}`}

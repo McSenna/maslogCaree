@@ -1,4 +1,5 @@
 import type { MaterialCommunityIcons } from "@expo/vector-icons";
+import { PALETTE } from "@/theme/palette";
 
 type MaterialIconName = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -12,7 +13,7 @@ const SERVICE_VISUALS: Record<string, ServiceVisual> = {
   general_checkup: {
     icon: "stethoscope",
     tint: { light: "#EAF2FF", dark: "rgba(37,99,235,0.16)" },
-    fg: { light: "#1F7AF8", dark: "#93C5FD" },
+    fg: { light: PALETTE.blue[600], dark: "#93C5FD" },
   },
   consultation: {
     icon: "clipboard-text-outline",

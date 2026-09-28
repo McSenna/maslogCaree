@@ -6,6 +6,7 @@ export const fetchOrganizationMembers = async (): Promise<
   OrganizationMember[]
 > => {
   const response = await api.get<OrganizationMember[]>("/organizations");
-  return response.data;
+  // The About page filters this list; anything but an array would crash it.
+  return Array.isArray(response.data) ? response.data : [];
 };
 

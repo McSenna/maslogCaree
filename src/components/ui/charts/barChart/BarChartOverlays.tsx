@@ -1,6 +1,6 @@
 import { Platform, Pressable, Text, View } from "react-native";
 
-import { TICKS, type BarLayout } from "./barChartLayout";
+import { barHeight, TICKS, type BarLayout } from "./barChartLayout";
 import type { SimpleBarDatum } from "./barChartTypes";
 
 type SharedProps = {
@@ -16,7 +16,7 @@ const centeredLabel = (layout: BarLayout, index: number) => ({
   left: layout.slotCenter(index) - layout.slot / 2,
   width: layout.slot,
   textAlign: "center" as const,
-  fontSize: 10,
+  fontSize: 11,
 });
 
 export const BarChartYAxis = ({
@@ -47,8 +47,9 @@ export const BarChartYAxis = ({
           left: 0,
           right: 0,
           textAlign: "right",
-          fontSize: 10,
+          fontSize: 11,
           color: tickColor,
+          fontVariant: ["tabular-nums"],
         }}
       >
         {Math.round(axisMax * t)}
@@ -57,27 +58,40 @@ export const BarChartYAxis = ({
   </View>
 );
 
+/** Each bar's value, printed just above the bar. */
 export const BarChartValues = ({
   data,
   layout,
   peakIdx,
   accentColor,
   tickColor,
-}: SharedProps) => (
-  <View style={{ position: "absolute", top: 0, left: 0, right: 0, height: layout.padTop }}>
-    {data.map((d, i) => (
-      <Text
-        key={`value-${i}`}
-        numberOfLines={1}
-        style={{
-          ...centeredLabel(layout, i),
-          fontWeight: "600",
-          color: i === peakIdx ? accentColor : tickColor,
-        }}
-      >
-        {Number.isFinite(d.value) ? d.value : 0}
-      </Text>
-    ))}
+  axisMax,
+  valueColor,
+}: SharedProps & { axisMax: number; valueColor: string }) => (
+  <View
+    style={{ position: "absolute", top: 0, left: 0, right: 0, height: layout.axisY }}
+    pointerEvents="none"
+  >
+    {data.map((d, i) => {
+      const value = Number.isFinite(d.value) ? d.value : 0;
+      const top = layout.axisY - barHeight(value, axisMax, layout.innerH) - 17;
+      return (
+        <Text
+          key={`value-${i}`}
+          numberOfLines={1}
+          style={{
+            ...centeredLabel(layout, i),
+            top,
+            fontSize: 12,
+            fontWeight: i === peakIdx ? "800" : "700",
+            color: i === peakIdx ? accentColor : d.partial ? tickColor : valueColor,
+            fontVariant: ["tabular-nums"],
+          }}
+        >
+          {value.toLocaleString()}
+        </Text>
+      );
+    })}
   </View>
 );
 
@@ -111,19 +125,24 @@ export const BarChartHitAreas = ({
   chartW,
   onActivate,
   onClear,
+  describe,
 }: {
   data: SimpleBarDatum[];
   layout: BarLayout;
   chartW: number;
   onActivate: (index: number) => void;
   onClear: () => void;
+  /** Screen-reader name for bar `i`; defaults to "<label>: <value> events". */
+  describe?: (index: number) => string;
 }) => (
   <View style={{ position: "absolute", top: 0, left: 0, width: chartW, height: layout.axisY }}>
     {data.map((d, i) => (
       <Pressable
         key={`hit-${i}`}
         accessibilityRole="button"
-        accessibilityLabel={`${d.label}: ${Number.isFinite(d.value) ? d.value : 0} events`}
+        accessibilityLabel={
+          describe ? describe(i) : `${d.label}: ${Number.isFinite(d.value) ? d.value : 0} events`
+        }
         onPressIn={() => onActivate(i)}
         onPressOut={onClear}
         onHoverIn={() => onActivate(i)}

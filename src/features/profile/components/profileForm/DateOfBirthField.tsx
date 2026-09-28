@@ -33,7 +33,7 @@ const DateOfBirthField = ({ label, value, onChange, error }: DateOfBirthFieldPro
         <Feather name="calendar" size={16} color={PROFILE_COLORS.primary} />
         <Text
           numberOfLines={1}
-          className={`flex-1 text-sm ${value ? "text-slate-800" : "text-slate-400"}`}
+          className={`flex-1 text-sm ${value ? "text-slate-800" : "text-slate-500"}`}
         >
           {display}
         </Text>

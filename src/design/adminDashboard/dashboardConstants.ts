@@ -1,10 +1,33 @@
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 export const ROLE_COLORS: Record<string, string> = {
-  admin: "#1677FF",
+  admin: PALETTE.blue[600],
   doctor: "#22C55E",
   midwife: "#EC4899",
   bhw: "#F59E0B",
   resident: "#8B5CF6",
+};
+
+/**
+ * Text colours for role badges. `ROLE_COLORS` are chart hues and are too light
+ * to read as 10–11px text on their tints (amber was 1.9:1); these are the same
+ * hues darkened (light theme) or lightened (dark theme) to pass AA.
+ */
+export const ROLE_TEXT_COLORS: Record<"light" | "dark", Record<string, string>> = {
+  light: {
+    admin: "#1152B4",
+    doctor: "#15803D",
+    midwife: "#BE185D",
+    bhw: "#92400E",
+    resident: "#6D28D9",
+  },
+  dark: {
+    admin: "#8CB8F8",
+    doctor: "#86EFAC",
+    midwife: "#F9A8D4",
+    bhw: "#FCD34D",
+    resident: "#C4B5FD",
+  },
 };
 
 export const ROLE_BADGE_TINTS: Record<string, string> = {
@@ -29,6 +52,15 @@ export const DASHBOARD_BREAKPOINTS = {
   twoPanelColumns: 700,
   threePanelColumns: 1100,
 } as const;
+
+/**
+ * Dashboards are wider than other role pages (CONTENT_MAX_WIDTH, 1440) so a 1920px screen is used
+ * edge to edge after the sidebar instead of leaving ~120px dead gutters either side.
+ */
+export const DASHBOARD_MAX_WIDTH = 1600;
+
+/** Content width at which staff dashboards place the queue beside the upcoming and activity panels. */
+export const DASHBOARD_WIDE_LAYOUT_MIN_WIDTH = 1280;
 
 export const DASHBOARD_CARD_SHADOW = createShadow({
   color: "#0F172A",

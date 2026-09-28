@@ -1,6 +1,5 @@
-import { Animated, Platform, type DimensionValue } from "react-native";
+import { Platform, View, type DimensionValue } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useFloat } from "../motion/useFloat";
 
 type FloatingGlyphProps = {
   icon: keyof typeof Ionicons.glyphMap;
@@ -11,9 +10,6 @@ type FloatingGlyphProps = {
   bottom?: DimensionValue;
   left?: DimensionValue;
   right?: DimensionValue;
-  distance?: number;
-  duration?: number;
-  delay?: number;
 };
 
 const FloatingGlyph = ({
@@ -25,14 +21,9 @@ const FloatingGlyph = ({
   bottom,
   left,
   right,
-  distance = 7,
-  duration = 4800,
-  delay = 0,
 }: FloatingGlyphProps) => {
-  const translateY = useFloat({ distance, duration, delay });
-
   return (
-    <Animated.View
+    <View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       style={{
@@ -49,7 +40,6 @@ const FloatingGlyph = ({
         backgroundColor: background,
         borderWidth: 1,
         borderColor: "rgba(255, 255, 255, 0.85)",
-        transform: [{ translateY }],
         ...Platform.select({
           web: { boxShadow: "0px 10px 26px rgba(8, 21, 47, 0.10)" },
           default: { elevation: 3 },
@@ -58,7 +48,7 @@ const FloatingGlyph = ({
       }}
     >
       <Ionicons name={icon} size={Math.round(size * 0.44)} color={color} />
-    </Animated.View>
+    </View>
   );
 };
 

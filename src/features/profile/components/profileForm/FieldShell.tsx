@@ -11,7 +11,7 @@ type FieldShellProps = {
 const FieldShell = ({ label, hint, error, children }: FieldShellProps) => (
   <View>
     <View className="mb-1.5 flex-row items-center gap-2">
-      <Text className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+      <Text className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
         {label}
       </Text>
       {hint ? <Text className="text-[11px] font-medium text-slate-300">{hint}</Text> : null}

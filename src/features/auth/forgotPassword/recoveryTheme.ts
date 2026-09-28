@@ -1,5 +1,7 @@
+import { PALETTE } from "@/theme/palette";
+
 export const RECOVERY_COLORS = {
-  primary: "#2563EB",
+  primary: PALETTE.blue[600],
   primarySoft: "#EFF6FF",
   success: "#16A34A",
   successSoft: "#F0FDF4",

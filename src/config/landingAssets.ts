@@ -1,4 +1,5 @@
 import type { ImageSourcePropType } from "react-native";
+import { PALETTE } from "@/theme/palette";
 
 export const landingAssets: {
   barangayBackground: ImageSourcePropType | null;
@@ -10,14 +11,16 @@ export const landingAssets: {
 };
 
 export const LANDING_COLORS = {
-  primaryBlue: "#0866F5",
+  primaryBlue: PALETTE.blue[600],
   navy: "#08152F",
-  green: "#16A34A",
+  // Teal rather than green: white text on it passes AA (5.5:1), and it keeps the
+  // landing palette to the product's blue and teal.
+  green: PALETTE.teal[700],
   mutedText: "#52617A",
   border: "#DDE5F0",
   pageBg: "#F8FAFC",
   softBlue: "#E7F1FF",
-  softGreen: "#DDF4E5",
+  softGreen: PALETTE.teal[100],
   softOrange: "#FFF0D7",
   orange: "#F59E0B",
   white: "#FFFFFF",

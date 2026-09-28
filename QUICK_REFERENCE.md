@@ -3,13 +3,13 @@
 ## Colors (Token Usage)
 ```tsx
 // Primary action
-className="bg-primary text-white"           // #3757FF on white
+className="bg-primary text-white"           // #1565D8 on white
 
 // Secondary/neutral
 className="bg-surface border-border"        // White with light gray border
 
 // Text hierarchy
-className="text-text-primary"               // #121B3B (body text)
+className="text-text-primary"               // #0F2557 (body text)
 className="text-text-secondary"             // #334155 (secondary)
 className="text-text-tertiary"              // #64748B (hints)
 
@@ -105,9 +105,9 @@ accessibilityState={{ disabled: false }}
 ## Contrast Check
 | Foreground | Background | Ratio | WCAG |
 |-----------|-----------|-------|------|
-| #121B3B   | #FFFFFF   | 15.2:1 | AAA ✅ |
+| #0F2557   | #FFFFFF   | 15.2:1 | AAA ✅ |
 | #334155   | #FFFFFF   | 9.1:1  | AAA ✅ |
-| #3757FF   | #FFFFFF   | 5.4:1  | AA ✅ |
+| #1565D8   | #FFFFFF   | 5.4:1  | AA ✅ |
 | #F2994A   | #FFFFFF   | 4.8:1  | AA ✅ |
 
 ## Token Files

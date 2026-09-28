@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, View, type ViewStyle } from "react-native";
 import StatCard from "@/components/resident/StatCard";
 import AnnouncementsList from "@/features/resident/AnnouncementsList";
 import HealthTips from "@/features/resident/HealthTips";
@@ -10,17 +10,21 @@ import type { ResidentDashboardModel } from "./useResidentDashboard";
 type DesktopResidentDashboardProps = {
   model: ResidentDashboardModel;
   compact?: boolean;
+  contentStyle: ViewStyle;
 };
 
-const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDashboardProps) => {
+const DesktopResidentDashboard = ({
+  model,
+  compact = false,
+  contentStyle,
+}: DesktopResidentDashboardProps) => {
   const gap = compact ? "gap-3" : "gap-4";
-
 
   return (
     <ScrollView
-      className="flex-1 bg-white"
+      className="flex-1"
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 24, backgroundColor: "#FFFFFF" }}
+      contentContainerStyle={contentStyle}
       refreshControl={
         <RefreshControl
           refreshing={model.refreshing}
@@ -30,16 +34,17 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
         />
       }
     >
-      <View className={`w-full ${gap}`}>
+      <View className={`w-full ${compact ? "gap-4" : "gap-5"}`}>
         <View className={`w-full flex-row ${gap}`}>
           {model.stats.map((stat) => (
             <StatCard key={stat.id} stat={stat} />
           ))}
         </View>
 
-        <View className={`w-full flex-row items-start ${gap}`}>
+        <View className={`w-full flex-row items-stretch ${gap}`}>
           <View className="min-w-0 flex-1">
             <UpcomingAppointment
+              fill
               appointment={model.nextAppointment}
               onViewAll={model.handlers.onViewAllAppointments}
               onViewDetails={model.handlers.onViewAppointment}
@@ -47,6 +52,7 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
           </View>
           <View className="min-w-0 flex-1">
             <HealthTips
+              fill
               tip={model.healthTip}
               onSeeMore={model.handlers.onHealthTipsSeeMore}
               onLearnMore={model.handlers.onLearnMore}
@@ -54,9 +60,10 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
           </View>
         </View>
 
-        <View className={`w-full flex-row items-start ${gap}`}>
+        <View className={`w-full flex-row items-stretch ${gap}`}>
           <View className="min-w-0 flex-1">
             <RecentAppointments
+              fill
               appointments={model.recentAppointments}
               onViewAll={model.handlers.onViewAllAppointments}
               onAppointmentPress={model.handlers.onViewAppointment}
@@ -64,6 +71,7 @@ const DesktopResidentDashboard = ({ model, compact = false }: DesktopResidentDas
           </View>
           <View className="min-w-0 flex-1">
             <AnnouncementsList
+              fill
               announcements={model.announcements}
               onViewAll={model.handlers.onViewAllAnnouncements}
               onAnnouncementPress={model.handlers.onAnnouncement}

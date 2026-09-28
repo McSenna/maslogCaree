@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { getSidebarWidth } from "@/components/navigation/sidebar/sidebarTheme";
 import { useResponsive } from "@/hooks/useResponsive";
-import { DASHBOARD_BREAKPOINTS } from "@/design/adminDashboardTheme";
+import { DASHBOARD_BREAKPOINTS, DASHBOARD_WIDE_LAYOUT_MIN_WIDTH } from "@/design/adminDashboardTheme";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
-import { DENSE_METRIC_MAX_WIDTH } from "@/features/adminDashboard/constants/dashboardLayout";
+import {
+  ANALYTICS_SIDE_BY_SIDE_MIN_WIDTH,
+  DENSE_METRIC_MAX_WIDTH,
+} from "@/features/adminDashboard/constants/dashboardLayout";
 
 export const useStaffDashboardLayout = () => {
   const { width: windowWidth, breakpoint, isMobile } = useResponsive();
@@ -35,6 +38,10 @@ export const useStaffDashboardLayout = () => {
     availableWidth,
     metricColumns,
     twoPanelRow,
+    /** Room for the service split beside the trend chart without truncating service names. */
+    chartSideBySide: !isMobile && availableWidth >= ANALYTICS_SIDE_BY_SIDE_MIN_WIDTH,
+    /** Queue, upcoming and activity panels share rows instead of the queue taking a full-width row. */
+    wideLayout: !isMobile && availableWidth >= DASHBOARD_WIDE_LAYOUT_MIN_WIDTH,
     denseMetrics: windowWidth <= DENSE_METRIC_MAX_WIDTH,
     measure: (event: { nativeEvent: { layout: { width: number } } }) => {
       const next = Math.round(event.nativeEvent.layout.width);

@@ -45,7 +45,7 @@ const AnnouncementCard = ({
             {title}
           </Text>
           <Text
-            className="text-slate-400 leading-relaxed mt-0.5"
+            className="text-slate-500 leading-relaxed mt-0.5"
             style={{ fontSize: isTablet ? 12 : 11 }}
           >
             {description}
@@ -59,7 +59,7 @@ const AnnouncementCard = ({
       >
         <Feather name="calendar" size={11} color="#CBD5E1" />
         <Text
-          className="font-semibold text-slate-400"
+          className="font-semibold text-slate-500"
           style={{ fontSize: isTablet ? 12 : 10.5 }}
         >
           {date}

@@ -7,6 +7,7 @@ import { mapAnnouncements } from "./dashboard/dashboardMappers";
 import { buildStats } from "./dashboard/dashboardStats";
 import { useDashboardData } from "./dashboard/useDashboardData";
 import { useDashboardHandlers } from "./dashboard/useDashboardHandlers";
+import { PALETTE } from "@/theme/palette";
 
 const RECENT_APPOINTMENTS_LIMIT = 3;
 
@@ -22,7 +23,7 @@ export const useResidentDashboard = () => {
     () =>
       summarizeResidentAppointments(
         appointmentsState.appointments,
-        "#0B63F6"
+        PALETTE.blue[600]
       ).pastAppointments.slice(0, RECENT_APPOINTMENTS_LIMIT),
     [appointmentsState.appointments]
   );

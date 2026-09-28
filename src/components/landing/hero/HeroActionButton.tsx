@@ -89,13 +89,13 @@ const styles = StyleSheet.create({
   primary: {
     backgroundColor: LANDING_COLORS.primaryBlue,
     ...Platform.select({
-      web: { boxShadow: "0px 8px 20px rgba(8, 102, 245, 0.22)" },
+      web: { boxShadow: "0px 8px 20px rgba(21, 101, 216, 0.22)" },
       default: { elevation: 3 },
     }),
   },
   primaryHovered: {
     ...Platform.select({
-      web: { boxShadow: "0px 14px 28px rgba(8, 102, 245, 0.30)" },
+      web: { boxShadow: "0px 14px 28px rgba(21, 101, 216, 0.30)" },
     }),
   },
   secondary: {

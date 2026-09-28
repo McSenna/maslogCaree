@@ -32,6 +32,8 @@ const SimpleBarChart = ({
   gridDashed = false,
   tickColor: tickColorOverride,
   formatTooltip,
+  highlightPeak = true,
+  maxBarWidth,
 }: SimpleBarChartProps) => {
   const chartPalette = useChartPalette();
   const { gridColor, tooltipBg, tooltipBorder } = chartPalette;
@@ -67,6 +69,7 @@ const SimpleBarChart = ({
     showValues,
     showLabels,
     showYAxis,
+    maxBarWidth,
   });
 
   const measured = chartW > 0 && layout.innerW > 0 && data.length > 0;
@@ -99,6 +102,7 @@ const SimpleBarChart = ({
             gridDashed={gridDashed}
             gradientId={gradientId}
             peakIdx={peakIdx}
+            highlightPeak={highlightPeak}
             activeIndex={activeIndex}
             progress={progress}
           />
@@ -106,7 +110,13 @@ const SimpleBarChart = ({
           {showYAxis && (
             <BarChartYAxis layout={layout} axisMax={axisMax} tickColor={tickColor} />
           )}
-          {showValues && <BarChartValues {...overlayProps} />}
+          {showValues && (
+            <BarChartValues
+              {...overlayProps}
+              axisMax={axisMax}
+              valueColor={chartPalette.isDark ? "#E2E8F0" : "#1E293B"}
+            />
+          )}
           {showLabels && <BarChartLabels {...overlayProps} />}
 
           <BarChartHitAreas
@@ -115,6 +125,14 @@ const SimpleBarChart = ({
             chartW={chartW}
             onActivate={setActiveIndex}
             onClear={clearActive}
+            describe={
+              formatTooltip
+                ? (i) => {
+                    const content = formatTooltip(data[i], i);
+                    return `${content.title}: ${content.meta}`;
+                  }
+                : undefined
+            }
           />
 
           {active && activeContent ? (

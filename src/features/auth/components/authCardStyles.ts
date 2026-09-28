@@ -94,7 +94,7 @@ export const authCardStyles = StyleSheet.create({
       }),
   },
   forgotContainerActive: {
-    backgroundColor: "rgba(8, 102, 245, 0.08)",
+    backgroundColor: "rgba(21, 101, 216, 0.08)",
   },
   forgotText: {
     color: LANDING_COLORS.primaryBlue,

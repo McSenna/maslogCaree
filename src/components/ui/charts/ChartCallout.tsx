@@ -12,7 +12,7 @@ type ChartCalloutProps = {
   border: string;
 };
 
-export const CALLOUT_W = 122;
+export const CALLOUT_W = 156;
 export const CALLOUT_H = 44;
 const TAIL = 6;
 

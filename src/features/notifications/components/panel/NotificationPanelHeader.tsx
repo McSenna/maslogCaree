@@ -54,6 +54,7 @@ const NotificationPanelHeader = ({
             accessibilityRole="button"
             accessibilityLabel={`Mark all ${unreadCount} notifications as read`}
             onPress={onMarkAllRead}
+            hitSlop={6}
             style={({ pressed }) => ({
               height: 32,
               paddingHorizontal: 11,

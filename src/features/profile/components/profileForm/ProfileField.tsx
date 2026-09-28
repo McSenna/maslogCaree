@@ -37,7 +37,7 @@ const ProfileField = ({
         multiline={multiline}
         accessibilityLabel={label}
         className={`py-3 text-sm text-slate-800 ${multiline ? "min-h-[48px]" : ""}`}
-        placeholderTextColor="#CBD5E1"
+        placeholderTextColor="#64748B"
       />
     </View>
   </FieldShell>

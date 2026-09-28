@@ -27,11 +27,11 @@ const UsersEmptyState = ({
     <StateBlock
       icon="users"
       tone="neutral"
-      title={hasActiveFilters ? "No users match your search." : "No users found."}
+      title={hasActiveFilters ? "No users match your search" : "No users yet"}
       body={
         hasActiveFilters
           ? "Try adjusting your search or filters."
-          : "The database contains no registered users yet."
+          : "Users appear here once they register or an admin adds them."
       }
     />
   );

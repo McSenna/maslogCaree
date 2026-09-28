@@ -1,8 +1,9 @@
 import type { AccentTone } from "@/types/residentDashboard";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
 export const RESIDENT_COLORS = {
-  primary: "#0B63F6",
+  primary: PALETTE.blue[600],
   primarySoft: "#EAF2FE",
   pageBg: "#F6F9FE",
   cardBg: "#FFFFFF",
@@ -10,8 +11,8 @@ export const RESIDENT_COLORS = {
   divider: "#EFF3F9",
   heading: "#0B1744",
   body: "#334155",
-  muted: "#64748B",
-  subtle: "#94A3B8",
+  muted: PALETTE.slate[600],
+  subtle: PALETTE.slate[500],
   danger: "#EF4444",
 } as const;
 
@@ -21,7 +22,7 @@ export type ToneStyle = {
 };
 
 export const TONES: Record<AccentTone, ToneStyle> = {
-  blue: { bg: "#E8F1FE", fg: "#0B63F6" },
+  blue: { bg: "#E8F1FE", fg: PALETTE.blue[600] },
   green: { bg: "#E4F7EC", fg: "#16A34A" },
   purple: { bg: "#EFEBFE", fg: "#7C3AED" },
   orange: { bg: "#FEF0E4", fg: "#F97316" },

@@ -120,8 +120,8 @@ maslogCare/
 ## 🎨 Design Tokens Overview
 
 ### Color Palette (11 categories)
-- **Primary**: #3757FF (brand blue)
-- **Secondary**: #1C9A7F (teal)
+- **Primary**: #1565D8 (brand blue)
+- **Secondary**: #0F766E (teal)
 - **Status**: Success, Warning, Danger colors
 - **Surface**: White, elevated, background shades
 - **Text**: 4-level hierarchy for readability
@@ -226,7 +226,7 @@ maslogCare/
 </View>
 
 // ❌ DON'T: Hardcode values
-<View style={{ backgroundColor: "#3757FF", borderRadius: 16 }}>
+<View style={{ backgroundColor: "#1565D8", borderRadius: 16 }}>
 ```
 
 ### Adding Animations

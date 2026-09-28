@@ -83,6 +83,8 @@ const ProfileDropdown = ({ visible, onClose, anchor, items, isDark }: ProfileDro
         >
           <Pressable
             onPress={(event: GestureResponderEvent) => event.stopPropagation()}
+            accessible={false}
+            focusable={false}
             style={surfaceStyle}
           >
             {items.map((item) => (

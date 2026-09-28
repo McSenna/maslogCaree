@@ -5,6 +5,7 @@ import { Pressable, Text, View } from "react-native";
 import UserAvatar from "@/components/ui/UserAvatar";
 import type { CurrentUser } from "@/contexts/AuthContext";
 import { getDashboardPath, getProfilePath } from "@/config/roleRoutes";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   isMobile: boolean;
@@ -37,7 +38,7 @@ const PillIcon = ({ name }: { name: "layout" | "user" }) => (
       justifyContent: "center",
     }}
   >
-    <Feather name={name} size={15} color="#2D5BFF" />
+    <Feather name={name} size={15} color={PALETTE.blue[600]} />
   </View>
 );
 

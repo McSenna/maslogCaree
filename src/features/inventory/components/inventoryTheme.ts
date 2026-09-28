@@ -3,11 +3,12 @@ import type { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import type { BadgeTone } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import type { InventoryCategory, StockStatus } from "@/features/inventory/services/inventoryService";
+import { PALETTE } from "@/theme/palette";
 
 export type DisplayStatus = StockStatus | "expiring-soon" | "expired";
 
 const CATEGORY_TONES_LIGHT: Record<InventoryCategory, BadgeTone> = {
-  medicine: { label: "Medicine", text: "#1D4ED8", bg: "#E5F0FF" },
+  medicine: { label: "Medicine", text: PALETTE.blue[700], bg: "#E5F0FF" },
   vaccine: { label: "Vaccine", text: "#15803D", bg: "#DCFCE7" },
   supply: { label: "Supply", text: "#7E22CE", bg: "#F3E8FF" },
   equipment: { label: "Equipment", text: "#0E7490", bg: "#CFFAFE" },
@@ -45,7 +46,7 @@ export type InventoryMetricKey = "total" | "inStock" | "lowStock" | "expiringSoo
 export type MetricTone = { iconBg: string; icon: string };
 
 const METRIC_TONES_LIGHT: Record<InventoryMetricKey, MetricTone> = {
-  total: { iconBg: "#DBEAFE", icon: "#2563EB" },
+  total: { iconBg: "#DBEAFE", icon: PALETTE.blue[600] },
   inStock: { iconBg: "#DCFCE7", icon: "#16A34A" },
   lowStock: { iconBg: "#FEF3C7", icon: "#F59E0B" },
   expiringSoon: { iconBg: "#FEE2E2", icon: "#EF4444" },
@@ -53,7 +54,7 @@ const METRIC_TONES_LIGHT: Record<InventoryMetricKey, MetricTone> = {
 
 const METRIC_TONES_DARK: Record<InventoryMetricKey, MetricTone> = {
   total: { iconBg: "rgba(37,99,235,0.20)", icon: "#60A5FA" },
-  inStock: { iconBg: "rgba(22,163,74,0.20)", icon: "#34D399" },
+  inStock: { iconBg: "rgba(15, 118, 110,0.20)", icon: "#34D399" },
   lowStock: { iconBg: "rgba(245,158,11,0.20)", icon: "#FBBF24" },
   expiringSoon: { iconBg: "rgba(239,68,68,0.20)", icon: "#F87171" },
 };

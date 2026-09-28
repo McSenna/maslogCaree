@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Animated, Easing, Platform, View } from "react-native";
 import { USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { PALETTE } from "@/theme/palette";
 
 const CIRCLE_RATIO = 0.8;
 const SHADOW_RATIO = 0.025;
@@ -18,7 +19,7 @@ export type EclipseLoaderProps = {
 
 const EclipseLoader = ({
   size = ECLIPSE_DEFAULT_SIZE,
-  color = "#2A7DE1",
+  color = PALETTE.blue[600],
   accessibilityLabel = "Loading page",
 }: EclipseLoaderProps) => {
   const reducedMotion = useReducedMotion();

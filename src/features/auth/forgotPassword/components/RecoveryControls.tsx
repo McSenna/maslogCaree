@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { RECOVERY_COLORS as C, RECOVERY_RADIUS as R } from "../recoveryTheme";
+import { PALETTE } from "@/theme/palette";
 
 export const PrimaryButton = ({
   label,
@@ -95,7 +96,7 @@ export const RecoveryField = ({
       <Feather name={icon} size={16} color={error ? C.error : C.muted} />
       <TextInput
         accessibilityLabel={label}
-        placeholderTextColor="#94A3B8"
+        placeholderTextColor={PALETTE.slate[500]}
         {...input}
         className="min-w-0 flex-1 text-[14.5px]"
         style={{ color: C.text, outlineStyle: "none" } as never}

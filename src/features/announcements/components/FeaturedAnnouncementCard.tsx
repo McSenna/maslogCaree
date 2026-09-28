@@ -74,7 +74,7 @@ const FeaturedAnnouncementCard = ({
               <Feather name="calendar" size={12} color="#94A3B8" />
             </View>
             <Text
-              className="font-semibold text-slate-400"
+              className="font-semibold text-slate-500"
               style={{ fontSize: isTablet ? 12 : 11 }}
             >
               {date}

@@ -3,11 +3,12 @@ import type { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { type BadgeTone } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import type { AdminUser, UserStatus } from "@/features/users/services/userService";
+import { PALETTE } from "@/theme/palette";
 
 export type Role = AdminUser["role"];
 
 const ROLE_TONES_LIGHT: Record<Role, BadgeTone> = {
-  admin: { label: "Admin", text: "#1D4ED8", bg: "#E5F0FF" },
+  admin: { label: "Admin", text: PALETTE.blue[700], bg: "#E5F0FF" },
   doctor: { label: "Doctor", text: "#0369A1", bg: "#E0F2FE" },
   midwife: { label: "Midwife", text: "#BE185D", bg: "#FCE7F3" },
   bhw: { label: "BHW", text: "#15803D", bg: "#DCFCE7" },
@@ -63,15 +64,15 @@ export type MetricKey = "total" | "active" | "new" | "suspended";
 export type MetricTone = { iconBg: string; icon: string };
 
 const METRIC_TONES_LIGHT: Record<MetricKey, MetricTone> = {
-  total: { iconBg: "#DBEAFE", icon: "#2563EB" },
+  total: { iconBg: "#DBEAFE", icon: PALETTE.blue[600] },
   active: { iconBg: "#DCFCE7", icon: "#16A34A" },
-  new: { iconBg: "#DBEAFE", icon: "#2563EB" },
+  new: { iconBg: "#DBEAFE", icon: PALETTE.blue[600] },
   suspended: { iconBg: "#FFE4E6", icon: "#F43F5E" },
 };
 
 const METRIC_TONES_DARK: Record<MetricKey, MetricTone> = {
   total: { iconBg: "rgba(37,99,235,0.20)", icon: "#60A5FA" },
-  active: { iconBg: "rgba(22,163,74,0.20)", icon: "#34D399" },
+  active: { iconBg: "rgba(15, 118, 110,0.20)", icon: "#34D399" },
   new: { iconBg: "rgba(37,99,235,0.20)", icon: "#60A5FA" },
   suspended: { iconBg: "rgba(244,63,94,0.20)", icon: "#FB7185" },
 };

@@ -118,7 +118,7 @@ const ActivityTrendPanel = ({
       ) : (
         <SimpleBarChart
           data={chartData}
-          height={compact ? 176 : 196}
+          height={compact ? 176 : 180}
           accentColor={palette.primary}
           dimColor={palette.bannerArt}
           showLabels={chartData.length <= 10}

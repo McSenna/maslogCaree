@@ -65,6 +65,7 @@ const CalendarHeader = ({
       accessibilityLabel={`${monthLabel(year, monthIndex)}. Change year`}
       accessibilityState={{ expanded: yearsOpen }}
       onPress={onOpenYears}
+      hitSlop={{ top: 4, bottom: 4 }}
       style={{
         flex: 1,
         flexDirection: "row",

@@ -19,24 +19,26 @@ const QueueRow = ({
   position,
   showService,
   palette,
+  dense,
 }: {
   appointment: StaffAppointment;
   position: number;
   showService: boolean;
   palette: AdminDashboardPalette;
+  dense: boolean;
 }) => {
   const queuePalette = useQueuePalette();
   const status = queuePalette.statuses[appointment.status] ?? queuePalette.statuses.pending;
 
   return (
     <View
-      className="w-full flex-row items-center gap-3 rounded-xl px-3 py-2.5"
+      className={`w-full flex-row items-center gap-3 rounded-xl px-3 ${dense ? "py-2" : "py-2.5"}`}
       style={{ backgroundColor: palette.divider }}
       accessibilityRole="text"
       accessibilityLabel={`Position ${position}. ${appointment.patientName}, ${appointment.serviceLabel}, ${slotTime(appointment.slotStart)}, ${STATUS_LABELS[appointment.status]}`}
     >
       <View
-        className="h-9 w-9 items-center justify-center rounded-full"
+        className={`${dense ? "h-8 w-8" : "h-9 w-9"} items-center justify-center rounded-full`}
         style={{ backgroundColor: palette.cardBg }}
       >
         <Text className="text-[12.5px] font-bold tabular-nums" style={{ color: palette.muted }}>
@@ -79,12 +81,17 @@ const QueuePreviewCard = ({
   showService,
   limit = 5,
   onViewAll,
+  fill = false,
+  dense = false,
 }: {
   palette: AdminDashboardPalette;
   queue: StaffAppointment[];
   showService: boolean;
   limit?: number;
   onViewAll: () => void;
+  fill?: boolean;
+  /** Tighter rows for the wide layout, where the queue shares a row with two other panels. */
+  dense?: boolean;
 }) => {
   const visible = queue.slice(0, limit);
 
@@ -99,7 +106,8 @@ const QueuePreviewCard = ({
           : "Today's queue"
       }
       onViewAll={onViewAll}
-      viewAllLabel="View Queue"
+      viewAllLabel="View queue"
+      fill={fill}
     >
       {visible.length === 0 ? (
         <EmptyPanelState
@@ -116,6 +124,7 @@ const QueuePreviewCard = ({
               position={index + 1}
               showService={showService}
               palette={palette}
+              dense={dense}
             />
           ))}
 

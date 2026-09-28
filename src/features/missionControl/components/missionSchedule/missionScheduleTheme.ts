@@ -8,6 +8,7 @@ import {
   SERVICE_TONES_LIGHT,
 } from "@/design/serviceColors";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
 export const MISSION_RADIUS = {
   sheet: 26,
@@ -51,10 +52,10 @@ export const useMissionSchedulePalette = () => {
       divider: isDark ? "#1C2941" : "#EEF3FA",
       heading: isDark ? "#F8FAFC" : "#0F172A",
       body: isDark ? "#CBD5E1" : "#334155",
-      muted: isDark ? "#94A3B8" : "#64748B",
-      faint: isDark ? "#64748B" : "#94A3B8",
-      primary: isDark ? "#3B82F6" : "#2F6BEE",
-      primarySoft: isDark ? "rgba(59,130,246,0.16)" : "#EAF1FE",
+      muted: isDark ? PALETTE.slate[400] : PALETTE.slate[600],
+      faint: isDark ? "#7D8CA3" : PALETTE.slate[500],
+      primary: isDark ? PALETTE.blue[400] : PALETTE.blue[600],
+      primarySoft: isDark ? "rgba(21,101,216,0.18)" : PALETTE.blue[50],
       on: isDark ? "#10B981" : "#16A34A",
       off: isDark ? "#334155" : "#D6DEE9",
       danger: isDark ? "#FCA5A5" : "#DC2626",

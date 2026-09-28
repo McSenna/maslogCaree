@@ -12,7 +12,6 @@ const FloatingGlyphs = () => (
       size={58}
       top={-28}
       left={-34}
-      duration={5000}
     />
 
     <FloatingGlyph
@@ -22,9 +21,6 @@ const FloatingGlyphs = () => (
       size={50}
       bottom={-26}
       right={-28}
-      distance={6}
-      duration={5800}
-      delay={900}
     />
   </View>
 );

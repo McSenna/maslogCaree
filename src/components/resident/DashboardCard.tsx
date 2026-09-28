@@ -6,9 +6,11 @@ type DashboardCardProps = {
   children: ReactNode;
   padded?: boolean;
   className?: string;
+  /** Grow to the height of its row, so side-by-side cards line up. */
+  fill?: boolean;
 };
 
-const DashboardCard = ({ children, padded = true, className = "" }: DashboardCardProps) => (
+const DashboardCard = ({ children, padded = true, className = "", fill = false }: DashboardCardProps) => (
   <View
     className={`w-full overflow-hidden border ${padded ? "p-4" : ""} ${className}`}
     style={{
@@ -16,6 +18,7 @@ const DashboardCard = ({ children, padded = true, className = "" }: DashboardCar
       backgroundColor: RESIDENT_COLORS.cardBg,
       borderColor: RESIDENT_COLORS.border,
       ...CARD_SHADOW,
+      flexGrow: fill ? 1 : undefined,
     }}
   >
     {children}

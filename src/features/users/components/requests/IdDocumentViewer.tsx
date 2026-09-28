@@ -5,6 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useIdDocument } from "../../hooks/useIdDocument";
 import ImagePreview from "./idDocument/ImagePreview";
 import PdfDocumentPreview from "./idDocument/PdfDocumentPreview";
+import { PALETTE } from "@/theme/palette";
 
 export { formatFileSize } from "@/utils/fileSize";
 
@@ -41,7 +42,7 @@ const IdDocumentViewer = ({
   if (document.loading) {
     return (
       <View className={frameClass} style={{ minHeight: height }}>
-        <ActivityIndicator size="large" color="#2563EB" />
+        <ActivityIndicator size="large" color={PALETTE.blue[600]} />
         <Text className={`mt-2 text-[12px] ${classes.textMuted}`}>
           Loading secure document…
         </Text>

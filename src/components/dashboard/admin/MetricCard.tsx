@@ -7,7 +7,6 @@ import {
   type MetricTone,
 } from "@/design/adminDashboardTheme";
 import TrendPill from "./TrendPill";
-import { useCountUp } from "./useCountUp";
 
 export type MetricCardProps = {
   palette: AdminDashboardPalette;
@@ -34,7 +33,6 @@ const MetricCard = ({
 }: MetricCardProps) => {
   const toneStyle = palette.tones[tone];
   const showTrend = typeof growth === "number" && Number.isFinite(growth);
-  const displayValue = useCountUp(value);
 
   const surface = {
     backgroundColor: palette.cardBg,
@@ -76,7 +74,7 @@ const MetricCard = ({
           className={`mt-0.5 font-extrabold ${dense ? "text-[23px]" : "text-[26px]"}`}
           style={{ color: palette.heading, lineHeight: dense ? 29 : 32 }}
         >
-          {displayValue.toLocaleString()}
+          {value.toLocaleString()}
         </Text>
         <Text
           className="mt-0.5 text-[11px] font-medium"
@@ -119,7 +117,7 @@ const MetricCard = ({
           className="mt-0.5 text-[30px] font-extrabold"
           style={{ color: palette.heading, lineHeight: 36 }}
         >
-          {displayValue.toLocaleString()}
+          {value.toLocaleString()}
         </Text>
         <Text
           className="mt-0.5 text-[12px] font-medium"

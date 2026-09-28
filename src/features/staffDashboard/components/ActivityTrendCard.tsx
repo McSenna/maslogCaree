@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
-import { Text, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
 import PanelCard from "@/components/dashboard/admin/PanelCard";
 import EmptyPanelState from "@/components/dashboard/admin/EmptyPanelState";
+import AnalyticsSummary from "@/components/dashboard/admin/analytics/AnalyticsSummary";
 import SelectMenu, { type SelectOption } from "@/components/ui/SelectMenu";
 import SimpleBarChart from "@/components/ui/charts/SimpleBarChart";
 import SimpleLineChart from "@/components/ui/charts/SimpleLineChart";
@@ -59,12 +58,10 @@ const ActivityTrendCard = ({
   const points = useMemo(() => trend.slice(-size), [trend, size]);
   const labels = useMemo(() => axisLabels(points, range), [points, range]);
 
-  const direction = window.trend.direction;
-  const trendColor =
-    direction === "up" ? palette.positive : direction === "down" ? palette.negative : palette.subtle;
-  const trendIcon =
-    direction === "up" ? "trending-up" : direction === "down" ? "trending-down" : "minus";
+  // A change that rounds to 0% reads as "no change", not as a green or red signal.
+  const direction = window.trend.percent === 0 ? "flat" : window.trend.direction;
   const sign = direction === "up" ? "+" : direction === "down" ? "-" : "";
+  const visits = `${window.currentTotal.toLocaleString()} completed ${window.currentTotal === 1 ? "visit" : "visits"}`;
 
   const hasAny = points.some((point) => point.count > 0);
 
@@ -86,21 +83,20 @@ const ActivityTrendCard = ({
       }
       fill={fill}
     >
-      <View className="mb-3">
-        <Text className="text-[28px] font-bold" style={{ color: palette.heading, lineHeight: 34 }}>
-          {window.currentTotal.toLocaleString()}
-        </Text>
-        <View className="mt-1 flex-row items-center gap-1.5">
-          <Feather name={trendIcon} size={13} color={trendColor} />
-          <Text className="text-[12.5px] font-bold" style={{ color: trendColor }}>
-            {sign}
-            {window.trend.percent}%
-          </Text>
-          <Text className="text-[12.5px] font-medium" style={{ color: palette.muted }}>
-            {RANGE_COMPARISON[range]}
-          </Text>
-        </View>
-      </View>
+      <AnalyticsSummary
+        palette={palette}
+        value={window.currentTotal.toLocaleString()}
+        accessibilityLabel={`${visits} in the last ${size} days`}
+        delta={{
+          direction,
+          value: `${sign}${window.trend.percent}%`,
+          comparison: RANGE_COMPARISON[range],
+          accessibilityLabel:
+            direction === "flat"
+              ? `No change ${RANGE_COMPARISON[range]}`
+              : `${direction === "up" ? "Up" : "Down"} ${window.trend.percent} percent ${RANGE_COMPARISON[range]}`,
+        }}
+      />
 
       {!hasAny ? (
         <EmptyPanelState
@@ -111,8 +107,11 @@ const ActivityTrendCard = ({
       ) : config.chart.kind === "bars" ? (
         <SimpleBarChart
           data={points.map((point, index) => ({ label: labels[index], value: point.count }))}
-          height={compact ? 170 : 200}
+          height={compact ? 170 : 180}
           accentColor={palette.primary}
+          dimColor={palette.bannerArt}
+          gridDashed
+          tickColor={palette.muted}
           formatTooltip={(datum, index) => ({
             title: shortDate(points[index]?.date ?? ""),
             meta: `${datum.value} completed`,
@@ -127,8 +126,10 @@ const ActivityTrendCard = ({
             label: service.label,
             showArea: services.length === 1,
           }))}
-          height={compact ? 180 : 210}
+          height={compact ? 180 : 184}
           showLegend={services.length > 1}
+          gridDashed
+          tickColor={palette.muted}
           formatTooltip={(index) => {
             const point = points[index];
             return {

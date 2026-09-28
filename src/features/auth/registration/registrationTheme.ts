@@ -1,12 +1,13 @@
 import { LANDING_COLORS } from "@/config/landingAssets";
+import { PALETTE } from "@/theme/palette";
 
 export const REG_COLORS = {
   primary: LANDING_COLORS.primaryBlue,
   primarySoft: "#EAF2FE",
-  primaryRing: "rgba(8, 102, 245, 0.16)",
+  primaryRing: "rgba(21, 101, 216, 0.16)",
   secondary: LANDING_COLORS.green,
-  secondarySoft: "#ECFDF3",
-  success: LANDING_COLORS.green,
+  secondarySoft: PALETTE.teal[50],
+  success: PALETTE.green[600],
   // `success` is 3.3:1 on white: fine for icons and borders, too light for small text.
   successText: "#15803D",
   error: "#DC2626",
@@ -15,7 +16,7 @@ export const REG_COLORS = {
   text: "#0F172A",
   heading: LANDING_COLORS.navy,
   muted: "#5A6B85",
-  subtle: "#8A9AB4",
+  subtle: "#64748B",
   border: LANDING_COLORS.border,
   borderStrong: "#C6D4E7",
   // 3:1 against white, for controls whose border is their only outline (OTP boxes).

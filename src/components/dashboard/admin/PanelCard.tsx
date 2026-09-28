@@ -1,7 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import type { ReactNode } from "react";
-import { Pressable, Text, View } from "react-native";
-import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { Text, View } from "react-native";
+import { DASHBOARD_CARD_SHADOW, type AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import DashboardButton from "./DashboardButton";
 
 const TITLE_MIN_WIDTH = 240;
 
@@ -24,7 +25,7 @@ const PanelCard = ({
   icon,
   subtitle,
   onViewAll,
-  viewAllLabel = "View All",
+  viewAllLabel = "View all",
   headerRight,
   children,
   fill = false,
@@ -37,6 +38,7 @@ const PanelCard = ({
         flex: fill ? 1 : undefined,
         backgroundColor: palette.cardBg,
         borderColor: palette.cardBorder,
+        ...DASHBOARD_CARD_SHADOW,
       }}
     >
       <View
@@ -57,6 +59,8 @@ const PanelCard = ({
           ) : null}
           <View className="min-w-0 flex-1">
             <Text
+              accessibilityRole="header"
+              aria-level={2}
               className="min-w-0 text-[15px] font-bold"
               numberOfLines={1}
               style={{ color: palette.heading }}
@@ -78,17 +82,14 @@ const PanelCard = ({
         <View className="shrink-0 flex-row items-center gap-2.5">
           {headerRight}
           {onViewAll ? (
-            <Pressable
+            <DashboardButton
+              palette={palette}
+              variant="link"
+              label={viewAllLabel}
+              trailingIcon="arrow-right"
               onPress={onViewAll}
-              accessibilityRole="link"
-              accessibilityLabel={`${viewAllLabel} — ${title}`}
-              hitSlop={{ top: 12, bottom: 12, left: 12, right: 8 }}
-              style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-            >
-              <Text className="text-[12.5px] font-semibold" style={{ color: palette.primary }}>
-                {viewAllLabel}
-              </Text>
-            </Pressable>
+              accessibilityLabel={`${viewAllLabel}: ${title}`}
+            />
           ) : null}
         </View>
       </View>

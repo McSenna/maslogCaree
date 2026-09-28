@@ -1,5 +1,7 @@
 import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { PALETTE } from "@/theme/palette";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -46,7 +48,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
           className="w-full max-w-md grow-0"
         >
           <View className="mb-4 h-14 w-14 items-center justify-center rounded-full bg-red-50">
-            <Text className="text-2xl">!</Text>
+            <Feather
+              name="alert-triangle"
+              size={24}
+              color={PALETTE.red[600]}
+              accessibilityElementsHidden
+              importantForAccessibility="no"
+            />
           </View>
 
           <Text className="mb-2 text-center text-lg font-semibold text-slate-900">
@@ -61,13 +69,13 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
           <Pressable
             accessibilityRole="button"
             onPress={this.handleRetry}
-            className="rounded-xl bg-mc-primary px-6 py-3 active:opacity-80"
+            className="rounded-xl bg-primary px-6 py-3 active:opacity-80"
           >
             <Text className="text-sm font-semibold text-white">Try again</Text>
           </Pressable>
 
           {isDev && this.state.message ? (
-            <Text className="mt-6 text-center text-xs text-slate-400">
+            <Text className="mt-6 text-center text-xs text-slate-500">
               {this.state.message}
             </Text>
           ) : null}

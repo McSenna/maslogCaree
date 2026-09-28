@@ -1,6 +1,5 @@
-import { Animated, type DimensionValue } from "react-native";
+import { View, type DimensionValue } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useFloat } from "../motion/useFloat";
 
 type HeroOrbProps = {
   size: number;
@@ -9,9 +8,6 @@ type HeroOrbProps = {
   bottom?: DimensionValue;
   left?: DimensionValue;
   right?: DimensionValue;
-  distance?: number;
-  duration?: number;
-  delay?: number;
 };
 
 const HeroOrb = ({
@@ -21,14 +17,9 @@ const HeroOrb = ({
   bottom,
   left,
   right,
-  distance = 12,
-  duration = 6200,
-  delay = 0,
 }: HeroOrbProps) => {
-  const translateY = useFloat({ distance, duration, delay });
-
   return (
-    <Animated.View
+    <View
       style={{
         position: "absolute",
         top,
@@ -39,7 +30,6 @@ const HeroOrb = ({
         height: size,
         borderRadius: size / 2,
         overflow: "hidden",
-        transform: [{ translateY }],
         pointerEvents: "none",
       }}
     >
@@ -49,7 +39,7 @@ const HeroOrb = ({
         end={{ x: 0.8, y: 1 }}
         style={{ width: "100%", height: "100%" }}
       />
-    </Animated.View>
+    </View>
   );
 };
 

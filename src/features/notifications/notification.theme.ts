@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { PALETTE } from "@/theme/palette";
 
 export type NotificationPalette = {
   background: string;
@@ -32,15 +33,15 @@ export const LIGHT_NOTIFICATION_PALETTE: NotificationPalette = {
   background: "#F8FAFC",
   surface: "#FFFFFF",
   unreadSurface: "rgba(37,99,235,0.035)",
-  unreadDot: "#2563EB",
+  unreadDot: PALETTE.blue[600],
   pressed: "rgba(15,23,42,0.04)",
   border: "#E2E8F0",
   divider: "#F1F5F9",
   heading: "#0F2557",
   body: "#334155",
-  muted: "#64748B",
-  subtle: "#94A3B8",
-  primary: "#1677FF",
+  muted: PALETTE.slate[600],
+  subtle: PALETTE.slate[500],
+  primary: PALETTE.blue[600],
   primarySoft: "#EBF3FF",
   onPrimary: "#FFFFFF",
   success: "#16A34A",
@@ -65,8 +66,8 @@ export const DARK_NOTIFICATION_PALETTE: NotificationPalette = {
   divider: "#1E293B",
   heading: "#F8FAFC",
   body: "#CBD5E1",
-  muted: "#94A3B8",
-  subtle: "#64748B",
+  muted: PALETTE.slate[400],
+  subtle: "#7D8CA3",
   primary: "#60A5FA",
   primarySoft: "rgba(96,165,250,0.16)",
   onPrimary: "#0B1120",

@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, View, type ViewStyle } from "react-native";
 import StatCard from "@/components/resident/StatCard";
 import AnnouncementsList from "@/features/resident/AnnouncementsList";
 import RecentAppointments from "@/features/resident/RecentAppointments";
@@ -8,15 +8,16 @@ import type { ResidentDashboardModel } from "./useResidentDashboard";
 
 type MobileResidentDashboardProps = {
   model: ResidentDashboardModel;
+  contentStyle: ViewStyle;
 };
 
-const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
+const MobileResidentDashboard = ({ model, contentStyle }: MobileResidentDashboardProps) => {
 
   return (
   <ScrollView
-    className="flex-1 bg-white"
+    className="flex-1"
     showsVerticalScrollIndicator={false}
-    contentContainerStyle={{ paddingBottom: 12, backgroundColor: "#FFFFFF" }}
+    contentContainerStyle={contentStyle}
     refreshControl={
       <RefreshControl
         refreshing={model.refreshing}
@@ -26,7 +27,7 @@ const MobileResidentDashboard = ({ model }: MobileResidentDashboardProps) => {
       />
     }
   >
-    <View className="w-full gap-3.5">
+    <View className="w-full gap-4">
       <View className="w-full gap-2.5">
         <View className="w-full flex-row gap-2.5">
           {model.stats.slice(0, 2).map((stat) => (

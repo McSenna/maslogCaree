@@ -1,5 +1,7 @@
+import { PALETTE } from "@/theme/palette";
+
 export const PROFILE_COLORS = {
-  primary: "#2563EB",
+  primary: PALETTE.blue[600],
   primarySoft: "#EFF6FF",
   primaryBorder: "#BFDBFE",
   green: "#10B981",
@@ -10,8 +12,8 @@ export const PROFILE_COLORS = {
   heading: "#0F172A",
   navy: "#12275C",
   body: "#334155",
-  muted: "#64748B",
-  subtle: "#94A3B8",
+  muted: PALETTE.slate[600],
+  subtle: PALETTE.slate[500],
   border: "#E2E8F0",
   divider: "#EEF2F7",
   danger: "#EF4444",

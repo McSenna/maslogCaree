@@ -15,35 +15,26 @@ module.exports = {
       xl: "1280px",
     },
     extend: {
+      // Mirrors src/theme/palette.ts, the source of truth. Keep the two in sync.
       colors: {
-        primary: "#3757FF",
-        "primary-soft": "#E7EFFF",
-        secondary: "#1C9A7F",
-        accent: "#F59E0B",
+        primary: "#1565D8",
+        "primary-soft": "#EEF5FF",
+        secondary: "#0F766E",
+        accent: "#D97706",
 
-        success: "#27AE60",
-        warning: "#F2994A",
-        danger: "#EB5757",
+        success: "#16A34A",
+        warning: "#D97706",
+        danger: "#DC2626",
 
         surface: "#FFFFFF",
         elevated: "#F8FAFC",
-        background: "#F0F4F8",
+        background: "#F7FAFE",
         border: "#E2E8F0",
 
-        "text-primary": "#121B3B",
+        "text-primary": "#0F2557",
         "text-secondary": "#334155",
-        "text-tertiary": "#64748B",
+        "text-tertiary": "#56657A",
         "text-disabled": "#94A3B8",
-
-        mc: {
-          primary: "#2A7DE1",
-          secondary: "#2ECC71",
-          accent: "#17A2B8",
-          background: "#F5F7FA",
-          card: "#FFFFFF",
-          text: "#1F2933",
-          textSecondary: "#6B7280",
-        },
       },
 
       fontSize: {

@@ -74,8 +74,12 @@ const AdminSupportTable = ({
               <Text style={{ fontSize: 12.5, color: palette.muted }}>{error}</Text>
               <Pressable
                 onPress={onRetry}
+                accessibilityRole="button"
+                accessibilityLabel="Retry loading support tickets"
                 style={{
                   marginTop: 6,
+                  minHeight: 36,
+                  justifyContent: "center",
                   paddingHorizontal: 14,
                   paddingVertical: 7,
                   borderRadius: RADIUS.control,

@@ -5,6 +5,7 @@ import { CARD_SHADOW, RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { SupportStatus } from "../types/support.types";
+import { PALETTE } from "@/theme/palette";
 
 type AdminSupportStatsProps = {
   counts: Partial<Record<SupportStatus, number>>;
@@ -42,7 +43,7 @@ const AdminSupportStats = ({ counts, total }: AdminSupportStatsProps) => {
       context: "Awaiting review",
       icon: "alert-circle",
       iconBg: isDark ? "rgba(2, 132, 199, 0.16)" : "#E0F2FE",
-      iconColor: isDark ? "#38BDF8" : "#0284C7",
+      iconColor: isDark ? "#38BDF8" : PALETTE.blue[600],
     },
     {
       key: "in_review",

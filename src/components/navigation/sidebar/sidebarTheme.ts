@@ -1,6 +1,7 @@
 import type { Breakpoint } from "@/theme/breakpoints";
 import { useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { PALETTE } from "@/theme/palette";
 
 const SIDEBAR_WIDTHS: Record<Breakpoint, number> = { mobile: 0, tablet: 224, desktop: 256, wide: 272 };
 
@@ -30,7 +31,7 @@ export const useSidebarPalette = () => {
       eyebrow: isDark ? "#7C8DA6" : "#7387A8",
       heading: isDark ? "#F8FAFC" : "#0F2756",
       idle: isDark ? "#94A3B8" : "#50658A",
-      active: isDark ? "#93C5FD" : "#1683F8",
+      active: isDark ? "#93C5FD" : PALETTE.blue[600],
       activeBg: isDark ? "rgba(37,99,235,0.16)" : "#EAF4FF",
       hoverBg: isDark ? "rgba(148,163,184,0.10)" : "#F5F9FF",
       decorLine: isDark ? "#2B4A6F" : "#A8D3FF",
@@ -40,7 +41,7 @@ export const useSidebarPalette = () => {
       community: isDark ? "#94A3B8" : "#41618F",
       leaf: isDark ? "#4ADE80" : "#22A45D",
       brandNavy: isDark ? "#E2E8F0" : "#102A56",
-      brandBlue: isDark ? "#60A5FA" : "#1683F8",
+      brandBlue: isDark ? "#60A5FA" : PALETTE.blue[600],
       tagline: isDark ? "#64748B" : "#8A9BB4",
     };
   }, [resolvedTheme]);

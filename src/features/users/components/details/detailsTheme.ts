@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import type { Feather } from "@expo/vector-icons";
 import type { AdminUser } from "@/features/users/services/userService";
 import { useUsersPalette } from "../usersTheme";
+import { PALETTE } from "@/theme/palette";
 
 export const useUserDetailsPalette = () => {
   const palette = useUsersPalette();
@@ -12,15 +13,15 @@ export const useUserDetailsPalette = () => {
     return {
       ...palette,
       headerWell: isDark ? "rgba(37,99,235,0.18)" : "#EAF2FF",
-      headerIcon: isDark ? "#93C5FD" : "#2563EB",
+      headerIcon: isDark ? "#93C5FD" : PALETTE.blue[600],
       heroTop: isDark ? "#0B2038" : "#EAF4FE",
       heroBottom: isDark ? "#0D1B2E" : "#F1F8FF",
       heroBorder: isDark ? "#1E3A5F" : "#DCEBFB",
       avatarRing: isDark ? "#132B45" : "#FFFFFF",
       infoWell: isDark ? "rgba(37,99,235,0.16)" : "#EFF6FF",
-      infoIcon: isDark ? "#93C5FD" : "#2563EB",
-      permissionBg: isDark ? "rgba(22,163,74,0.10)" : "#F2FBF5",
-      permissionBorder: isDark ? "rgba(22,163,74,0.28)" : "#DCF3E4",
+      infoIcon: isDark ? "#93C5FD" : PALETTE.blue[600],
+      permissionBg: isDark ? "rgba(15, 118, 110,0.10)" : "#F2FBF5",
+      permissionBorder: isDark ? "rgba(15, 118, 110,0.28)" : "#DCF3E4",
       enabled: isDark ? "#4ADE80" : "#16A34A",
       disabled: isDark ? "#64748B" : "#94A3B8",
       dangerText: isDark ? "#FCA5A5" : "#DC2626",

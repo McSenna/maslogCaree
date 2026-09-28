@@ -10,117 +10,53 @@
 
 ## Design Tokens
 
-### Location
-- **Tailwind config**: `tailwind.config.js` - Extended theme configuration
-- **CSS variables**: `global.css` - CSS custom properties and utility classes
+### Where colour comes from
 
-### Token Categories
+`src/theme/palette.ts` holds the raw ramps (blue, teal, slate, and the status
+hues). Everything else is built on it:
 
-#### Colors
-```javascript
-// Primary brand
---color-primary: #3757FF
---color-primary-soft: #E7EFFF
---color-secondary: #1C9A7F
+| Layer | File | Use it for |
+| --- | --- | --- |
+| Raw ramps | `src/theme/palette.ts` | Building a theme file. Components should not read ramps directly. |
+| Semantic roles | `src/theme/colors.ts` via `useThemeColors()` | Surfaces, text tiers, primary, status tones, in both themes |
+| Dashboard surfaces | `src/design/adminDashboard/{light,dark}Palette.ts` via `useAdminSurfacePalette()` | Admin and staff dashboards, tables and panels |
+| Feature themes | e.g. `queueTheme.ts`, `notification.theme.ts`, `residentTheme.ts` | Feature-specific tints, built from the two layers above |
+| Tailwind / CSS | `tailwind.config.js`, `global.css` | Class names and web-only rules. Values mirror `palette.ts`; keep them in sync. |
 
-// Status
---color-success: #27AE60
---color-warning: #F2994A
---color-danger: #EB5757
+### Brand and text colours
 
-// Surface & backgrounds
---color-surface: #FFFFFF
---color-elevated: #F8FAFC
---color-background: #F0F4F8
---color-border: #E2E8F0
+| Role | Light | Dark | Notes |
+| --- | --- | --- | --- |
+| Primary | `blue[600]` #1565D8 | `blue[400]` #5A96F2 | White text on light primary is 5.4:1 |
+| Secondary | `teal[700]` #0F766E | `teal[300]` #5FCBBE | White text on teal-700 is 5.5:1 |
+| Heading | `ink` #0F2557 | `slate[50]` | |
+| Body | `slate[700]` | `slate[300]` | |
+| Muted | `slate[600]` #56657A | `slate[400]` | |
+| Subtle | `slate[500]` #64748B | #7D8CA3 | The lightest grey allowed for text (AA 4.5:1) |
+| Icons, borders, disabled | `slate[400]` #94A3B8 | `slate[500]` | Not for text: 2.6:1 on white |
 
-// Text
---color-text-primary: #121B3B (90+ contrast)
---color-text-secondary: #334155
---color-text-tertiary: #64748B
---color-text-disabled: #94A3B8
-```
+Status colours are semantic and stay distinct: success green, warning amber,
+danger red, info blue, in-progress violet, neutral slate. Role and service
+colours (admin, doctor, prenatal, immunisation…) are categorical identifiers
+used in charts and badges, not brand accents.
 
-#### Typography Scale
-- **xs**: 11px / 1.4 line-height
-- **sm**: 12px / 1.5 line-height
-- **base**: 14px / 1.5 line-height
-- **lg**: 16px / 1.6 line-height
-- **xl**: 18px / 1.6 line-height
-- **2xl**: 20px / 1.6 line-height
-- **3xl**: 24px / 1.5 line-height
-- **4xl**: 28px / 1.4 line-height
-- **5xl**: 32px / 1.4 line-height
-- **6xl**: 36px / 1.4 line-height
+### Spacing, radius, type, shadow, motion
 
-#### Spacing Scale (4px base unit)
-```
-1: 4px      5: 20px     9: 36px
-2: 8px      6: 24px     10: 40px
-3: 12px     7: 28px     11: 44px
-4: 16px     8: 32px     12: 48px
-```
+`src/theme` also exports `SPACING`, `RADII`, `TYPE`, `SHADOWS`, `BREAKPOINTS`
+and the motion tokens described under [Animations](#animations).
 
-#### Border Radius
-```
-xs: 4px     md: 12px    2xl: 24px
-sm: 8px     lg: 16px    3xl: 32px
-            xl: 20px    full: 9999px
-```
+### Usage
 
-#### Shadows (Elevation)
-```
-xs:  0 1px 2px rgba(15, 23, 42, 0.04)
-sm:  0 1px 3px rgba(15, 23, 42, 0.06)
-base: 0 1px 3px + 0 1px 2px (double shadow)
-md:  0 4px 6px -1px + 0 2px 4px -1px
-lg:  0 10px 15px -3px + 0 4px 6px -2px
-xl:  0 20px 25px -5px + 0 10px 10px -5px
-2xl: 0 25px 50px -12px
-```
-
-### Usage Examples
-
-#### In Tailwind classes
 ```tsx
-// Colors
-<View className="bg-primary text-text-primary border-border" />
+const colors = useThemeColors();
+<Text style={{ color: colors.muted }}>Last updated 2 min ago</Text>
 
-// Typography
-<Text className="text-5xl font-black">Heading</Text>
-<Text className="text-lg leading-relaxed">Body text</Text>
-
-// Spacing
-<View className="p-4 gap-6 mb-8">...</View>
-
-// Border radius
-<View className="rounded-lg" />
-
-// Shadows
-<View className="shadow-md" />
+const palette = useAdminSurfacePalette();
+<View style={{ backgroundColor: palette.cardBg, borderColor: palette.cardBorder }} />
 ```
 
-#### In CSS variables
-```css
-.card {
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  padding: var(--spacing-lg);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-}
-```
-
-#### In inline styles
-```tsx
-style={{
-  backgroundColor: "#3757FF",      // Use token color
-  padding: 16,                      // Use spacing token
-  borderRadius: 16,                 // Use radius token
-  shadowColor: "#0F172A",
-  shadowOpacity: 0.1,               // Use shadow opacity
-}}
-```
+Do not add hex literals to components. If a colour is missing, add a role to
+the theme file that owns that surface, built from `palette.ts`.
 
 ---
 

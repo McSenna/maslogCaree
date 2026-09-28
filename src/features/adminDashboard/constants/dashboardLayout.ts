@@ -42,6 +42,6 @@ export const chartLegendGap = (donutSize: number): number => {
   return (gutter - 1) / 2;
 };
 
-export const USER_ROW_SINGLE_LINE_MIN_WIDTH = 400;
+export const USER_ROW_SINGLE_LINE_MIN_WIDTH = 480;
 
 export const DENSE_METRIC_MAX_WIDTH = 370;

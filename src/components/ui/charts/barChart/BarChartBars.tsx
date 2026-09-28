@@ -3,7 +3,7 @@ import Svg, { Defs, LinearGradient, Line, Stop } from "react-native-svg";
 
 import { AnimatedRect } from "../animatedSvgShapes";
 
-import { PAD_X, TICKS, type BarLayout } from "./barChartLayout";
+import { barHeight, PAD_X, TICKS, type BarLayout } from "./barChartLayout";
 import type { SimpleBarDatum } from "./barChartTypes";
 
 type Props = {
@@ -20,6 +20,7 @@ type Props = {
   gridDashed: boolean;
   gradientId: string;
   peakIdx: number;
+  highlightPeak: boolean;
   activeIndex: number | null;
   progress: Animated.Value;
 };
@@ -38,6 +39,7 @@ const BarChartBars = ({
   gridDashed,
   gradientId,
   peakIdx,
+  highlightPeak,
   activeIndex,
   progress,
 }: Props) => {
@@ -49,6 +51,10 @@ const BarChartBars = ({
         <LinearGradient id={`${gradientId}-accent`} x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0%" stopColor={accentColor} stopOpacity={1} />
           <Stop offset="100%" stopColor={accentColor} stopOpacity={0.7} />
+        </LinearGradient>
+        <LinearGradient id={`${gradientId}-partial`} x1="0" y1="0" x2="0" y2="1">
+          <Stop offset="0%" stopColor={accentColor} stopOpacity={0.22} />
+          <Stop offset="100%" stopColor={accentColor} stopOpacity={0.1} />
         </LinearGradient>
         <LinearGradient id={`${gradientId}-dim`} x1="0" y1="0" x2="0" y2="1">
           <Stop offset="0%" stopColor={dimColor} stopOpacity={0.6} />
@@ -74,13 +80,14 @@ const BarChartBars = ({
         })}
 
       {data.map((d, i) => {
-        const safeVal = Number.isFinite(d.value) ? d.value : 0;
-        const barH = Math.max(safeVal > 0 ? 4 : 0, (safeVal / axisMax) * innerH);
-        const fill = d.color
-          ? d.color
-          : i === peakIdx
-            ? `url(#${gradientId}-accent)`
-            : `url(#${gradientId}-dim)`;
+        const barH = barHeight(d.value, axisMax, innerH);
+        const fill = d.partial
+          ? `url(#${gradientId}-partial)`
+          : d.color
+            ? d.color
+            : !highlightPeak || i === peakIdx
+              ? `url(#${gradientId}-accent)`
+              : `url(#${gradientId}-dim)`;
 
         return (
           <AnimatedRect
@@ -92,6 +99,9 @@ const BarChartBars = ({
             rx={radius}
             ry={radius}
             fill={fill}
+            stroke={d.partial ? accentColor : undefined}
+            strokeWidth={d.partial ? 1.5 : 0}
+            strokeDasharray={d.partial ? "4 3" : undefined}
             opacity={activeIndex === null || activeIndex === i ? 1 : 0.55}
           />
         );

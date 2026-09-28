@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import { REG_COLORS, REG_RADIUS } from "../registrationTheme";
+import { PALETTE } from "@/theme/palette";
 
 type RegistrationSuccessProps = {
   email: string;
@@ -105,7 +106,7 @@ const RegistrationSuccess = ({ email, onContinue, height }: RegistrationSuccessP
         width: "100%",
         maxWidth: 440,
         borderRadius: REG_RADIUS.control,
-        backgroundColor: pressed ? "#1D4ED8" : REG_COLORS.primary,
+        backgroundColor: pressed ? PALETTE.blue[700] : REG_COLORS.primary,
         boxShadow: "0px 4px 12px rgba(37,99,235,0.25)",
       })}
     >

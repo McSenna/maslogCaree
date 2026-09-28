@@ -25,6 +25,10 @@ export type AdminDashboardPalette = {
   muted: string;
   subtle: string;
   primary: string;
+  /** Keyboard focus outline for interactive dashboard elements. */
+  focusRing: string;
+  /** Background of hoverable rows and buttons. */
+  hoverBg: string;
   positive: string;
   negative: string;
   bannerBg: string;

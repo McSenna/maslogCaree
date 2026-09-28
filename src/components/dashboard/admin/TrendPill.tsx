@@ -19,22 +19,30 @@ const TrendPill = ({
   direction,
   compact = false,
 }: TrendPillProps) => {
-  const isUp = direction ? direction === "up" : growth >= 0;
-  const tone = isUp ? palette.trends.up : palette.trends.down;
+  // Zero change is neither good nor bad news, so it is grey rather than a green "up".
+  const isFlat = !direction && growth === 0;
+  const isUp = direction ? direction === "up" : growth > 0;
+  const tone = isFlat
+    ? { text: palette.muted, bg: palette.divider }
+    : isUp
+      ? palette.trends.up
+      : palette.trends.down;
 
   return (
     <View
       accessible
-      accessibilityLabel={`${Math.abs(growth)} percent ${
-        isUp ? "increase" : "decrease"
-      } from last month`}
+      accessibilityLabel={
+        isFlat
+          ? "No change from last month"
+          : `${Math.abs(growth)} percent ${isUp ? "increase" : "decrease"} from last month`
+      }
       className={`shrink-0 flex-row items-center ${
         compact ? "gap-0.5 px-1.5 py-1" : "gap-1 px-2 py-1"
       }`}
       style={{ backgroundColor: tone.bg, borderRadius: DASHBOARD_RADIUS.pill }}
     >
       <Feather
-        name={isUp ? "arrow-up" : "arrow-down"}
+        name={isFlat ? "minus" : isUp ? "arrow-up" : "arrow-down"}
         size={compact ? 10 : 12}
         color={tone.text}
       />

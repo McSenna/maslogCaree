@@ -58,6 +58,7 @@ const AppointmentAlert = ({
           accessibilityRole="button"
           accessibilityLabel={action.accessibilityLabel}
           onPress={action.onPress}
+          hitSlop={6}
           className="items-center justify-center rounded-lg px-3"
           style={{
             height: 34,

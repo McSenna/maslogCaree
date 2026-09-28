@@ -3,6 +3,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { SystemLogSeverity, SystemLogStatus } from "@/features/systemLogs/services/systemLogService";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
 export type StatusTone = {
   label: string;
@@ -12,7 +13,7 @@ export type StatusTone = {
 };
 
 const SEVERITY_TONES: Record<SystemLogSeverity, StatusTone> = {
-  info: { label: "Info", text: "#1E40AF", bg: "#DBEAFE", dot: "#1677FF" },
+  info: { label: "Info", text: "#1E40AF", bg: "#DBEAFE", dot: PALETTE.blue[600] },
   success: { label: "Success", text: "#166534", bg: "#DCFCE7", dot: "#22C55E" },
   warning: { label: "Warning", text: "#92400E", bg: "#FEF3C7", dot: "#F59E0B" },
   error: { label: "Error", text: "#991B1B", bg: "#FEE2E2", dot: "#EF4444" },

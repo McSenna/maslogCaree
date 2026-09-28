@@ -1,7 +1,9 @@
+import { PALETTE } from "@/theme/palette";
+
 export type ServiceTone = { bg: string; fg: string };
 
 export const SERVICE_COLORS: Record<string, string> = {
-  general_checkup: "#2563EB",
+  general_checkup: PALETTE.blue[600],
   prenatal: "#DB2777",
   immunization: "#059669",
   consultation: "#7C3AED",
