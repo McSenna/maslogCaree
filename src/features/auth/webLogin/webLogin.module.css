@@ -1,0 +1,1245 @@
+.page {
+  --ink: #0b1233;
+  --ink-soft: #3d4560;
+  --ink-muted: #4a5470;
+  --brand: #0052fd;
+  --error: #b42318;
+  --line: #d3dae6;
+  --haze: #eef3fd;
+
+  container: page / inline-size;
+  height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: var(--haze);
+  color: var(--ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-synthesis: none;
+  /* Inter loads with its optical-size axis; body text keeps the default text cut. */
+  font-optical-sizing: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Zero specificity, so each element's own margin below still applies. */
+:where(.page) :where(p, h1, ul) {
+  margin: 0;
+}
+
+.stage {
+  min-height: 100%;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Frame and scenery ---------- */
+
+.frame {
+  /* Height of the photo band above the card: shorter on short phones so the Log In button stays on screen. */
+  --band: clamp(172px, 37.3dvh, 310px);
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding: var(--band) 14px 32px;
+  overflow: hidden;
+}
+
+.scenery {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.photo,
+.tint,
+.haze {
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(var(--band) + 90px);
+}
+
+.photo {
+  width: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 52% 72%;
+}
+
+.haze {
+  height: calc(var(--band) + 91px);
+  background: linear-gradient(
+    180deg,
+    rgba(234, 241, 253, 0.97) 0%,
+    rgba(234, 241, 253, 0.9) 20%,
+    rgba(234, 241, 253, 0.35) 42%,
+    rgba(234, 241, 253, 0.18) 70%,
+    var(--haze) 100%
+  );
+}
+
+/* The photo reads blue in the brand art: this recolors it and keeps its lightness. */
+.tint {
+  background: #5b86d6;
+  mix-blend-mode: color;
+  opacity: 0.55;
+  /* Lighter toward the top so the flag keeps some of its red and blue. */
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 40%, #000 72%);
+}
+
+.waves,
+.mist,
+.place {
+  display: none;
+}
+
+/* ---------- Intro ---------- */
+
+.intro {
+  position: absolute;
+  top: clamp(16px, 3.13dvh, 26px);
+  left: 0;
+  right: 0;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.seal {
+  display: block;
+  flex: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  filter: drop-shadow(0 6px 14px rgba(20, 50, 130, 0.2));
+}
+
+.wordmark {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 36px;
+  letter-spacing: -0.8px;
+  white-space: nowrap;
+}
+
+.wordmarkDark {
+  color: var(--ink);
+}
+
+.wordmarkBlue {
+  color: #1766f5;
+}
+
+.tagline,
+.lede,
+.rule {
+  display: none;
+}
+
+/* ---------- Features ---------- */
+
+/* On phones the list follows the card, so it shows once someone scrolls past the form. */
+.features {
+  order: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+  max-width: 480px;
+  margin: 32px auto 0;
+  padding: 0 6px;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.featureTile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+}
+
+.featureIcon {
+  width: 26px;
+  height: 26px;
+}
+
+.toneBlue {
+  background: #d9e7ff;
+  color: #0a4ef4;
+}
+
+.toneGreen {
+  background: #d3eee1;
+  color: #1f8f43;
+}
+
+.toneOrange {
+  background: #fbe7cf;
+  color: #b86a05;
+}
+
+.featureText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.featureTitle {
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.featureDescription {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 21px;
+}
+
+/* ---------- Card ---------- */
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 18px 16px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 24px 50px -24px rgba(30, 60, 140, 0.26);
+  animation: card-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: -0.3px;
+  text-align: center;
+  color: var(--ink);
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+.alert {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px 14px;
+  border: 1px solid #f3c5bf;
+  border-radius: 8px;
+  background: #fef3f2;
+  color: #7a1a12;
+  font-size: 14px;
+  line-height: 20px;
+  animation: settle-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.alertIcon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--error);
+}
+
+@keyframes settle-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.alert + .fields {
+  margin-top: 14px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  position: relative;
+  height: 56px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  transition:
+    border-color 150ms ease-out,
+    box-shadow 150ms ease-out;
+}
+
+.field:focus-within {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px rgba(0, 82, 253, 0.13);
+}
+
+.fieldInvalid,
+.fieldInvalid:focus-within {
+  border-color: var(--error);
+}
+
+.fieldInvalid:focus-within {
+  box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.13);
+}
+
+.fieldInvalid .label {
+  color: var(--error);
+}
+
+.fieldIcon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  width: 24px;
+  height: 24px;
+  color: var(--ink-soft);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.fieldIconBrand {
+  color: var(--brand);
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  padding: 22px 14px 0 48px;
+  border: 0;
+  border-radius: 9px;
+  outline: none;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.fieldWithToggle .input {
+  padding-right: 56px;
+}
+
+.input:-webkit-autofill {
+  -webkit-text-fill-color: var(--ink);
+  box-shadow: 0 0 0 100px #fff inset;
+}
+
+.input[readonly] {
+  cursor: progress;
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  left: 48px;
+  max-width: calc(100% - 62px);
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-size: 16px;
+  line-height: 22px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transform: translateY(-50%);
+  transform-origin: left center;
+  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.input:focus + .label,
+.input:not(:placeholder-shown) + .label {
+  transform: translateY(calc(-50% - 11px)) scale(0.76);
+}
+
+.input:-webkit-autofill + .label {
+  transform: translateY(calc(-50% - 11px)) scale(0.76);
+}
+
+.toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.toggleIcon {
+  width: 22px;
+  height: 22px;
+}
+
+.fieldError,
+.capsHint {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.fieldError {
+  display: flex;
+  gap: 6px;
+  color: var(--error);
+}
+
+.fieldErrorIcon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+.capsHint {
+  color: #8a4b00;
+}
+
+.capsHint:empty {
+  margin: 0;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 52px;
+  margin-top: 16px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease-out,
+    transform 140ms ease-out;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.buttonPrimary {
+  background: var(--brand);
+}
+
+.buttonPrimary[aria-disabled="true"] {
+  background: var(--brand);
+  cursor: progress;
+  transform: none;
+}
+
+.buttonSecondary {
+  margin-top: 10px;
+  background: #1a7f3b;
+}
+
+/* Hover styles only where a real pointer can hover; a tap would otherwise leave them stuck. */
+@media (hover: hover) and (pointer: fine) {
+  .toggle:hover {
+    color: var(--ink);
+  }
+
+  .buttonPrimary:hover {
+    background: #0046d8;
+  }
+
+  .buttonSecondary:hover {
+    background: #156b31;
+  }
+
+  .link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.link {
+  position: relative;
+  align-self: center;
+  height: 44px;
+  margin-top: 4px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #0b55f0;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.divider {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  column-gap: 16px;
+  height: 24px;
+}
+
+.dividerLine {
+  height: 1.5px;
+  background: #e4e9f1;
+}
+
+.dividerText {
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 24px;
+}
+
+/* Inline flow, so on a narrow card the icon wraps with the first word instead of standing apart. */
+.security {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  line-height: 20px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.securityIcon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: -4px;
+}
+
+/* Focus is always visible, drawn outside the control so it clears colored fills.
+   These rules also restate the radius, which the global :focus-visible rule sets to 4px. */
+.button:focus-visible,
+.link:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.toggle:focus-visible {
+  outline: 2.5px solid var(--brand);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+/* The field wrapper draws the focus ring, so the input itself shows none. */
+.input:focus-visible {
+  outline: none;
+}
+
+.success {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  border-radius: inherit;
+  background: #fff;
+  text-align: center;
+  animation: settle-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.successBadge {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 8px;
+  border-radius: 50%;
+  background: #e3f4e8;
+  color: #1a7f3b;
+}
+
+.successIcon {
+  width: 32px;
+  height: 32px;
+}
+
+.successTitle {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.successText {
+  color: var(--ink-soft);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+/* ---------- Phones ---------- */
+
+/* The whole hall fits across the width, small and hazed, with soft white waves under it
+   the way the mobile brand art frames it. Tablet and desktop crop the photo instead. */
+@container page (max-width: 639px) {
+  .frame {
+    --photo-top: 34px;
+    --photo-h: calc(100cqw * 869 / 1484);
+  }
+
+  .photo,
+  .tint {
+    top: var(--photo-top);
+    height: var(--photo-h);
+  }
+
+  .photo {
+    mask-image: linear-gradient(180deg, transparent 0%, #000 22%);
+  }
+
+  .tint {
+    opacity: 0.88;
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.6) 30%, #000 55%);
+  }
+
+  /* Heavier than the tablet wash: the hall reads as a pale blue silhouette behind the brand. */
+  .haze {
+    height: calc(var(--photo-top) + var(--photo-h));
+    background: linear-gradient(
+      180deg,
+      rgba(238, 243, 253, 0.97) 0%,
+      rgba(238, 243, 253, 0.9) 30%,
+      rgba(238, 243, 253, 0.62) 52%,
+      rgba(238, 243, 253, 0.5) 75%,
+      rgba(238, 243, 253, 0.8) 100%
+    );
+  }
+
+  .mist {
+    position: absolute;
+    top: calc(var(--photo-top) + var(--photo-h) - 82px);
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 110px;
+  }
+
+  /* Starts below the fold at 390 x 832, so the first screen is only the brand and the form. */
+  .features {
+    margin-top: 56px;
+  }
+}
+
+/* ---------- Narrow phones ---------- */
+
+@container page (max-width: 359px) {
+  .frame {
+    padding-inline: 10px;
+  }
+
+  .card {
+    padding-inline: 14px;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .seal {
+    width: 52px;
+    height: 52px;
+  }
+
+  .wordmark {
+    font-size: 27px;
+  }
+}
+
+/* ---------- Tablet ---------- */
+
+@container page (min-width: 640px) {
+  .frame {
+    --band: clamp(240px, 27dvh, 300px);
+
+    padding: var(--band) 32px 40px;
+  }
+
+  .photo,
+  .tint {
+    height: calc(var(--band) + 110px);
+  }
+
+  .haze {
+    height: calc(var(--band) + 111px);
+  }
+
+  .intro {
+    top: clamp(24px, 3.4dvh, 36px);
+  }
+
+  .brand {
+    gap: 16px;
+  }
+
+  .seal {
+    width: 72px;
+    height: 72px;
+  }
+
+  .wordmark {
+    font-size: 36px;
+    line-height: 40px;
+  }
+
+  .tagline {
+    display: block;
+    margin-top: 2px;
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .card {
+    max-width: 520px;
+    padding: 32px 32px 28px;
+    border-radius: 24px;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    max-width: 760px;
+    margin-top: 40px;
+    padding: 0;
+  }
+
+  .feature {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .featureTile {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+
+  .featureIcon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .featureText {
+    align-items: center;
+    gap: 4px;
+    padding-top: 0;
+  }
+
+  .featureDescription {
+    max-width: 24ch;
+    text-wrap: balance;
+  }
+}
+
+/* ---------- Desktop ---------- */
+
+@container page (min-width: 1024px) {
+  .frame {
+    /* The width term divides by 1760, not 1920, so 1440 and 1280 laptops keep a comfortable scale. */
+    --s: clamp(0.56px, min(calc(100cqw / 1760), calc(100dvh / 1080)), 1.2px);
+    --pad-x: max(clamp(40px, 5cqw, 120px), calc((100cqw - 1680px) / 2));
+    --pad-y: clamp(28px, calc(64 * var(--s)), 88px);
+    --wave-h: clamp(64px, calc(150 * var(--s)), 180px);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(384px, calc(544 * var(--s)), 600px);
+    grid-template-areas:
+      "intro card"
+      "features card";
+    align-content: center;
+    column-gap: clamp(48px, calc(120 * var(--s)), 160px);
+    min-height: 100dvh;
+    padding: var(--pad-y) var(--pad-x) max(var(--pad-y), var(--wave-h));
+  }
+
+  /* Full bleed: the photo covers the viewport with the flagpole and hall sign between the columns. */
+  .photo,
+  .tint,
+  .haze {
+    inset: 0;
+    height: 100%;
+  }
+
+  .photo {
+    height: 100%;
+    object-position: 52% 100%;
+  }
+
+  .tint {
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35) 20%, #000 65%);
+  }
+
+  /* Left wash keeps the intro readable; the top and bottom washes blend the photo into the page. */
+  .haze {
+    background:
+      linear-gradient(180deg, rgba(214, 229, 253, 0.9) 0%, rgba(214, 229, 253, 0) 26%),
+      linear-gradient(
+        90deg,
+        rgba(238, 244, 254, 0.95) 0%,
+        rgba(238, 244, 254, 0.9) 34%,
+        rgba(238, 244, 254, 0.45) 50%,
+        rgba(238, 244, 254, 0) 62%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(233, 241, 254, 0.9) 0%,
+        rgba(238, 244, 254, 0.62) 50%,
+        rgba(238, 244, 254, 0.42) 80%,
+        rgba(238, 244, 254, 0.3) 100%
+      );
+  }
+
+  .waves {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: clamp(480px, 48cqw, 1040px);
+    height: var(--wave-h);
+  }
+
+  .intro {
+    position: static;
+    grid-area: intro;
+    align-self: end;
+  }
+
+  .brand {
+    justify-content: flex-start;
+    gap: clamp(16px, calc(28 * var(--s)), 32px);
+  }
+
+  .seal {
+    width: clamp(76px, calc(124 * var(--s)), 148px);
+    height: clamp(76px, calc(124 * var(--s)), 148px);
+    filter: drop-shadow(0 calc(8 * var(--s)) calc(18 * var(--s)) rgba(20, 50, 130, 0.2));
+  }
+
+  .wordmark {
+    font-size: clamp(42px, calc(72 * var(--s)), 86px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  /* About the wordmark's width, so it breaks after "&" as in the brand art. */
+  .tagline {
+    display: block;
+    max-width: 17em;
+    margin-top: clamp(6px, calc(12 * var(--s)), 14px);
+    color: var(--ink-soft);
+    font-size: clamp(16px, calc(23 * var(--s)), 27px);
+    line-height: 1.3;
+  }
+
+  .lede {
+    display: block;
+    max-width: 25em;
+    margin-top: clamp(20px, calc(44 * var(--s)), 52px);
+    font-size: clamp(17px, calc(25 * var(--s)), 30px);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+
+  .rule {
+    display: block;
+    width: clamp(64px, calc(104 * var(--s)), 120px);
+    height: max(3px, calc(4 * var(--s)));
+    margin-top: clamp(18px, calc(30 * var(--s)), 36px);
+    border-radius: 2px;
+    background: #0a4ef4;
+  }
+
+  .features {
+    order: 0;
+    grid-area: features;
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    gap: clamp(16px, calc(38 * var(--s)), 44px);
+    max-width: none;
+    margin: clamp(22px, calc(44 * var(--s)), 52px) 0 0;
+  }
+
+  .feature {
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(16px, calc(30 * var(--s)), 34px);
+    text-align: left;
+  }
+
+  .featureTile {
+    width: clamp(52px, calc(80 * var(--s)), 92px);
+    height: clamp(52px, calc(80 * var(--s)), 92px);
+    border-radius: clamp(12px, calc(16 * var(--s)), 18px);
+  }
+
+  .featureIcon {
+    width: 58%;
+    height: 58%;
+  }
+
+  .featureText {
+    align-items: flex-start;
+    gap: clamp(2px, calc(6 * var(--s)), 8px);
+  }
+
+  .featureTitle {
+    font-size: clamp(17px, calc(23 * var(--s)), 27px);
+    line-height: 1.25;
+  }
+
+  .featureDescription {
+    max-width: 22em;
+    color: #1f2740;
+    font-size: clamp(15px, calc(19.5 * var(--s)), 23px);
+    line-height: 1.45;
+    text-wrap: balance;
+  }
+
+  .place {
+    position: absolute;
+    right: var(--pad-x);
+    bottom: clamp(16px, calc(30 * var(--s)), 36px);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px 7px 11px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 1px 2px rgba(20, 50, 130, 0.08);
+    color: var(--ink-soft);
+    font-size: clamp(13px, calc(15 * var(--s)), 17px);
+    font-weight: 500;
+    line-height: 20px;
+    backdrop-filter: blur(8px);
+  }
+
+  .placeIcon {
+    width: 16px;
+    height: 16px;
+    color: var(--brand);
+  }
+
+  /* ----- Card ----- */
+
+  .card {
+    --field-h: clamp(54px, calc(74 * var(--s)), 84px);
+    --field-inset: clamp(16px, calc(22 * var(--s)), 26px);
+    --icon: clamp(20px, calc(24 * var(--s)), 27px);
+    --radius: clamp(8px, calc(10 * var(--s)), 12px);
+
+    grid-area: card;
+    align-self: center;
+    max-width: none;
+    margin: 0;
+    padding: clamp(28px, calc(60 * var(--s)), 72px) clamp(24px, calc(44 * var(--s)), 52px)
+      clamp(24px, calc(40 * var(--s)), 48px);
+    border-radius: clamp(20px, calc(28 * var(--s)), 32px);
+    box-shadow:
+      0 1px 2px rgba(30, 60, 140, 0.06),
+      0 40px 80px -36px rgba(20, 50, 130, 0.38);
+  }
+
+  .title {
+    font-size: clamp(24px, calc(30 * var(--s)), 36px);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    text-align: left;
+  }
+
+  .subtitle {
+    margin-top: clamp(6px, calc(10 * var(--s)), 12px);
+    font-size: clamp(16px, calc(19.5 * var(--s)), 23px);
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .alert {
+    gap: 12px;
+    margin-top: clamp(18px, calc(24 * var(--s)), 28px);
+    padding: clamp(12px, calc(14 * var(--s)), 16px) clamp(14px, calc(16 * var(--s)), 18px);
+    border-radius: var(--radius);
+    font-size: clamp(14px, calc(16 * var(--s)), 18px);
+    line-height: 1.45;
+  }
+
+  .alertIcon {
+    width: clamp(20px, calc(22 * var(--s)), 24px);
+    height: clamp(20px, calc(22 * var(--s)), 24px);
+  }
+
+  .fields {
+    gap: clamp(14px, calc(20 * var(--s)), 24px);
+    margin-top: clamp(22px, calc(40 * var(--s)), 48px);
+  }
+
+  .alert + .fields {
+    margin-top: clamp(14px, calc(20 * var(--s)), 24px);
+  }
+
+  .field {
+    height: var(--field-h);
+    border-radius: var(--radius);
+  }
+
+  .fieldIcon {
+    left: var(--field-inset);
+    width: var(--icon);
+    height: var(--icon);
+  }
+
+  .input {
+    padding: calc(var(--field-h) * 0.4) var(--field-inset) 0
+      calc(var(--field-inset) + var(--icon) + clamp(12px, calc(18 * var(--s)), 22px));
+    border-radius: calc(var(--radius) - 1px);
+    font-size: clamp(16px, calc(19 * var(--s)), 22px);
+    line-height: 1.3;
+  }
+
+  .fieldWithToggle .input {
+    padding-right: calc(var(--field-inset) + 48px);
+  }
+
+  .label {
+    left: calc(var(--field-inset) + var(--icon) + clamp(12px, calc(18 * var(--s)), 22px));
+    max-width: calc(100% - var(--field-inset) * 2 - var(--icon) - 18px);
+    font-size: clamp(16px, calc(19 * var(--s)), 22px);
+    line-height: 1.3;
+  }
+
+  .input:focus + .label,
+  .input:not(:placeholder-shown) + .label,
+  .input:-webkit-autofill + .label {
+    transform: translateY(calc(-50% - var(--field-h) * 0.19)) scale(0.74);
+  }
+
+  .toggle {
+    right: clamp(6px, calc(10 * var(--s)), 12px);
+    width: max(44px, calc(48 * var(--s)));
+    height: max(44px, calc(48 * var(--s)));
+    border-radius: var(--radius);
+  }
+
+  .toggleIcon {
+    width: var(--icon);
+    height: var(--icon);
+  }
+
+  .fieldError,
+  .capsHint {
+    margin-top: 7px;
+    font-size: clamp(14px, calc(16 * var(--s)), 18px);
+    line-height: 1.4;
+  }
+
+  .button {
+    gap: 12px;
+    height: clamp(50px, calc(62 * var(--s)), 72px);
+    margin-top: clamp(18px, calc(26 * var(--s)), 32px);
+    border-radius: var(--radius);
+    font-size: clamp(17px, calc(21 * var(--s)), 24px);
+  }
+
+  .buttonSecondary {
+    margin-top: clamp(14px, calc(26 * var(--s)), 32px);
+  }
+
+  .spinner {
+    width: clamp(18px, calc(22 * var(--s)), 24px);
+    height: clamp(18px, calc(22 * var(--s)), 24px);
+  }
+
+  .button:focus-visible,
+  .link:focus-visible {
+    border-radius: var(--radius);
+  }
+
+  .toggle:focus-visible {
+    border-radius: var(--radius);
+  }
+
+  .link {
+    height: max(44px, calc(46 * var(--s)));
+    margin-top: clamp(8px, calc(14 * var(--s)), 16px);
+    padding: 0 14px;
+    font-size: clamp(15px, calc(18 * var(--s)), 21px);
+  }
+
+  .divider {
+    column-gap: clamp(16px, calc(24 * var(--s)), 28px);
+    margin-top: clamp(8px, calc(18 * var(--s)), 22px);
+  }
+
+  .dividerText {
+    font-size: clamp(14px, calc(17 * var(--s)), 20px);
+  }
+
+  .security {
+    margin-top: clamp(18px, calc(34 * var(--s)), 40px);
+    font-size: clamp(14px, calc(17 * var(--s)), 20px);
+    line-height: 1.4;
+  }
+
+  .securityIcon {
+    width: clamp(16px, calc(20 * var(--s)), 22px);
+    height: clamp(16px, calc(20 * var(--s)), 22px);
+    margin-right: 10px;
+    vertical-align: -0.2em;
+  }
+
+  .success {
+    gap: 10px;
+  }
+
+  .successBadge {
+    width: clamp(64px, calc(76 * var(--s)), 88px);
+    height: clamp(64px, calc(76 * var(--s)), 88px);
+  }
+
+  .successIcon {
+    width: 50%;
+    height: 50%;
+  }
+
+  .successTitle {
+    font-size: clamp(22px, calc(28 * var(--s)), 32px);
+    line-height: 1.25;
+  }
+
+  .successText {
+    font-size: clamp(16px, calc(19 * var(--s)), 22px);
+    line-height: 1.4;
+  }
+}
+
+/* The caption sits under the card; on short windows there is no room for it. */
+@media (max-height: 700px) {
+  .place {
+    display: none;
+  }
+}
+
+/* Reduced motion keeps the fades, which say something appeared, and drops the movement. */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: fade-in 200ms ease-out both;
+  }
+
+  .alert,
+  .success {
+    animation: fade-in 150ms ease-out;
+  }
+
+  .field,
+  .label,
+  .button {
+    transition: none;
+  }
+
+  .button:active {
+    transform: none;
+  }
+
+  .spinner {
+    animation-duration: 1600ms;
+  }
+}
