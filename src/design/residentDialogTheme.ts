@@ -6,7 +6,7 @@ import { PALETTE } from "@/theme/palette";
 /**
  * Shared tokens for the resident overlays (medical details, reschedule,
  * cancel) so the same surface, text and accent colours are used whichever
- * wrapper — modal or bottom sheet — the dialog renders in.
+ * wrapper: modal or bottom sheet: the dialog renders in.
  */
 export const useResidentDialogPalette = () => {
   const { resolvedTheme } = useTheme();

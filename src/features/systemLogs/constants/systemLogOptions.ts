@@ -26,6 +26,7 @@ export const systemLogActions = [
   "SCHEDULE_CREATED",
   "SCHEDULE_UPDATED",
   "SCHEDULE_DELETED",
+  "ANNOUNCEMENT_CREATED",
 ] as const;
 
 export const SEVERITY_OPTIONS = ["all", "info", "success", "warning", "error"] as const;

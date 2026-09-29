@@ -48,7 +48,7 @@ const AvatarPicker = ({ photo, onPress }: AvatarPickerProps) => (
         {photo ? "Change profile photo" : "Add a profile photo"}
       </Text>
       <Text style={{ fontSize: 12.5, color: REG_COLORS.muted }}>
-        Optional — helps health workers recognise you at the centre.
+        Optional. Helps health workers recognise you at the centre.
       </Text>
     </View>
   </Pressable>

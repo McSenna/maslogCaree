@@ -59,7 +59,7 @@ const SupportTicketCard = ({ ticket, onPress, showRequester = false }: SupportTi
 
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12 }}>
         <MetaRow label="CATEGORY" value={supportCategoryLabel(ticket.category)} />
-        {showRequester ? <MetaRow label="REQUESTER" value={ticket.requesterName || "—"} /> : null}
+        {showRequester ? <MetaRow label="REQUESTER" value={ticket.requesterName || "Not set"} /> : null}
         <MetaRow label="SUBMITTED" value={formatTicketDate(ticket.createdAt)} />
         <MetaRow label="LAST UPDATED" value={formatTicketDate(ticket.lastActivityAt)} />
       </View>

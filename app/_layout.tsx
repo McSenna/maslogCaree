@@ -7,6 +7,7 @@ import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import ActionDialogHost from "@/components/feedback/dialog/ActionDialogHost";
+import AnnouncementDetailHost from "@/features/announcements/detail/AnnouncementDetailHost";
 import ToastViewport from "@/components/feedback/toast/ToastViewport";
 import HydrationBoundary from "@/components/layout/HydrationBoundary";
 import { enableScreens } from "react-native-screens";
@@ -43,6 +44,7 @@ const AppShell = () => {
         <ThemedStack />
         <ToastViewport />
         <ActionDialogHost />
+        <AnnouncementDetailHost />
       </HydrationBoundary>
     </View>
   );

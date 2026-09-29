@@ -78,15 +78,9 @@ const Waves = () => (
 // Phones only: two soft waves that settle the hazed hall into the page color above the card.
 const Mist = () => (
   <svg className={s.mist} viewBox="0 0 390 110" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <defs>
-      <linearGradient id="login-mist" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stopColor="#f6f9ff" />
-        <stop offset="0.7" stopColor="#eef3fd" />
-      </linearGradient>
-    </defs>
-    <path fill="url(#login-mist)" opacity="0.8" d="M240 110C280 70 335 40 390 34V110Z" />
-    <path fill="url(#login-mist)" d="M120 110C140 80 170 60 205 52C235 45 260 41 282 42C320 44 360 62 390 76V110Z" />
-    <path fill="url(#login-mist)" d="M0 6C8 1 16 0 24 0C46 1 70 16 100 38C122 54 140 66 160 76C178 86 196 98 214 110H0Z" />
+    <path fill="#f2f6fe" opacity="0.8" d="M240 110C280 70 335 40 390 34V110Z" />
+    <path fill="#f2f6fe" d="M120 110C140 80 170 60 205 52C235 45 260 41 282 42C320 44 360 62 390 76V110Z" />
+    <path fill="#f2f6fe" d="M0 6C8 1 16 0 24 0C46 1 70 16 100 38C122 54 140 66 160 76C178 86 196 98 214 110H0Z" />
   </svg>
 );
 

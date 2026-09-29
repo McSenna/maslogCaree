@@ -35,6 +35,7 @@ const ROUTES: Record<UserRole, RoleRoutes> = {
     appointment: "/admin/dashboard",
     account: "/admin/users",
     inventory: "/admin/inventory",
+    announcement: "/admin/announcements",
   },
 };
 
@@ -49,5 +50,13 @@ export const resolveNotificationDestination = (
   return routeForCategory(role, category);
 };
 
-export const getNotificationsRoute = (role?: string | null): string | null =>
+/**
+ * Announcement alerts open their post in a dialog instead of navigating. The
+ * type is checked rather than the title-based category fallback, so an
+ * unrelated alert that merely mentions "announcement" keeps its old route.
+ */
+export const isAnnouncementNotification = (item: NotificationItem): boolean =>
+  item.type === "announcement" || Boolean(item.announcementId);
+
+export const getNotificationsRoute =(role?: string | null): string | null =>
   role && role in ROUTES ? `/${role}/notifications` : null;

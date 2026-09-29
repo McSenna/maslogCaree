@@ -7,6 +7,8 @@ import type { AdminDashboardPalette } from "./adminDashboard/paletteTypes";
 export type {
   AdminDashboardPalette,
   MetricTone,
+  StatusTone,
+  StatusToneName,
   ToneStyle,
   TrendDirection,
   TrendTone,

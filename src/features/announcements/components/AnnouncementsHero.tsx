@@ -1,3 +1,4 @@
+import { PALETTE } from "@/theme/palette";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
@@ -14,7 +15,7 @@ const AnnouncementsHero = ({
     <View
       className="overflow-hidden rounded-3xl"
       style={{
-        backgroundColor: "#7988d2",
+        backgroundColor: PALETTE.blue[700],
         boxShadow: "0px 6px 20px rgba(45,91,255,0.2)",
         elevation: 8,
       }}

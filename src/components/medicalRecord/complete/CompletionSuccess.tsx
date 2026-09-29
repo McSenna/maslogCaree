@@ -25,7 +25,7 @@ const CompletionSuccess = ({
     `${serviceLabel} record saved to ${patientName}'s medical history.`,
     "Appointment marked as completed and removed from the active queue.",
     movements.length
-      ? `Inventory updated — ${movements.length} ${movements.length === 1 ? "item" : "items"} deducted.`
+      ? `Inventory updated: ${movements.length} ${movements.length === 1 ? "item" : "items"} deducted.`
       : null,
   ].filter(Boolean) as string[];
 

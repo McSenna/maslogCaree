@@ -4,6 +4,7 @@ export const adminNavItems: NavItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "layout" },
   { label: "User Management", href: "/admin/users", icon: "users" },
   { label: "Inventory", href: "/admin/inventory", icon: "box" },
+  { label: "Announcements", href: "/admin/announcements", icon: "volume-2" },
   { label: "System Logs", href: "/admin/system-logs", icon: "shield" },
   { label: "Support", href: "/admin/support", icon: "life-buoy" },
 ];
@@ -39,6 +40,7 @@ export const adminBottomNavItems: NavItem[] = [
   { label: "Dashboard", shortLabel: "Home", href: "/admin/dashboard", icon: "layout" },
   { label: "Users", href: "/admin/users", icon: "users" },
   { label: "Inventory", href: "/admin/inventory", icon: "box" },
+  { label: "Announcements", shortLabel: "News", href: "/admin/announcements", icon: "volume-2" },
   { label: "Logs", href: "/admin/system-logs", icon: "shield" },
   { label: "Profile", href: "/admin/profile", icon: "user" },
 ];

@@ -13,10 +13,10 @@ export const fileExtensionOf = (fileName: string): string =>
   fileName.includes(".") ? fileName.split(".").pop()!.toLowerCase() : "";
 
 export const formatTicketDate = (value: string | null): string => {
-  if (!value) return "—";
+  if (!value) return "Not set";
 
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return "Not set";
 
   return date.toLocaleDateString(undefined, {
     year: "numeric",
@@ -26,10 +26,10 @@ export const formatTicketDate = (value: string | null): string => {
 };
 
 export const formatTicketDateTime = (value: string | null): string => {
-  if (!value) return "—";
+  if (!value) return "Not set";
 
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return "Not set";
 
   return `${formatTicketDate(value)} · ${date.toLocaleTimeString(undefined, {
     hour: "numeric",

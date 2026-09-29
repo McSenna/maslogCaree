@@ -24,7 +24,7 @@ const RoleDistributionPanel = ({
 
   const options = useMemo<SelectOption<RoleFilter>[]>(
     () => [
-      { value: "all", label: "All Users" },
+      { value: "all", label: "All roles" },
       ...distribution.map((entry) => ({ value: entry.role, label: entry.label })),
     ],
     [distribution]
@@ -33,9 +33,9 @@ const RoleDistributionPanel = ({
   return (
     <PanelCard
       palette={palette}
-      title="User Distribution by Role"
+      title="Users by role"
       icon="users"
-      subtitle="Breakdown of total users by their assigned role"
+      subtitle="Share of all accounts"
       headerRight={
         <SelectMenu
           label="Filter by role"

@@ -2,6 +2,7 @@ import { View } from "react-native";
 
 import AnimatedListItem from "@/components/animations/AnimatedListItem";
 import Button from "@/components/buttons/Button";
+import ResponsiveGrid from "@/components/layout/ResponsiveGrid";
 import EmptyState from "@/components/feedback/EmptyState";
 import ErrorState from "@/components/feedback/ErrorState";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -67,11 +68,14 @@ const SupportTicketList = ({
 
   return (
     <View style={{ gap: SPACING.md }}>
-      {tickets.map((ticket, index) => (
-        <AnimatedListItem key={ticket.id} index={index}>
-          <SupportTicketCard ticket={ticket} onPress={onOpenTicket} showRequester={showRequester} />
-        </AnimatedListItem>
-      ))}
+      {/* Two-up only when the list itself is wide (full-page on large screens); dialogs stay single. */}
+      <ResponsiveGrid minColumnWidth={420} maxColumns={2} gap={SPACING.md} initialColumns={{ mobile: 1 }}>
+        {tickets.map((ticket, index) => (
+          <AnimatedListItem key={ticket.id} index={index} style={{ height: "100%" }}>
+            <SupportTicketCard ticket={ticket} onPress={onOpenTicket} showRequester={showRequester} />
+          </AnimatedListItem>
+        ))}
+      </ResponsiveGrid>
 
       {hasMore && onLoadMore ? (
         <Button

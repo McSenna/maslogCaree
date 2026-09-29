@@ -1,6 +1,7 @@
 import { ScrollView, View } from "react-native";
 
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
+import { usePageMaxWidth, useResponsive } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
@@ -8,11 +9,11 @@ import HelpCenterContent from "../content/HelpCenterContent";
 import HelpSupportOverlays from "../overlays/HelpSupportOverlays";
 import { useHelpCenterScreen } from "../hooks/useHelpCenterScreen";
 
-const PAGE_MAX_WIDTH = 1080;
-
 const HelpCenterScreen = () => {
   const palette = useAdminSurfacePalette();
   const insets = useRoleScreenInsets();
+  const maxWidth = usePageMaxWidth("content");
+  const { isWideDesktop } = useResponsive();
   const { overlay, expandedCategoryId } = useHelpCenterScreen();
 
   return (
@@ -23,7 +24,7 @@ const HelpCenterScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           width: "100%",
-          maxWidth: PAGE_MAX_WIDTH,
+          maxWidth,
           alignSelf: "center",
           paddingHorizontal: insets.gutter,
           paddingTop: insets.paddingTop,
@@ -34,6 +35,7 @@ const HelpCenterScreen = () => {
           expandedCategoryId={expandedCategoryId}
           onContactSupport={overlay.openContactSupport}
           onViewRequests={overlay.openSupportRequests}
+          sideRail={isWideDesktop}
         />
       </ScrollView>
 

@@ -18,7 +18,7 @@ export const formatNextVisitSummary = (
       };
     }
     return {
-      value: "—",
+      value: "None",
       helper: "No upcoming visit scheduled yet",
     };
   }
@@ -79,7 +79,7 @@ export const formatUpcomingCard = (
     .filter(Boolean)
     .join(" ");
   return {
-    title: `${typeLabel} — ${dateStr}`,
+    title: `${typeLabel}, ${dateStr}`,
     description,
   };
 };

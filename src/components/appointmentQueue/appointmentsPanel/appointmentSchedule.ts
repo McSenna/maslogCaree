@@ -4,5 +4,5 @@ import { formatDateTime } from "@/utils/dateFormatter";
 export const scheduleFor = (appointment: AppointmentRecord): { date: string; time: string } => {
   return appointment.slotStart
     ? formatDateTime(appointment.slotStart)
-    : { date: "Not scheduled", time: "—" };
+    : { date: "Not scheduled", time: "No time yet" };
 };

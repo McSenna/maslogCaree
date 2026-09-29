@@ -30,7 +30,7 @@ const ItemFormFields = ({ form, suppliers, isEdit, currentStock, unit }: Props) 
         />
       </Field>
 
-      <Field label="Specification" helper="Dosage form or packaging — shown under the item name.">
+      <Field label="Specification" helper="Dosage form or packaging, shown under the item name.">
         <TextField
           value={form.specification}
           onChangeText={form.setSpecification}

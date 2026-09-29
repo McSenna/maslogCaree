@@ -5,7 +5,6 @@ import { useMountProgress } from "@/hooks/useMountProgress";
 
 import ChartCallout from "./ChartCallout";
 import { useChartPalette } from "./chartPalette";
-import { useSvgId } from "./useSvgId";
 import LineChartAxes from "./lineChart/LineChartAxes";
 import LineChartHitAreas from "./lineChart/LineChartHitAreas";
 import LineChartLegend from "./lineChart/LineChartLegend";
@@ -39,7 +38,6 @@ const SimpleLineChart = ({
 }: SimpleLineChartProps) => {
   const palette = useChartPalette();
   const tickColor = tickColorOverride ?? palette.tickColor;
-  const gradientId = useSvgId("lineArea");
   const latestIndex = emphasizeLatest ? labels.length - 1 : null;
 
   const [chartW, setChartW] = useState(0);
@@ -101,7 +99,6 @@ const SimpleLineChart = ({
             gridDashed={gridDashed}
             showDots={showDots}
             emphasizeLatest={emphasizeLatest}
-            gradientId={gradientId}
             activeIndex={activeIndex}
           />
 

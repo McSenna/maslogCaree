@@ -21,7 +21,7 @@ const DashboardRoleBadge = ({ role, palette, isDark }: DashboardRoleBadgeProps) 
 
   return (
     <View className="self-start rounded-full px-2 py-0.5" style={{ backgroundColor: background }}>
-      <Text className="text-[10.5px] font-semibold" style={{ color: textColor }}>
+      <Text className="text-[11.5px] font-semibold" style={{ color: textColor }}>
         {label}
       </Text>
     </View>

@@ -2,7 +2,9 @@ import { useMemo } from "react";
 import { Platform, useWindowDimensions } from "react-native";
 import {
   getBreakpoint,
+  PAGE_MAX_WIDTH,
   PAGE_PADDING,
+  type PageWidthKind,
   pickForBreakpoint,
   type Breakpoint,
   type BreakpointValues,
@@ -49,4 +51,10 @@ export const useResponsive = (): Responsive => {
       select: <T,>(values: BreakpointValues<T>) => pickForBreakpoint(breakpoint, values),
     };
   }, [width, height, fontScale]);
+};
+
+/** Max width for a page that should not fill the whole role frame; grows on wide screens. */
+export const usePageMaxWidth = (kind: PageWidthKind): number => {
+  const { select } = useResponsive();
+  return select(PAGE_MAX_WIDTH[kind]);
 };

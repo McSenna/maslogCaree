@@ -16,7 +16,7 @@ const ReviewRow = ({ label, value }: ReviewEntry) => (
   <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
     <Text style={{ width: 116, fontSize: 12.5, color: REG_COLORS.muted }}>{label}</Text>
     <Text style={{ flex: 1, fontSize: 13.5, fontWeight: "600", color: REG_COLORS.text }}>
-      {value || "—"}
+      {value || "Not set"}
     </Text>
   </View>
 );

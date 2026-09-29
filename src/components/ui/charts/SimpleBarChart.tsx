@@ -5,7 +5,6 @@ import { useMountProgress } from "@/hooks/useMountProgress";
 
 import ChartCallout, { type CalloutContent } from "./ChartCallout";
 import { useChartPalette } from "./chartPalette";
-import { useSvgId } from "./useSvgId";
 import { niceCeiling } from "./chartScale";
 import BarChartBars from "./barChart/BarChartBars";
 import {
@@ -38,7 +37,6 @@ const SimpleBarChart = ({
   const chartPalette = useChartPalette();
   const { gridColor, tooltipBg, tooltipBorder } = chartPalette;
   const tickColor = tickColorOverride ?? chartPalette.tickColor;
-  const gradientId = useSvgId("bar");
 
   const [chartW, setChartW] = useState(0);
   const onLayout = (e: LayoutChangeEvent) => {
@@ -100,7 +98,6 @@ const SimpleBarChart = ({
             gridColor={gridColor}
             showGrid={showGrid}
             gridDashed={gridDashed}
-            gradientId={gradientId}
             peakIdx={peakIdx}
             highlightPeak={highlightPeak}
             activeIndex={activeIndex}

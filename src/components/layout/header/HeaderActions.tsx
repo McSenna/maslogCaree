@@ -19,7 +19,7 @@ const pillStyle = (isMobile: boolean) => ({ pressed }: { pressed: boolean }) => 
   flexDirection: "row" as const,
   alignItems: "center" as const,
   gap: 8,
-  borderRadius: 999,
+  borderRadius: 8,
   paddingHorizontal: isMobile ? 14 : 18,
   paddingVertical: isMobile ? 10 : 11,
   backgroundColor: "#FFFFFF",
@@ -32,7 +32,7 @@ const PillIcon = ({ name }: { name: "layout" | "user" }) => (
     style={{
       width: 28,
       height: 28,
-      borderRadius: 14,
+      borderRadius: 6,
       backgroundColor: "#EFF6FF",
       alignItems: "center",
       justifyContent: "center",

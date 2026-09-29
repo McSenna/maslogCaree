@@ -14,7 +14,7 @@ type DatePickerHost = {
  * the picker, instead of rendering the picker itself.
  *
  * The registration dialog is a `Modal`, and on Android opening a second modal
- * from inside it — or the keyboard dismissing as the field is tapped — can make
+ * from inside it: or the keyboard dismissing as the field is tapped: can make
  * the host dialog recreate its view hierarchy. That remounts the form subtree
  * and wipes any state held there, so a picker owning its own `open` flag next
  * to the input flashes and closes again. Keeping the flag in the dialog

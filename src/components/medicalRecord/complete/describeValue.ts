@@ -1,7 +1,7 @@
 import type { MedicalField } from "@/services/medicalRecords";
 
 export const describeFieldValue = (field: MedicalField | undefined, value: unknown): string => {
-  if (value === null || value === undefined || value === "") return "—";
+  if (value === null || value === undefined || value === "") return "Not recorded";
 
   if (field?.type === "select") {
     return field.options?.find((o) => o.value === value)?.label ?? String(value);

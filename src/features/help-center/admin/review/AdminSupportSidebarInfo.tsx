@@ -26,7 +26,7 @@ const InfoRow = ({ label, value, icon }: { label: string; value: string; icon: k
           {label}
         </Text>
       </View>
-      <Text style={{ fontSize: 13, color: palette.body, paddingLeft: 18 }}>{value || "—"}</Text>
+      <Text style={{ fontSize: 13, color: palette.body, paddingLeft: 18 }}>{value || "Not set"}</Text>
     </View>
   );
 };
@@ -100,7 +100,7 @@ const AdminSupportSidebarInfo = ({ ticket, busy, onStatusChange }: AdminSupportS
                 style={({ hovered }) => ({
                   paddingHorizontal: 10,
                   paddingVertical: 5,
-                  borderRadius: RADIUS.pill,
+                  borderRadius: 8,
                   backgroundColor: active ? palette.primary : hovered ? palette.cardBg : "transparent",
                   borderWidth: 1,
                   borderColor: active ? palette.primary : palette.cardBorder,

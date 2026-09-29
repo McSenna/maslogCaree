@@ -39,9 +39,9 @@ export const VisitBlock = ({ record, form, palette }: SectionProps) => {
 
   return (
     <Block title="Visit" palette={palette}>
-      <Row label="Patient" value={residentName || "—"} palette={palette} />
+      <Row label="Patient" value={residentName || "Not recorded"} palette={palette} />
       <Row label="Service" value={form?.label ?? record.serviceType} palette={palette} />
-      <Row label="Provider" value={providerName || "—"} palette={palette} />
+      <Row label="Provider" value={providerName || "Not recorded"} palette={palette} />
       <Row
         label="Appointment"
         value={formatWhen(record.appointmentDate ?? appointment?.slotStart)}
@@ -55,10 +55,10 @@ export const VisitBlock = ({ record, form, palette }: SectionProps) => {
 export const ClinicalBlock = ({ record, palette }: Omit<SectionProps, "form">) => (
   <Block title="Clinical" palette={palette}>
     {[
-      { label: "Assessment", value: record.assessment || "—" },
-      { label: "Findings", value: record.findings || "—" },
-      { label: "Diagnosis", value: record.diagnosis || "—" },
-      { label: "Recommendations", value: record.recommendations || "—" },
+      { label: "Assessment", value: record.assessment || "Not recorded" },
+      { label: "Findings", value: record.findings || "Not recorded" },
+      { label: "Diagnosis", value: record.diagnosis || "Not recorded" },
+      { label: "Recommendations", value: record.recommendations || "Not recorded" },
     ].map((row) => (
       <Row key={row.label} label={row.label} value={row.value} palette={palette} />
     ))}

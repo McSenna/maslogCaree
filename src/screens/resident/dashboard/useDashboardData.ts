@@ -11,6 +11,7 @@ export const useDashboardData = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const mountedRef = useRef(true);
   const everLoadedRef = useRef(false);
@@ -30,6 +31,7 @@ export const useDashboardData = () => {
       const next = await fetchResidentDashboard();
       if (!mountedRef.current) return;
       setData(next);
+      setLoadedAt(new Date().toISOString());
       setError(null);
       everLoadedRef.current = true;
     } catch (e: unknown) {
@@ -48,5 +50,5 @@ export const useDashboardData = () => {
     }, [load])
   );
 
-  return { data, loading, refreshing, error, load };
+  return { data, loading, refreshing, error, loadedAt, load };
 };

@@ -11,6 +11,29 @@ export type Breakpoint = "mobile" | "tablet" | "desktop" | "wide";
 
 export const CONTENT_MAX_WIDTH = 1440;
 
+/**
+ * Frame for every signed-in role page. After the 272px sidebar, a 1920px screen
+ * leaves exactly this much, so pages run edge to edge instead of sitting in a
+ * narrower column with dead gutters either side.
+ */
+export const ROLE_CONTENT_MAX_WIDTH = 1600;
+
+/**
+ * Caps for pages whose content should not stretch to the full frame. Each grows
+ * at the wide breakpoint so large screens get more columns or longer lists,
+ * while line length stays readable.
+ * - reading: one column of running text (notifications)
+ * - feed: card lists that go two-up when there is room (announcements, requests)
+ * - content: mixed sections with side-by-side cards (help centre, profile)
+ */
+export const PAGE_MAX_WIDTH = {
+  reading: { mobile: 760, wide: 960 },
+  feed: { mobile: 880, wide: 1280 },
+  content: { mobile: 1120, wide: 1400 },
+} as const satisfies Record<string, BreakpointValues<number>>;
+
+export type PageWidthKind = keyof typeof PAGE_MAX_WIDTH;
+
 export const PAGE_PADDING: Record<Breakpoint, number> = {
   mobile: 16,
   tablet: 20,

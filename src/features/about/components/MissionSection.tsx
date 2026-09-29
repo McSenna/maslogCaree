@@ -41,8 +41,8 @@ const MissionSection = ({ isTablet }: { isTablet: boolean }) => {
             fontSize: isTablet ? 14 : 12.5,
           }}
         >
-          To empower Barangay Maslog residents through accessible, digital health services —
-          fostering a community where every individual receives timely and compassionate care.
+          To give Barangay Maslog residents health services they can reach from their phone, so
+          every resident receives timely and compassionate care.
         </Text>
       </View>
     </View>

@@ -1,3 +1,4 @@
+import { PALETTE } from "@/theme/palette";
 import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
@@ -6,7 +7,7 @@ const AboutHero = ({ isTablet }: { isTablet: boolean }) => {
     <View
       style={{
         borderRadius: 24,
-        backgroundColor: "#7988d2",
+        backgroundColor: PALETTE.blue[700],
         marginHorizontal: 4,
         padding: 24,
       }}

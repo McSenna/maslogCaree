@@ -110,5 +110,4 @@ export const NOTIFICATION_METRICS = {
   panelMinWidth: 380,
   panelMaxWidth: 440,
   panelMaxHeight: 560,
-  pageMaxWidth: 760,
 } as const;

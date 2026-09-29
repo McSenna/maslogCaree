@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { notifyToast } from "@/components/feedback/toast/toastStore";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
+import { useSearchParamValue } from "@/hooks/useSearchParamValue";
+import { USER_SECTIONS, type UserSection } from "../components/UserSectionTabs";
 import { computeUserMetrics } from "../components/userMetrics";
 import { DENSE_WINDOW_WIDTH, USERS_LAYOUT } from "../constants/usersLayout";
 import { useUserDetailsState } from "./userManagement/useUserDetailsState";
@@ -22,9 +24,15 @@ export const useUserManagementScreen = () => {
     useUsers();
 
   const requests = useUserRequests(showToast);
+  // `?section=requests` is the dashboard's "Review registrations" shortcut.
+  const sectionParam = useSearchParamValue("section");
+  const initialSection = (USER_SECTIONS as readonly string[]).includes(sectionParam)
+    ? (sectionParam as UserSection)
+    : undefined;
   const { section, sectionUsers, sectionCounts, setSection: setSectionRaw } = useUserSections(
     users,
-    requests
+    requests,
+    initialSection
   );
 
   const filters = useUserFilters(sectionUsers);
@@ -42,7 +50,7 @@ export const useUserManagementScreen = () => {
 
   const addUser = () => {
     showToast(
-      "Creating a user from here isn't available yet — accounts are added through registration."
+      "Creating a user from here isn't available yet. Accounts are added through registration."
     );
   };
 

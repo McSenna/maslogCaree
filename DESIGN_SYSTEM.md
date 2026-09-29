@@ -232,6 +232,8 @@ Use these instead of writing per-screen versions.
 
 ### Tokens (`src/theme`)
 - `breakpoints.ts`: mobile < 768, tablet 768–1023, desktop ≥ 1024, wide ≥ 1440. `CONTENT_MAX_WIDTH` (1440) and `PAGE_PADDING` (16 / 20 / 28 / 36).
+  - `ROLE_CONTENT_MAX_WIDTH` (1600) is the frame `RoleLayout` gives every signed-in page; after the sidebar it fills a 1920px screen.
+  - `PAGE_MAX_WIDTH` caps pages that should not fill that frame: `reading` 760 → 960, `feed` 880 → 1280, `content` 1120 → 1400 (the larger value applies from the wide breakpoint). Read it with `usePageMaxWidth(kind)` instead of hard-coding a width.
 - `colors.ts`: `getThemeColors(scheme)` returns semantic light/dark colors, including `success`, `warning`, `danger`, `info`, `progress` and `neutral` tones. Read them with `useThemeColors()`.
 - `spacing.ts`, `radius.ts`, `typography.ts`, `shadows.ts`, `motion.ts` (`TIMING`, `PRESS_SCALE`).
 - `webStyle.ts`: typed web-only CSS (cursor, transition, sticky, box-shadow). Never cast styles to `any`.
@@ -249,3 +251,16 @@ Use these instead of writing per-screen versions.
 - Feedback: `EmptyState`, `ErrorState` (hides technical errors via `friendlyErrorMessage`), `FadeIn`, `AnimatedListItem`.
 - Toasts: call `toast.success(title)` or `toast.error(title, detail)` from anywhere. One `ToastViewport` is mounted in `app/_layout.tsx`, and it sits above the mobile bottom navigation.
 - Forms: `TextField` handles label, focus ring, hover, error below the field, success, disabled, and a password reveal toggle.
+
+### Dashboards (`src/components/dashboard/kit`)
+
+Every role dashboard (admin, doctor, midwife, BHW, resident) is built from one kit, top to bottom:
+
+1. `DashboardHeader`: greeting as the page `h1`, date plus one status line, refresh with "Updated … ago", one primary action and up to two secondary ones. Phones show the primary action full width; secondary actions only appear there with `showOnPhone`, because the bottom navigation already links to most of them.
+2. `AttentionStrip`: count-first cards ("2 registrations to review") that link to the screen that resolves them. It renders nothing when the list is empty.
+3. `MetricRow` + `MetricCard`: label on top, icon tile in the corner, value below, so values share a left edge. Tones carry meaning: amber for waiting, green for done. `progress` adds a thin bar for "seen of today's list".
+4. Filters sit directly above what they change: `FilterChips` for named things (services), `SegmentedControl` for short exclusive sets (periods, table tabs, with optional counts). Both use radio semantics.
+5. `SplitRow` pairs panels at a weight (2:1, 1.6:1) and stacks them below 900px of content width.
+6. `DataTable`: sentence-case headers, numbers right-aligned, `minTableWidth` drops columns as the card narrows, and phones get `renderStacked` rows. Rows with `onRowPress` become buttons with a full spoken summary.
+
+Charts draw in once on mount; later filter changes swap data without replaying the animation (`useMountProgress`). Dashboard shortcuts deep-link with query params: `/admin/users?section=requests`, `/admin/announcements?compose=1`, `/resident/appointments?book=1` (read with `useSearchParamValue`).

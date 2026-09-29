@@ -24,7 +24,7 @@ const parseDate = (value: string | Date | null | undefined): Date | null => {
 
 export const formatDate = (value: string | Date | null | undefined): string => {
   const d = parseDate(value);
-  if (!d) return "—";
+  if (!d) return "Not set";
   return d.toLocaleDateString(undefined, LONG_DATE_OPTS);
 };
 
@@ -32,7 +32,7 @@ export const formatDateTime = (
   value: string | Date | null | undefined
 ): { date: string; time: string } => {
   const d = parseDate(value);
-  if (!d) return { date: "—", time: "" };
+  if (!d) return { date: "Not set", time: "" };
   return {
     date: d.toLocaleDateString(undefined, SHORT_DATE_OPTS),
     time: d.toLocaleTimeString(undefined, TIME_OPTS),

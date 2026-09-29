@@ -1,32 +1,120 @@
-import { View } from "react-native";
+import type { Feather } from "@expo/vector-icons";
 import {
   ActivityTrendPanel,
-  RecentActivitiesPanel,
-  RecentUsersPanel,
+  MetricCard,
   RegistrationTrendPanel,
   RoleDistributionPanel,
 } from "@/components/dashboard/admin";
-import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
-import type { AdminDashboardData } from "@/services/adminDashboardService";
-import {
-  donutSizeForPanel,
-  LEGEND_BESIDE_MIN_WIDTH,
-  USER_ROW_SINGLE_LINE_MIN_WIDTH,
-} from "../constants/dashboardLayout";
+import { AttentionStrip, MetricRow, SplitRow, type AttentionItem } from "@/components/dashboard/kit";
+import type { AdminDashboardPalette, MetricTone } from "@/design/adminDashboardTheme";
+import type { AdminDashboardData, DashboardActivity, DashboardMetrics } from "@/services/adminDashboardService";
+import { ANALYTICS_FLEX, donutSizeForPanel, LEGEND_BESIDE_MIN_WIDTH, PEOPLE_FLEX } from "../constants/dashboardLayout";
 import type { AdminDashboardLayout } from "../hooks/useAdminDashboardLayout";
-import DashboardMetricGrid from "./DashboardMetricGrid";
-import AnalyticsRow from "./dashboardBody/AnalyticsRow";
-import DesktopPanelsGrid from "./dashboardBody/DesktopPanelsGrid";
+import ActivityLogTable from "./ActivityLogTable";
+import RecentUsersTable from "./RecentUsersTable";
 
-type DashboardBodyProps = {
-  data: AdminDashboardData;
-  palette: AdminDashboardPalette;
-  isDark: boolean;
-  layout: AdminDashboardLayout;
-  recentUsers: AdminDashboardData["recentUsers"];
-  recentActivities: AdminDashboardData["recentActivities"];
-  onViewAllUsers: () => void;
-  onViewAllActivities: () => void;
+type MetricSpec = {
+  key: keyof DashboardMetrics;
+  growthKey: keyof DashboardMetrics;
+  tone: MetricTone;
+  icon: keyof typeof Feather.glyphMap;
+  label: string;
+  description: string;
+};
+
+const METRIC_SPECS: MetricSpec[] = [
+  {
+    key: "totalUsers",
+    growthKey: "totalUsersGrowth",
+    tone: "blue",
+    icon: "users",
+    label: "Total users",
+    description: "Every registered account",
+  },
+  {
+    key: "activeUsers",
+    growthKey: "activeUsersGrowth",
+    tone: "green",
+    icon: "user-check",
+    label: "Active users",
+    description: "Verified and able to sign in",
+  },
+  {
+    key: "newUsersLast30Days",
+    growthKey: "newUsersGrowth",
+    tone: "purple",
+    icon: "user-plus",
+    label: "New this month",
+    description: "Joined in the last 30 days",
+  },
+  {
+    key: "totalPatients",
+    growthKey: "totalPatientsGrowth",
+    tone: "blue",
+    icon: "heart",
+    label: "Residents",
+    description: "Patients on record",
+  },
+];
+
+export type AdminNavigation = {
+  toUsers: () => void;
+  toRegistrations: () => void;
+  toSupport: () => void;
+  toInventory: () => void;
+  toSystemLogs: () => void;
+  toActivity: (activity: DashboardActivity) => void;
+};
+
+const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
+
+export const buildAdminAttention = (
+  attention: AdminDashboardData["attention"],
+  go: AdminNavigation
+): AttentionItem[] => {
+  const items: (AttentionItem | null)[] = [
+    attention.pendingRegistrations > 0
+      ? {
+          key: "registrations",
+          icon: "user-check",
+          tone: "warning",
+          title: plural(attention.pendingRegistrations, "registration to review", "registrations to review"),
+          detail: "ID checks waiting for your decision",
+          onPress: go.toRegistrations,
+        }
+      : null,
+    attention.openSupportTickets > 0
+      ? {
+          key: "support",
+          icon: "life-buoy",
+          tone: "info",
+          title: plural(attention.openSupportTickets, "open support request", "open support requests"),
+          detail: "Waiting for a reply from the team",
+          onPress: go.toSupport,
+        }
+      : null,
+    attention.lowStockItems > 0
+      ? {
+          key: "low-stock",
+          icon: "package",
+          tone: "danger",
+          title: plural(attention.lowStockItems, "item low on stock", "items low on stock"),
+          detail: "At or below the reorder level",
+          onPress: go.toInventory,
+        }
+      : null,
+    attention.expiringItems > 0
+      ? {
+          key: "expiring",
+          icon: "clock",
+          tone: "warning",
+          title: plural(attention.expiringItems, "item expiring soon", "items expiring soon"),
+          detail: "Within the next 30 days",
+          onPress: go.toInventory,
+        }
+      : null,
+  ];
+  return items.filter((item): item is AttentionItem => item !== null);
 };
 
 const DashboardBody = ({
@@ -34,108 +122,75 @@ const DashboardBody = ({
   palette,
   isDark,
   layout,
-  recentUsers,
-  recentActivities,
-  onViewAllUsers,
-  onViewAllActivities,
-}: DashboardBodyProps) => {
-  const { isMobile, gap, panelColumns, inColumns, analyticsSideBySide } = layout;
-
-  const metricGrid = (
-    <DashboardMetricGrid
-      metrics={data.metrics}
-      palette={palette}
-      columns={layout.metricColumns}
-      gap={gap}
-      compact={isMobile}
-      dense={layout.denseMetrics}
-    />
-  );
-
+  go,
+}: {
+  data: AdminDashboardData;
+  palette: AdminDashboardPalette;
+  isDark: boolean;
+  layout: AdminDashboardLayout;
+  go: AdminNavigation;
+}) => {
+  const { isMobile, gap, stackPanels } = layout;
   const distributionStacked = layout.chartPanelWidth < LEGEND_BESIDE_MIN_WIDTH;
 
-  const distributionPanel = (
-    <RoleDistributionPanel
-      palette={palette}
-      distribution={data.roleDistribution ?? []}
-      stacked={distributionStacked}
-      size={distributionStacked ? 180 : donutSizeForPanel(layout.chartPanelWidth)}
-      fill={inColumns}
-    />
-  );
-
-  const usersPanel = (
-    <RecentUsersPanel
-      palette={palette}
-      isDark={isDark}
-      users={recentUsers}
-      compact={isMobile || layout.usersPanelWidth < USER_ROW_SINGLE_LINE_MIN_WIDTH}
-      onViewAll={onViewAllUsers}
-      fill={inColumns}
-    />
-  );
-
-  const activitiesPanel = (
-    <RecentActivitiesPanel
-      palette={palette}
-      activities={recentActivities}
-      compact={isMobile}
-      onViewAll={onViewAllActivities}
-      fill={panelColumns === 3}
-    />
-  );
-
-  const registrationPanel = (
-    <RegistrationTrendPanel
-      palette={palette}
-      trend={data.registrationTrend ?? []}
-      compact={isMobile}
-      fill={analyticsSideBySide}
-    />
-  );
-
-  const activityTrendPanel = (
-    <ActivityTrendPanel
-      palette={palette}
-      trend={data.activityTrend ?? []}
-      compact={isMobile}
-      fill={analyticsSideBySide}
-    />
-  );
-
-  const analyticsRow = (
-    <AnalyticsRow
-      registrationPanel={registrationPanel}
-      activityTrendPanel={activityTrendPanel}
-      sideBySide={analyticsSideBySide}
-      gap={gap}
-    />
-  );
-
-  if (isMobile) {
-    return (
-      <View className="gap-4">
-        {metricGrid}
-        {analyticsRow}
-        {activitiesPanel}
-        {usersPanel}
-        {distributionPanel}
-      </View>
-    );
-  }
-
   return (
-    <View className="gap-5">
-      {metricGrid}
-      {analyticsRow}
-      <DesktopPanelsGrid
-        distributionPanel={distributionPanel}
-        usersPanel={usersPanel}
-        activitiesPanel={activitiesPanel}
-        panelColumns={panelColumns}
-        gap={gap}
+    <>
+      <AttentionStrip palette={palette} items={buildAdminAttention(data.attention, go)} compact={isMobile} />
+
+      <MetricRow columns={layout.metricColumns} gap={gap}>
+        {METRIC_SPECS.map((spec) => (
+          <MetricCard
+            key={spec.key}
+            palette={palette}
+            tone={spec.tone}
+            icon={spec.icon}
+            label={spec.label}
+            description={spec.description}
+            value={data.metrics[spec.key]}
+            growth={data.metrics[spec.growthKey]}
+            compact={isMobile}
+            dense={layout.denseMetrics}
+          />
+        ))}
+      </MetricRow>
+
+      <SplitRow weights={[ANALYTICS_FLEX.registrations, ANALYTICS_FLEX.activity]} stacked={stackPanels} gap={gap}>
+        <RegistrationTrendPanel
+          palette={palette}
+          trend={data.registrationTrend}
+          compact={isMobile}
+          fill={!stackPanels}
+        />
+        <ActivityTrendPanel palette={palette} trend={data.activityTrend} compact={isMobile} fill={!stackPanels} />
+      </SplitRow>
+
+      <SplitRow weights={[PEOPLE_FLEX.users, PEOPLE_FLEX.distribution]} stacked={stackPanels} gap={gap}>
+        <RecentUsersTable
+          palette={palette}
+          isDark={isDark}
+          users={data.recentUsers}
+          compact={isMobile}
+          onViewAll={go.toUsers}
+          fill={!stackPanels}
+        />
+        <RoleDistributionPanel
+          palette={palette}
+          distribution={data.roleDistribution}
+          stacked={distributionStacked}
+          size={distributionStacked ? 180 : donutSizeForPanel(layout.chartPanelWidth)}
+          fill={!stackPanels}
+        />
+      </SplitRow>
+
+      <ActivityLogTable
+        palette={palette}
+        isDark={isDark}
+        activities={data.recentActivities}
+        compact={isMobile}
+        onViewAll={go.toSystemLogs}
+        onOpenActivity={go.toActivity}
       />
-    </View>
+    </>
   );
 };
 

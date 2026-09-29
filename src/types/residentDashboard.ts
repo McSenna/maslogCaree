@@ -41,8 +41,3 @@ export interface HealthService {
   icon: IoniconName;
   tone: AccentTone;
 }
-
-export interface HealthTip {
-  headline: string;
-  ctaLabel: string;
-}

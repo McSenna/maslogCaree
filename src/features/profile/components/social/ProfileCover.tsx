@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 import { StyleSheet, View, type LayoutChangeEvent } from "react-native";
-import { COVER_GRADIENT } from "../../config/profileSocialTheme";
+import { COVER_COLOR } from "../../config/profileSocialTheme";
 import { PROFILE_RADIUS } from "../../config/profileTheme";
 import ProfileHeroDecor from "../ProfileHeroDecor";
 
@@ -27,14 +26,9 @@ const ProfileCover = ({ height }: ProfileCoverProps) => {
         overflow: "hidden",
         borderTopLeftRadius: PROFILE_RADIUS.card,
         borderTopRightRadius: PROFILE_RADIUS.card,
+        backgroundColor: COVER_COLOR,
       }}
     >
-      <LinearGradient
-        colors={[...COVER_GRADIENT]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
 
       {width > 0 ? (
         <View style={[StyleSheet.absoluteFill, { opacity: 0.55 }]}>

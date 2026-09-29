@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { View } from "react-native";
-import SelectMenu, { type SelectOption } from "@/components/ui/SelectMenu";
+import SegmentedControl, { type SegmentOption } from "@/components/dashboard/kit/SegmentedControl";
 import SimpleBarChart from "@/components/ui/charts/SimpleBarChart";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import {
@@ -25,9 +25,9 @@ type ActivityTrendPanelProps = {
 
 type ActivityRange = "week" | "month";
 
-const RANGE_OPTIONS: SelectOption<ActivityRange>[] = [
-  { value: "week", label: "This Week" },
-  { value: "month", label: "Last 30 Days" },
+const RANGE_OPTIONS: SegmentOption<ActivityRange>[] = [
+  { value: "week", label: "7 days" },
+  { value: "month", label: "30 days" },
 ];
 
 const RANGE_WINDOW: Record<ActivityRange, number> = { week: 7, month: 30 };
@@ -70,27 +70,27 @@ const ActivityTrendPanel = ({
   const chartData = comparison.currentWindow.map((point) => ({ label: point.label, value: point.count }));
 
   const rangeFilter = (
-    <SelectMenu
+    <SegmentedControl
+      palette={palette}
       label="Activity range"
       value={range}
       options={RANGE_OPTIONS}
       onChange={setRange}
-      height={34}
-      style={{ minWidth: 128 }}
+      fill={compact}
     />
   );
 
   return (
     <PanelCard
       palette={palette}
-      title="System Activity"
+      title="System activity"
       icon="bar-chart-2"
       subtitle={`Events ${RANGE_NOUN[range]}`}
       headerRight={compact ? undefined : rangeFilter}
       fill={fill}
     >
       {/* On phones the filter gets its own line so the title and subtitle are never truncated. */}
-      {compact ? <View className="mb-3 self-start">{rangeFilter}</View> : null}
+      {compact ? <View className="mb-3">{rangeFilter}</View> : null}
 
       <AnalyticsSummary
         palette={palette}
@@ -103,7 +103,7 @@ const ActivityTrendPanel = ({
             tone="amber"
             icon="fire"
             label="Busiest day"
-            value={busiest ? expandWeekday(busiest.label) : "—"}
+            value={busiest ? expandWeekday(busiest.label) : "Not set"}
             meta={busiest ? events(busiest.count) : "No activity yet"}
           />
         }

@@ -1,41 +1,43 @@
 import type { RoleDashboardConfig } from "./dashboardConfigTypes";
-import { byKey, progressCaption } from "./dashboardConfigTypes";
+import { byKey, progressCaption, todayProgress } from "./dashboardConfigTypes";
 
 export const MIDWIFE: RoleDashboardConfig = {
   role: "midwife",
+  personNoun: "patient",
   metrics: [
     {
       key: "today",
       route: "mission",
-      label: "Patients Today",
+      label: "Today's patients",
       icon: "users",
       tone: "blue",
       value: (d) => d.summary.today,
       description: (d) => progressCaption(d.summary),
+      progress: todayProgress,
     },
     {
       key: "waiting",
       route: "mission",
-      label: "Waiting in Queue",
+      label: "Waiting now",
       icon: "clock",
-      tone: "pink",
+      tone: "amber",
       value: (d) => d.summary.waiting,
       description: (d) =>
-        d.summary.processing > 0 ? `${d.summary.processing} being seen now` : "Approved and waiting",
+        d.summary.processing > 0 ? `${d.summary.processing} with you now` : "Checked in and waiting",
     },
     {
       key: "prenatal",
       route: "mission",
-      label: "Prenatal Today",
+      label: "Prenatal today",
       icon: "heart",
-      tone: "purple",
+      tone: "pink",
       value: (d) => byKey(d.serviceBreakdown, "prenatal"),
       description: () => "On today's schedule",
     },
     {
       key: "immunization",
       route: "mission",
-      label: "Immunisations Today",
+      label: "Immunisations today",
       icon: "shield",
       tone: "green",
       value: (d) => byKey(d.serviceBreakdown, "immunization"),
@@ -43,13 +45,15 @@ export const MIDWIFE: RoleDashboardConfig = {
     },
   ],
   chart: {
-    title: "Service Activity",
-    subtitle: "Prenatal and immunisation per day",
+    title: "Visits completed",
+    subtitle: "Prenatal and immunisation, per day",
     icon: "trending-up",
     kind: "lines",
   },
   showServiceSplit: true,
-  activityTitle: "Recent Activity",
+  activityTitle: "Recent visits",
   activitySubtitle: "Visits you have filed",
   queueRoute: "/midwife/mission",
+  secondaryAction: { label: "Vaccine stock", icon: "package", route: "/midwife/inventory" },
+  inventoryRoute: "/midwife/inventory",
 };

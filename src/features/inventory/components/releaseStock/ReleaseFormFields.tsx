@@ -10,7 +10,7 @@ const RELEASE_TYPE_OPTIONS: readonly SelectOption<ReleaseType>[] = [
   { value: "STOCK_OUT", label: "Dispensed / Released" },
   { value: "TRANSFER", label: "Transferred" },
   { value: "DAMAGED", label: "Damaged" },
-  { value: "EXPIRED", label: "Expired — disposal" },
+  { value: "EXPIRED", label: "Expired (disposal)" },
   { value: "ADJUSTMENT", label: "Adjustment" },
 ];
 
@@ -28,13 +28,13 @@ const ReleaseFormFields = ({
   const nextBatchLine = item.batchNumber
     ? `Stock will be drawn from batch ${item.batchNumber}${
         item.nearestExpiry ? `, expiring ${formatDate(item.nearestExpiry)}` : ""
-      } — the earliest expiry first (FEFO).`
+      }. The earliest expiry goes first (FEFO).`
     : "Stock will be drawn from the batch with the earliest expiry date (FEFO).";
 
   return (
     <>
       <Field label="Item">
-        <ReadOnlyValue value={`${item.name}${item.specification ? ` — ${item.specification}` : ""}`} />
+        <ReadOnlyValue value={`${item.name}${item.specification ? `, ${item.specification}` : ""}`} />
       </Field>
 
       <View className="flex-row gap-3">

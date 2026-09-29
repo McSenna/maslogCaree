@@ -29,7 +29,7 @@ const SelectField = ({
               accessibilityLabel={option.label}
               className="h-9 items-center justify-center px-3.5"
               style={{
-                borderRadius: QUEUE_RADIUS.pill,
+                borderRadius: 8,
                 borderWidth: 1,
                 borderColor: selected ? palette.primary : palette.panelBorder,
                 backgroundColor: selected ? palette.primarySoft : "transparent",

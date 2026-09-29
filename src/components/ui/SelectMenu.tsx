@@ -15,7 +15,7 @@ type SelectMenuProps<T extends string> = {
   displayValue?: string;
   icon?: keyof typeof MaterialCommunityIcons.glyphMap;
   height?: number;
-  style?: { flex?: number; width?: number | `${number}%`; minWidth?: number };
+  style?: { flex?: number; flexGrow?: number; width?: number | `${number}%`; minWidth?: number };
 };
 
 const MENU_MIN_WIDTH = 200;

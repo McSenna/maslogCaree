@@ -68,14 +68,17 @@ const AdminSupportToolbar = ({
         style={{ flex: 1, minWidth: 260 }}
       />
 
-      <View style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+      {/* flexShrink lets this row take the line width and wrap; otherwise the sort menu sits off-screen on phones. */}
+      <View
+        style={{ flexDirection: "row", alignItems: "center", flexWrap: "wrap", gap: 10, flexShrink: 1, minWidth: 0, maxWidth: "100%" }}
+      >
         <SelectMenu
           label="Status"
           value={query.status ?? "all"}
           options={statusOptions}
           onChange={(status) => onChange({ status: status as AdminTicketQuery["status"] })}
           icon="filter-variant"
-          style={{ minWidth: 160 }}
+          style={{ minWidth: 160, flexGrow: 1 }}
         />
 
         <SelectMenu
@@ -84,7 +87,7 @@ const AdminSupportToolbar = ({
           options={categoryOptions}
           onChange={(category) => onChange({ category: category as AdminTicketQuery["category"] })}
           icon="shape-outline"
-          style={{ minWidth: 180 }}
+          style={{ minWidth: 180, flexGrow: 1 }}
         />
 
         <SelectMenu
@@ -93,7 +96,7 @@ const AdminSupportToolbar = ({
           options={sortOptions}
           onChange={(sort) => onChange({ sort: sort as AdminTicketQuery["sort"] })}
           icon="sort"
-          style={{ minWidth: 165 }}
+          style={{ minWidth: 165, flexGrow: 1 }}
         />
 
         {hasActiveFilters && onClear ? (

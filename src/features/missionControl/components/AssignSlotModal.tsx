@@ -50,7 +50,7 @@ const AssignSlotModal = ({ visible, mode, mission, saving, onClose, onSubmit, ..
             {title}
           </Text>
           <Text style={[TYPE.body, { color: colors.muted }]}>
-            Mission: {mission ? new Date(mission.date).toLocaleDateString() : "—"}
+            Mission: {mission ? new Date(mission.date).toLocaleDateString() : "Not set"}
           </Text>
         </View>
       )}

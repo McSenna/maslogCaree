@@ -1,13 +1,11 @@
-export const MOBILE_ACTIVITY_COUNT = 2;
-export const MOBILE_USER_COUNT = 3;
-
-export const PANEL_FLEX = { distribution: 1, users: 1.18, activities: 0.92 };
-
 /** Registrations : activity card widths when the analytics cards sit side by side. */
 export const ANALYTICS_FLEX = { registrations: 1.6, activity: 1 };
 
+/** Newest-accounts table : role donut widths. The table needs the room for its four columns. */
+export const PEOPLE_FLEX = { users: 1.5, distribution: 1 };
+
 /**
- * Below this content width the analytics cards stack: side by side, the activity card would drop under
+ * Below this content width the paired panels stack: side by side, the activity card would drop under
  * ~340px and its range filter, headline number and busiest-day tile would start to collide.
  */
 export const ANALYTICS_SIDE_BY_SIDE_MIN_WIDTH = 900;
@@ -41,7 +39,5 @@ export const chartLegendGap = (donutSize: number): number => {
     donutSize <= DONUT_TIGHT_GUTTER_SIZE ? CHART_LEGEND_GUTTER_TIGHT : CHART_LEGEND_GUTTER;
   return (gutter - 1) / 2;
 };
-
-export const USER_ROW_SINGLE_LINE_MIN_WIDTH = 480;
 
 export const DENSE_METRIC_MAX_WIDTH = 370;

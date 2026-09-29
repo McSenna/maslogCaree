@@ -29,7 +29,7 @@ const AddStockFields = ({ form, item, suppliers }: Props) => {
     <>
       <Field label="Item">
         <ReadOnlyValue
-          value={`${item.name}${item.specification ? ` — ${item.specification}` : ""}`}
+          value={`${item.name}${item.specification ? `, ${item.specification}` : ""}`}
         />
       </Field>
 

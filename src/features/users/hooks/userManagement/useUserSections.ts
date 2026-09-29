@@ -5,8 +5,12 @@ import type { useUserRequests } from "../useUserRequests";
 
 const AWAITING_DECISION: readonly AdminUser["status"][] = ["pending", "rejected"];
 
-export const useUserSections = (users: AdminUser[], requests: ReturnType<typeof useUserRequests>) => {
-  const [section, setSectionState] = useState<UserSection>("active");
+export const useUserSections = (
+  users: AdminUser[],
+  requests: ReturnType<typeof useUserRequests>,
+  initialSection: UserSection = "active"
+) => {
+  const [section, setSectionState] = useState<UserSection>(initialSection);
 
   const sectionUsers = useMemo(() => {
     if (section === "deactivated") {

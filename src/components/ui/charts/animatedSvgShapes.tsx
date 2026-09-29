@@ -6,7 +6,7 @@ import { Circle, Rect, type CircleProps, type RectProps } from "react-native-svg
  * React Native's animated props hook force-sets `collapsable: false` so the
  * native view is never flattened away from the native driver. On web,
  * react-native-svg's shapes forward every unrecognised prop straight onto the
- * DOM node, where `collapsable` is not a valid attribute — so it is dropped
+ * DOM node, where `collapsable` is not a valid attribute: so it is dropped
  * before it reaches the shape, on web only.
  */
 const omitCollapsable = <P extends object>(props: P): P => {

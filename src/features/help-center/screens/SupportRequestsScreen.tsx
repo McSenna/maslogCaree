@@ -2,17 +2,17 @@ import { ScrollView, Text, View } from "react-native";
 
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { usePageMaxWidth } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 
 import SupportRequestsContent from "../content/SupportRequestsContent";
 import HelpSupportOverlays from "../overlays/HelpSupportOverlays";
 import { useHelpSupportOverlay } from "../hooks/useHelpSupportOverlay";
 
-const PAGE_MAX_WIDTH = 880;
-
 const SupportRequestsScreen = () => {
   const palette = useAdminSurfacePalette();
   const insets = useRoleScreenInsets();
+  const maxWidth = usePageMaxWidth("feed");
   const overlay = useHelpSupportOverlay();
 
   return (
@@ -23,7 +23,7 @@ const SupportRequestsScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           width: "100%",
-          maxWidth: PAGE_MAX_WIDTH,
+          maxWidth,
           alignSelf: "center",
           gap: 16,
           paddingHorizontal: insets.gutter,

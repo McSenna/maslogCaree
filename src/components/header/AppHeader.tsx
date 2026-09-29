@@ -1,5 +1,6 @@
 import { View, useWindowDimensions } from "react-native";
-import { BREAKPOINTS, CONTENT_MAX_WIDTH } from "@/theme/breakpoints";
+import { ROLE_LAYOUT_PADDING } from "@/constants/layout";
+import { BREAKPOINTS, PAGE_PADDING, ROLE_CONTENT_MAX_WIDTH, getBreakpoint } from "@/theme/breakpoints";
 import { useTheme } from "@/contexts/ThemeContext";
 import HeaderBrand from "./HeaderBrand";
 import HeaderNotifications from "./HeaderNotifications";
@@ -36,7 +37,13 @@ const AppHeader = ({ onPressBrand, variant, mobileNotificationsHref }: AppHeader
   const showIdentity = !isMobile && (!widthKnown || width >= IDENTITY_MIN_WIDTH);
 
   const minHeight = isMobile ? undefined : HEADER_HEIGHT.desktop;
-  const paddingHorizontal = isMobile ? 14 : isDesktop ? 32 : 24;
+  // The desktop header only renders beside the sidebar in RoleLayout, so it shares the page
+  // frame: same max width and the same gutter as useRoleScreenInsets, keeping the bell and
+  // profile aligned with the right edge of the content below at every width.
+  const framePadding = ROLE_LAYOUT_PADDING.desktop.horizontal;
+  const paddingHorizontal = isMobile
+    ? 14
+    : Math.max(framePadding, widthKnown ? PAGE_PADDING[getBreakpoint(width)] : framePadding);
 
   return (
     <View
@@ -56,7 +63,7 @@ const AppHeader = ({ onPressBrand, variant, mobileNotificationsHref }: AppHeader
         style={{
           minHeight,
           width: "100%",
-          maxWidth: isMobile ? undefined : CONTENT_MAX_WIDTH,
+          maxWidth: isMobile ? undefined : ROLE_CONTENT_MAX_WIDTH + framePadding * 2,
           alignSelf: "center",
           flexDirection: "row",
           alignItems: "center",

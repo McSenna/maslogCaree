@@ -59,6 +59,18 @@ export type StaffActivity = {
   highlights: ActivityHighlight[];
 };
 
+/** A watched stock item for the role's inventory categories: low, out, or expiring within 30 days. */
+export type InventoryAlert = {
+  _id: string;
+  name: string;
+  specification: string;
+  category: string;
+  unit: string;
+  currentStock: number;
+  reorderLevel: number;
+  nearestExpiry: string | null;
+};
+
 export type StaffDashboardData = {
   role: string;
   services: DashboardService[];
@@ -68,6 +80,7 @@ export type StaffDashboardData = {
   queue: StaffAppointment[];
   upcoming: StaffAppointment[];
   recentActivity: StaffActivity[];
+  inventoryAlerts: InventoryAlert[];
   generatedAt: string;
 };
 
@@ -98,6 +111,7 @@ export const fetchStaffDashboard = async (): Promise<StaffDashboardData> => {
     queue: data.queue ?? [],
     upcoming: data.upcoming ?? [],
     recentActivity: data.recentActivity ?? [],
+    inventoryAlerts: data.inventoryAlerts ?? [],
     generatedAt: data.generatedAt ?? new Date().toISOString(),
   };
 };

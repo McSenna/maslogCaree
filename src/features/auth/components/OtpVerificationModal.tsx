@@ -122,7 +122,7 @@ const OtpVerificationModal = ({ visible, email, onClose, onVerified }: OtpVerifi
 
       <PlatformAccessModal
         visible={otp.showPlatformNotice}
-        title="Account created — mobile app required"
+        title="Account created: mobile app required"
         message={
           "Your email has been verified and your MaslogCare account is ready.\n\n" +
           "Resident accounts sign in through the MaslogCare mobile application."

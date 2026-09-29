@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { View } from "react-native";
+import { useState, type ReactNode } from "react";
+import { View, type LayoutChangeEvent } from "react-native";
 import type { AppointmentRecord } from "@/services/appointments";
 import QueuePanel from "./QueuePanel";
 import { useQueuePalette, type AppointmentStatus } from "./queueTheme";
@@ -12,6 +12,9 @@ import {
 import AppointmentsTableHeader from "./appointmentsPanel/AppointmentsTableHeader";
 import AppointmentsTableRow from "./appointmentsPanel/AppointmentsTableRow";
 import StatusTabs from "./appointmentsPanel/StatusTabs";
+
+/** Narrowest panel whose seven table columns still read in full. */
+const TABLE_MIN_PANEL_WIDTH = 640;
 
 type AppointmentsPanelProps = {
   appointments: AppointmentRecord[];
@@ -53,6 +56,16 @@ const AppointmentsPanel = ({
   const palette = useQueuePalette();
   const actions = { onApprove, onMore, busyId, canAct, onRowPress };
 
+  // `asTable` is decided from the window, but beside the sidebar (and in a two-column
+  // layout) the panel can be far narrower. Below this the columns truncate to "Gen…",
+  // so the cards take over.
+  const [panelWidth, setPanelWidth] = useState<number | null>(null);
+  const showTable = asTable && (panelWidth === null || panelWidth >= TABLE_MIN_PANEL_WIDTH);
+  const onPanelLayout = (event: LayoutChangeEvent) => {
+    const next = Math.round(event.nativeEvent.layout.width);
+    setPanelWidth((current) => (current === next ? current : next));
+  };
+
   const labelFor = (appointment: AppointmentRecord) =>
     serviceLabels[appointment.consultationType] ?? appointment.consultationType;
 
@@ -69,7 +82,7 @@ const AppointmentsPanel = ({
       );
     }
 
-    if (asTable) {
+    if (showTable) {
       return (
         <View className="w-full px-5 pb-2">
           <AppointmentsTableHeader palette={palette} hasAction={canAct || Boolean(onRowPress)} />
@@ -104,15 +117,17 @@ const AppointmentsPanel = ({
   };
 
   return (
-    <QueuePanel icon="calendar" title="Appointments" trailing={headerAction} bodyPadding={false}>
-      <StatusTabs
-        activeStatus={activeStatus}
-        onStatusChange={onStatusChange}
-        statusCounts={statusCounts}
-        palette={palette}
-      />
-      {renderBody()}
-    </QueuePanel>
+    <View onLayout={onPanelLayout} style={{ width: "100%", minWidth: 0 }}>
+      <QueuePanel icon="calendar" title="Appointments" trailing={headerAction} bodyPadding={false}>
+        <StatusTabs
+          activeStatus={activeStatus}
+          onStatusChange={onStatusChange}
+          statusCounts={statusCounts}
+          palette={palette}
+        />
+        {renderBody()}
+      </QueuePanel>
+    </View>
   );
 };
 

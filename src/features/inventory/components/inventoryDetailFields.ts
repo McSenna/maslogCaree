@@ -31,7 +31,7 @@ export const buildDetailFields = (item: InventoryItem): DetailField[] => {
       key: "batch",
       icon: "hash",
       label: "Batch / Lot No.",
-      value: item.batchNumber || "—",
+      value: item.batchNumber || "Not set",
     },
     {
       key: "expiry",

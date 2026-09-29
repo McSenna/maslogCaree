@@ -88,7 +88,7 @@ const FeaturedAnnouncementCard = ({
             style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
           >
             <View
-              className="flex-row items-center gap-1.5 rounded-full px-3.5 py-2"
+              className="flex-row items-center gap-1.5 rounded-lg px-3.5 py-2"
               style={{
                 backgroundColor: `${color}10`,
                 borderWidth: 1,

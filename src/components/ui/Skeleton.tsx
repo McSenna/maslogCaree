@@ -40,39 +40,3 @@ export const StatCardSkeleton = () => {
     </View>
   );
 };
-
-export const ResidentDashboardSkeleton = () => {
-  const { classes } = useTheme();
-  return (
-    <View className="gap-7">
-      <View className={["flex-row items-center gap-3 rounded-2xl border p-4", classes.card].join(" ")}>
-        <Skeleton className="h-14 w-14 rounded-full" />
-        <View className="min-w-0 flex-1 gap-2">
-          <Skeleton className="h-3 w-28" />
-          <Skeleton className="h-7 w-44 max-w-full" />
-        </View>
-        <Skeleton className="h-10 w-10 shrink-0 rounded-2xl" />
-      </View>
-      <View className="gap-4 md:grid md:grid-cols-3 md:gap-5">
-        <StatCardSkeleton />
-        <StatCardSkeleton />
-        <StatCardSkeleton />
-      </View>
-      <View className={["gap-3 p-4 md:p-5", classes.card].join(" ")}>
-        <Skeleton className="h-3 w-40" />
-        <Skeleton className="h-6 w-full max-w-md self-start" />
-        <Skeleton className="h-16 w-full" />
-      </View>
-      <View className="gap-4 md:grid md:grid-cols-2 md:gap-5">
-        <View className={["gap-3 p-4 md:p-5", classes.card].join(" ")}>
-          <Skeleton className="h-3 w-32" />
-          <Skeleton className="h-28 w-full" />
-        </View>
-        <View className="gap-3">
-          <Skeleton className="h-20 w-full rounded-2xl" />
-          <Skeleton className="h-20 w-full rounded-2xl" />
-        </View>
-      </View>
-    </View>
-  );
-};

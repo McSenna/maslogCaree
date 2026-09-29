@@ -1,9 +1,9 @@
 import { View, type DimensionValue } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 
 type HeroOrbProps = {
   size: number;
-  colors: readonly [string, string];
+  /** A single faint solid tint. */
+  color: string;
   top?: DimensionValue;
   bottom?: DimensionValue;
   left?: DimensionValue;
@@ -12,7 +12,7 @@ type HeroOrbProps = {
 
 const HeroOrb = ({
   size,
-  colors,
+  color,
   top,
   bottom,
   left,
@@ -29,17 +29,10 @@ const HeroOrb = ({
         width: size,
         height: size,
         borderRadius: size / 2,
-        overflow: "hidden",
+        backgroundColor: color,
         pointerEvents: "none",
       }}
-    >
-      <LinearGradient
-        colors={[...colors]}
-        start={{ x: 0.2, y: 0 }}
-        end={{ x: 0.8, y: 1 }}
-        style={{ width: "100%", height: "100%" }}
-      />
-    </View>
+    />
   );
 };
 

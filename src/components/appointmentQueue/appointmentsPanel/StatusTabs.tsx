@@ -40,7 +40,7 @@ const StatusTabs = ({
             accessibilityLabel={`${STATUS_LABELS[status]}, ${count}`}
             className="h-9 flex-row items-center gap-2 px-3.5"
             style={{
-              borderRadius: QUEUE_RADIUS.pill,
+              borderRadius: 8,
               backgroundColor: isActive ? palette.primarySoft : "transparent",
             }}
           >

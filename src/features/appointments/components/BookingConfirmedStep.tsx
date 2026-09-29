@@ -62,10 +62,10 @@ const BookingConfirmedStep = ({ booking, onClose }: BookingConfirmedStepProps) =
       >
         <AppointmentSummaryRow
           label="Service Type"
-          value={booking.selectedService?.label ?? "—"}
+          value={booking.selectedService?.label ?? "Not set"}
         />
         <AppointmentSummaryRow label="Healthcare Provider" value="To be assigned" />
-        <AppointmentSummaryRow label="Reason for Visit" value={booking.reason.trim() || "—"} />
+        <AppointmentSummaryRow label="Reason for Visit" value={booking.reason.trim() || "Not set"} />
         {booking.notes.trim() ? (
           <AppointmentSummaryRow label="Additional Notes" value={booking.notes.trim()} />
         ) : null}

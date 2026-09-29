@@ -36,7 +36,7 @@ const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelPr
               {appointment.isUrgent ? " · " : ""}
               {appointment.isUrgent ? <Text style={{ color: colors.danger.fg, fontWeight: "700" }}>Urgent</Text> : null}
             </Text>
-            <Text style={[TYPE.body, { color: colors.body }]}>{appointment.description || "—"}</Text>
+            <Text style={[TYPE.body, { color: colors.body }]}>{appointment.description || "Not set"}</Text>
 
             <View style={{ marginTop: SPACING.xs, flexDirection: "row", flexWrap: "wrap", gap: SPACING.sm }}>
               <Button size="sm" label="Assign slot" icon="calendar" onPress={() => onAssign(appointment)} />

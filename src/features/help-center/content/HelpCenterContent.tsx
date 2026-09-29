@@ -1,5 +1,7 @@
 import { View } from "react-native";
 
+import { webStyle } from "@/theme/webStyle";
+
 import ContactInformation from "../components/ContactInformation";
 import EmergencyNotice from "../components/EmergencyNotice";
 import HelpCategoryGrid from "../components/HelpCategoryGrid";
@@ -17,45 +19,69 @@ type HelpCenterContentProps = {
   expandedCategoryId?: string | null;
   onContactSupport: () => void;
   onViewRequests: () => void;
+  /**
+   * Put support, contact and emergency details in a column beside the topics.
+   * For wide screens: guidance keeps a readable width and help stays in view.
+   */
+  sideRail?: boolean;
 };
+
+const SIDE_RAIL_WIDTH = 360;
 
 const HelpCenterContent = ({
   expandedCategoryId = null,
   onContactSupport,
   onViewRequests,
+  sideRail = false,
 }: HelpCenterContentProps) => {
   const { search, contact, roleGuide } = useHelpCenterContent();
+
+  const guidance = search.results.isSearching ? (
+    <HelpSearchResults results={search.results} onContactSupport={onContactSupport} />
+  ) : (
+    <>
+      <View>
+        <HelpSectionHeading
+          title="Browse help topics"
+          description="Choose a topic to see step-by-step guidance for using MaslogCare."
+        />
+        <HelpCategoryGrid categories={HELP_CATEGORIES} expandedCategoryId={expandedCategoryId} />
+      </View>
+
+      {roleGuide ? <RoleGuideSection guide={roleGuide} /> : null}
+
+      <PopularQuestions faqs={HELP_FAQS} />
+    </>
+  );
+
+  const reachUs = (
+    <>
+      <SupportCTA onContactSupport={onContactSupport} onViewRequests={onViewRequests} />
+      <ContactInformation contact={contact.contact} loading={contact.loading} />
+      <EmergencyNotice />
+    </>
+  );
 
   return (
     <View style={{ gap: 20 }}>
       <HelpCenterHeader query={search.query} onQueryChange={search.setQuery} />
 
-      {search.results.isSearching ? (
-        <HelpSearchResults results={search.results} onContactSupport={onContactSupport} />
+      {sideRail ? (
+        <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 24 }}>
+          <View style={{ flex: 1, minWidth: 0, gap: 20 }}>{guidance}</View>
+          <View
+            role="complementary"
+            style={[{ width: SIDE_RAIL_WIDTH, gap: 20 }, webStyle({ position: "sticky", top: 0 })]}
+          >
+            {reachUs}
+          </View>
+        </View>
       ) : (
         <>
-          <View>
-            <HelpSectionHeading
-              title="Browse help topics"
-              description="Choose a topic to see step-by-step guidance for using MaslogCare."
-            />
-            <HelpCategoryGrid
-              categories={HELP_CATEGORIES}
-              expandedCategoryId={expandedCategoryId}
-            />
-          </View>
-
-          {roleGuide ? <RoleGuideSection guide={roleGuide} /> : null}
-
-          <PopularQuestions faqs={HELP_FAQS} />
+          {guidance}
+          {reachUs}
         </>
       )}
-
-      <SupportCTA onContactSupport={onContactSupport} onViewRequests={onViewRequests} />
-
-      <ContactInformation contact={contact.contact} loading={contact.loading} />
-
-      <EmergencyNotice />
     </View>
   );
 };

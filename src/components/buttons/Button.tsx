@@ -71,7 +71,7 @@ const Button = ({
         style={{
           minHeight: isText ? 36 : BUTTON_HEIGHT[size],
           paddingHorizontal: isText ? 4 : BUTTON_PADDING_X[size],
-          borderRadius: RADII.medium,
+          borderRadius: RADII.small,
           borderWidth: isText ? 0 : 1,
           borderColor: look.border,
           backgroundColor: look.background,

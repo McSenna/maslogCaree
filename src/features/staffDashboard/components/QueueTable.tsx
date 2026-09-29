@@ -1,0 +1,205 @@
+import { Feather } from "@expo/vector-icons";
+import { useMemo, useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import PanelCard from "@/components/dashboard/admin/PanelCard";
+import { DataTable, SegmentedControl, type TableColumn } from "@/components/dashboard/kit";
+import { STATUS_LABELS, useQueuePalette } from "@/components/appointmentQueue/queueTheme";
+import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import type { StaffAppointment } from "@/services/staffDashboardService";
+import { byQueueTab, queueTabCounts, type QueueTab } from "../model/staffDashboardModel";
+import ServiceBadge from "./ServiceBadge";
+
+const VISIBLE_ROWS = 8;
+
+type QueueRow = StaffAppointment & { position: number };
+
+const slotTime = (iso: string | null): string => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+};
+
+const QueueStatus = ({ status }: { status: StaffAppointment["status"] }) => {
+  const queuePalette = useQueuePalette();
+  const tone = queuePalette.statuses[status] ?? queuePalette.statuses.pending;
+  return (
+    <View className="flex-row items-center rounded-full px-2.5" style={{ height: 24, gap: 6, backgroundColor: tone.bg }}>
+      <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: tone.dot }} />
+      <Text className="text-[12px] font-semibold" numberOfLines={1} style={{ color: tone.fg }}>
+        {STATUS_LABELS[status]}
+      </Text>
+    </View>
+  );
+};
+
+const Position = ({ palette, value }: { palette: AdminDashboardPalette; value: number }) => (
+  <View className="h-7 w-7 items-center justify-center rounded-full" style={{ backgroundColor: palette.divider }}>
+    <Text className="text-[12.5px] font-bold" style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
+      {value}
+    </Text>
+  </View>
+);
+
+const PatientName = ({ palette, row }: { palette: AdminDashboardPalette; row: QueueRow }) => (
+  <View className="min-w-0 flex-row items-center gap-2" style={{ alignSelf: "stretch" }}>
+    <Text className="min-w-0 shrink text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+      {row.patientName}
+    </Text>
+    {row.isUrgent ? (
+      <View
+        className="flex-row items-center rounded-full px-2"
+        style={{ height: 20, gap: 3, backgroundColor: palette.statusTones.danger.bg }}
+      >
+        <Feather name="alert-triangle" size={11} color={palette.statusTones.danger.fg} />
+        <Text className="text-[11.5px] font-bold" style={{ color: palette.statusTones.danger.fg }}>
+          Urgent
+        </Text>
+      </View>
+    ) : null}
+  </View>
+);
+
+const QueueTable = ({
+  palette,
+  queue,
+  showService,
+  personNoun,
+  compact,
+  onOpenQueue,
+  fill = false,
+}: {
+  palette: AdminDashboardPalette;
+  queue: StaffAppointment[];
+  showService: boolean;
+  personNoun: string;
+  compact: boolean;
+  onOpenQueue: () => void;
+  fill?: boolean;
+}) => {
+  const [tab, setTab] = useState<QueueTab>("all");
+
+  // Positions come from the full queue, so filtering never renumbers anyone.
+  const positioned = useMemo<QueueRow[]>(
+    () => queue.map((appointment, index) => ({ ...appointment, position: index + 1 })),
+    [queue]
+  );
+  const counts = useMemo(() => queueTabCounts(queue), [queue]);
+  const filtered = useMemo(() => byQueueTab(positioned, tab), [positioned, tab]);
+  const rows = filtered.slice(0, VISIBLE_ROWS);
+  const hidden = filtered.length - rows.length;
+
+  const columns: TableColumn<QueueRow>[] = [
+    { key: "position", header: "#", width: 28, render: (row) => <Position palette={palette} value={row.position} /> },
+    { key: "patient", header: personNoun === "resident" ? "Resident" : "Patient", flex: 2, render: (row) => <PatientName palette={palette} row={row} /> },
+    ...(showService
+      ? [
+          {
+            key: "service",
+            header: "Service",
+            width: 140,
+            minTableWidth: 540,
+            render: (row: QueueRow) => <ServiceBadge serviceKey={row.consultationType} label={row.serviceLabel} compact />,
+          },
+        ]
+      : []),
+    {
+      key: "time",
+      header: "Slot",
+      width: 76,
+      render: (row) => (
+        <Text className="text-[13px] font-medium" numberOfLines={1} style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
+          {slotTime(row.slotStart)}
+        </Text>
+      ),
+    },
+    { key: "status", header: "Status", width: 128, align: "right", render: (row) => <QueueStatus status={row.status} /> },
+  ];
+
+  const tabs = (
+    <SegmentedControl
+      palette={palette}
+      label="Show"
+      value={tab}
+      onChange={setTab}
+      fill={compact}
+      options={[
+        { value: "all", label: "All", count: counts.all },
+        { value: "waiting", label: "Waiting", count: counts.waiting },
+        { value: "in_progress", label: "In progress", count: counts.in_progress },
+      ]}
+    />
+  );
+
+  const emptyMessage =
+    queue.length === 0
+      ? `No one is in today's queue yet.`
+      : tab === "waiting"
+        ? "No one is waiting right now."
+        : `No one is being seen right now.`;
+
+  return (
+    <PanelCard
+      palette={palette}
+      title="Today's queue"
+      icon="list"
+      subtitle={
+        queue.length > 0
+          ? `${queue.length} ${queue.length === 1 ? personNoun : `${personNoun}s`} in slot order`
+          : "In slot order"
+      }
+      onViewAll={onOpenQueue}
+      viewAllLabel="Open queue"
+      headerRight={compact ? undefined : tabs}
+      fill={fill}
+    >
+      {compact ? <View className="mb-3">{tabs}</View> : null}
+      <DataTable
+        palette={palette}
+        caption="Today's queue"
+        columns={columns}
+        rows={rows}
+        rowKey={(row) => row._id}
+        rowLabel={(row) =>
+          `Number ${row.position}, ${row.patientName}${row.isUrgent ? ", urgent" : ""}, ${row.serviceLabel}, ${slotTime(row.slotStart)}, ${STATUS_LABELS[row.status]}`
+        }
+        onRowPress={onOpenQueue}
+        rowHint="Opens the appointment queue"
+        stacked={compact}
+        renderStacked={(row) => (
+          <View className="flex-row items-center gap-3">
+            <Position palette={palette} value={row.position} />
+            <View className="min-w-0 flex-1 gap-1">
+              <PatientName palette={palette} row={row} />
+              <View className="flex-row flex-wrap items-center gap-2">
+                {showService ? <ServiceBadge serviceKey={row.consultationType} label={row.serviceLabel} compact /> : null}
+                <Text className="text-[12.5px] font-medium" style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
+                  {slotTime(row.slotStart)}
+                </Text>
+              </View>
+            </View>
+            <QueueStatus status={row.status} />
+          </View>
+        )}
+        emptyIcon="coffee"
+        emptyMessage={emptyMessage}
+      />
+      {hidden > 0 ? (
+        <Pressable
+          onPress={onOpenQueue}
+          accessibilityRole="link"
+          accessibilityLabel={`${hidden} more in the queue. Open the queue`}
+          className="mt-1 h-11 flex-row items-center justify-center gap-1.5"
+          style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
+        >
+          <Text className="text-[13px] font-semibold" style={{ color: palette.primary }}>
+            {hidden} more in the queue
+          </Text>
+          <Feather name="arrow-right" size={14} color={palette.primary} />
+        </Pressable>
+      ) : null}
+    </PanelCard>
+  );
+};
+
+export default QueueTable;

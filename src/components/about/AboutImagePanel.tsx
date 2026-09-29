@@ -1,5 +1,4 @@
 import { Image, Text, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 
 import { LANDING_COLORS, landingAssets } from "@/config/landingAssets";
 import { LEARN_MORE_INTRO } from "@/config/learnMoreContent";
@@ -34,25 +33,21 @@ const AboutImagePanel = ({ height }: AboutImagePanelProps) => {
         accessibilityIgnoresInvertColors
       />
 
-      <LinearGradient
-        colors={["rgba(8, 21, 47, 0)", "rgba(8, 21, 47, 0.12)", "rgba(8, 21, 47, 0.72)"]}
-        locations={[0, 0.45, 1]}
+      {/* A solid caption band instead of a dark fade over the photo. */}
+      <View
         style={{
           position: "absolute",
           left: 0,
           right: 0,
           bottom: 0,
-          top: 0,
+          paddingHorizontal: 14,
+          paddingVertical: 10,
+          backgroundColor: "rgba(8, 21, 47, 0.68)",
           pointerEvents: "none",
         }}
-      />
-
+      >
       <Text
         style={{
-          position: "absolute",
-          left: 14,
-          right: 14,
-          bottom: 12,
           fontSize: 13,
           lineHeight: 18,
           fontWeight: "700",
@@ -61,6 +56,7 @@ const AboutImagePanel = ({ height }: AboutImagePanelProps) => {
       >
         {LEARN_MORE_INTRO.imageCaption}
       </Text>
+      </View>
     </View>
   );
 };

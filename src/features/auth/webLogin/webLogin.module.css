@@ -576,6 +576,32 @@
 }
 
 /* Inline flow, so on a narrow card the icon wraps with the first word instead of standing apart. */
+.legal {
+  margin: 10px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 18px;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.legal a {
+  color: var(--ink-soft);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.legal a:hover {
+  text-decoration: underline;
+}
+
+.legal a:focus-visible {
+  outline: 2px solid #1565d8;
+  outline-offset: 2px;
+}
+
 .security {
   margin-top: 12px;
   color: var(--ink-soft);

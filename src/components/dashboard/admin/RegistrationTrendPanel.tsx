@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
-import SelectMenu, { type SelectOption } from "@/components/ui/SelectMenu";
+import SegmentedControl, { type SegmentOption } from "@/components/dashboard/kit/SegmentedControl";
 import SimpleBarChart from "@/components/ui/charts/SimpleBarChart";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import {
@@ -25,9 +25,9 @@ type RegistrationTrendPanelProps = {
 type MonthRange = "6" | "3";
 
 // The API returns the last six months; the shorter range is a view over the same buckets.
-const RANGE_OPTIONS: SelectOption<MonthRange>[] = [
-  { value: "6", label: "Last 6 months" },
-  { value: "3", label: "Last 3 months" },
+const RANGE_OPTIONS: SegmentOption<MonthRange>[] = [
+  { value: "3", label: "3 months" },
+  { value: "6", label: "6 months" },
 ];
 
 const accounts = (count: number) => `${count.toLocaleString()} new ${count === 1 ? "account" : "accounts"}`;
@@ -85,26 +85,26 @@ const RegistrationTrendPanel = ({
   }));
 
   const rangeFilter = (
-    <SelectMenu
+    <SegmentedControl
+      palette={palette}
       label="Registration period"
       value={range}
       options={RANGE_OPTIONS}
       onChange={setRange}
-      height={34}
-      style={{ minWidth: 148 }}
+      fill={compact}
     />
   );
 
   return (
     <PanelCard
       palette={palette}
-      title="User Registrations"
+      title="User registrations"
       icon="user-plus"
       subtitle={`New accounts per month · ${rangeLabel}`}
       headerRight={compact ? undefined : rangeFilter}
       fill={fill}
     >
-      {compact ? <View className="mb-3 self-start">{rangeFilter}</View> : null}
+      {compact ? <View className="mb-3">{rangeFilter}</View> : null}
 
       <AnalyticsSummary
         palette={palette}

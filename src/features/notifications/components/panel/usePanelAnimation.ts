@@ -40,7 +40,8 @@ export const usePanelAnimation = (visible: boolean, onClose: () => void) => {
     ).start();
   }, [visible, reducedMotion, opacity, translateY, scale]);
 
-  const animateClose = useCallback(() => {
+  /** `after` runs once the panel is gone, so a dialog opened next never overlaps it. */
+  const closeThen = useCallback((after?: () => void) => {
     Animated.parallel(
       [
         { value: opacity, toValue: 0 },
@@ -57,8 +58,12 @@ export const usePanelAnimation = (visible: boolean, onClose: () => void) => {
     ).start(() => {
       setModalVisible(false);
       onClose();
+      after?.();
     });
   }, [reducedMotion, opacity, translateY, scale, onClose]);
 
-  return { opacity, translateY, scale, modalVisible, animateClose };
+  // Takes no arguments, so it can be passed straight to onPress.
+  const animateClose = useCallback(() => closeThen(), [closeThen]);
+
+  return { opacity, translateY, scale, modalVisible, animateClose, closeThen };
 };

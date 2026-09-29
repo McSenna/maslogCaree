@@ -6,7 +6,7 @@ const safeDate = (iso?: string | null): Date | null => {
 
 export const formatDateTime = (iso?: string | null): string => {
   const d = safeDate(iso);
-  if (!d) return "—";
+  if (!d) return "Not recorded";
   return d.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -18,7 +18,7 @@ export const formatDateTime = (iso?: string | null): string => {
 
 export const formatDate = (iso?: string | null): string => {
   const d = safeDate(iso);
-  if (!d) return "—";
+  if (!d) return "Not recorded";
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 };
 

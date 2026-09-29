@@ -1,4 +1,5 @@
 import { createShadow } from "@/design/shadow";
+import { ROLE_CONTENT_MAX_WIDTH } from "@/theme/breakpoints";
 import { PALETTE } from "@/theme/palette";
 export const ROLE_COLORS: Record<string, string> = {
   admin: PALETTE.blue[600],
@@ -53,11 +54,8 @@ export const DASHBOARD_BREAKPOINTS = {
   threePanelColumns: 1100,
 } as const;
 
-/**
- * Dashboards are wider than other role pages (CONTENT_MAX_WIDTH, 1440) so a 1920px screen is used
- * edge to edge after the sidebar instead of leaving ~120px dead gutters either side.
- */
-export const DASHBOARD_MAX_WIDTH = 1600;
+/** Dashboards share the frame every role page uses (see ROLE_CONTENT_MAX_WIDTH). */
+export const DASHBOARD_MAX_WIDTH = ROLE_CONTENT_MAX_WIDTH;
 
 /** Content width at which staff dashboards place the queue beside the upcoming and activity panels. */
 export const DASHBOARD_WIDE_LAYOUT_MIN_WIDTH = 1280;

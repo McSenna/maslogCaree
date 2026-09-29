@@ -15,7 +15,8 @@ export interface UseAdminDashboardReturn {
   refresh: () => Promise<void>;
 }
 
-const DEFAULT_QUERY: AdminDashboardQuery = { usersLimit: 5, activitiesLimit: 5 };
+// Enough rows for the role and event filters on the dashboard tables to have something to show.
+const DEFAULT_QUERY: AdminDashboardQuery = { usersLimit: 20, activitiesLimit: 20 };
 
 export const useAdminDashboard = (
   query: AdminDashboardQuery = DEFAULT_QUERY

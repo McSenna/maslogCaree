@@ -3,11 +3,12 @@ import { useRouter } from "expo-router";
 import { RefreshControl, View } from "react-native";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
+import { usePageMaxWidth } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import NotificationListView from "../components/NotificationListView";
 import NotificationPageHeader from "../components/NotificationPageHeader";
 import { useNotificationActions } from "../hooks/useNotificationActions";
-import { NOTIFICATION_METRICS, useNotificationPalette } from "../notification.theme";
+import { useNotificationPalette } from "../notification.theme";
 import type { NotificationFilter } from "../notification.types";
 
 const NotificationsScreen = () => {
@@ -16,6 +17,7 @@ const NotificationsScreen = () => {
 
   const palette = useNotificationPalette();
   const insets = useRoleScreenInsets();
+  const maxWidth = usePageMaxWidth("reading");
   const router = useRouter();
   const { handlePress, isNavigable } = useNotificationActions();
 
@@ -48,7 +50,7 @@ const NotificationsScreen = () => {
         style={{
           flex: 1,
           width: "100%",
-          maxWidth: NOTIFICATION_METRICS.pageMaxWidth,
+          maxWidth,
           alignSelf: "center",
           paddingHorizontal: insets.gutter,
           paddingTop: insets.paddingTop,

@@ -37,7 +37,13 @@ const NotificationRow = ({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={`${item.isRead ? "Read" : "Unread"} notification. ${item.title}. ${displayBody}${timestamp ? `. ${timestamp}` : ""}`}
-      accessibilityHint={navigable ? "Opens the related screen" : undefined}
+      accessibilityHint={
+        navigable
+          ? visual.category === "announcement"
+            ? "Opens the announcement details"
+            : "Opens the related screen"
+          : undefined
+      }
       onPress={handlePress}
       style={({ pressed }) => ({
         flexDirection: "row",

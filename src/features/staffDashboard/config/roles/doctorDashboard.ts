@@ -1,32 +1,34 @@
 import type { RoleDashboardConfig } from "./dashboardConfigTypes";
-import { plural, progressCaption } from "./dashboardConfigTypes";
+import { plural, progressCaption, todayProgress } from "./dashboardConfigTypes";
 
 export const DOCTOR: RoleDashboardConfig = {
   role: "doctor",
+  personNoun: "patient",
   metrics: [
     {
       key: "today",
       route: "mission",
-      label: "Today's Patients",
+      label: "Today's patients",
       icon: "users",
       tone: "blue",
       value: (d) => d.summary.today,
       description: (d) => progressCaption(d.summary),
+      progress: todayProgress,
     },
     {
       key: "waiting",
       route: "mission",
-      label: "Waiting in Queue",
+      label: "Waiting now",
       icon: "clock",
-      tone: "pink",
+      tone: "amber",
       value: (d) => d.summary.waiting,
       description: (d) =>
-        d.summary.processing > 0 ? `${d.summary.processing} being seen now` : "Approved and waiting",
+        d.summary.processing > 0 ? `${d.summary.processing} with you now` : "Checked in and waiting",
     },
     {
       key: "completed",
       route: "mission",
-      label: "Completed Today",
+      label: "Seen today",
       icon: "check-circle",
       tone: "green",
       value: (d) => d.summary.completedToday,
@@ -40,17 +42,19 @@ export const DOCTOR: RoleDashboardConfig = {
       tone: "purple",
       value: (d) => d.summary.upcoming,
       description: (d) =>
-        d.summary.pending > 0 ? `${d.summary.pending} still to schedule` : "Scheduled after today",
+        d.summary.pending > 0 ? `${d.summary.pending} still to schedule` : "Booked after today",
     },
   ],
   chart: {
-    title: "Appointments Overview",
-    subtitle: "Consultations completed per day",
+    title: "Consultations completed",
+    subtitle: "Per day, by service",
     icon: "trending-up",
     kind: "lines",
   },
   showServiceSplit: true,
-  activityTitle: "Recent Clinical Activity",
+  activityTitle: "Recent consultations",
   activitySubtitle: "Encounters you have filed",
   queueRoute: "/doctor/mission",
+  secondaryAction: { label: "Medicine stock", icon: "package", route: "/doctor/inventory" },
+  inventoryRoute: "/doctor/inventory",
 };

@@ -1,13 +1,11 @@
 import { PROFILE_COLORS } from "./profileTheme";
 import { PALETTE } from "@/theme/palette";
 
-export const COVER_GRADIENT = [PALETTE.blue[700], PALETTE.blue[600], "#38BDF8"] as const;
+export const COVER_COLOR = PALETTE.blue[700];
 
 export const COVER_HEIGHT = { compact: 104, wide: 168 } as const;
 
 export const AVATAR_SIZE = { compact: 96, wide: 132 } as const;
-
-export const PROFILE_MAX_WIDTH = 1180;
 
 export const SOCIAL_COLORS = {
   ...PROFILE_COLORS,

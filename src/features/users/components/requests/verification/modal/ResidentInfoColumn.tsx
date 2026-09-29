@@ -20,7 +20,7 @@ const longDate = (value?: string | null) =>
         month: "long",
         day: "numeric",
       })
-    : "—";
+    : "Not set";
 
 const ResidentInfoColumn = ({ resident, verification }: Props) => {
   const { classes } = useTheme();
@@ -70,7 +70,7 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
       </View>
 
       <View className="gap-2.5">
-        <InfoTile label="Full Legal Name" value={legalName || "—"} size="md" />
+        <InfoTile label="Full Legal Name" value={legalName || "Not set"} size="md" />
 
         <View className="flex-row gap-2.5">
           <InfoTile
@@ -80,14 +80,14 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
           />
           <InfoTile
             label="Sex / Gender"
-            value={resident?.gender || "—"}
+            value={resident?.gender || "Not set"}
             capitalize
             className="flex-1"
           />
         </View>
 
         <View className="flex-row gap-2.5">
-          <InfoTile label="Contact Number" value={resident?.phone || "—"} className="flex-1" />
+          <InfoTile label="Contact Number" value={resident?.phone || "Not set"} className="flex-1" />
           <InfoTile
             label="Civil Status"
             value={resident?.civilStatus || "Single"}
@@ -96,11 +96,11 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
           />
         </View>
 
-        <InfoTile label="Complete Address" value={resident?.address || "—"} />
+        <InfoTile label="Complete Address" value={resident?.address || "Not set"} />
         <InfoTile
           label="Submitted On"
           value={
-            verification?.submittedAt ? new Date(verification.submittedAt).toLocaleString() : "—"
+            verification?.submittedAt ? new Date(verification.submittedAt).toLocaleString() : "Not set"
           }
         />
 

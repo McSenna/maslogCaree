@@ -1,32 +1,34 @@
 import type { RoleDashboardConfig } from "./dashboardConfigTypes";
-import { plural, progressCaption } from "./dashboardConfigTypes";
+import { plural, progressCaption, todayProgress } from "./dashboardConfigTypes";
 
 export const BHW: RoleDashboardConfig = {
   role: "bhw",
+  personNoun: "resident",
   metrics: [
     {
       key: "today",
       route: "mission",
-      label: "BP Checks Today",
+      label: "BP checks today",
       icon: "activity",
       tone: "blue",
       value: (d) => d.summary.today,
       description: (d) => progressCaption(d.summary),
+      progress: todayProgress,
     },
     {
       key: "waiting",
       route: "mission",
-      label: "Waiting for Check",
+      label: "Waiting now",
       icon: "clock",
-      tone: "pink",
+      tone: "amber",
       value: (d) => d.summary.waiting,
       description: (d) =>
-        d.summary.processing > 0 ? `${d.summary.processing} being seen now` : "Approved and waiting",
+        d.summary.processing > 0 ? `${d.summary.processing} being checked now` : "Checked in and waiting",
     },
     {
       key: "completed",
       route: "mission",
-      label: "Completed Today",
+      label: "Checked today",
       icon: "check-circle",
       tone: "green",
       value: (d) => d.summary.completedToday,
@@ -35,22 +37,23 @@ export const BHW: RoleDashboardConfig = {
     {
       key: "upcoming",
       route: "mission",
-      label: "Upcoming Checks",
+      label: "Upcoming checks",
       icon: "calendar",
       tone: "purple",
       value: (d) => d.summary.upcoming,
       description: (d) =>
-        d.summary.pending > 0 ? `${d.summary.pending} still to schedule` : "Scheduled after today",
+        d.summary.pending > 0 ? `${d.summary.pending} still to schedule` : "Booked after today",
     },
   ],
   chart: {
-    title: "BP Checking Activity",
-    subtitle: "Checks completed per day",
+    title: "BP checks completed",
+    subtitle: "Per day",
     icon: "bar-chart-2",
     kind: "bars",
   },
   showServiceSplit: false,
-  activityTitle: "Recent BP Records",
+  activityTitle: "Recent BP readings",
   activitySubtitle: "Readings you have recorded",
   queueRoute: "/bhw/mission",
+  secondaryAction: { label: "Residents", icon: "users", route: "/bhw/residents" },
 };

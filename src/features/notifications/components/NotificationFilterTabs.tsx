@@ -38,7 +38,7 @@ const Tab = ({
         gap: 6,
         height: compact ? 30 : 34,
         paddingHorizontal: compact ? 12 : 14,
-        borderRadius: NOTIFICATION_RADIUS.pill,
+        borderRadius: 8,
         backgroundColor: active ? palette.primarySoft : "rgba(148,163,184,0.08)",
         borderWidth: 1,
         borderColor: active ? "rgba(22,119,255,0.22)" : "transparent",

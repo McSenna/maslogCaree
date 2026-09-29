@@ -84,7 +84,7 @@ const MedicalRecordFilters = ({
               style={{
                 height: 36,
                 minWidth: 44,
-                borderRadius: QUEUE_RADIUS.pill,
+                borderRadius: 8,
                 borderWidth: 1,
                 backgroundColor: active ? palette.primarySoft : palette.panelBg,
                 borderColor: active ? palette.primary : palette.panelBorder,
@@ -119,7 +119,7 @@ const MedicalRecordFilters = ({
                 hitSlop={8}
                 className="px-2.5 py-1.5 active:opacity-80"
                 style={{
-                  borderRadius: QUEUE_RADIUS.pill,
+                  borderRadius: 8,
                   backgroundColor: active ? palette.primarySoft : "transparent",
                 }}
               >

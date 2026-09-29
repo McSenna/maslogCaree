@@ -26,6 +26,8 @@ export type NotificationItem = {
   isRead: boolean;
   createdAt?: string | null;
   appointmentId?: string | null;
+  /** Set on `announcement` notifications; opens the shared announcement. */
+  announcementId?: string | null;
 };
 
 export type NotificationPage = {

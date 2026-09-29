@@ -1,108 +1,123 @@
-import { useCallback, useMemo } from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
-import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
-import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
+import { useMemo } from "react";
+import { DashboardErrorState } from "@/components/dashboard/admin";
 import {
-  AdminDashboardSkeleton,
-  DashboardErrorState,
-} from "@/components/dashboard/admin";
+  DashboardHeader,
+  DashboardScroll,
+  DashboardSkeleton,
+  greetingLine,
+  longDate,
+  updatedLabel,
+  useMinuteClock,
+  type DashboardAction,
+} from "@/components/dashboard/kit";
+import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { useAdminDashboard } from "@/hooks/useAdminDashboard";
-import DashboardBody from "../components/DashboardBody";
-import { MOBILE_ACTIVITY_COUNT, MOBILE_USER_COUNT } from "../constants/dashboardLayout";
+import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
+import type { AdminDashboardData } from "@/services/adminDashboardService";
+import DashboardBody, { type AdminNavigation } from "../components/DashboardBody";
 import { useAdminDashboardLayout } from "../hooks/useAdminDashboardLayout";
+
+const SKELETON_ROWS = [
+  { weights: [1.6, 1], height: 340 },
+  { weights: [1.5, 1], height: 380 },
+];
+
+const statusLine = (data: AdminDashboardData | null): string => {
+  if (!data) return "Loading today's overview";
+  const { pendingRegistrations, openSupportTickets, lowStockItems, expiringItems } = data.attention;
+  const waiting = pendingRegistrations + openSupportTickets + lowStockItems + expiringItems;
+  if (waiting === 0) return "Nothing is waiting on you";
+  return `${waiting} ${waiting === 1 ? "item needs" : "items need"} your attention`;
+};
 
 const AdminDashboardScreen = () => {
   const router = useGuardedNavigation();
+  const { user } = useAuth();
   const { resolvedTheme } = useTheme();
   const palette = getAdminDashboardPalette(resolvedTheme);
   const isDark = resolvedTheme === "dark";
+  const now = useMinuteClock();
 
   const layout = useAdminDashboardLayout();
   const { data, loading, refreshing, error, reload, refresh } = useAdminDashboard();
 
-  const goToUsers = useCallback(() => router.push("/admin/users"), [router]);
-  const goToSystemLogs = useCallback(() => router.push("/admin/system-logs"), [router]);
+  const go = useMemo<AdminNavigation>(
+    () => ({
+      toUsers: () => router.push("/admin/users"),
+      toRegistrations: () => router.push("/admin/users?section=requests" as never),
+      toSupport: () => router.push("/admin/support"),
+      toInventory: () => router.push("/admin/inventory"),
+      toSystemLogs: () => router.push("/admin/system-logs"),
+      toActivity: (activity) =>
+        router.push({ pathname: "/admin/system-logs", params: { search: activity.actorName ?? "" } } as never),
+    }),
+    [router]
+  );
 
-  const { isMobile } = layout;
-  const recentUsers = useMemo(() => {
-    const list = data?.recentUsers ?? [];
-    return isMobile ? list.slice(0, MOBILE_USER_COUNT) : list;
-  }, [data?.recentUsers, isMobile]);
+  const pending = data?.attention.pendingRegistrations ?? 0;
+  const primaryAction: DashboardAction =
+    pending > 0
+      ? {
+          key: "review",
+          label: "Review registrations",
+          icon: "user-check",
+          onPress: go.toRegistrations,
+          accessibilityHint: `${pending} waiting for a decision`,
+        }
+      : { key: "users", label: "Manage users", icon: "users", onPress: go.toUsers };
 
-  const recentActivities = useMemo(() => {
-    const list = data?.recentActivities ?? [];
-    return isMobile ? list.slice(0, MOBILE_ACTIVITY_COUNT) : list;
-  }, [data?.recentActivities, isMobile]);
+  const secondaryActions: DashboardAction[] = [
+    {
+      key: "announce",
+      label: "New announcement",
+      icon: "edit-3",
+      onPress: () => router.push("/admin/announcements?compose=1" as never),
+      showOnPhone: true,
+    },
+    { key: "support", label: "Support inbox", icon: "life-buoy", onPress: go.toSupport, showOnPhone: true },
+  ];
 
   return (
-    <View className="flex-1">
-      <RoleScreenBackdrop color={palette.pageBg} insets={layout.insets} />
+    <DashboardScroll
+      palette={palette}
+      insets={layout.insets}
+      refreshing={refreshing}
+      onRefresh={refresh}
+      onMeasure={layout.measure}
+      gap={layout.isMobile ? 16 : 20}
+    >
+      <DashboardHeader
+        palette={palette}
+        compact={layout.isMobile}
+        title={greetingLine(user?.name, now)}
+        subtitle={`${longDate(now)} · ${statusLine(data)}`}
+        primaryAction={primaryAction}
+        secondaryActions={secondaryActions}
+        updatedLabel={data ? updatedLabel(data.generatedAt, now) : undefined}
+        onRefresh={data ? refresh : undefined}
+        refreshing={refreshing}
+      />
 
-      <ScrollView
-        className="flex-1"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: layout.insets.gutter,
-          paddingTop: layout.insets.paddingTop,
-          paddingBottom: layout.insets.paddingBottom,
-        }}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refresh}
-            tintColor={palette.primary}
-            colors={[palette.primary]}
-          />
-        }
-      >
-        <View
-          style={{ width: "100%", alignSelf: "center", minWidth: 0 }}
-          onLayout={layout.measure}
-        >
-          <View className={isMobile ? "gap-4" : "gap-5"}>
-            {error && data ? (
-              <DashboardErrorState
-                palette={palette}
-                onRetry={refresh}
-                retrying={refreshing}
-                message={error}
-                variant="banner"
-              />
-            ) : null}
+      {error && data ? (
+        <DashboardErrorState palette={palette} onRetry={refresh} retrying={refreshing} message={error} variant="banner" />
+      ) : null}
 
-            {loading && !data ? (
-              <AdminDashboardSkeleton
-                palette={palette}
-                compact={isMobile}
-                metricColumns={layout.metricColumns}
-                panelColumns={layout.panelColumns}
-                analyticsSideBySide={layout.analyticsSideBySide}
-                gap={layout.gap}
-              />
-            ) : null}
+      {loading && !data ? (
+        <DashboardSkeleton
+          palette={palette}
+          compact={layout.isMobile}
+          metricColumns={layout.metricColumns}
+          gap={layout.gap}
+          rows={SKELETON_ROWS}
+        />
+      ) : null}
 
-            {error && !data && !loading ? (
-              <DashboardErrorState palette={palette} onRetry={reload} message={error} />
-            ) : null}
+      {error && !data && !loading ? <DashboardErrorState palette={palette} onRetry={reload} message={error} /> : null}
 
-            {data ? (
-              <DashboardBody
-                data={data}
-                palette={palette}
-                isDark={isDark}
-                layout={layout}
-                recentUsers={recentUsers}
-                recentActivities={recentActivities}
-                onViewAllUsers={goToUsers}
-                onViewAllActivities={goToSystemLogs}
-              />
-            ) : null}
-          </View>
-        </View>
-      </ScrollView>
-    </View>
+      {data ? <DashboardBody data={data} palette={palette} isDark={isDark} layout={layout} go={go} /> : null}
+    </DashboardScroll>
   );
 };
 

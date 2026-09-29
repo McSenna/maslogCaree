@@ -1,146 +1,138 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Pressable, Text, View } from "react-native";
-import DashboardCard from "@/components/resident/DashboardCard";
-import SectionHeader from "@/components/resident/SectionHeader";
+import { Feather } from "@expo/vector-icons";
+import { Text, View } from "react-native";
+import DashboardButton from "@/components/dashboard/admin/DashboardButton";
+import EmptyPanelState from "@/components/dashboard/admin/EmptyPanelState";
+import PanelCard from "@/components/dashboard/admin/PanelCard";
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
-import { CARD, RESIDENT_COLORS } from "@/components/resident/residentTheme";
-import { splitAppointmentDate } from "@/data/residentDashboardData";
-import { formatConsultationTypeLabel } from "@/utils/residentDashboard";
+import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { NextAppointment } from "@/services/residentDashboardService";
+import { formatConsultationTypeLabel } from "@/utils/residentDashboard";
 
 type UpcomingAppointmentProps = {
+  palette: AdminDashboardPalette;
   appointment: NextAppointment | null;
   onViewAll: () => void;
   onViewDetails: (appointment: NextAppointment) => void;
-  stacked?: boolean;
+  onBook: () => void;
+  compact?: boolean;
   fill?: boolean;
 };
 
-const formatSlotTime = (iso: string | null): string => {
-  if (!iso) return "To be scheduled";
+const parse = (iso: string | null): Date | null => {
+  if (!iso) return null;
   const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "To be scheduled";
-  return date.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+  return Number.isNaN(date.getTime()) ? null : date;
 };
 
-const MetaRow = ({ icon, text }: { icon: "person-outline" | "time-outline"; text: string }) => (
+/** "Today", "Tomorrow", "In 5 days", or the weekday name further out. */
+const relativeDay = (date: Date, now: Date = new Date()): string => {
+  const startOf = (value: Date) => new Date(value.getFullYear(), value.getMonth(), value.getDate()).getTime();
+  const days = Math.round((startOf(date) - startOf(now)) / 86400000);
+  if (days <= 0) return "Today";
+  if (days === 1) return "Tomorrow";
+  if (days < 7) return `In ${days} days`;
+  return date.toLocaleDateString(undefined, { weekday: "long" });
+};
+
+const DateTile = ({ palette, date }: { palette: AdminDashboardPalette; date: Date | null }) => (
+  <View
+    className="shrink-0 items-center justify-center"
+    style={{ width: 76, height: 84, borderRadius: 14, backgroundColor: palette.tones.blue.cardBg, borderWidth: 1, borderColor: palette.tones.blue.cardBorder }}
+    accessibilityElementsHidden
+    importantForAccessibility="no-hide-descendants"
+  >
+    {date ? (
+      <>
+        <Text className="text-[12px] font-bold" style={{ color: palette.primary, letterSpacing: 0.4 }}>
+          {date.toLocaleDateString(undefined, { month: "short" })}
+        </Text>
+        <Text className="text-[28px] font-bold" style={{ color: palette.heading, lineHeight: 32, fontVariant: ["tabular-nums"] }}>
+          {date.getDate()}
+        </Text>
+        <Text className="text-[12px] font-semibold" style={{ color: palette.muted }}>
+          {date.toLocaleDateString(undefined, { weekday: "short" })}
+        </Text>
+      </>
+    ) : (
+      <Feather name="calendar" size={24} color={palette.primary} />
+    )}
+  </View>
+);
+
+const Meta = ({ palette, icon, text }: { palette: AdminDashboardPalette; icon: keyof typeof Feather.glyphMap; text: string }) => (
   <View className="flex-row items-center gap-1.5">
-    <Ionicons name={icon} size={14} color={RESIDENT_COLORS.subtle} />
-    <Text className="text-[13px]" numberOfLines={1} style={{ color: RESIDENT_COLORS.muted }}>
+    <Feather name={icon} size={14} color={palette.subtle} />
+    <Text className="text-[13.5px]" numberOfLines={1} style={{ color: palette.body }}>
       {text}
     </Text>
   </View>
 );
 
 const UpcomingAppointment = ({
+  palette,
   appointment,
   onViewAll,
   onViewDetails,
-  stacked = false,
+  onBook,
+  compact = false,
   fill = false,
 }: UpcomingAppointmentProps) => {
-  const detailsButton = appointment ? (
-    <Pressable
-      onPress={() => onViewDetails(appointment)}
-      accessibilityRole="button"
-      accessibilityLabel={`View details for ${formatConsultationTypeLabel(appointment.consultationType)}`}
-      className={`items-center justify-center border px-4 active:opacity-80 ${stacked ? "flex-1" : ""}`}
-      style={{
-        height: 40,
-        borderRadius: 10,
-        borderColor: "#BFD6FD",
-        backgroundColor: RESIDENT_COLORS.cardBg,
-      }}
-    >
-      <Text className="text-[13px] font-semibold" style={{ color: RESIDENT_COLORS.primary }}>
-        View Details
-      </Text>
-    </Pressable>
-  ) : null;
+  const date = parse(appointment?.slotStart ?? null);
+  const service = appointment ? formatConsultationTypeLabel(appointment.consultationType) : "";
+  const time = date?.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 
   return (
-    <DashboardCard fill={fill}>
-      <SectionHeader title="My Upcoming Appointment" actionLabel="View All" onActionPress={onViewAll} />
-
+    <PanelCard
+      palette={palette}
+      title="Next appointment"
+      icon="clock"
+      subtitle={date ? relativeDay(date) : appointment ? "Waiting for a slot" : "Nothing booked"}
+      onViewAll={onViewAll}
+      viewAllLabel="All"
+      fill={fill}
+      centerContent={!appointment}
+    >
       {!appointment ? (
-        <View className="items-center gap-2 py-8">
-          <Ionicons name="calendar-outline" size={22} color={RESIDENT_COLORS.subtle} />
-          <Text className="text-[13.5px] font-semibold" style={{ color: RESIDENT_COLORS.heading }}>
-            No upcoming appointments
-          </Text>
-          <Text className="text-center text-[12.5px]" style={{ color: RESIDENT_COLORS.muted }}>
-            You don&apos;t have any scheduled appointments yet.
-          </Text>
-          <Pressable
-            onPress={onViewAll}
-            accessibilityRole="button"
-            accessibilityLabel="Book an appointment"
-            className="mt-1 items-center justify-center px-5 active:opacity-85"
-            style={{ height: 40, borderRadius: 10, backgroundColor: RESIDENT_COLORS.primary }}
-          >
-            <Text className="text-[13px] font-semibold text-white">Book Appointment</Text>
-          </Pressable>
+        <View className="items-center gap-3 pb-2">
+          <EmptyPanelState palette={palette} icon="calendar" message="You have no upcoming appointments." />
+          <DashboardButton palette={palette} variant="primary" size="md" icon="plus" label="Book appointment" onPress={onBook} />
         </View>
       ) : (
-        <View className={`mt-3.5 w-full ${stacked ? "gap-3" : "flex-row items-center gap-4"}`}>
-          <View className={stacked ? "flex-row items-center gap-3" : "flex-row items-center gap-4"}>
-            <View
-              className="items-center justify-center px-3.5 py-2.5"
-              style={{ borderRadius: CARD.radiusSm, backgroundColor: "#EAF2FE" }}
-            >
-              {(() => {
-                const { month, day, year } = splitAppointmentDate(appointment.slotStart ?? "");
-                return (
-                  <>
-                    <Text
-                      className="text-[11px] font-bold"
-                      style={{ color: RESIDENT_COLORS.primary, letterSpacing: 0.6 }}
-                    >
-                      {month}
-                    </Text>
-                    <Text
-                      className="text-[24px] font-extrabold"
-                      style={{ color: RESIDENT_COLORS.primary, lineHeight: 30 }}
-                    >
-                      {day}
-                    </Text>
-                    <Text className="text-[11px] font-medium" style={{ color: RESIDENT_COLORS.primary }}>
-                      {year}
-                    </Text>
-                  </>
-                );
-              })()}
-            </View>
-
+        <View className="gap-4">
+          <View className="flex-row items-center gap-4">
+            <DateTile palette={palette} date={date} />
             <View className="min-w-0 flex-1 gap-1.5">
               <Text
-                className="text-[15px] font-bold"
-                numberOfLines={1}
-                style={{ color: RESIDENT_COLORS.heading }}
+                className="text-[17px] font-bold"
+                numberOfLines={2}
+                style={{ color: palette.heading, lineHeight: 22 }}
+                accessibilityLabel={`${service}${date ? ` on ${date.toDateString()} at ${time}` : ", not scheduled yet"}`}
               >
-                {formatConsultationTypeLabel(appointment.consultationType)}
+                {service}
               </Text>
-              {appointment.assignedTo ? (
-                <MetaRow icon="person-outline" text={appointment.assignedTo} />
-              ) : null}
-              <MetaRow icon="time-outline" text={formatSlotTime(appointment.slotStart)} />
+              <Meta palette={palette} icon="clock" text={time ?? "Time to be set"} />
+              {appointment.assignedTo ? <Meta palette={palette} icon="user" text={appointment.assignedTo} /> : null}
+              <View className="mt-1 self-start">
+                <AppointmentStatusBadge status={appointment.status} audience="resident" size="md" />
+              </View>
             </View>
           </View>
 
-          {stacked ? (
-            <View className="w-full flex-row items-center gap-2.5">
-              <AppointmentStatusBadge status={appointment.status} audience="resident" size="md" />
-              {detailsButton}
-            </View>
-          ) : (
-            <View className="shrink-0 items-end gap-2.5">
-              <AppointmentStatusBadge status={appointment.status} audience="resident" size="md" />
-              {detailsButton}
-            </View>
-          )}
+          <View className={compact ? "gap-2" : "flex-row items-center gap-2"}>
+            <DashboardButton
+              palette={palette}
+              variant="secondary"
+              size="md"
+              fullWidth={compact}
+              label="View details"
+              trailingIcon="arrow-right"
+              onPress={() => onViewDetails(appointment)}
+              accessibilityLabel={`View details for ${service}`}
+            />
+          </View>
         </View>
       )}
-    </DashboardCard>
+    </PanelCard>
   );
 };
 

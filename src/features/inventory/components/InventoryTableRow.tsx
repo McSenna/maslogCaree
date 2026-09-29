@@ -73,7 +73,7 @@ const InventoryTableRow = ({
 
       <Cell flex={INVENTORY_COLUMNS.batch}>
         <Text className="text-[13px] font-medium" numberOfLines={1} style={{ color: palette.body }}>
-          {item.batchNumber || "—"}
+          {item.batchNumber || "Not set"}
         </Text>
       </Cell>
 

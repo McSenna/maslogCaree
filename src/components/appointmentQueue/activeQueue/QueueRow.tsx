@@ -48,7 +48,7 @@ const QueueRow = ({
   palette: QueuePalette;
 }) => {
   const [hovered, setHovered] = useState(false);
-  const time = appointment.slotStart ? formatDateTime(appointment.slotStart).time : "—";
+  const time = appointment.slotStart ? formatDateTime(appointment.slotStart).time : "No time yet";
   const isServing = appointment.status === "processing";
   const patientName = appointment.resident?.fullname || "this patient";
   const { isMobile } = useResponsive();

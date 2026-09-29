@@ -18,7 +18,7 @@ const EditProfileButton = ({ onPress, compact = false }: EditProfileButtonProps)
       gap: 7,
       minHeight: compact ? 44 : 40,
       paddingHorizontal: compact ? 13 : 16,
-      borderRadius: PROFILE_RADIUS.pill,
+      borderRadius: 8,
       borderWidth: 1.5,
       borderColor: PROFILE_COLORS.primaryBorder,
       backgroundColor: PROFILE_COLORS.surface,

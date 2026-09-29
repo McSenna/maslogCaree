@@ -30,7 +30,7 @@ const BookedTimelinePanel = ({ timeline, onReschedule }: BookedTimelinePanelProp
           >
             <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: SPACING.sm }}>
               <Text style={[TYPE.bodyStrong, { color: colors.heading }]}>
-                {appointment.slotStart ? formatSlotLabel(appointment.slotStart) : "—"}
+                {appointment.slotStart ? formatSlotLabel(appointment.slotStart) : "Not set"}
               </Text>
               <AppointmentStatusBadge status={appointment.status} />
             </View>

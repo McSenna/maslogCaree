@@ -1,5 +1,5 @@
 import { Animated } from "react-native";
-import Svg, { Defs, LinearGradient, Line, Stop } from "react-native-svg";
+import Svg, { Line } from "react-native-svg";
 
 import { AnimatedRect } from "../animatedSvgShapes";
 
@@ -18,7 +18,6 @@ type Props = {
   gridColor: string;
   showGrid: boolean;
   gridDashed: boolean;
-  gradientId: string;
   peakIdx: number;
   highlightPeak: boolean;
   activeIndex: number | null;
@@ -37,7 +36,6 @@ const BarChartBars = ({
   gridColor,
   showGrid,
   gridDashed,
-  gradientId,
   peakIdx,
   highlightPeak,
   activeIndex,
@@ -47,21 +45,6 @@ const BarChartBars = ({
 
   return (
     <Svg width={chartW} height={height}>
-      <Defs>
-        <LinearGradient id={`${gradientId}-accent`} x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0%" stopColor={accentColor} stopOpacity={1} />
-          <Stop offset="100%" stopColor={accentColor} stopOpacity={0.7} />
-        </LinearGradient>
-        <LinearGradient id={`${gradientId}-partial`} x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0%" stopColor={accentColor} stopOpacity={0.22} />
-          <Stop offset="100%" stopColor={accentColor} stopOpacity={0.1} />
-        </LinearGradient>
-        <LinearGradient id={`${gradientId}-dim`} x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0%" stopColor={dimColor} stopOpacity={0.6} />
-          <Stop offset="100%" stopColor={dimColor} stopOpacity={0.3} />
-        </LinearGradient>
-      </Defs>
-
       {showGrid &&
         Array.from({ length: TICKS + 1 }, (_, t) => t / TICKS).map((t) => {
           const y = padTop + innerH * (1 - t);
@@ -81,13 +64,9 @@ const BarChartBars = ({
 
       {data.map((d, i) => {
         const barH = barHeight(d.value, axisMax, innerH);
-        const fill = d.partial
-          ? `url(#${gradientId}-partial)`
-          : d.color
-            ? d.color
-            : !highlightPeak || i === peakIdx
-              ? `url(#${gradientId}-accent)`
-              : `url(#${gradientId}-dim)`;
+        // Solid fills only: the partial (in-progress) bar is a light tint with a dashed edge.
+        const fill = d.partial ? accentColor : d.color ? d.color : !highlightPeak || i === peakIdx ? accentColor : dimColor;
+        const fillOpacity = d.partial ? 0.16 : d.color || !highlightPeak || i === peakIdx ? 1 : 0.45;
 
         return (
           <AnimatedRect
@@ -99,6 +78,7 @@ const BarChartBars = ({
             rx={radius}
             ry={radius}
             fill={fill}
+            fillOpacity={fillOpacity}
             stroke={d.partial ? accentColor : undefined}
             strokeWidth={d.partial ? 1.5 : 0}
             strokeDasharray={d.partial ? "4 3" : undefined}

@@ -1,4 +1,4 @@
-import Svg, { Circle, Defs, LinearGradient, Line, Path, Stop } from "react-native-svg";
+import Svg, { Circle, Line, Path } from "react-native-svg";
 
 import { END_DOT_R, PAD_TOP, PAD_X, TICKS } from "./lineChartLayout";
 import type { LineChartGeometry } from "./lineChartLayout";
@@ -25,7 +25,6 @@ type Props = {
   gridDashed: boolean;
   showDots: boolean;
   emphasizeLatest: boolean;
-  gradientId: string;
   activeIndex: number | null;
 };
 
@@ -44,24 +43,12 @@ const LineChartSvg = ({
   gridDashed,
   showDots,
   emphasizeLatest,
-  gradientId,
   activeIndex,
 }: Props) => {
   const { polylines, areaPaths, pointXs } = geometry;
 
   return (
     <Svg width={chartW} height={height}>
-      <Defs>
-        {series.map((s, i) =>
-          s.showArea ? (
-            <LinearGradient key={`grad-${i}`} id={`${gradientId}-${i}`} x1="0" y1="0" x2="0" y2="1">
-              <Stop offset="0%" stopColor={s.color} stopOpacity={palette.isDark ? 0.3 : 0.18} />
-              <Stop offset="100%" stopColor={s.color} stopOpacity={0} />
-            </LinearGradient>
-          ) : null
-        )}
-      </Defs>
-
       {showGrid &&
         Array.from({ length: TICKS + 1 }, (_, t) => t / TICKS).map((t) => {
           const y = PAD_TOP + innerH * (1 - t);
@@ -91,7 +78,12 @@ const LineChartSvg = ({
       ) : null}
 
       {areaPaths.map((ap) => (
-        <Path key={`area-${ap.gradientIndex}`} d={ap.d} fill={`url(#${gradientId}-${ap.gradientIndex})`} />
+        <Path
+          key={`area-${ap.seriesIndex}`}
+          d={ap.d}
+          fill={series[ap.seriesIndex]?.color}
+          fillOpacity={palette.isDark ? 0.16 : 0.08}
+        />
       ))}
 
       {polylines.map((p, idx) => (

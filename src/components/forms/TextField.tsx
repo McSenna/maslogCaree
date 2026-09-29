@@ -20,6 +20,8 @@ export type TextFieldProps = Omit<TextInputProps, "style" | "editable"> & {
   inputRef?: Ref<TextInput>;
 };
 
+const MULTILINE_INPUT = { minHeight: 120, maxHeight: 200, paddingTop: 12, paddingBottom: 12, lineHeight: 21 } as const;
+
 const TextField = ({
   label,
   error,
@@ -42,6 +44,7 @@ const TextField = ({
   const [revealed, setRevealed] = useState(false);
   const look = resolveFieldAppearance(colors, { focused, hovered, error: Boolean(error), success, disabled });
   const hidden = secureToggle ? !revealed : secureTextEntry;
+  const multiline = Boolean(inputProps.multiline);
 
   return (
     <View style={{ width: "100%", gap: 6 }}>
@@ -57,7 +60,7 @@ const TextField = ({
           {
             minHeight: 46,
             flexDirection: "row",
-            alignItems: "center",
+            alignItems: multiline ? "flex-start" : "center",
             gap: 10,
             paddingHorizontal: 14,
             borderRadius: RADII.medium,
@@ -72,7 +75,9 @@ const TextField = ({
           }),
         ]}
       >
-        {leftIcon ? <Feather name={leftIcon} size={16} color={look.icon} /> : null}
+        {leftIcon ? (
+          <Feather name={leftIcon} size={16} color={look.icon} style={multiline ? { marginTop: 15 } : undefined} />
+        ) : null}
         <TextInput
           ref={inputRef}
           {...inputProps}
@@ -90,7 +95,12 @@ const TextField = ({
             setFocused(false);
             onBlur?.(event);
           }}
-          style={[{ flex: 1, minWidth: 0, minHeight: 44, fontSize: 15, color: colors.heading }, webStyle({ outlineStyle: "none" })]}
+          textAlignVertical={multiline ? "top" : inputProps.textAlignVertical}
+          style={[
+            { flex: 1, minWidth: 0, minHeight: 44, fontSize: 15, color: colors.heading },
+            multiline ? MULTILINE_INPUT : null,
+            webStyle({ outlineStyle: "none" }),
+          ]}
         />
         {secureToggle ? (
           <Pressable

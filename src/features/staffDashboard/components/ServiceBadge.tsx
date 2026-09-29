@@ -25,11 +25,11 @@ const ServiceBadge = ({
 
   return (
     <View
-      className={compact ? "rounded-full px-2 py-0.5" : "rounded-full px-2.5 py-1"}
+      className={compact ? "self-start rounded-full px-2 py-0.5" : "self-start rounded-full px-2.5 py-1"}
       style={{ backgroundColor: tone.bg }}
     >
       <Text
-        className={compact ? "text-[11px] font-semibold" : "text-[11.5px] font-semibold"}
+        className={compact ? "text-[11.5px] font-semibold" : "text-[12px] font-semibold"}
         numberOfLines={1}
         style={{ color: tone.fg }}
       >

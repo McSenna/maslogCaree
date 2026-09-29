@@ -16,7 +16,7 @@ const ScheduleRow = ({
   isLast: boolean;
   palette: QueuePalette;
 }) => {
-  const time = appointment.slotStart ? formatDateTime(appointment.slotStart).time : "—";
+  const time = appointment.slotStart ? formatDateTime(appointment.slotStart).time : "No time yet";
   const tone = palette.statuses[appointment.status] ?? palette.statuses.pending;
 
   return (

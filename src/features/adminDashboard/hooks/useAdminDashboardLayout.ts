@@ -6,7 +6,7 @@ import { DASHBOARD_BREAKPOINTS } from "@/design/adminDashboardTheme";
 import {
   ANALYTICS_SIDE_BY_SIDE_MIN_WIDTH,
   DENSE_METRIC_MAX_WIDTH,
-  PANEL_FLEX,
+  PEOPLE_FLEX,
 } from "../constants/dashboardLayout";
 
 export const useAdminDashboardLayout = () => {
@@ -30,30 +30,11 @@ export const useAdminDashboardLayout = () => {
   const metricColumns: 2 | 4 =
     isMobile || availableWidth < DASHBOARD_BREAKPOINTS.fourMetricColumns ? 2 : 4;
 
-  const panelColumns: 1 | 2 | 3 = isMobile
-    ? 1
-    : availableWidth >= DASHBOARD_BREAKPOINTS.threePanelColumns
-      ? 3
-      : availableWidth >= DASHBOARD_BREAKPOINTS.twoPanelColumns
-        ? 2
-        : 1;
+  const stackPanels = isMobile || availableWidth < ANALYTICS_SIDE_BY_SIDE_MIN_WIDTH;
 
-  const panelRowWidth = availableWidth - gap * (panelColumns - 1);
-  const panelWeightTotal =
-    panelColumns === 3
-      ? PANEL_FLEX.distribution + PANEL_FLEX.users + PANEL_FLEX.activities
-      : panelColumns === 2
-        ? PANEL_FLEX.distribution + PANEL_FLEX.users
-        : 1;
-
-  const chartPanelWidth =
-    panelColumns === 1
-      ? availableWidth
-      : (panelRowWidth * PANEL_FLEX.distribution) / panelWeightTotal;
-  const usersPanelWidth =
-    panelColumns === 1
-      ? availableWidth
-      : (panelRowWidth * PANEL_FLEX.users) / panelWeightTotal;
+  const chartPanelWidth = stackPanels
+    ? availableWidth
+    : ((availableWidth - gap) * PEOPLE_FLEX.distribution) / (PEOPLE_FLEX.users + PEOPLE_FLEX.distribution);
 
   return {
     insets,
@@ -61,13 +42,9 @@ export const useAdminDashboardLayout = () => {
     gap,
     availableWidth,
     metricColumns,
-    panelColumns,
+    stackPanels,
     chartPanelWidth,
-    usersPanelWidth,
     denseMetrics: windowWidth <= DENSE_METRIC_MAX_WIDTH,
-    inColumns: !isMobile && panelColumns > 1,
-    analyticsSideBySide: !isMobile && availableWidth >= ANALYTICS_SIDE_BY_SIDE_MIN_WIDTH,
-    measuredWidth,
     measure: (event: { nativeEvent: { layout: { width: number } } }) => {
       const next = Math.round(event.nativeEvent.layout.width);
       if (next > 0 && next !== measuredWidth) setMeasuredWidth(next);

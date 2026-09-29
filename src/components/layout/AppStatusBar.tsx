@@ -20,7 +20,7 @@ type AppStatusBarProps = {
  *   config plugin in app.json aligns with. Its `backgroundColor` and
  *   `translucent` props were removed in SDK 54+, so it cannot colour the bar.
  * - React Native's `StatusBar` still sets the Android bar colour. That matters
- *   because Expo SDK 57 no longer applies edge-to-edge itself — below Android
+ *   because Expo SDK 57 no longer applies edge-to-edge itself: below Android
  *   15 the OS does not enforce it either, so the status bar remains a separate
  *   opaque strip. Expo forces `android:statusBarColor` to transparent, which on
  *   such a window paints black. Painting it with the screen colour instead

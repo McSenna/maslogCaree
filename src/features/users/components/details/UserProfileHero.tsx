@@ -1,4 +1,3 @@
-import { LinearGradient } from "expo-linear-gradient";
 import { Text, View } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 import MaslogCareLogo from "@/components/landing/MaslogCareLogo";
@@ -42,11 +41,9 @@ const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
   const isActive = user.status === "active";
 
   return (
-    <LinearGradient
-      colors={[palette.heroTop, palette.heroBottom]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
+    <View
       style={{
+        backgroundColor: palette.heroTop,
         borderRadius: DETAIL_RADIUS.hero,
         borderWidth: 1,
         borderColor: palette.heroBorder,
@@ -143,7 +140,7 @@ const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
         </View>
       </View>
 
-    </LinearGradient>
+    </View>
   );
 };
 

@@ -13,6 +13,7 @@ import { useResidentAppointmentActions } from "@/features/appointments/hooks/use
 import { useMedicalRecordViewer } from "@/hooks/useMedicalRecordViewer";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
 import { useResponsive } from "@/hooks/useResponsive";
+import { useSearchParamValue } from "@/hooks/useSearchParamValue";
 import type { AppointmentRecord } from "@/services/appointments";
 
 const ResidentAppointments = () => {
@@ -24,7 +25,8 @@ const ResidentAppointments = () => {
   const actions = useResidentAppointmentActions(revalidate);
   const recordViewer = useMedicalRecordViewer();
 
-  const [bookingOpen, setBookingOpen] = useState(false);
+  // `?book=1` is the dashboard's "Book appointment" shortcut.
+  const [bookingOpen, setBookingOpen] = useState(useSearchParamValue("book") === "1");
   const [selected, setSelected] = useState<AppointmentRecord | null>(null);
   const openBooking = () => setBookingOpen(true);
 
@@ -45,7 +47,7 @@ const ResidentAppointments = () => {
 
           <Text className={`text-sm leading-relaxed ${classes.textMuted}`}>
             Your request joins the mission queue. Date and time appear here after a health worker
-            assigns your slot — you can move or cancel it from the card once it is scheduled.
+            assigns your slot. You can move or cancel it from the card once it is scheduled.
           </Text>
 
           <ResidentAppointmentList

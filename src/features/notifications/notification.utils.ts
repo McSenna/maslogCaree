@@ -42,6 +42,7 @@ const EXACT_VISUAL: Record<string, VisualSpec> = {
   resident_rejected: { category: "account", icon: "user-x", tone: "danger" },
   medical_record_available: { category: "medical", icon: "file-text", tone: "teal" },
   medical_record_updated: { category: "medical", icon: "file-text", tone: "teal" },
+  announcement: { category: "announcement", icon: "volume-2", tone: "info" },
 };
 
 const PREFIX_CATEGORY: readonly [string, NotificationCategory, FeatherIcon][] = [

@@ -1,6 +1,5 @@
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { landingAssets } from "@/config/landingAssets";
 
 interface LandingBackgroundProps {
@@ -25,27 +24,8 @@ const LandingBackground = ({ variant }: LandingBackgroundProps) => {
           />
         )}
 
-        <LinearGradient
-          colors={[
-            "rgba(232, 243, 255, 0.86)",
-            "rgba(226, 240, 255, 0.60)",
-            "rgba(222, 238, 255, 0.42)",
-            "rgba(228, 241, 255, 0.58)",
-            "rgba(238, 246, 254, 0.86)",
-          ]}
-          locations={[0, 0.22, 0.5, 0.78, 1]}
-          style={StyleSheet.absoluteFill}
-        />
-
-        <LinearGradient
-          colors={[
-            "rgba(248, 252, 255, 0.42)",
-            "rgba(248, 252, 255, 0.14)",
-            "transparent",
-          ]}
-          locations={[0, 0.14, 0.3]}
-          style={StyleSheet.absoluteFill}
-        />
+        {/* One solid wash keeps text readable over the photo. */}
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(230, 242, 255, 0.72)" }]} />
       </View>
     );
   }
@@ -64,32 +44,7 @@ const LandingBackground = ({ variant }: LandingBackgroundProps) => {
         />
       )}
 
-      <LinearGradient
-        colors={[
-          "rgba(244, 249, 255, 0.97)",
-          "rgba(242, 248, 255, 0.88)",
-          "rgba(238, 246, 255, 0.68)",
-          "rgba(234, 244, 255, 0.52)",
-          "rgba(236, 245, 255, 0.62)",
-        ]}
-        locations={[0, 0.3, 0.5, 0.74, 1]}
-        start={{ x: 0, y: 0.4 }}
-        end={{ x: 1, y: 0.6 }}
-        style={StyleSheet.absoluteFill}
-      />
-
-      <LinearGradient
-        colors={[
-          "rgba(247, 251, 255, 0.96)",
-          "rgba(242, 248, 255, 0.62)",
-          "rgba(238, 246, 255, 0.28)",
-          "rgba(232, 242, 255, 0.55)",
-        ]}
-        locations={[0, 0.22, 0.58, 1]}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        style={StyleSheet.absoluteFill}
-      />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(241, 247, 255, 0.82)" }]} />
     </View>
   );
 };

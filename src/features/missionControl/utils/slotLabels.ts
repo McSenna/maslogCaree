@@ -19,7 +19,7 @@ export const formatPriorityTier = (tier: number | undefined): string => {
     3: "P3 (13–17: Teenagers)",
     4: "P4 (18–59: Adults)",
   };
-  return tier == null ? "—" : labels[tier] ?? "—";
+  return tier == null ? "Not set" : labels[tier] ?? "Not set";
 };
 
 export const formatMissionHours = (mission: MissionScheduleRecord): string => {

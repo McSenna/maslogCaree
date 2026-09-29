@@ -72,7 +72,7 @@ export const useBhwQueue = () => {
     refreshAll,
     busy: dashboard.overviewLoading || dashboard.listLoading || dashboard.queueLoading,
     scopeDescription: service?.description
-      ? `${serviceLabel} — ${service.description}`
+      ? `${serviceLabel}: ${service.description}`
       : `${serviceLabel} requests assigned to you.`,
     emptyMessage: `No ${serviceLabel} appointments to show.`,
   };

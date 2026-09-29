@@ -20,8 +20,6 @@ export const useDashboardHandlers = () => {
       onAnnouncement: (_announcement: Announcement) => go("/resident/announcements"),
       onViewAllServices: () => go("/resident/services"),
       onService: (_service: HealthService) => go("/resident/services"),
-      onHealthTipsSeeMore: () => go("/resident/announcements"),
-      onLearnMore: () => go("/resident/services"),
     }),
     [go]
   );

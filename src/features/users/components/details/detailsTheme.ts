@@ -15,7 +15,6 @@ export const useUserDetailsPalette = () => {
       headerWell: isDark ? "rgba(37,99,235,0.18)" : "#EAF2FF",
       headerIcon: isDark ? "#93C5FD" : PALETTE.blue[600],
       heroTop: isDark ? "#0B2038" : "#EAF4FE",
-      heroBottom: isDark ? "#0D1B2E" : "#F1F8FF",
       heroBorder: isDark ? "#1E3A5F" : "#DCEBFB",
       avatarRing: isDark ? "#132B45" : "#FFFFFF",
       infoWell: isDark ? "rgba(37,99,235,0.16)" : "#EFF6FF",

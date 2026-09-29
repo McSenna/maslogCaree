@@ -57,10 +57,10 @@ export const useLineChartGeometry = ({
       .filter(({ s }) => s.showArea)
       .map(({ idx }) => {
         const pts = lines[idx].points;
-        if (pts.length < 2) return { d: "", gradientIndex: idx };
+        if (pts.length < 2) return { d: "", seriesIndex: idx };
         return {
           d: `${monotonePath(pts)} L ${pts[pts.length - 1].x},${axisY} L ${pts[0].x},${axisY} Z`,
-          gradientIndex: idx,
+          seriesIndex: idx,
         };
       });
 

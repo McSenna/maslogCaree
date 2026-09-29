@@ -92,7 +92,7 @@ const UserTableRow = ({
 
       <Cell flex={USER_COLUMNS.location} style={{ zIndex: 1 }}>
         <Text className="text-[13px] font-medium" numberOfLines={2} style={{ color: palette.body }}>
-          {user.address || "—"}
+          {user.address || "Not set"}
         </Text>
       </Cell>
 

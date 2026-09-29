@@ -51,7 +51,7 @@ const PersonalInfoForm = ({ form }: PersonalInfoFormProps) => {
       <ReadOnlyField
         label="Age"
         hint="From date of birth"
-        value={age === null ? "—" : `${age} years old`}
+        value={age === null ? "Not set" : `${age} years old`}
       />
 
       <GenderField

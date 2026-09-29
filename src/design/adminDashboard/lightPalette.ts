@@ -1,7 +1,7 @@
 import { PALETTE } from "@/theme/palette";
 import type { AdminDashboardPalette } from "./paletteTypes";
 
-const { blue, teal, slate, green, rose, indigo } = PALETTE;
+const { blue, teal, slate, green, rose, indigo, amber } = PALETTE;
 
 export const light: AdminDashboardPalette = {
   pageBg: PALETTE.mist,
@@ -13,6 +13,7 @@ export const light: AdminDashboardPalette = {
   muted: slate[600],
   subtle: slate[500],
   primary: blue[600],
+  onPrimary: PALETTE.white,
   focusRing: blue[600],
   hoverBg: "#F1F6FD",
   positive: green[600],
@@ -55,9 +56,24 @@ export const light: AdminDashboardPalette = {
       icon: indigo[500],
       label: indigo[600],
     },
+    amber: {
+      cardBg: amber[50],
+      cardBorder: "#FBE7C0",
+      iconBg: amber[100],
+      icon: amber[700],
+      label: amber[700],
+    },
   },
   trends: {
     up: { text: green[700], bg: green[100] },
     down: { text: rose[700], bg: rose[100] },
+  },
+  statusTones: {
+    success: { bg: "#E7F8F0", fg: "#047857", border: "#BBEBD3" },
+    warning: { bg: "#FFF4E0", fg: "#B45309", border: "#FBE0B0" },
+    danger: { bg: "#FEF1F1", fg: "#B91C1C", border: "#FBD0D0" },
+    info: { bg: blue[50], fg: blue[700], border: "#CFE0FD" },
+    progress: { bg: "#F1ECFF", fg: "#6D28D9", border: "#DDD2FD" },
+    neutral: { bg: slate[100], fg: "#475569", border: slate[200] },
   },
 };

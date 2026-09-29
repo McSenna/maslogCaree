@@ -1,4 +1,4 @@
-import type { HealthService, HealthTip, QuickAction } from "@/types/residentDashboard";
+import type { HealthService, QuickAction } from "@/types/residentDashboard";
 
 export const quickActions: QuickAction[] = [
   {
@@ -58,11 +58,6 @@ export const healthServices: HealthService[] = [
     tone: "pink",
   },
 ];
-
-export const healthTip: HealthTip = {
-  headline: "Regular check-ups lead to a healthier tomorrow.",
-  ctaLabel: "Learn More",
-};
 
 export const bannerQuote = {
   line1: "“A healthier you",

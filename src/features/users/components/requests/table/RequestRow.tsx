@@ -55,7 +55,7 @@ const RequestRow = ({
 
       <View className="px-3" style={{ flex: REQUEST_COLUMNS.contact, minWidth: 0 }}>
         <Text className="text-[13px]" numberOfLines={1} style={{ color: palette.heading }}>
-          {resident.email || "—"}
+          {resident.email || "Not set"}
         </Text>
         <Text className="text-[12px]" numberOfLines={1} style={{ color: palette.subtle }}>
           {resident.phone || "No contact number"}

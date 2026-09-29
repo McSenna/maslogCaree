@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { getBreakpoint, gridColumnsFor, pickForBreakpoint, snapColumns } from "../breakpoints.ts";
+import {
+  PAGE_MAX_WIDTH,
+  ROLE_CONTENT_MAX_WIDTH,
+  getBreakpoint,
+  gridColumnsFor,
+  pickForBreakpoint,
+  snapColumns,
+} from "../breakpoints.ts";
 
 describe("getBreakpoint", () => {
   it("maps the tested widths to the documented ranges", () => {
@@ -43,5 +50,15 @@ describe("gridColumnsFor", () => {
   it("never returns fewer than one column", () => {
     assert.equal(gridColumnsFor(0, 220, 4, 16), 1);
     assert.equal(gridColumnsFor(100, 220, 4, 16), 1);
+  });
+});
+
+describe("page widths", () => {
+  it("never exceed the role frame and only grow toward wide screens", () => {
+    for (const [kind, values] of Object.entries(PAGE_MAX_WIDTH)) {
+      const steps = (["mobile", "tablet", "desktop", "wide"] as const).map((bp) => pickForBreakpoint(bp, values));
+      assert.ok(steps.every((w, i) => i === 0 || w >= steps[i - 1]), kind);
+      assert.ok(steps.every((w) => w <= ROLE_CONTENT_MAX_WIDTH), kind);
+    }
   });
 });

@@ -2,8 +2,8 @@ import { useRef } from "react";
 import { ScrollView, View } from "react-native";
 import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
 import { HelpSupportOverlays } from "@/features/help-center";
-import { useResponsive } from "@/hooks/useResponsive";
-import { PROFILE_MAX_WIDTH, SOCIAL_COLORS } from "../config/profileSocialTheme";
+import { usePageMaxWidth, useResponsive } from "@/hooks/useResponsive";
+import { SOCIAL_COLORS } from "../config/profileSocialTheme";
 import { useCardReveal } from "../hooks/useCardReveal";
 import { useProfileScreen } from "../hooks/useProfileScreen";
 import LogoutConfirmModal from "../components/LogoutConfirmModal";
@@ -20,6 +20,7 @@ const UserProfileScreen = () => {
   const reveal = useCardReveal(scrollRef);
   const state = useProfileScreen({ onEditProfileStarted: reveal.revealCard });
   const { width, isMobile, isDesktop } = useResponsive();
+  const maxWidth = usePageMaxWidth("content");
 
   const wide = !isMobile;
   const twoColumn = isDesktop;
@@ -41,7 +42,7 @@ const UserProfileScreen = () => {
           paddingBottom: 28,
         }}
       >
-        <View style={{ width: "100%", maxWidth: PROFILE_MAX_WIDTH, alignSelf: "center" }}>
+        <View style={{ width: "100%", maxWidth, alignSelf: "center" }}>
           {showSkeleton ? (
             <ProfileScreenSkeleton wide={wide} twoColumn={twoColumn} />
           ) : !state.profile ? (

@@ -47,8 +47,17 @@ export interface TrendPoint {
   count: number;
 }
 
+/** Work waiting on an admin; each count links to the screen that resolves it. */
+export interface DashboardAttention {
+  pendingRegistrations: number;
+  openSupportTickets: number;
+  lowStockItems: number;
+  expiringItems: number;
+}
+
 export interface AdminDashboardData {
   metrics: DashboardMetrics;
+  attention: DashboardAttention;
   roleDistribution: RoleDistributionEntry[];
   registrationTrend: TrendPoint[];
   activityTrend: TrendPoint[];
@@ -73,6 +82,13 @@ const EMPTY_METRICS: DashboardMetrics = {
   totalPatientsGrowth: 0,
 };
 
+const EMPTY_ATTENTION: DashboardAttention = {
+  pendingRegistrations: 0,
+  openSupportTickets: 0,
+  lowStockItems: 0,
+  expiringItems: 0,
+};
+
 export interface AdminDashboardQuery {
   usersLimit?: number;
   activitiesLimit?: number;
@@ -85,6 +101,7 @@ export const fetchAdminDashboard = async (
 
   return {
     metrics: { ...EMPTY_METRICS, ...(data.metrics ?? {}) },
+    attention: { ...EMPTY_ATTENTION, ...(data.attention ?? {}) },
     roleDistribution: data.roleDistribution ?? [],
     registrationTrend: data.registrationTrend ?? [],
     activityTrend: data.activityTrend ?? [],
@@ -120,6 +137,7 @@ const ACTION_LABELS: Record<string, string> = {
   SCHEDULE_CREATED: "Schedule created",
   SCHEDULE_UPDATED: "Schedule updated",
   SCHEDULE_DELETED: "Schedule deleted",
+  ANNOUNCEMENT_CREATED: "Announcement posted",
 };
 
 export const formatActivityTitle = (action: string): string => {

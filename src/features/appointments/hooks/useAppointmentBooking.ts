@@ -23,7 +23,7 @@ export const useAppointmentBooking = (visible: boolean, onBooked?: () => void) =
 
   const resident = useMemo(
     () => ({
-      name: user?.name || "—",
+      name: user?.name || "Not set",
       residentId: formatResidentReference(user?.id),
       address: user?.address || "Not provided",
       phone: user?.phone || "Not provided",

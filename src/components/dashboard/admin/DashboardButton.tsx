@@ -19,9 +19,13 @@ type DashboardButtonProps = {
   loading?: boolean;
   accessibilityLabel?: string;
   accessibilityHint?: string;
+  /** "md" is the page-level action size (dashboard header); "sm" sits inside panels. */
+  size?: "sm" | "md";
+  /** Stretch across the parent (phone header actions). */
+  fullWidth?: boolean;
 };
 
-const HEIGHT = 36;
+const HEIGHTS = { sm: 36, md: 40 } as const;
 const MIN_TARGET = 44;
 
 /**
@@ -40,14 +44,17 @@ const DashboardButton = ({
   loading = false,
   accessibilityLabel,
   accessibilityHint,
+  size = "sm",
+  fullWidth = false,
 }: DashboardButtonProps) => {
+  const HEIGHT = HEIGHTS[size];
   const inactive = disabled || loading;
   const { hovered, focused, pressed, scaleStyle, handlers } = useInteractionState({ disabled: inactive });
 
   const isLink = variant === "link";
   const isPrimary = variant === "primary";
 
-  const foreground = isPrimary ? "#FFFFFF" : palette.primary;
+  const foreground = isPrimary ? palette.onPrimary : palette.primary;
   const background = isPrimary
     ? palette.primary
     : isLink
@@ -65,7 +72,9 @@ const DashboardButton = ({
   ) : null;
 
   return (
-    <Animated.View style={[scaleStyle, { opacity: disabled ? 0.5 : 1 }]}>
+    <Animated.View
+      style={[scaleStyle, { opacity: disabled ? 0.5 : 1 }, fullWidth ? { alignSelf: "stretch" } : null]}
+    >
       <Pressable
         {...handlers}
         onPress={onPress}
@@ -74,11 +83,11 @@ const DashboardButton = ({
         accessibilityLabel={accessibilityLabel ?? label}
         accessibilityHint={accessibilityHint}
         accessibilityState={{ disabled: inactive, busy: loading }}
-        hitSlop={(MIN_TARGET - HEIGHT) / 2}
+        hitSlop={Math.max(0, (MIN_TARGET - HEIGHT) / 2)}
         style={{
           height: HEIGHT,
           minWidth: iconOnly ? HEIGHT : undefined,
-          paddingHorizontal: iconOnly ? 0 : isLink ? 8 : 14,
+          paddingHorizontal: iconOnly ? 0 : isLink ? 8 : size === "md" ? 16 : 14,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
@@ -96,7 +105,11 @@ const DashboardButton = ({
       >
         {content}
         {!iconOnly ? (
-          <Text className="text-[13px] font-semibold" numberOfLines={1} style={{ color: foreground }}>
+          <Text
+            className={size === "md" ? "text-[14px] font-semibold" : "text-[13px] font-semibold"}
+            numberOfLines={1}
+            style={{ color: foreground }}
+          >
             {label}
           </Text>
         ) : null}

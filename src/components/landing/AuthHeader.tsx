@@ -53,7 +53,7 @@ const AuthHeader = ({
           headingType,
         ]}
       >
-        Welcome Back 👋
+        Welcome back
       </Text>
       <Text
         style={[

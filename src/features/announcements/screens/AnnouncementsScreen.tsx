@@ -1,21 +1,23 @@
 import { View } from "react-native";
+import ResponsiveGrid from "@/components/layout/ResponsiveGrid";
 import ScreenScroll from "@/components/layout/ScreenScroll";
 import AnnouncementCard from "../components/AnnouncementCard";
 import AnnouncementSectionLabel from "../components/AnnouncementSectionLabel";
-import AnnouncementsFooterNote from "../components/AnnouncementsFooterNote";
+import { PublicFooter } from "../components/AnnouncementsFooterNote";
 import AnnouncementsHero from "../components/AnnouncementsHero";
 import FeaturedAnnouncementCard from "../components/FeaturedAnnouncementCard";
 import { ANNOUNCEMENTS } from "../data/announcements";
-import { useResponsive } from "@/hooks/useResponsive";
+import { usePageMaxWidth, useResponsive } from "@/hooks/useResponsive";
 
 const AnnouncementsScreen = () => {
   const { isMobile, isDesktop } = useResponsive();
   const isTablet = !isMobile;
+  const maxWidth = usePageMaxWidth("content");
 
   const [featured, ...upcoming] = ANNOUNCEMENTS;
 
   return (
-    <ScreenScroll>
+    <ScreenScroll contentContainerStyle={{ width: "100%", maxWidth, alignSelf: "center" }}>
       <View className="gap-6" style={{ paddingHorizontal: isDesktop ? 48 : 0 }}>
         <AnnouncementsHero eventCount={ANNOUNCEMENTS.length} isTablet={isTablet} />
 
@@ -28,13 +30,11 @@ const AnnouncementsScreen = () => {
           <AnnouncementSectionLabel label="More Upcoming" accent="slate" isTablet={isTablet} />
 
           {isDesktop ? (
-            <View className="flex-row flex-wrap gap-3">
+            <ResponsiveGrid minColumnWidth={300} maxColumns={3} gap={12} initialColumns={{ mobile: 1, desktop: 2, wide: 3 }}>
               {upcoming.map((announcement) => (
-                <View key={announcement.title} style={{ width: "48%" }}>
-                  <AnnouncementCard announcement={announcement} isTablet={isTablet} />
-                </View>
+                <AnnouncementCard key={announcement.title} announcement={announcement} isTablet={isTablet} />
               ))}
-            </View>
+            </ResponsiveGrid>
           ) : (
             <View className="gap-2.5">
               {upcoming.map((announcement) => (
@@ -48,7 +48,7 @@ const AnnouncementsScreen = () => {
           )}
         </View>
 
-        <AnnouncementsFooterNote isTablet={isTablet} />
+        <PublicFooter isTablet={isTablet} />
       </View>
     </ScreenScroll>
   );

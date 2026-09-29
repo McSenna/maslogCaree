@@ -17,7 +17,7 @@ const NAME_FIELDS: EditProfileField[] = ["firstName", "middleName", "surname"];
 
 /**
  * The backend rebuilds `fullname` from the name parts, so a change to any one
- * of them must carry the other two — otherwise unchanged parts that are still
+ * of them must carry the other two: otherwise unchanged parts that are still
  * blank in the database would be dropped from the rebuilt full name.
  */
 const withCompleteName = (fields: EditProfileField[]): EditProfileField[] => {

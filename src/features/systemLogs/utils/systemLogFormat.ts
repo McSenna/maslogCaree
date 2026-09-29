@@ -24,13 +24,13 @@ export const normalizeRoleLabel = (role?: string): string => {
     midwife: "Midwife",
     bhw: "BHW",
     resident: "Resident",
-    unknown: "—",
+    unknown: "Unknown",
   };
   return map[value] || value.charAt(0).toUpperCase() + value.slice(1);
 };
 
 export const formatSystemLogDate = (value?: string): string => {
-  if (!value) return "—";
+  if (!value) return "Not set";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return new Intl.DateTimeFormat("en-US", {
@@ -43,7 +43,7 @@ export const formatSystemLogDate = (value?: string): string => {
 };
 
 export const formatSystemLogDateTime = (value?: string): string => {
-  if (!value) return "—";
+  if (!value) return "Not set";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
   return new Intl.DateTimeFormat("en-US", {

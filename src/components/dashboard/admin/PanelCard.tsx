@@ -95,7 +95,7 @@ const PanelCard = ({
       </View>
       <View
         style={{
-          flex: fill && centerContent ? 1 : undefined,
+          flex: fill ? 1 : undefined,
           justifyContent: centerContent ? "center" : undefined,
         }}
       >

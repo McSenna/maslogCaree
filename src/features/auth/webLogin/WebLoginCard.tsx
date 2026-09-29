@@ -53,7 +53,7 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
         onSubmit={handleSubmit}
       >
         <h1 id="login-title" className={s.title}>
-          Welcome Back <span aria-hidden="true">👋</span>
+          Welcome back
         </h1>
         <p id="login-subtitle" className={s.subtitle}>
           Sign in to continue to MaslogCare
@@ -193,6 +193,11 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
         <p className={s.security}>
           <ShieldCheckIcon className={s.securityIcon} />
           Your data is secure with MaslogCare
+        </p>
+
+        <p className={s.legal}>
+          <a href="/privacy">Privacy policy</a>
+          <a href="/terms">Terms and conditions</a>
         </p>
       </form>
 

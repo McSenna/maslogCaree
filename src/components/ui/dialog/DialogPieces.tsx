@@ -140,7 +140,7 @@ export const DialogActions = ({
         style={{
           flex: 1,
           height: 44,
-          borderRadius: 12,
+          borderRadius: 10,
           borderWidth: 1,
           borderColor: palette.border,
           backgroundColor: palette.cardRaised,
@@ -162,7 +162,7 @@ export const DialogActions = ({
         style={{
           flex: 1.4,
           height: 44,
-          borderRadius: 12,
+          borderRadius: 10,
           backgroundColor: primaryBg,
           flexDirection: "row",
           alignItems: "center",

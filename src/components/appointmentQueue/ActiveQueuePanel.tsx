@@ -42,7 +42,7 @@ const ActiveQueuePanel = ({
       style={{ borderRadius: QUEUE_RADIUS.pill, backgroundColor: palette.primarySoft }}
     >
       <Text className="text-[12px] font-bold" style={{ color: palette.primary }}>
-        {loading ? "—" : appointments.length}
+        {loading ? "…" : appointments.length}
       </Text>
     </View>
   );

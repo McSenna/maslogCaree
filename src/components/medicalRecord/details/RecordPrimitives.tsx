@@ -5,7 +5,7 @@ import { QUEUE_RADIUS, type QueuePalette } from "@/components/appointmentQueue/q
 import { formatDateTime } from "@/utils/dateFormatter";
 
 export const formatWhen = (iso?: string | null): string => {
-  if (!iso) return "—";
+  if (!iso) return "Not recorded";
   const { date, time } = formatDateTime(iso);
   return `${date} · ${time}`;
 };

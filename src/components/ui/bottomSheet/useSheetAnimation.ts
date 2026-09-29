@@ -70,7 +70,7 @@ export const useSheetAnimation = ({
    *
    * The date picker opens as a modal nested inside the registration dialog's
    * modal, and Android can mount that inner window without ever delivering a
-   * layout event to this sheet — or deliver it to a view hierarchy it then
+   * layout event to this sheet: or deliver it to a view hierarchy it then
    * recreates. While the slide-in hung off `onLayout`, that left `translateY`
    * at its closed value and the sheet parked below the fold with only its
    * header peeking above the bottom edge.

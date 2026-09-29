@@ -12,7 +12,7 @@ export type ResidentInfo = {
 
 export const formatResidentReference = (id: string | number | null | undefined): string => {
   const raw = String(id ?? "").replace(/[^a-zA-Z0-9]/g, "");
-  if (!raw) return "—";
+  if (!raw) return "Not set";
   return `RES-${raw.slice(-6).toUpperCase()}`;
 };
 

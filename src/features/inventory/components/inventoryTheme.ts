@@ -116,8 +116,8 @@ const SHORT_DATE_OPTS: Intl.DateTimeFormatOptions = {
 };
 
 export const formatShortDate = (value: string | Date | null | undefined): string => {
-  if (!value) return "—";
+  if (!value) return "Not set";
   const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
+  if (Number.isNaN(date.getTime())) return "Not set";
   return date.toLocaleDateString(undefined, SHORT_DATE_OPTS);
 };

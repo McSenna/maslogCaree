@@ -79,7 +79,7 @@ const ResidentVerificationSheet = ({
           request={request}
           loading={loading}
           error={error}
-          registeredLabel={submitted ? submitted.date : "—"}
+          registeredLabel={submitted ? submitted.date : "Not set"}
           decision={decision}
           onRetry={onRetry}
         />

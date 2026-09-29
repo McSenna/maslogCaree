@@ -91,7 +91,7 @@ const CompletionBody = ({
           <SectionCard
             icon="package"
             title="Medicines / Supplies Given"
-            caption="Optional — deducted from inventory on completion."
+            caption="Optional. Deducted from inventory on completion."
           >
             <DispensedItemsSection
               lines={dispensed.lines}

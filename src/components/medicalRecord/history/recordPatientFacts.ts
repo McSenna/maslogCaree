@@ -4,7 +4,7 @@ import { providerNameOf, providerRoleLabelOf, serviceLabelOf } from "./recordLab
 
 export const patientIdOf = (residentId: string | undefined): string => {
   const id = String(residentId ?? "").trim();
-  if (!id) return "—";
+  if (!id) return "Not recorded";
   return `RES-${id.slice(-8).toUpperCase()}`;
 };
 

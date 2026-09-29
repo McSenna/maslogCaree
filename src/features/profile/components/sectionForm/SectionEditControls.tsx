@@ -18,7 +18,7 @@ export const SectionEditLink = ({
       gap: 4,
       minHeight: 32,
       paddingHorizontal: 12,
-      borderRadius: PROFILE_RADIUS.pill,
+      borderRadius: 8,
       backgroundColor: PROFILE_COLORS.primarySoft,
     }}
   >
@@ -36,7 +36,7 @@ export const SectionEditingBadge = () => (
       gap: 5,
       minHeight: 28,
       paddingHorizontal: 10,
-      borderRadius: PROFILE_RADIUS.pill,
+      borderRadius: 8,
       borderWidth: 1,
       borderColor: PROFILE_COLORS.primaryBorder,
       backgroundColor: PROFILE_COLORS.primarySoft,

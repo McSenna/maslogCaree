@@ -52,7 +52,7 @@ const ResidentRecords = () => {
           <View className="gap-1">
             <PageTitle>Medical records</PageTitle>
             <PageSubtitle>
-              Your care history from MaslogCare — what your health worker recorded, and every appointment you
+              Your care history from MaslogCare: what your health worker recorded, and every appointment you
               have booked.
             </PageSubtitle>
           </View>

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import Svg, { Defs, LinearGradient, Path, Stop } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 
 interface WaveDecorationProps {
   variant: "desktop" | "mobile";
@@ -56,14 +56,6 @@ const WaveDecoration = ({
         viewBox="0 0 1920 210"
         preserveAspectRatio="none"
       >
-        <Defs>
-          <LinearGradient id="maslogWaveFront" x1="0" y1="0" x2="1" y2="0.6">
-            <Stop offset="0" stopColor="#8CB9FF" stopOpacity="0.95" />
-            <Stop offset="0.55" stopColor="#5E9BF5" stopOpacity="0.95" />
-            <Stop offset="1" stopColor="#4A90F7" stopOpacity="0.92" />
-          </LinearGradient>
-        </Defs>
-
         <Path
           d="M0 58 C200 20, 420 46, 640 70 C900 98, 1180 124, 1450 142 C1640 154, 1810 160, 1920 162 L1920 210 L0 210 Z"
           fill="#FFFFFF"
@@ -78,7 +70,7 @@ const WaveDecoration = ({
 
         <Path
           d="M0 136 C180 100, 390 126, 610 150 C870 178, 1170 192, 1450 199 C1640 203, 1810 205, 1920 206 L1920 210 L0 210 Z"
-          fill="url(#maslogWaveFront)"
+          fill="#5E9BF5"
         />
       </Svg>
     </View>

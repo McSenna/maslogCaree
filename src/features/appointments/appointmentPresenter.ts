@@ -14,7 +14,7 @@ const CANCELLABLE_STATUSES: AppointmentStatus[] = ["pending", "confirmed", "resc
 
 /**
  * Only an appointment that already holds a slot can be moved. A pending
- * request has no schedule yet — it is still waiting for the priority queue to
+ * request has no schedule yet: it is still waiting for the priority queue to
  * assign one, and letting a resident pick their own would jump that queue.
  */
 const RESCHEDULABLE_STATUSES: AppointmentStatus[] = ["confirmed", "rescheduled"];

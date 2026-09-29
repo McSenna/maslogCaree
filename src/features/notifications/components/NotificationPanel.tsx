@@ -44,8 +44,11 @@ const NotificationPanel = ({ visible, onClose, bellPosition }: NotificationPanel
   const insets = useSafeAreaInsets();
 
   const [filter, setFilter] = useState<NotificationFilter>("all");
-  const { opacity, translateY, scale, modalVisible, animateClose } = usePanelAnimation(visible, onClose);
-  const { handlePress, isNavigable } = useNotificationActions({ onBeforeNavigate: animateClose });
+  const { opacity, translateY, scale, modalVisible, animateClose, closeThen } = usePanelAnimation(visible, onClose);
+  const { handlePress, isNavigable } = useNotificationActions({
+    onBeforeNavigate: animateClose,
+    openAfterClose: closeThen,
+  });
 
   useWebModalBehavior(modalVisible, animateClose);
   const attachFocusTrap = useFocusTrap(modalVisible);
