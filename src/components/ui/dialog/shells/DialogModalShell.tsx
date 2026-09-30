@@ -1,5 +1,6 @@
 import { useCallback, useId } from "react";
-import { Modal, Platform, Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, ScrollView, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 import { useModalFrame } from "@/hooks/useModalFrame";

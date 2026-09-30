@@ -1,4 +1,5 @@
-import { ActivityIndicator, FlatList, Modal, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";

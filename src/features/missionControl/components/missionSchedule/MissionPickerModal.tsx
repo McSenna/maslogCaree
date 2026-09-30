@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import {
-  Modal,
   Pressable,
   Text,
   View,
 } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
 import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
 import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";

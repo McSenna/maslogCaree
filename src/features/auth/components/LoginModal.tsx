@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Modal, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import Button from "@/components/buttons/Button";
 import InlineAlert from "@/components/feedback/InlineAlert";

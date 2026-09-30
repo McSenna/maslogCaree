@@ -1,7 +1,6 @@
-import { useRouter, type Href } from "expo-router";
 import { View } from "react-native";
 
-import { LEGAL_ROUTES } from "@/features/legal/legalContent";
+import { showLegalDocument } from "@/features/legal/showLegalDocument";
 
 import { HELP_SUPPORT_MENU, type HelpSupportMenuKey } from "../config/helpSupportMenu";
 import ProfileSectionCard from "./ProfileSectionCard";
@@ -28,7 +27,6 @@ const HelpSupportCard = ({
   appVersion,
   size = "regular",
 }: HelpSupportHandlers) => {
-  const router = useRouter();
   const handlers: Record<HelpSupportMenuKey, (() => void) | undefined> = {
     helpCenter: onHelpCenter,
     contactSupport: onContactSupport,
@@ -55,14 +53,14 @@ const HelpSupportCard = ({
           label="Privacy policy"
           description="What MaslogCare collects and how to ask about your data."
           icon="lock"
-          onPress={() => router.push(LEGAL_ROUTES.privacy as Href)}
+          onPress={() => showLegalDocument("privacy")}
           size={size}
         />
         <SettingsRow
           label="Terms and conditions"
           description="The rules for using MaslogCare."
           icon="file-text"
-          onPress={() => router.push(LEGAL_ROUTES.terms as Href)}
+          onPress={() => showLegalDocument("terms")}
           size={size}
         />
 

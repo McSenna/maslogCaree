@@ -1,5 +1,6 @@
 import { useId } from "react";
-import { Modal, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import FieldMessage from "@/components/forms/FieldMessage";
 import BrandedDialogHeader from "@/components/ui/dialog/BrandedDialogHeader";

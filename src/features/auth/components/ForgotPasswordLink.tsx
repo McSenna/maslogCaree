@@ -5,16 +5,19 @@ import { authCardStyles as styles } from "./authCardStyles";
 type ForgotPasswordLinkProps = {
   onPress: () => void;
   marginBottom: number;
+  disabled?: boolean;
 };
 
-const ForgotPasswordLink = ({ onPress, marginBottom }: ForgotPasswordLinkProps) => {
+const ForgotPasswordLink = ({ onPress, marginBottom, disabled = false }: ForgotPasswordLinkProps) => {
   const [active, setActive] = useState(false);
 
   return (
     <Pressable
       accessibilityRole="link"
       accessibilityLabel="Forgot password"
-      focusable
+      accessibilityState={{ disabled }}
+      focusable={!disabled}
+      disabled={disabled}
       onPress={onPress}
       onHoverIn={() => setActive(true)}
       onHoverOut={() => setActive(false)}
@@ -23,11 +26,12 @@ const ForgotPasswordLink = ({ onPress, marginBottom }: ForgotPasswordLinkProps) 
       style={[
         styles.forgotContainer,
         { marginBottom },
-        active && styles.forgotContainerActive,
+        active && !disabled && styles.forgotContainerActive,
+        disabled && styles.buttonDisabled,
       ]}
     >
-      <Text style={[styles.forgotText, active && styles.forgotTextActive]}>
-        Forgot Password?
+      <Text style={[styles.forgotText, active && !disabled && styles.forgotTextActive]}>
+        Forgot password?
       </Text>
     </Pressable>
   );

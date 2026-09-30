@@ -48,7 +48,7 @@ const NotFoundScreen = () => {
             icon="arrow-right"
             iconPosition="right"
             onPress={() => router.replace(home)}
-            style={{ marginTop: 8 }}
+            style={{ marginTop: 8, alignSelf: "center" }}
           />
         </View>
       </View>

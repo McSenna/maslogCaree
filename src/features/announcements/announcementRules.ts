@@ -1,12 +1,30 @@
 /**
- * Pure rules for the create-announcement form. Import-free (type imports are
- * erased) so `node --test` can load it; the API re-checks every rule.
+ * Pure rules for the announcement form. Import-free (type imports are erased)
+ * so `node --test` can load it; the API re-checks every rule.
  */
 import type {
   AnnouncementFormErrors,
   AnnouncementFormValues,
   CreateAnnouncementPayload,
 } from "./announcement.types.ts";
+import {
+  MAX_DAYS_AHEAD,
+  addDays,
+  combineDateTime,
+  endOfDateKey,
+  parseClock,
+  parseDateKey,
+  startOfDay,
+} from "./announcementDates.ts";
+
+export {
+  announcementDateRange,
+  combineDateTime,
+  parseClock,
+  parseDateKey,
+  toClock,
+  toDateKey,
+} from "./announcementDates.ts";
 
 // Mirrors ANNOUNCEMENT_LIMITS in backend/config/announcements.js.
 export const ANNOUNCEMENT_LIMITS = {
@@ -16,64 +34,11 @@ export const ANNOUNCEMENT_LIMITS = {
   messageMax: 800,
   locationMin: 3,
   locationMax: 160,
-  maxDaysAhead: 365,
+  maxDaysAhead: MAX_DAYS_AHEAD,
 } as const;
 
-const DATE_KEY = /^(\d{4})-(\d{2})-(\d{2})$/;
-const CLOCK = /^(\d{2}):(\d{2})$/;
-
-const pad2 = (value: number): string => String(value).padStart(2, "0");
-
-export const toDateKey = (date: Date): string =>
-  `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
-
-export const toClock = (date: Date): string => `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
-
-/** A local Date for "YYYY-MM-DD", or null when the key is not a real calendar day. */
-export const parseDateKey = (key: string): Date | null => {
-  const match = DATE_KEY.exec(key);
-  if (!match) return null;
-  const [year, month, day] = [Number(match[1]), Number(match[2]), Number(match[3])];
-  const date = new Date(year, month - 1, day);
-  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
-    ? date
-    : null;
-};
-
-/** Minutes past midnight for "HH:MM", or null when it is not a real clock time. */
-export const parseClock = (clock: string): number | null => {
-  const match = CLOCK.exec(clock);
-  if (!match) return null;
-  const [hours, minutes] = [Number(match[1]), Number(match[2])];
-  return hours <= 23 && minutes <= 59 ? hours * 60 + minutes : null;
-};
-
-/** Joins the form's local date and time into the instant the API stores. */
-export const combineDateTime = (dateKey: string, clock: string): Date | null => {
-  const day = parseDateKey(dateKey);
-  const minutes = parseClock(clock);
-  if (!day || minutes === null) return null;
-  day.setHours(Math.floor(minutes / 60), minutes % 60, 0, 0);
-  return day;
-};
-
-export const addDays = (date: Date, days: number): Date => {
-  const next = new Date(date);
-  next.setDate(next.getDate() + days);
-  return next;
-};
-
-const startOfDay = (date: Date): Date => {
-  const start = new Date(date);
-  start.setHours(0, 0, 0, 0);
-  return start;
-};
-
-/** First and last day the date picker should offer, as date keys. */
-export const announcementDateRange = (now: Date = new Date()) => ({
-  min: toDateKey(now),
-  max: toDateKey(addDays(now, ANNOUNCEMENT_LIMITS.maxDaysAhead)),
-});
+/** The stored values an edit starts from; unchanged dates skip the "not in the past" rules. */
+export type AnnouncementBaseline = Pick<AnnouncementFormValues, "date" | "time" | "endDate">;
 
 const lengthError = (label: string, value: string, min: number, max: number): string | undefined => {
   if (!value) return `${label} is required.`;
@@ -82,13 +47,14 @@ const lengthError = (label: string, value: string, min: number, max: number): st
   return undefined;
 };
 
-const dateError = (key: string, now: Date): string | undefined => {
+const dateError = (key: string, now: Date, unchanged: boolean): string | undefined => {
   if (!key) return "Choose the date.";
   const day = parseDateKey(key);
   if (!day) return "Enter a valid date.";
+  if (unchanged) return undefined;
   if (day < startOfDay(now)) return "The date cannot be in the past.";
-  if (day > addDays(now, ANNOUNCEMENT_LIMITS.maxDaysAhead)) {
-    return `The date must be within the next ${ANNOUNCEMENT_LIMITS.maxDaysAhead} days.`;
+  if (day > addDays(now, MAX_DAYS_AHEAD)) {
+    return `The date must be within the next ${MAX_DAYS_AHEAD} days.`;
   }
   return undefined;
 };
@@ -98,18 +64,34 @@ const timeError = (clock: string): string | undefined => {
   return parseClock(clock) === null ? "Enter a valid time." : undefined;
 };
 
+const endDateError = (values: AnnouncementFormValues, now: Date, unchanged: boolean): string | undefined => {
+  if (!values.endDate) return undefined;
+  const end = parseDateKey(values.endDate);
+  if (!end) return "Enter a valid end date.";
+  if (unchanged) return undefined;
+  if (end < startOfDay(now)) return "The end date cannot be in the past.";
+  const event = parseDateKey(values.date);
+  if (event && end < event) return "The end date cannot be before the event.";
+  return undefined;
+};
+
 /** Same rules as the API so problems show beside the field before a round trip. */
 export const validateAnnouncementForm = (
   values: AnnouncementFormValues,
-  now: Date = new Date()
+  now: Date = new Date(),
+  baseline: AnnouncementBaseline | null = null
 ): AnnouncementFormErrors => {
   const L = ANNOUNCEMENT_LIMITS;
+  const eventUnchanged = Boolean(baseline && baseline.date === values.date && baseline.time === values.time);
+  const endUnchanged = Boolean(baseline && baseline.endDate === values.endDate);
+
   const candidates: AnnouncementFormErrors = {
     title: lengthError("Title", values.title.trim(), L.titleMin, L.titleMax),
     message: lengthError("Message", values.message.trim(), L.messageMin, L.messageMax),
-    date: dateError(values.date, now),
+    date: dateError(values.date, now, eventUnchanged),
     time: timeError(values.time),
     location: lengthError("Location", values.location.trim(), L.locationMin, L.locationMax),
+    endDate: endDateError(values, now, endUnchanged),
   };
 
   const errors: AnnouncementFormErrors = {};
@@ -132,17 +114,30 @@ export const toCreatePayload = (values: AnnouncementFormValues): CreateAnnouncem
     message: values.message.trim(),
     eventAt: eventAt.toISOString(),
     location: values.location.trim(),
+    audience: values.audience,
+    expiresAt: endOfDateKey(values.endDate)?.toISOString() ?? null,
+    isDraft: values.isDraft,
   };
 };
 
-/** The API reports the combined timestamp as `eventAt`; show it on the date picker. */
+// The API names the combined timestamp `eventAt` and the end date `expiresAt`.
+const SERVER_FIELDS: Record<string, keyof AnnouncementFormErrors> = {
+  title: "title",
+  message: "message",
+  eventAt: "date",
+  location: "location",
+  audience: "audience",
+  expiresAt: "endDate",
+  isDraft: "isDraft",
+};
+
 export const mapServerFieldErrors = (
   fieldErrors: Record<string, string> = {}
 ): AnnouncementFormErrors => {
   const mapped: AnnouncementFormErrors = {};
-  if (fieldErrors.title) mapped.title = fieldErrors.title;
-  if (fieldErrors.message) mapped.message = fieldErrors.message;
-  if (fieldErrors.eventAt) mapped.date = fieldErrors.eventAt;
-  if (fieldErrors.location) mapped.location = fieldErrors.location;
+  for (const [serverField, message] of Object.entries(fieldErrors)) {
+    const field = SERVER_FIELDS[serverField];
+    if (field && message) mapped[field] = message;
+  }
   return mapped;
 };

@@ -3,8 +3,6 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import AppStatusBar from "@/components/layout/AppStatusBar";
 import LandingBackground from "@/components/landing/LandingBackground";
 import MaslogCareBrand from "@/components/landing/MaslogCareBrand";
-import Reveal from "@/components/landing/motion/Reveal";
-import { staggerDelay } from "@/components/landing/motion/landingMotion";
 import WaveDecoration from "@/components/landing/WaveDecoration";
 import AuthCard from "@/features/auth/components/AuthCard";
 import RegistrationModal from "@/features/auth/components/RegistrationModal";
@@ -55,13 +53,11 @@ const MobileLanding = ({
             <LandingBackground variant="mobile" />
 
             <View style={styles.mobileBrandWrapper}>
-              <Reveal delay={0}>
-                <MaslogCareBrand
-                  variant="mobile"
-                  logoSize={mobileLayout.brand.logoSize}
-                  titleFontSize={mobileLayout.brand.titleFontSize}
-                />
-              </Reveal>
+              <MaslogCareBrand
+                variant="mobile"
+                logoSize={mobileLayout.brand.logoSize}
+                titleFontSize={mobileLayout.brand.titleFontSize}
+              />
             </View>
 
             <WaveDecoration variant="mobile" height={mobileLayout.hero.waveHeight} />
@@ -81,7 +77,6 @@ const MobileLanding = ({
               onOpenRegister={onOpenRegister}
               isMobile
               density={mobileLayout.density}
-              entranceDelay={staggerDelay(1)}
             />
           </View>
         </ScrollView>

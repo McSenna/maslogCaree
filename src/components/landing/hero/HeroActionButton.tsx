@@ -9,6 +9,7 @@ import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 type HeroActionButtonProps = {
   label: string;
+  accessibilityLabel?: string;
   icon: keyof typeof Ionicons.glyphMap;
   onPress?: () => void;
   variant: "primary" | "secondary";
@@ -20,6 +21,7 @@ const ICON_SHIFT = 4;
 
 const HeroActionButton = ({
   label,
+  accessibilityLabel,
   icon,
   onPress,
   variant,
@@ -48,7 +50,7 @@ const HeroActionButton = ({
   return (
     <AnimatedPressable
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={accessibilityLabel ?? label}
       onPress={onPress}
       {...lift.handlers}
       style={[

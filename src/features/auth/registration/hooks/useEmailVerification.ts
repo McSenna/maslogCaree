@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import { isOtpComplete } from "@/components/ui/otpEntry";
 import {
   sendEmailVerificationCode,
@@ -131,6 +132,7 @@ export const useEmailVerification = (email: string) => {
 
       if (isResend) setFeedback({ tone: "error", message });
       else setError(message);
+      toast.error("Code not sent");
     } finally {
       if (generation === generationRef.current) {
         sendingRef.current = false;
@@ -162,6 +164,7 @@ export const useEmailVerification = (email: string) => {
         setVerifiedEmail(result.email);
         setStatus("verified");
         setFeedback({ tone: "success", message: OTP_COPY.verified });
+        toast.success("Email verified");
       } catch (requestError: unknown) {
         if (generation !== generationRef.current) return;
 

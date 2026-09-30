@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
-import { Animated, Modal, Platform, View } from "react-native";
+import { Animated, Platform, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
 import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";

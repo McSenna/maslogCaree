@@ -138,6 +138,8 @@ const ACTION_LABELS: Record<string, string> = {
   SCHEDULE_UPDATED: "Schedule updated",
   SCHEDULE_DELETED: "Schedule deleted",
   ANNOUNCEMENT_CREATED: "Announcement posted",
+  ANNOUNCEMENT_UPDATED: "Announcement updated",
+  ANNOUNCEMENT_DELETED: "Announcement deleted",
 };
 
 export const formatActivityTitle = (action: string): string => {

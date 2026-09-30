@@ -5,11 +5,11 @@ import { useRequestsList, type RequestStatusFilter } from "./requests/useRequest
 
 export type { RequestStatusFilter };
 
-export const useUserRequests = (onToast?: (message: string) => void) => {
+export const useUserRequests = () => {
   const list = useRequestsList();
 
   const refresh = useCallback(() => list.load("refresh"), [list]);
-  const review = useRequestReview({ onToast, refresh });
+  const review = useRequestReview({ refresh });
 
   return {
     requests: list.requests,

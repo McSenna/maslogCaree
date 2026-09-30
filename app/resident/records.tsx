@@ -9,6 +9,7 @@ import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
 import { useMedicalRecordViewer } from "@/hooks/useMedicalRecordViewer";
+import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { getAssignedStaffName } from "@/utils/appointmentDisplay";
 import { formatConsultationTypeLabel } from "@/utils/residentDashboard";
 import MedicalRecordsLink from "@/features/resident/records/MedicalRecordsLink";
@@ -21,6 +22,7 @@ import type { AppointmentRecord } from "@/types/appointments.types";
 
 const ResidentRecords = () => {
   const { classes } = useTheme();
+  const insets = useRoleScreenInsets();
   const router = useRouter();
   const { appointments, loading, error, refresh } = useResidentAppointments();
   const recordViewer = useMedicalRecordViewer();
@@ -47,7 +49,11 @@ const ResidentRecords = () => {
 
   return (
     <>
-      <ScrollView className={`flex-1 ${classes.scrollBg}`} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className={`flex-1 ${classes.scrollBg}`}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: insets.gutter, paddingTop: insets.paddingTop }}
+      >
         <View className="gap-6 pb-8">
           <View className="gap-1">
             <PageTitle>Medical records</PageTitle>

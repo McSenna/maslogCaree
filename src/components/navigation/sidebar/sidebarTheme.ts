@@ -10,7 +10,8 @@ export const getSidebarWidth = (breakpoint: Breakpoint): number => SIDEBAR_WIDTH
 export const SIDEBAR_METRICS = {
   paddingX: 20,
   itemHeight: 48,
-  itemRadius: 24,
+  // 10px, not half the item height: a fully rounded nav item reads as a pill button.
+  itemRadius: 10,
   itemPaddingX: 16,
   itemGap: 10,
   iconSize: 20,

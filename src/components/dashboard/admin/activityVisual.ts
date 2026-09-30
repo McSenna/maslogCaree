@@ -36,6 +36,8 @@ export const activityVisual = (action: string): ActivityVisual => {
     case "SCHEDULE_DELETED":
       return { icon: "calendar", color: "#F59E0B", tint: "#FDF1DC" };
     case "ANNOUNCEMENT_CREATED":
+    case "ANNOUNCEMENT_UPDATED":
+    case "ANNOUNCEMENT_DELETED":
       return { icon: "volume-2", color: PALETTE.blue[600], tint: "#E5F0FF" };
     default:
       return { icon: "activity", color: "#8B5CF6", tint: "#F0EBFE" };

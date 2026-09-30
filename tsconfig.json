@@ -3,6 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "ignoreDeprecations": "6.0",
+    // Pure modules that `node --test` loads import each other as "./x.ts";
+    // Metro resolves those paths as written, and tsc never emits here.
+    "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [

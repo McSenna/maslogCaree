@@ -31,27 +31,27 @@ const Connector = ({ horizontal }: { horizontal: boolean }) => (
   <View
     style={
       horizontal
-        ? { flex: 1, height: 2, marginTop: 13, backgroundColor: LANDING_COLORS.border }
+        ? { flex: 1, height: 2, marginTop: 13, marginLeft: 8, backgroundColor: LANDING_COLORS.border }
         : { width: 2, flex: 1, marginVertical: 4, backgroundColor: LANDING_COLORS.border }
     }
   />
 );
 
 const StepItem = ({ step, index, horizontal, showConnector }: StepItemProps) => {
+  // The connector runs beside the badge, so the step text keeps the full column width.
   if (horizontal) {
     return (
-      <View style={{ flex: 1, minWidth: 0, flexDirection: "row", alignItems: "flex-start" }}>
-        <View style={{ flex: 1, minWidth: 0, gap: 7 }}>
+      <View style={{ flex: 1, minWidth: 0, gap: 8 }}>
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
           <Badge index={index} />
-          <Text style={{ fontSize: 13.5, fontWeight: "700", color: LANDING_COLORS.navy }}>
-            {step.title}
-          </Text>
-          <Text style={{ fontSize: 12.5, lineHeight: 18, color: LANDING_COLORS.mutedText }}>
-            {step.description}
-          </Text>
+          {showConnector ? <Connector horizontal /> : null}
         </View>
-
-        {showConnector ? <Connector horizontal /> : null}
+        <Text style={{ fontSize: 13.5, fontWeight: "700", color: LANDING_COLORS.navy }}>
+          {step.title}
+        </Text>
+        <Text style={{ fontSize: 12.5, lineHeight: 18, color: LANDING_COLORS.mutedText }}>
+          {step.description}
+        </Text>
       </View>
     );
   }

@@ -1,4 +1,5 @@
 import { PALETTE } from "@/theme/palette";
+import { RADII } from "@/theme/radius";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
@@ -7,81 +8,64 @@ type AnnouncementsHeroProps = {
   isTablet: boolean;
 };
 
+// White text stays at 85% opacity or more: lighter tints drop below 4.5:1 on blue-700.
 const AnnouncementsHero = ({
   eventCount,
   isTablet,
 }: AnnouncementsHeroProps) => {
+  const eventLabel = `${eventCount} upcoming ${eventCount === 1 ? "event" : "events"}`;
+
   return (
     <View
-      className="overflow-hidden rounded-3xl"
+      className="overflow-hidden"
       style={{
+        borderRadius: 20,
         backgroundColor: PALETTE.blue[700],
-        boxShadow: "0px 6px 20px rgba(45,91,255,0.2)",
-        elevation: 8,
       }}
     >
-      <View
-        className="absolute rounded-full"
-        style={{
-          width: 220,
-          height: 220,
-          top: -70,
-          right: -50,
-          backgroundColor: "rgba(45,91,255,0.15)",
-        }}
-      />
-      <View
-        className="absolute rounded-full"
-        style={{
-          width: 100,
-          height: 100,
-          bottom: -30,
-          left: 20,
-          backgroundColor: "rgba(16,185,129,0.1)",
-        }}
-      />
-
-      <View className="px-6 pt-7 pb-7" style={{ paddingHorizontal: isTablet ? 32 : 24 }}>
-        <View className="flex-row items-center gap-3 mb-5">
+      <View style={{ paddingHorizontal: isTablet ? 32 : 24, paddingVertical: isTablet ? 32 : 24, gap: 16 }}>
+        <View className="flex-row items-center gap-3">
           <View
-            className="rounded-2xl p-3"
+            className="p-3"
             style={{
-              backgroundColor: "rgba(255,255,255,0.12)",
-              borderWidth: 1,
-              borderColor: "rgba(255,255,255,0.18)",
+              borderRadius: RADII.medium,
+              backgroundColor: "rgba(255,255,255,0.16)",
             }}
           >
             <Feather name="bell" size={isTablet ? 26 : 22} color="#fff" />
           </View>
-          <View>
+          <View style={{ flexShrink: 1 }}>
             <Text
-              className="font-bold uppercase tracking-widest"
-              style={{ color: "rgba(255,255,255,0.5)", fontSize: 9 }}
+              className="font-bold uppercase"
+              style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, letterSpacing: 1.2 }}
             >
               Barangay Maslog
             </Text>
-            <Text className="font-black text-white" style={{ fontSize: isTablet ? 24 : 20 }}>
-              Health Announcements
+            <Text
+              accessibilityRole="header"
+              className="font-black text-white"
+              style={{ fontSize: isTablet ? 26 : 22 }}
+            >
+              Health announcements
             </Text>
           </View>
         </View>
 
         <Text
-          className="leading-relaxed mb-5"
           style={{
-            color: "rgba(255,255,255,0.6)",
-            fontSize: isTablet ? 14 : 13,
-            maxWidth: isTablet ? 460 : undefined,
+            color: "rgba(255,255,255,0.92)",
+            fontSize: isTablet ? 16 : 15,
+            lineHeight: isTablet ? 24 : 22,
+            maxWidth: isTablet ? 520 : undefined,
           }}
         >
-          Stay updated with the latest activities, programs, and health reminders from your
-          community.
+          Notices and upcoming health activities from the Barangay Maslog health office.
         </Text>
 
-        <View className="self-start flex-row items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-2">
-          <Feather name="calendar" size={12} color="rgba(255,255,255,0.75)" />
-          <Text className="font-bold text-white/75" style={{ fontSize: isTablet ? 12 : 11 }}>
-            {eventCount} Upcoming Events
+        <View className="flex-row items-center gap-2">
+          <Feather name="calendar" size={15} color="rgba(255,255,255,0.9)" />
+          <Text className="font-bold" style={{ color: "rgba(255,255,255,0.9)", fontSize: 14 }}>
+            {eventLabel}
           </Text>
         </View>
       </View>

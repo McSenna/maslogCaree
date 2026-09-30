@@ -1,4 +1,5 @@
-import { Modal, Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { Feather } from "@expo/vector-icons";
 
 import { useModalFrame } from "@/hooks/useModalFrame";

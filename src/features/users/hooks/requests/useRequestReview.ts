@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 import {
@@ -10,11 +11,10 @@ import {
 } from "../../services/userRequestsService";
 
 type Options = {
-  onToast?: (message: string) => void;
   refresh: () => Promise<void>;
 };
 
-export const useRequestReview = ({ onToast, refresh }: Options) => {
+export const useRequestReview = ({ refresh }: Options) => {
   const [reviewRequestId, setReviewRequestId] = useState<string | null>(null);
   const [selectedDetail, setSelectedDetail] = useState<UserRequestDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -49,15 +49,18 @@ export const useRequestReview = ({ onToast, refresh }: Options) => {
     setApproving(true);
     try {
       const res = await approveUserRequest(reviewRequestId);
-      onToast?.(res.message || "Resident registration approved successfully.");
+      toast.success("Registration approved", res.message || undefined);
       closeReview();
       await refresh();
     } catch (err) {
-      onToast?.(getApiErrorMessage(err, "Failed to approve resident registration."));
+      toast.error(
+        "Registration not approved",
+        getApiErrorMessage(err, "Failed to approve resident registration.")
+      );
     } finally {
       setApproving(false);
     }
-  }, [reviewRequestId, approving, onToast, closeReview, refresh]);
+  }, [reviewRequestId, approving, closeReview, refresh]);
 
   const handleReject = useCallback(
     async (reason: string, remarks: string = "") => {
@@ -65,16 +68,19 @@ export const useRequestReview = ({ onToast, refresh }: Options) => {
       setRejecting(true);
       try {
         const res = await rejectUserRequest(reviewRequestId, reason, remarks);
-        onToast?.(res.message || "Resident registration has been rejected.");
+        toast.success("Registration rejected", res.message || undefined);
         closeReview();
         await refresh();
       } catch (err) {
-        onToast?.(getApiErrorMessage(err, "Failed to reject resident registration."));
+        toast.error(
+          "Registration not rejected",
+          getApiErrorMessage(err, "Failed to reject resident registration.")
+        );
       } finally {
         setRejecting(false);
       }
     },
-    [reviewRequestId, rejecting, onToast, closeReview, refresh]
+    [reviewRequestId, rejecting, closeReview, refresh]
   );
 
   return {

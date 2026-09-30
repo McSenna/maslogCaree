@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { TextInput } from "react-native";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import {
   meetsAllPasswordRules,
   passwordStrength,
@@ -113,6 +114,7 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
     } catch (error) {
       const message = getApiErrorMessage(error, "Unable to change your password. Please try again.");
       const lower = message.toLowerCase();
+      toast.error("Password not changed");
 
       if (lower.includes("current password")) {
         setErrors({ currentPassword: "Current password is incorrect." });

@@ -28,6 +28,7 @@ const HeroActions = ({
     >
       <HeroActionButton
         label={LANDING_CONTENT.actions.primary.label}
+        accessibilityLabel="Get started: create a MaslogCare account"
         icon={LANDING_CONTENT.actions.primary.icon}
         variant="primary"
         onPress={onGetStarted}
@@ -37,6 +38,7 @@ const HeroActions = ({
 
       <HeroActionButton
         label={LANDING_CONTENT.actions.secondary.label}
+        accessibilityLabel="Learn more about how MaslogCare works"
         icon={LANDING_CONTENT.actions.secondary.icon}
         variant="secondary"
         onPress={onLearnMore}

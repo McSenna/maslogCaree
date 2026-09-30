@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
-import { Animated, Modal, Pressable, View, useWindowDimensions } from "react-native";
+import { Animated, Pressable, View, useWindowDimensions } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuth } from "@/contexts/AuthContext";

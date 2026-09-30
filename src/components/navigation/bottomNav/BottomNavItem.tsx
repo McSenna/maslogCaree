@@ -149,7 +149,9 @@ const BottomNavItem = ({
               maxWidth: "100%",
               fontSize: labelSize,
               lineHeight: labelSize + 3,
-              fontWeight: isActive ? "700" : "500",
+              // One weight for both states: the pill and color mark the active tab, and a bolder
+              // active label would widen "Appointments" past its column on small phones.
+              fontWeight: "600",
               color,
             }}
           >

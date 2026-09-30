@@ -27,29 +27,6 @@ const TopTierCard = ({
       >
         <View
           style={{
-            position: "absolute",
-            width: 100,
-            height: 100,
-            borderRadius: 50,
-            backgroundColor: "rgba(11,122,117,0.12)",
-            top: -20,
-            right: -20,
-          }}
-        />
-        <View
-          style={{
-            position: "absolute",
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            backgroundColor: "rgba(20,168,159,0.08)",
-            bottom: 10,
-            left: -15,
-          }}
-        />
-
-        <View
-          style={{
             alignItems: "center",
             width: "100%",
             paddingHorizontal: 12,
@@ -85,8 +62,8 @@ const TopTierCard = ({
             <Text
               style={{
                 color: HC.tealLight,
-                fontSize: isTablet ? 12 : 10.5,
-                fontWeight: "900",
+                fontSize: isTablet ? 16 : 15,
+                fontWeight: "800",
                 textAlign: "center",
               }}
               numberOfLines={2}
@@ -97,8 +74,8 @@ const TopTierCard = ({
 
           <Text
             style={{
-              color: "rgba(255,255,255,0.55)",
-              fontSize: isTablet ? 9 : 7.5,
+              color: "rgba(255,255,255,0.88)",
+              fontSize: isTablet ? 12 : 11,
               fontWeight: "700",
               textTransform: "uppercase",
               letterSpacing: 1.2,
@@ -109,8 +86,8 @@ const TopTierCard = ({
           </Text>
           <Text
             style={{
-              color: "rgba(255,255,255,0.3)",
-              fontSize: isTablet ? 8 : 6.5,
+              color: "rgba(255,255,255,0.8)",
+              fontSize: isTablet ? 13 : 12,
               textAlign: "center",
               marginTop: 2,
             }}

@@ -2,32 +2,35 @@ import { useRef } from "react";
 import { Text, View, type TextInput } from "react-native";
 
 import TextField from "@/components/forms/TextField";
+import SegmentedControl from "@/components/dashboard/kit/SegmentedControl";
+import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 
+import { ANNOUNCEMENT_AUDIENCES, type Audience } from "../../announcement.types";
 import { ANNOUNCEMENT_LIMITS } from "../../announcementRules";
-import type { CreateAnnouncementForm } from "../../hooks/useCreateAnnouncementForm";
+import type { AnnouncementFormState } from "../../hooks/useAnnouncementForm";
 import AnnouncementDateTimeFields from "./AnnouncementDateTimeFields";
+import AnnouncementEndDateField from "./AnnouncementEndDateField";
+import { formIntro } from "./formCopy";
 
 type AnnouncementFormProps = {
-  form: CreateAnnouncementForm;
+  form: AnnouncementFormState;
   compact: boolean;
 };
+
+const AUDIENCE_OPTIONS = ANNOUNCEMENT_AUDIENCES.map((value) => ({ value, label: value }));
+
+const POSTING_OPTIONS = [
+  { value: "post", label: "Post now" },
+  { value: "draft", label: "Save as draft" },
+] as const;
 
 const FormSection = ({ label, children }: { label: string; children: React.ReactNode }) => {
   const palette = useResidentDialogPalette();
 
   return (
     <View style={{ gap: 12 }}>
-      <Text
-        accessibilityRole="header"
-        style={{
-          fontSize: 11.5,
-          fontWeight: "700",
-          letterSpacing: 0.8,
-          textTransform: "uppercase",
-          color: palette.muted,
-        }}
-      >
+      <Text accessibilityRole="header" style={{ fontSize: 14, fontWeight: "600", color: palette.heading }}>
         {label}
       </Text>
       {children}
@@ -37,6 +40,7 @@ const FormSection = ({ label, children }: { label: string; children: React.React
 
 const AnnouncementForm = ({ form, compact }: AnnouncementFormProps) => {
   const palette = useResidentDialogPalette();
+  const controlPalette = useAdminSurfacePalette();
   const messageRef = useRef<TextInput>(null);
   const locationRef = useRef<TextInput>(null);
   const { values, errors, submitting, setField } = form;
@@ -45,8 +49,7 @@ const AnnouncementForm = ({ form, compact }: AnnouncementFormProps) => {
   return (
     <View style={{ gap: compact ? 20 : 24 }}>
       <Text style={{ fontSize: 13.5, lineHeight: 20, color: palette.body }}>
-        Every active MaslogCare account gets this in their notifications, and it stays on the
-        announcements page.
+        {formIntro(values, form.isEditing, form.canChooseDraft)}
       </Text>
 
       <FormSection label="What">
@@ -80,6 +83,17 @@ const AnnouncementForm = ({ form, compact }: AnnouncementFormProps) => {
         />
       </FormSection>
 
+      <FormSection label="Who">
+        <SegmentedControl<Audience>
+          palette={controlPalette}
+          label="Audience"
+          value={values.audience}
+          options={AUDIENCE_OPTIONS}
+          onChange={(audience) => setField("audience", audience)}
+          fill={compact}
+        />
+      </FormSection>
+
       <FormSection label="When">
         <AnnouncementDateTimeFields
           date={values.date}
@@ -90,6 +104,13 @@ const AnnouncementForm = ({ form, compact }: AnnouncementFormProps) => {
           timeError={errors.time}
           disabled={submitting}
           stacked={compact}
+        />
+        <AnnouncementEndDateField
+          value={values.endDate}
+          eventDate={values.date}
+          onChange={(value) => setField("endDate", value)}
+          error={errors.endDate}
+          disabled={submitting}
         />
       </FormSection>
 
@@ -110,6 +131,19 @@ const AnnouncementForm = ({ form, compact }: AnnouncementFormProps) => {
           error={errors.location}
         />
       </FormSection>
+
+      {form.canChooseDraft ? (
+        <FormSection label="Posting">
+          <SegmentedControl
+            palette={controlPalette}
+            label="Posting"
+            value={values.isDraft ? "draft" : "post"}
+            options={POSTING_OPTIONS}
+            onChange={(choice) => setField("isDraft", choice === "draft")}
+            fill={compact}
+          />
+        </FormSection>
+      ) : null}
     </View>
   );
 };

@@ -1,6 +1,7 @@
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useCallback, useRef, useState } from "react";
-import { Keyboard, Modal, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { Keyboard, Pressable, ScrollView, Text, useWindowDimensions, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { RADIUS } from "@/design/adminSurfaces";
 import { createShadow } from "@/design/shadow";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";

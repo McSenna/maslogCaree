@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { createResidentAppointment } from "@/services/appointments";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import type { BookingErrors } from "./bookingTypes";
@@ -48,6 +49,7 @@ export const useBookingSubmit = ({
       setSubmitError(
         getApiErrorMessage(error, "Could not submit your appointment request. Please try again.")
       );
+      toast.error("Request not submitted");
     } finally {
       setSubmitting(false);
     }

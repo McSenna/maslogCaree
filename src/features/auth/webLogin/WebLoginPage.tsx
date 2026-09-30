@@ -1,34 +1,35 @@
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Head from "expo-router/head";
+import { setToastPlacement } from "@/components/feedback/toast/toastStore";
 import { landingAssets } from "@/config/landingAssets";
-import { BellIcon, CalendarClockIcon, PinIcon, StethoscopeIcon } from "./LoginIcons";
+import {
+  LANDING_CONTENT,
+  LANDING_FEATURE_COPY,
+  type LandingFeatureCopy,
+} from "@/config/landingContent";
+import {
+  ArrowRightIcon,
+  BellIcon,
+  CalendarClockIcon,
+  InfoIcon,
+  PinIcon,
+  StethoscopeIcon,
+} from "./LoginIcons";
 import WebLoginCard from "./WebLoginCard";
 import s from "./webLogin.module.css";
 
 type WebLoginPageProps = {
   onOpenRegister: () => void;
+  onOpenLearnMore: () => void;
 };
 
-const FEATURES = [
-  {
-    Icon: CalendarClockIcon,
-    tone: s.toneBlue,
-    title: "Book Appointments",
-    description: "Schedule and manage your appointments with ease.",
-  },
-  {
-    Icon: StethoscopeIcon,
-    tone: s.toneGreen,
-    title: "Access Health Services",
-    description: "Connect with healthcare services in your barangay.",
-  },
-  {
-    Icon: BellIcon,
-    tone: s.toneOrange,
-    title: "Stay Updated",
-    description: "Receive announcements and important reminders.",
-  },
-];
+const FEATURE_VISUALS: Record<LandingFeatureCopy["key"], { Icon: typeof BellIcon; tone: string }> = {
+  request: { Icon: CalendarClockIcon, tone: s.toneBlue },
+  priority: { Icon: StethoscopeIcon, tone: s.toneGreen },
+  schedule: { Icon: BellIcon, tone: s.toneOrange },
+};
+
+const FEATURES = LANDING_FEATURE_COPY.map((copy) => ({ ...copy, ...FEATURE_VISUALS[copy.key] }));
 
 // On web a required image is either a URL string or an object carrying one.
 const assetUri = (source: unknown): string | undefined => {
@@ -42,7 +43,7 @@ const PHOTO_SRC = assetUri(landingAssets.barangayBackground);
 
 const subscribe = () => () => {};
 
-const ENTRANCE_MS = 600;
+const ENTRANCE_MS = 400;
 
 const useEntranceStyle = () => {
   const isClient = useSyncExternalStore(subscribe, () => true, () => false);
@@ -84,8 +85,14 @@ const Mist = () => (
   </svg>
 );
 
-const WebLoginPage = ({ onOpenRegister }: WebLoginPageProps) => {
+const WebLoginPage = ({ onOpenRegister, onOpenLearnMore }: WebLoginPageProps) => {
   const entranceStyle = useEntranceStyle();
+
+  // Login failures arrive as toasts; at the top they never cover Forgotten password or Create an account.
+  useEffect(() => {
+    setToastPlacement("top");
+    return () => setToastPlacement("bottom");
+  }, []);
 
   return (
     <div className={s.page}>
@@ -125,19 +132,40 @@ const WebLoginPage = ({ onOpenRegister }: WebLoginPageProps) => {
               </div>
             </div>
 
-            {/* Desktop-only copy. */}
             <p className={s.lede}>
-              MaslogCare is a barangay appointment and healthcare scheduling system designed to
-              make services faster, easier, and more accessible for every resident.
+              <strong className={s.ledeLead}>
+                {LANDING_CONTENT.headline.lead} {LANDING_CONTENT.headline.accent}.
+              </strong>{" "}
+              {LANDING_CONTENT.description}
             </p>
 
-            <span className={s.rule} aria-hidden="true" />
+            <div className={s.actions}>
+              <button
+                type="button"
+                className={`${s.action} ${s.actionPrimary}`}
+                aria-label="Get started: create a MaslogCare account"
+                onClick={onOpenRegister}
+              >
+                {LANDING_CONTENT.actions.primary.label}
+                <ArrowRightIcon className={s.actionIcon} />
+              </button>
+              <button
+                type="button"
+                className={`${s.action} ${s.actionSecondary}`}
+                aria-label="Learn more about how MaslogCare works"
+                aria-haspopup="dialog"
+                onClick={onOpenLearnMore}
+              >
+                <InfoIcon className={s.actionIcon} />
+                {LANDING_CONTENT.actions.secondary.label}
+              </button>
+            </div>
           </section>
 
           {/* Beside the intro on desktop; below the card on tablets and phones. */}
           <ul className={s.features} aria-label="What you can do with MaslogCare">
-            {FEATURES.map(({ Icon, tone, title, description }) => (
-              <li key={title} className={s.feature}>
+            {FEATURES.map(({ key, Icon, tone, title, description }) => (
+              <li key={key} className={s.feature}>
                 <span className={`${s.featureTile} ${tone}`}>
                   <Icon className={s.featureIcon} />
                 </span>

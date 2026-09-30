@@ -1,5 +1,6 @@
 import { useId } from "react";
-import { Modal, Platform, Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, ScrollView, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { useModalFrame } from "@/hooks/useModalFrame";

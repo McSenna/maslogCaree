@@ -53,9 +53,11 @@ export const computeMobileLandingLayout = ({
 
   const scale = (tight: number, spacious: number) => lerpRound(tight, spacious, density);
 
+  const gutter = width < 360 ? 14 : width < 400 ? 16 : 20;
+
   const cardMetrics = mobileAuthCardMetrics(density);
   const cardHeight =
-    mobileAuthCardHeight(cardMetrics, fontScale) + CARD_CHROME_ALLOWANCE;
+    mobileAuthCardHeight(cardMetrics, fontScale, width - gutter * 2) + CARD_CHROME_ALLOWANCE;
 
   const waveHeight = scale(WAVE_HEIGHT_TIGHT, WAVE_HEIGHT_MOBILE);
   const cardOverlap = Math.round(waveHeight * WAVE_OVERLAP_RATIO);
@@ -82,7 +84,7 @@ export const computeMobileLandingLayout = ({
   return {
     density,
     availableHeight,
-    gutter: width < 360 ? 14 : width < 400 ? 16 : 20,
+    gutter,
     bottomSpacing,
     hero: {
       minHeight: heroMinHeight,

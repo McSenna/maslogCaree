@@ -48,7 +48,7 @@ const MaslogCareBrand = ({
             { marginLeft: logoSize + rowGap },
           ]}
         >
-
+          Barangay Appointment & Healthcare System
         </Text>
       )}
     </View>

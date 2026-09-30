@@ -1,9 +1,6 @@
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import LandingBackground from "@/components/landing/LandingBackground";
-import HeroDecor from "@/components/landing/hero/HeroDecor";
-import FloatingGlyphs from "@/components/landing/hero/FloatingGlyphs";
-import { staggerDelay } from "@/components/landing/motion/landingMotion";
 import WaveDecoration from "@/components/landing/WaveDecoration";
 import AuthCard from "@/features/auth/components/AuthCard";
 import { AUTH_CARD_MAX_WIDTH } from "@/features/auth/components/authCardMetricPresets";
@@ -17,8 +14,6 @@ import type { LandingScreenProps } from "./landingModalProps";
 
 type Props = LandingScreenProps;
 
-const GLYPH_MIN_WIDTH = 1200;
-
 const COMPACT_CARD_DENSITY = 0.6;
 
 const DesktopLanding = ({
@@ -29,7 +24,6 @@ const DesktopLanding = ({
   onOpenLearnMore,
   onCloseLearnMore,
 }: Props) => {
-  const { width } = useWindowDimensions();
   const layout = useDesktopLandingLayout();
 
   const compactCard = layout.density < COMPACT_CARD_DENSITY;
@@ -54,13 +48,10 @@ const DesktopLanding = ({
 
       <View style={styles.desktopRightColumn}>
         <View style={[styles.desktopAuthAnchor, { width: cardWidth }]}>
-          {width >= GLYPH_MIN_WIDTH ? <FloatingGlyphs /> : null}
-
           <AuthCard
             onOpenRegister={onOpenRegister}
             compact={compactCard}
             density={layout.density}
-            entranceDelay={staggerDelay(2)}
           />
         </View>
       </View>
@@ -75,8 +66,6 @@ const DesktopLanding = ({
   return (
     <View style={styles.desktopRoot}>
       <LandingBackground variant="desktop" />
-
-      <HeroDecor compact={compactCard} />
 
       <WaveDecoration variant="desktop" height={layout.wave.height} />
 

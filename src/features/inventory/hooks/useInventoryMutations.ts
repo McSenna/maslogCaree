@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import {
   addStock,
@@ -24,7 +25,6 @@ type InventoryMutationsInput = {
   applyItemUpdate: (item: InventoryItem) => void;
   showItem: (item: InventoryItem) => void;
   reload: () => Promise<unknown>;
-  onSuccess: (message: string) => void;
 };
 
 export const useInventoryMutations = ({
@@ -32,7 +32,6 @@ export const useInventoryMutations = ({
   applyItemUpdate,
   showItem,
   reload,
-  onSuccess,
 }: InventoryMutationsInput) => {
   const [activeModal, setActiveModal] = useState<ActiveModal>("none");
   const [submitting, setSubmitting] = useState(false);
@@ -54,7 +53,8 @@ export const useInventoryMutations = ({
   const runMutation = useCallback(
     async (
       action: () => Promise<{ item: InventoryItem; message: string }>,
-      fallbackMessage: string
+      fallbackMessage: string,
+      failureTitle: string
     ) => {
       setSubmitting(true);
       setFormError(null);
@@ -63,21 +63,27 @@ export const useInventoryMutations = ({
         applyItemUpdate(updated);
         showItem(updated);
         closeModal();
-        onSuccess(message || fallbackMessage);
+        toast.success(message || fallbackMessage);
         await reload();
       } catch (error: unknown) {
         setPendingRelease(null);
+        // The reason stays in the open form, next to what needs changing.
         setFormError(getApiErrorMessage(error, "That did not go through. Please try again."));
+        toast.error(failureTitle);
       } finally {
         setSubmitting(false);
       }
     },
-    [applyItemUpdate, closeModal, onSuccess, reload, showItem]
+    [applyItemUpdate, closeModal, reload, showItem]
   );
 
   const createItem = useCallback(
     (payload: ItemMetadataPayload) =>
-      runMutation(() => createInventoryItem(payload), "Inventory item created successfully."),
+      runMutation(
+        () => createInventoryItem(payload),
+        "Inventory item created successfully.",
+        "Item not created"
+      ),
     [runMutation]
   );
 
@@ -86,7 +92,8 @@ export const useInventoryMutations = ({
       if (!panelItem) return;
       return runMutation(
         () => updateInventoryItem(panelItem._id, payload),
-        "Item updated successfully."
+        "Item updated successfully.",
+        "Item not updated"
       );
     },
     [panelItem, runMutation]
@@ -95,7 +102,11 @@ export const useInventoryMutations = ({
   const addItemStock = useCallback(
     (payload: StockInPayload) => {
       if (!panelItem) return;
-      return runMutation(() => addStock(panelItem._id, payload), "Stock added successfully.");
+      return runMutation(
+        () => addStock(panelItem._id, payload),
+        "Stock added successfully.",
+        "Stock not added"
+      );
     },
     [panelItem, runMutation]
   );
@@ -105,7 +116,8 @@ export const useInventoryMutations = ({
       if (!panelItem) return;
       return runMutation(
         () => releaseStock(panelItem._id, payload),
-        "Stock released successfully."
+        "Stock released successfully.",
+        "Stock not released"
       );
     },
     [panelItem, runMutation]

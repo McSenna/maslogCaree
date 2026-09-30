@@ -1,4 +1,4 @@
-import type { HealthService, QuickAction } from "@/types/residentDashboard";
+import type { QuickAction } from "@/types/residentDashboard";
 
 export const quickActions: QuickAction[] = [
   {
@@ -35,34 +35,6 @@ export const quickActions: QuickAction[] = [
   },
 ];
 
-export const healthServices: HealthService[] = [
-  {
-    id: "svc-001",
-    title: "General Check-up",
-    description: "Routine health assessment for all ages.",
-    icon: "medkit-outline",
-    tone: "blue",
-  },
-  {
-    id: "svc-002",
-    title: "Vaccination",
-    description: "Immunization for a healthier community.",
-    icon: "medical-outline",
-    tone: "green",
-  },
-  {
-    id: "svc-003",
-    title: "Maternal and Child Health",
-    description: "Care for mothers and children.",
-    icon: "heart",
-    tone: "pink",
-  },
-];
-
-export const bannerQuote = {
-  line1: "“A healthier you",
-  line2: "A stronger Maslog.”",
-};
 
 export const formatAppointmentDate = (iso: string): string => {
   const date = new Date(iso);

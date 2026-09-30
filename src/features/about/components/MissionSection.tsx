@@ -37,8 +37,8 @@ const MissionSection = ({ isTablet }: { isTablet: boolean }) => {
           style={{
             flex: 1,
             color: HC.slate,
-            lineHeight: isTablet ? 22 : 20,
-            fontSize: isTablet ? 14 : 12.5,
+            lineHeight: isTablet ? 23 : 21,
+            fontSize: isTablet ? 15 : 14,
           }}
         >
           To give Barangay Maslog residents health services they can reach from their phone, so

@@ -8,6 +8,7 @@ export type AuthCardMetrics = {
   paddingBottom: number;
   paddingHorizontal: number;
   borderRadius: number;
+  eyebrowGap: number;
   headingSize: number;
   subtitleSize: number;
   headerTextGap: number;
@@ -30,6 +31,7 @@ export const DESKTOP_METRICS: AuthCardMetrics = {
   paddingBottom: 44,
   paddingHorizontal: 40,
   borderRadius: 24,
+  eyebrowGap: 16,
   headingSize: 29,
   subtitleSize: 16,
   headerTextGap: 7,
@@ -52,6 +54,7 @@ export const DESKTOP_TIGHT_METRICS: AuthCardMetrics = {
   paddingBottom: 22,
   paddingHorizontal: 28,
   borderRadius: 18,
+  eyebrowGap: 8,
   headingSize: 21,
   subtitleSize: 13.5,
   headerTextGap: 5,
@@ -74,6 +77,7 @@ export const COMPACT_DESKTOP_METRICS: AuthCardMetrics = {
   paddingBottom: 30,
   paddingHorizontal: 32,
   borderRadius: 20,
+  eyebrowGap: 12,
   headingSize: 25,
   subtitleSize: 15,
   headerTextGap: 7,
@@ -96,6 +100,7 @@ export const MOBILE_METRICS: AuthCardMetrics = {
   paddingBottom: 24,
   paddingHorizontal: 22,
   borderRadius: 24,
+  eyebrowGap: 12,
   headingSize: 25,
   subtitleSize: 15,
   headerTextGap: 7,
@@ -118,6 +123,7 @@ export const MOBILE_TIGHT_METRICS: AuthCardMetrics = {
   paddingBottom: 16,
   paddingHorizontal: 20,
   borderRadius: 20,
+  eyebrowGap: 8,
   headingSize: 21,
   subtitleSize: 13,
   headerTextGap: 4,

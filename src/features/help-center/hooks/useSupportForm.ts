@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import { useAuth } from "@/contexts/AuthContext";
 import { normalizeApiError } from "@/utils/apiErrorHandler";
 import { submitSupportTicket } from "../services/supportService";
@@ -80,6 +81,7 @@ export const useSupportForm = (onSubmitted?: (ticket: SupportTicket) => void) =>
       const normalized = normalizeApiError(caught);
       setErrors(normalized.fieldErrors ?? {});
       setSubmitError(normalized.message);
+      toast.error("Request not sent");
     } finally {
       setSubmitting(false);
     }

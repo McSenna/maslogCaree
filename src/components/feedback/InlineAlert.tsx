@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import FadeIn from "@/components/animations/FadeIn";
 import Button from "@/components/buttons/Button";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { getThemeColors, type ColorScheme } from "@/theme/colors";
 import { RADII } from "@/theme/radius";
 import { SPACING } from "@/theme/spacing";
 import { TYPE } from "@/theme/typography";
@@ -14,6 +15,8 @@ type InlineAlertProps = {
   title?: string;
   message: string;
   action?: { label: string; onPress: () => void; loading?: boolean };
+  /** Pins the palette for surfaces that never change with the app theme, like the landing auth card. */
+  scheme?: ColorScheme;
 };
 
 const ICONS: Record<InlineAlertTone, keyof typeof Feather.glyphMap> = {
@@ -23,8 +26,9 @@ const ICONS: Record<InlineAlertTone, keyof typeof Feather.glyphMap> = {
   warning: "alert-triangle",
 };
 
-const InlineAlert = ({ tone = "error", title, message, action }: InlineAlertProps) => {
-  const colors = useThemeColors();
+const InlineAlert = ({ tone = "error", title, message, action, scheme }: InlineAlertProps) => {
+  const themeColors = useThemeColors();
+  const colors = scheme ? getThemeColors(scheme) : themeColors;
   const palette = { error: colors.danger, success: colors.success, info: colors.info, warning: colors.warning }[tone];
 
   return (

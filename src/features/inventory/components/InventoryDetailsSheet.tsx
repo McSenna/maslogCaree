@@ -1,13 +1,13 @@
 import { Feather } from "@expo/vector-icons";
 import {
   ActivityIndicator,
-  Modal,
   Pressable,
   ScrollView,
   Text,
   View,
   useWindowDimensions,
 } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
 import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";

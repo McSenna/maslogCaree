@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Platform, Text, View } from "react-native";
 
@@ -13,18 +12,17 @@ type AboutFeatureProps = {
   stacked: boolean;
 };
 
+// Static information: no hover lift, since that would suggest the card can be clicked.
 const AboutFeature = ({ feature, stacked }: AboutFeatureProps) => {
-  const [hovered, setHovered] = useState(false);
   const palette = TONE_PALETTE[feature.tone];
   const services = feature.services ?? [];
+  const serviceList = services.length > 0 ? ` ${services.join(", ")}.` : "";
 
   return (
     <View
       accessible
       accessibilityRole="summary"
-      accessibilityLabel={`${feature.title}. ${feature.description}`}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
+      accessibilityLabel={`${feature.title}. ${feature.description}${serviceList}`}
       style={{
         flex: stacked ? undefined : 1,
         minWidth: 0,
@@ -32,16 +30,10 @@ const AboutFeature = ({ feature, stacked }: AboutFeatureProps) => {
         padding: 14,
         borderRadius: ABOUT_RADIUS.card,
         borderWidth: 1,
-        borderColor: hovered ? palette.border : LANDING_COLORS.border,
+        borderColor: LANDING_COLORS.border,
         backgroundColor: LANDING_COLORS.white,
         ...Platform.select({
-          web: {
-            transition: "border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease",
-            transform: hovered ? "translateY(-2px)" : "translateY(0px)",
-            boxShadow: hovered
-              ? "0px 10px 24px rgba(8, 21, 47, 0.08)"
-              : "0px 1px 2px rgba(8, 21, 47, 0.04)",
-          } as object,
+          web: { boxShadow: "0px 1px 2px rgba(8, 21, 47, 0.04)" } as object,
         }),
       }}
     >

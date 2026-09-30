@@ -1,4 +1,5 @@
-import { KeyboardAvoidingView, Modal, ScrollView, View } from "react-native";
+import { KeyboardAvoidingView, ScrollView, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useAppointmentBooking } from "../hooks/useAppointmentBooking";
 import { APPOINTMENT_COLORS } from "./appointmentTheme";

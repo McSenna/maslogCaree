@@ -1,4 +1,5 @@
-import { Modal, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
 import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";

@@ -1,3 +1,8 @@
+/**
+ * The one place operation outcomes are announced. Import-free so `node --test`
+ * can load it. One toast shows at a time; a newer outcome replaces the older one.
+ */
+
 export type ToastTone = "success" | "error" | "info";
 
 export type ToastAction = { label: string; onPress: () => void };
@@ -23,6 +28,9 @@ const offsetListeners = new Set<(offset: number) => void>();
 
 const emit = () => listeners.forEach((listener) => listener(current));
 
+const sameContent = (a: ToastMessage, tone: ToastTone, title: string, description?: string) =>
+  a.tone === tone && a.title === title && a.description === description;
+
 export const subscribeToToasts = (listener: Listener): (() => void) => {
   listeners.add(listener);
   listener(current);
@@ -36,8 +44,18 @@ export const showToast = (
   title: string,
   options: { description?: string; action?: ToastAction; durationMs?: number } = {}
 ): number => {
+  const durationMs = options.durationMs ?? DURATION[tone];
+
+  // The same outcome reported again (a double tap, or two layers catching one
+  // error) keeps the visible toast and restarts its timer instead of flashing.
+  if (current && sameContent(current, tone, title, options.description)) {
+    current = { ...current, ...options, durationMs };
+    emit();
+    return current.id;
+  }
+
   const id = nextId++;
-  current = { id, tone, title, ...options, durationMs: options.durationMs ?? DURATION[tone] };
+  current = { id, tone, title, ...options, durationMs };
   emit();
   return id;
 };
@@ -68,6 +86,68 @@ export const subscribeToToastOffset = (listener: (offset: number) => void): (() 
   };
 };
 
-export const notifyToast = (message: string, tone: "success" | "error" = "success"): void => {
-  showToast(tone, message);
+/*
+ * Where toasts sit. Bottom by default; a screen whose key actions live at the
+ * bottom (the web login card: Forgotten password, Create an account) asks for
+ * the top while it is mounted, so a failure toast never covers the way out.
+ */
+
+export type ToastPlacement = "top" | "bottom";
+
+let placement: ToastPlacement = "bottom";
+const placementListeners = new Set<(placement: ToastPlacement) => void>();
+
+export const setToastPlacement = (next: ToastPlacement): void => {
+  placement = next;
+  placementListeners.forEach((listener) => listener(next));
+};
+
+export const subscribeToToastPlacement = (
+  listener: (placement: ToastPlacement) => void
+): (() => void) => {
+  placementListeners.add(listener);
+  listener(placement);
+  return () => {
+    placementListeners.delete(listener);
+  };
+};
+
+/*
+ * Toast layers. A modal or sheet draws above the app root (a separate window on
+ * Android and iOS, a body-level portal on web), so a toast drawn at the root is
+ * hidden while one is open. Each modal therefore hosts its own viewport, and
+ * only the most recently opened one draws the toast.
+ */
+
+type LayerListener = (topLayer: number | null) => void;
+
+const layers: number[] = [];
+let nextLayer = 1;
+const layerListeners = new Set<LayerListener>();
+
+const topLayer = (): number | null => layers[layers.length - 1] ?? null;
+
+const emitLayers = () => layerListeners.forEach((listener) => listener(topLayer()));
+
+export const registerToastLayer = (): { id: number; unregister: () => void } => {
+  const id = nextLayer++;
+  layers.push(id);
+  emitLayers();
+  return {
+    id,
+    unregister: () => {
+      const index = layers.indexOf(id);
+      if (index === -1) return;
+      layers.splice(index, 1);
+      emitLayers();
+    },
+  };
+};
+
+export const subscribeToTopToastLayer = (listener: LayerListener): (() => void) => {
+  layerListeners.add(listener);
+  listener(topLayer());
+  return () => {
+    layerListeners.delete(listener);
+  };
 };

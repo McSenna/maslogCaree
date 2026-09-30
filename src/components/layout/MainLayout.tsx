@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Header from "./Header";
@@ -6,6 +6,7 @@ import BottomNav from "./BottomNav";
 import LoginModal from "@/features/auth/components/LoginModal";
 import RegistrationModal from "@/features/auth/components/RegistrationModal";
 import { useAuth } from "@/contexts/AuthContext";
+import { setToastBottomOffset } from "@/components/feedback/toast/toastStore";
 import { useBottomNavMetrics } from "@/components/navigation/bottomNav";
 import { useAppForegroundLayout } from "@/hooks/useAppForegroundLayout";
 import { useResponsive } from "@/hooks/useResponsive";
@@ -32,6 +33,12 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   const contentBottomPadding = isMobile
     ? bottomNav.contentPadding
     : insets.bottom;
+
+  // Same as RoleLayout: toasts sit above the phone bottom navigation, not on it.
+  useEffect(() => {
+    setToastBottomOffset(isMobile ? bottomNav.height - bottomNav.bottomInset : 0);
+    return () => setToastBottomOffset(0);
+  }, [isMobile, bottomNav.height, bottomNav.bottomInset]);
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={["left", "right"]}>

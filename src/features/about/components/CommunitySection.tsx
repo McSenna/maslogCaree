@@ -25,13 +25,13 @@ const CommunitySection = ({ isTablet }: { isTablet: boolean }) => {
             style={{
               flex: 1,
               color: HC.slate,
-              lineHeight: isTablet ? 22 : 20,
-              fontSize: isTablet ? 14 : 12.5,
+              lineHeight: isTablet ? 23 : 21,
+              fontSize: isTablet ? 15 : 14,
             }}
           >
-            Barangay Maslog is a vibrant community dedicated to the health and well-being of its
-            residents. Our healthcare workers and medical professionals are committed to providing
-            comprehensive healthcare services to ensure a healthier community for all.
+            Barangay 61 Maslog is in Legazpi City, Albay. Its health office offers general
+            checkups, consultations, prenatal care, immunization, and blood pressure checks, run by
+            doctors, midwives, and barangay health workers.
           </Text>
         </View>
       </View>

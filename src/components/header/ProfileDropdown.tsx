@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 import {
   Animated,
-  Modal,
   Pressable,
   useWindowDimensions,
   type GestureResponderEvent,
   type ViewStyle,
 } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { getHeaderPalette } from "./headerTokens";
 import {

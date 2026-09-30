@@ -1,5 +1,6 @@
 import { ScrollView, View } from "react-native";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import { useModalFrame } from "@/hooks/useModalFrame";
 import { useResponsive } from "@/hooks/useResponsive";
 
@@ -76,7 +77,7 @@ const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
       <ChangePasswordDialog
         visible={state.changePasswordVisible}
         onClose={state.closeChangePassword}
-        onSuccess={() => state.edit.showToast("Password changed")}
+        onSuccess={() => toast.success("Password changed")}
       />
 
     </>

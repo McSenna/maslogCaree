@@ -14,7 +14,7 @@ const LeaderCard = ({
 }: LeaderCardProps) => {
   const isTop = tier === "top";
   const avatarSize = isTop ? (isTablet ? 64 : 54) : isTablet ? 52 : 44;
-  const displayName = name ?? "Unassigned";
+  const displayName = name ?? "Not yet listed";
 
   const tierProps = { title, subtitle, icon, isTablet, avatarSize, displayName };
 

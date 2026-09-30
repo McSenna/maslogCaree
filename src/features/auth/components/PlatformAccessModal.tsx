@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { Modal, Platform, Pressable, View, useWindowDimensions } from "react-native";
+import { Platform, Pressable, View, useWindowDimensions } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { MOBILE_ONLY_NOTICE } from "@/config/platformAccess";
 import PlatformAccessAction from "./platformAccess/PlatformAccessAction";

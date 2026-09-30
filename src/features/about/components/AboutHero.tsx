@@ -6,95 +6,64 @@ const AboutHero = ({ isTablet }: { isTablet: boolean }) => {
   return (
     <View
       style={{
-        borderRadius: 24,
+        borderRadius: 20,
         backgroundColor: PALETTE.blue[700],
         marginHorizontal: 4,
-        padding: 24,
+        padding: isTablet ? 32 : 24,
+        gap: 16,
       }}
     >
-      <View
-        style={{
-          position: "absolute",
-          width: 160,
-          height: 160,
-          borderRadius: 80,
-          backgroundColor: "rgba(255,255,255,0.09)",
-          top: -30,
-          right: -30,
-          pointerEvents: "none",
-        }}
-      />
-      <View
-        style={{
-          position: "absolute",
-          width: 90,
-          height: 90,
-          borderRadius: 45,
-          backgroundColor: "rgba(255,255,255,0.07)",
-          bottom: 10,
-          left: -10,
-          pointerEvents: "none",
-        }}
-      />
-
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 14 }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
         <View
           style={{
-            width: 46,
-            height: 46,
-            borderRadius: 14,
-            backgroundColor: "rgba(255,255,255,0.2)",
+            width: 48,
+            height: 48,
+            borderRadius: 12,
+            backgroundColor: "rgba(255,255,255,0.16)",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
           <Feather name="heart" size={22} color="#fff" />
         </View>
-        <View>
+        <View style={{ flexShrink: 1 }}>
           <Text
             style={{
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: "700",
-              color: "rgba(255,255,255,0.65)",
-              letterSpacing: 2,
+              color: "rgba(255,255,255,0.8)",
+              letterSpacing: 1.2,
               textTransform: "uppercase",
             }}
           >
-            Barangay Maslog
+            About
           </Text>
-          <Text style={{ fontSize: isTablet ? 22 : 20, fontWeight: "800", color: "#fff" }}>
-            Maslog Care
+          <Text
+            accessibilityRole="header"
+            style={{ fontSize: isTablet ? 28 : 24, fontWeight: "800", color: "#fff", letterSpacing: -0.4 }}
+          >
+            MaslogCare
           </Text>
         </View>
       </View>
 
       <Text
         style={{
-          fontSize: isTablet ? 14 : 13,
-          color: "rgba(255,255,255,0.78)",
-          lineHeight: 21,
-          marginBottom: 20,
+          maxWidth: 640,
+          fontSize: isTablet ? 16 : 15,
+          lineHeight: isTablet ? 24 : 22,
+          color: "rgba(255,255,255,0.92)",
         }}
       >
-        Stay updated with the latest health services, programs, and care reminders from your
-        community.
+        The appointment app of the Barangay Maslog health office. Residents request health visits
+        from their phone, and health staff schedule them, keep visit records, and post
+        announcements.
       </Text>
 
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 8,
-          alignSelf: "flex-start",
-          backgroundColor: "rgba(255,255,255,0.2)",
-          borderRadius: 50,
-          paddingHorizontal: 16,
-          paddingVertical: 9,
-        }}
-      >
-        <Feather name="users" size={14} color="#fff" />
-        <Text style={{ color: "#fff", fontSize: 13, fontWeight: "600" }}>
-          Free Community Health Services
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <Feather name="map-pin" size={15} color="rgba(255,255,255,0.85)" />
+        <Text style={{ flexShrink: 1, color: "rgba(255,255,255,0.85)", fontSize: 14, fontWeight: "600" }}>
+          Barangay 61 Maslog, Legazpi City
         </Text>
       </View>
     </View>

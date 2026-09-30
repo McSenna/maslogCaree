@@ -1,9 +1,7 @@
 import DateTimePicker, { type DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import { Feather } from "@expo/vector-icons";
-import { useId, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Platform, Pressable, Text, View } from "react-native";
 
-import { resolveFieldAppearance } from "@/components/forms/fieldAppearance";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { RADII } from "@/theme/radius";
@@ -17,69 +15,12 @@ import {
   toDateKey,
 } from "../../announcementRules";
 import { formatClockLabel, formatDateKeyLabel } from "../../announcementFormat";
-import PickerFieldShell from "./PickerFieldShell";
 import type { AnnouncementDateTimeFieldsProps } from "./dateTimeFields.types";
+import PickerTrigger from "./PickerTrigger";
 
 type PickerMode = "date" | "time";
 
 const IS_IOS = Platform.OS === "ios";
-
-type PickerTriggerProps = {
-  label: string;
-  placeholder: string;
-  display: string;
-  icon: keyof typeof Feather.glyphMap;
-  open: boolean;
-  error?: string;
-  disabled?: boolean;
-  onPress: () => void;
-};
-
-const PickerTrigger = ({ label, placeholder, display, icon, open, error, disabled, onPress }: PickerTriggerProps) => {
-  const colors = useThemeColors();
-  const messageId = useId();
-  const look = resolveFieldAppearance(colors, {
-    focused: open,
-    hovered: false,
-    error: Boolean(error),
-    success: false,
-    disabled: Boolean(disabled),
-  });
-
-  return (
-    <PickerFieldShell label={label} messageId={messageId} error={error} required>
-      <Pressable
-        onPress={onPress}
-        disabled={disabled}
-        accessibilityRole="button"
-        accessibilityLabel={`${label}: ${display || "not set"}`}
-        accessibilityHint={`Opens the ${label.toLowerCase()} picker`}
-        accessibilityState={{ disabled: Boolean(disabled), expanded: IS_IOS ? open : undefined }}
-        style={{
-          minHeight: 46,
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 10,
-          paddingHorizontal: 14,
-          borderRadius: RADII.medium,
-          borderWidth: look.borderWidth,
-          borderColor: look.border,
-          backgroundColor: look.background,
-          opacity: disabled ? 0.7 : 1,
-        }}
-      >
-        <Feather name={icon} size={16} color={look.icon} />
-        <Text
-          numberOfLines={1}
-          style={{ flex: 1, minWidth: 0, fontSize: 15, color: display ? colors.heading : colors.subtle }}
-        >
-          {display || placeholder}
-        </Text>
-        <Feather name="chevron-down" size={16} color={colors.muted} />
-      </Pressable>
-    </PickerFieldShell>
-  );
-};
 
 /**
  * Android opens the system date/time dialog; iOS shows the spinner inline

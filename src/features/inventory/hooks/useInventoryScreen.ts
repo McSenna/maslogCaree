@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { notifyToast } from "@/components/feedback/toast/toastStore";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { DENSE_WINDOW_WIDTH, INVENTORY_LAYOUT } from "../constants/inventoryLayout";
@@ -25,7 +24,6 @@ export const useInventoryScreen = () => {
     applyItemUpdate: data.applyItemUpdate,
     showItem: selection.showItem,
     reload: data.reload,
-    onSuccess: (message) => notifyToast(message),
   });
 
   const { clampPage } = query;

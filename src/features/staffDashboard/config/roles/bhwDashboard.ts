@@ -32,7 +32,7 @@ export const BHW: RoleDashboardConfig = {
       icon: "check-circle",
       tone: "green",
       value: (d) => d.summary.completedToday,
-      description: (d) => `${plural(d.summary.totalPatients, "resident")} checked in total`,
+      description: (d) => `${plural(d.summary.totalPatients, "resident")} so far`,
     },
     {
       key: "upcoming",

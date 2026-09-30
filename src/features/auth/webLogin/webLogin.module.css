@@ -149,10 +149,83 @@
   color: #1766f5;
 }
 
+/* Phones and tablets open on the sign-in card, so the pitch and its actions stay desktop-only. */
 .tagline,
 .lede,
-.rule {
+.actions {
   display: none;
+}
+
+.ledeLead {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 22px;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease-out,
+    border-color 150ms ease-out,
+    color 150ms ease-out,
+    transform 140ms ease-out;
+}
+
+.action:active {
+  transform: scale(0.98);
+}
+
+.action:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.actionIcon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+.actionPrimary {
+  background: var(--brand);
+  color: #fff;
+}
+
+.actionSecondary {
+  border-color: #b9c8e4;
+  background: rgba(255, 255, 255, 0.86);
+  color: #0a3fc0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .actionPrimary:hover {
+    background: #0046d8;
+  }
+
+  .actionPrimary:hover .actionIcon {
+    transform: translateX(3px);
+  }
+
+  .actionSecondary:hover {
+    border-color: var(--brand);
+    background: #fff;
+  }
+}
+
+.actionPrimary .actionIcon {
+  transition: transform 150ms ease-out;
 }
 
 /* ---------- Features ---------- */
@@ -237,7 +310,7 @@
   border-radius: 20px;
   background: #fff;
   box-shadow: 0 24px 50px -24px rgba(30, 60, 140, 0.26);
-  animation: card-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: card-in 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes card-in {
@@ -256,6 +329,26 @@
   flex-direction: column;
 }
 
+/* The introduction above the form: account, greeting, instruction, then a rule. */
+.cardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e4e9f1;
+}
+
+.eyebrow {
+  margin-bottom: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #ebf1ff;
+  color: #0a3fc0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+
 .title {
   font-size: 23px;
   font-weight: 700;
@@ -270,28 +363,8 @@
   font-size: 15px;
   line-height: 22px;
   text-align: center;
+  text-wrap: balance;
   color: var(--ink-soft);
-}
-
-.alert {
-  display: flex;
-  gap: 10px;
-  margin-top: 18px;
-  padding: 12px 14px;
-  border: 1px solid #f3c5bf;
-  border-radius: 8px;
-  background: #fef3f2;
-  color: #7a1a12;
-  font-size: 14px;
-  line-height: 20px;
-  animation: settle-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.alertIcon {
-  flex: none;
-  width: 20px;
-  height: 20px;
-  color: var(--error);
 }
 
 @keyframes settle-in {
@@ -305,11 +378,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  margin-top: 18px;
-}
-
-.alert + .fields {
-  margin-top: 14px;
+  margin-top: 20px;
 }
 
 .fieldGroup {
@@ -438,28 +507,11 @@
   height: 22px;
 }
 
-.fieldError,
 .capsHint {
   margin-top: 6px;
+  color: #8a4b00;
   font-size: 14px;
   line-height: 20px;
-}
-
-.fieldError {
-  display: flex;
-  gap: 6px;
-  color: var(--error);
-}
-
-.fieldErrorIcon {
-  flex: none;
-  width: 16px;
-  height: 16px;
-  margin-top: 2px;
-}
-
-.capsHint {
-  color: #8a4b00;
 }
 
 .capsHint:empty {
@@ -951,21 +1003,37 @@
 
   .lede {
     display: block;
-    max-width: 25em;
-    margin-top: clamp(20px, calc(44 * var(--s)), 52px);
-    font-size: clamp(17px, calc(25 * var(--s)), 30px);
+    max-width: 27em;
+    margin-top: clamp(18px, calc(36 * var(--s)), 44px);
+    font-size: clamp(16px, calc(22 * var(--s)), 26px);
+    color: var(--ink-soft);
     line-height: 1.55;
     letter-spacing: -0.005em;
     text-wrap: balance;
   }
 
-  .rule {
-    display: block;
-    width: clamp(64px, calc(104 * var(--s)), 120px);
-    height: max(3px, calc(4 * var(--s)));
-    margin-top: clamp(18px, calc(30 * var(--s)), 36px);
-    border-radius: 2px;
-    background: #0a4ef4;
+  /* Takes the place of the mockup's accent rule: the same gap between the pitch and the feature list. */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(10px, calc(16 * var(--s)), 18px);
+    margin-top: clamp(20px, calc(34 * var(--s)), 40px);
+  }
+
+  .action {
+    height: clamp(46px, calc(58 * var(--s)), 64px);
+    padding: 0 clamp(18px, calc(26 * var(--s)), 30px);
+    border-radius: clamp(8px, calc(10 * var(--s)), 12px);
+    font-size: clamp(15px, calc(19 * var(--s)), 21px);
+  }
+
+  .action:focus-visible {
+    border-radius: clamp(8px, calc(10 * var(--s)), 12px);
+  }
+
+  .actionIcon {
+    width: clamp(18px, calc(22 * var(--s)), 24px);
+    height: clamp(18px, calc(22 * var(--s)), 24px);
   }
 
   .features {
@@ -980,10 +1048,62 @@
   }
 
   .feature {
+    --bleed: clamp(10px, calc(16 * var(--s)), 18px);
+
+    position: relative;
+    isolation: isolate;
+    /* Sized to its content, so the hover surface hugs the icon and text instead of the whole column. */
+    align-self: flex-start;
+    padding-right: var(--bleed);
     flex-direction: row;
     align-items: center;
     gap: clamp(16px, calc(30 * var(--s)), 34px);
     text-align: left;
+  }
+
+  /* Hover surface: drawn outside the row with a pseudo-element, so icons and text never shift. */
+  .feature::before {
+    content: "";
+    position: absolute;
+    inset: calc(var(--bleed) * -1);
+    z-index: -1;
+    border: 1px solid rgba(190, 208, 238, 0.9);
+    border-radius: clamp(16px, calc(22 * var(--s)), 24px);
+    background: rgba(255, 255, 255, 0.74);
+    box-shadow: 0 18px 40px -24px rgba(20, 50, 130, 0.35);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transition: opacity 180ms ease-out;
+  }
+
+  .featureTile,
+  .featureTitle {
+    transition:
+      background-color 180ms ease-out,
+      color 180ms ease-out;
+  }
+
+  /* Information, not a link: the row highlights under the pointer but keeps the default cursor. */
+  @media (hover: hover) and (pointer: fine) {
+    .feature:hover::before {
+      opacity: 1;
+    }
+
+    .feature:hover .featureTitle {
+      color: var(--brand);
+    }
+
+    .feature:hover .toneBlue {
+      background: #c8dbff;
+    }
+
+    .feature:hover .toneGreen {
+      background: #bfe5d2;
+    }
+
+    .feature:hover .toneOrange {
+      background: #f8d9b3;
+    }
   }
 
   .featureTile {
@@ -1008,7 +1128,8 @@
   }
 
   .featureDescription {
-    max-width: 22em;
+    /* Wide enough that all three rows sit on one line at laptop sizes, so the list reads evenly. */
+    max-width: 27em;
     color: #1f2740;
     font-size: clamp(15px, calc(19.5 * var(--s)), 23px);
     line-height: 1.45;
@@ -1059,6 +1180,19 @@
       0 40px 80px -36px rgba(20, 50, 130, 0.38);
   }
 
+  .cardHeader {
+    align-items: flex-start;
+    padding-bottom: clamp(20px, calc(32 * var(--s)), 36px);
+  }
+
+  .eyebrow {
+    margin-bottom: clamp(12px, calc(18 * var(--s)), 20px);
+    padding: clamp(4px, calc(5 * var(--s)), 6px) clamp(10px, calc(12 * var(--s)), 14px);
+    border-radius: var(--radius);
+    font-size: clamp(13px, calc(15 * var(--s)), 16px);
+    line-height: 1.35;
+  }
+
   .title {
     font-size: clamp(24px, calc(30 * var(--s)), 36px);
     line-height: 1.2;
@@ -1073,27 +1207,9 @@
     text-align: left;
   }
 
-  .alert {
-    gap: 12px;
-    margin-top: clamp(18px, calc(24 * var(--s)), 28px);
-    padding: clamp(12px, calc(14 * var(--s)), 16px) clamp(14px, calc(16 * var(--s)), 18px);
-    border-radius: var(--radius);
-    font-size: clamp(14px, calc(16 * var(--s)), 18px);
-    line-height: 1.45;
-  }
-
-  .alertIcon {
-    width: clamp(20px, calc(22 * var(--s)), 24px);
-    height: clamp(20px, calc(22 * var(--s)), 24px);
-  }
-
   .fields {
     gap: clamp(14px, calc(20 * var(--s)), 24px);
-    margin-top: clamp(22px, calc(40 * var(--s)), 48px);
-  }
-
-  .alert + .fields {
-    margin-top: clamp(14px, calc(20 * var(--s)), 24px);
+    margin-top: clamp(20px, calc(32 * var(--s)), 36px);
   }
 
   .field {
@@ -1144,7 +1260,6 @@
     height: var(--icon);
   }
 
-  .fieldError,
   .capsHint {
     margin-top: 7px;
     font-size: clamp(14px, calc(16 * var(--s)), 18px);
@@ -1238,6 +1353,29 @@
   }
 }
 
+/* Short phones (320 x 568): the tighter introduction keeps the Log In button on the first screen. */
+@media (max-height: 600px) and (max-width: 639px) {
+  .card {
+    padding-top: 20px;
+  }
+
+  .cardHeader {
+    padding-bottom: 12px;
+  }
+
+  .eyebrow {
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    margin-top: 4px;
+  }
+
+  .fields {
+    margin-top: 12px;
+  }
+}
+
 /* Reduced motion keeps the fades, which say something appeared, and drops the movement. */
 @keyframes fade-in {
   from {
@@ -1250,18 +1388,24 @@
     animation: fade-in 200ms ease-out both;
   }
 
-  .alert,
   .success {
     animation: fade-in 150ms ease-out;
   }
 
   .field,
   .label,
-  .button {
+  .button,
+  .action,
+  .actionIcon,
+  .feature::before,
+  .featureTile,
+  .featureTitle {
     transition: none;
   }
 
-  .button:active {
+  .button:active,
+  .action:active,
+  .actionPrimary:hover .actionIcon {
     transform: none;
   }
 

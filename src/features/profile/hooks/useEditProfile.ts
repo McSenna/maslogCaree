@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { notifyToast } from "@/components/feedback/toast/toastStore";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { getCachedAccessToken } from "@/utils/storage";
 import {
@@ -16,7 +16,6 @@ const SAVE_ERROR = "Unable to update your profile right now. Please try again.";
 
 export const useEditProfile = () => {
   const { user, applyAuthUser } = useAuth();
-  const showToast = notifyToast;
 
   const [section, setSection] = useState<ProfileEditSection | null>(null);
   const [saving, setSaving] = useState(false);
@@ -24,7 +23,7 @@ export const useEditProfile = () => {
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
 
   const form = useEditProfileForm(section);
-  const avatar = useProfileAvatarUpload({ applyAuthUser, showToast });
+  const avatar = useProfileAvatarUpload({ applyAuthUser });
   const inFlight = useRef(false);
 
   const initialValues = useMemo(() => buildEditProfileValues(user), [user]);
@@ -76,15 +75,15 @@ export const useEditProfile = () => {
       const token = getCachedAccessToken();
       if (token) applyAuthUser(updated, token);
 
-      showToast(PROFILE_EDIT_SECTION_COPY[section].success);
+      toast.success(PROFILE_EDIT_SECTION_COPY[section].success);
       stopEditing();
     } catch (error: unknown) {
-      showToast(getApiErrorMessage(error, SAVE_ERROR), "error");
+      toast.error("Changes not saved", getApiErrorMessage(error, SAVE_ERROR));
     } finally {
       inFlight.current = false;
       setSaving(false);
     }
-  }, [section, form, applyAuthUser, showToast, stopEditing]);
+  }, [section, form, applyAuthUser, stopEditing]);
 
   return {
     editingSection: section,
@@ -102,7 +101,6 @@ export const useEditProfile = () => {
     cancelSaveEdit: useCallback(() => setConfirmingSave(false), []),
     changeAvatar: avatar.changeAvatar,
     savingAvatar: avatar.savingAvatar,
-    showToast,
   };
 };
 

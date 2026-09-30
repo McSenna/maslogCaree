@@ -45,7 +45,7 @@ const BhwQueueScreen = () => {
       >
         <View>
           <Text className="text-[22px] font-bold" style={{ color: palette.heading }}>
-            Appointment &amp; Queue
+            Appointments &amp; Queue
           </Text>
           <Text className="mt-1 text-[13px]" style={{ color: palette.muted }}>
             {queue.scopeDescription}
@@ -72,33 +72,6 @@ const BhwQueueScreen = () => {
               emptyTitle="No residents currently waiting"
               emptyMessage={`Residents will appear here after entering the ${serviceLabel} queue.`}
             />
-
-            <AppointmentsPanel
-              appointments={dashboard.statusList}
-              statusCounts={dashboard.overview?.statusCounts ?? {}}
-              activeStatus={dashboard.activeStatus}
-              onStatusChange={dashboard.setActiveStatus}
-              serviceLabels={serviceLabels}
-              headerAction={
-                <QueueRefreshButton
-                  onPress={queue.refreshAll}
-                  busy={queue.busy}
-                  accessibilityLabel={`Refresh the ${serviceLabel} queue`}
-                />
-              }
-              busyId={null}
-              canAct={false}
-              onRowPress={
-                dashboard.activeStatus === "completed"
-                  ? (appointment) => void completion.openRecord(appointment)
-                  : undefined
-              }
-              loading={dashboard.listLoading}
-              error={dashboard.listError}
-              onRetry={() => void dashboard.loadStatusList(dashboard.activeStatus)}
-              emptyMessage={queue.emptyMessage}
-              asTable={asTable}
-            />
           </View>
 
           <View className="min-w-0 gap-4" style={twoColumn ? { flex: 1 } : undefined}>
@@ -115,6 +88,33 @@ const BhwQueueScreen = () => {
             />
           </View>
         </View>
+
+        <AppointmentsPanel
+          appointments={dashboard.statusList}
+          statusCounts={dashboard.overview?.statusCounts ?? {}}
+          activeStatus={dashboard.activeStatus}
+          onStatusChange={dashboard.setActiveStatus}
+          serviceLabels={serviceLabels}
+          headerAction={
+            <QueueRefreshButton
+              onPress={queue.refreshAll}
+              busy={queue.busy}
+              accessibilityLabel={`Refresh the ${serviceLabel} queue`}
+            />
+          }
+          busyId={null}
+          canAct={false}
+          onRowPress={
+            dashboard.activeStatus === "completed"
+              ? (appointment) => void completion.openRecord(appointment)
+              : undefined
+          }
+          loading={dashboard.listLoading}
+          error={dashboard.listError}
+          onRetry={() => void dashboard.loadStatusList(dashboard.activeStatus)}
+          emptyMessage={queue.emptyMessage}
+          asTable={asTable}
+        />
       </ScrollView>
 
       <CompleteAppointmentModal

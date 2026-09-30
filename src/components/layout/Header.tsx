@@ -9,6 +9,7 @@ import HeaderActions from "./header/HeaderActions";
 import HeaderBrand from "./header/HeaderBrand";
 import HeaderNav from "./header/HeaderNav";
 import { useResponsive } from "@/hooks/useResponsive";
+import { PALETTE } from "@/theme/palette";
 
 type HeaderProps = {
   isMobile: boolean;
@@ -16,7 +17,8 @@ type HeaderProps = {
   user?: CurrentUser | null;
 };
 
-const HEADER_SURFACE = "#3f54be";
+// Brand blue from the palette (white text 7:1+) instead of the old indigo, which read as violet.
+const HEADER_SURFACE = PALETTE.blue[700];
 
 const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
   const pathname = usePathname();

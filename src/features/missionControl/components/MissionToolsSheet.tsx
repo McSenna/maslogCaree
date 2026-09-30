@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Modal, Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { Feather } from "@expo/vector-icons";
 
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";

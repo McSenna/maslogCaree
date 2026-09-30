@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useId } from "react";
-import { Modal, Platform, Pressable, ScrollView, Text, View } from "react-native";
+import { Platform, Pressable, ScrollView, Text, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { useModalFrame } from "@/hooks/useModalFrame";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";

@@ -93,6 +93,10 @@ export const useFocusTrap = (visible: boolean) => {
     const id = Symbol("focus-trap");
     trapStack.push(id);
 
+    // Keyboard users land back on the control that opened the dialog.
+    const opener = document.activeElement as HTMLElement | null;
+    const openerOutside = opener && !node.contains(opener) ? opener : null;
+
     focusable()[0]?.focus?.();
 
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -124,6 +128,7 @@ export const useFocusTrap = (visible: boolean) => {
       document.removeEventListener("keydown", handleKeyDown, true);
       const index = trapStack.indexOf(id);
       if (index !== -1) trapStack.splice(index, 1);
+      if (openerOutside?.isConnected) openerOutside.focus({ preventScroll: true });
     };
   }, [visible, container]);
 

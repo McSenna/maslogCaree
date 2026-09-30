@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useId, useRef } from "react";
 import {
   Animated,
-  Modal,
   Platform,
   Pressable,
   ScrollView,
   useWindowDimensions,
 } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { Feather } from "@expo/vector-icons";
 
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";

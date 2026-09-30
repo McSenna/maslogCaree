@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type RefObject } from "react";
 import {
   TextInput,
   View,
@@ -23,6 +23,8 @@ interface AuthInputProps {
   textContentType?: TextInputProps["textContentType"];
   returnKeyType?: TextInputProps["returnKeyType"];
   onSubmitEditing?: () => void;
+  submitBehavior?: TextInputProps["submitBehavior"];
+  inputRef?: RefObject<TextInput | null>;
   accessibilityLabel?: string;
   accessibilityHint?: string;
   hasError?: boolean;
@@ -43,6 +45,8 @@ const AuthInput = ({
   textContentType,
   returnKeyType,
   onSubmitEditing,
+  submitBehavior,
+  inputRef,
   accessibilityLabel,
   accessibilityHint,
   hasError = false,
@@ -82,6 +86,7 @@ const AuthInput = ({
       <Ionicons name={icon} size={20} color={iconColor} style={styles.leftIcon} />
 
       <TextInput
+        ref={inputRef}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
@@ -92,6 +97,7 @@ const AuthInput = ({
         textContentType={textContentType}
         returnKeyType={returnKeyType}
         onSubmitEditing={onSubmitEditing}
+        submitBehavior={submitBehavior}
         editable={!disabled}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}

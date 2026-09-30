@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
+import { RADII } from "@/theme/radius";
 import { hexToRgba } from "@/utils/color";
 import type { Announcement } from "../data/announcements";
 import AnnouncementTag from "./AnnouncementTag";
@@ -81,25 +82,29 @@ const FeaturedAnnouncementCard = ({
             </Text>
           </View>
 
+          {/* Radius token, not rounded-lg: 16px on a short button reads as a pill. */}
           <Pressable
             onPress={onViewDetails}
             accessibilityRole="button"
             accessibilityLabel={`View details for ${title}`}
-            style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
-          >
-            <View
-              className="flex-row items-center gap-1.5 rounded-lg px-3.5 py-2"
-              style={{
-                backgroundColor: `${color}10`,
+            style={({ pressed, hovered }) => [
+              {
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 6,
+                minHeight: 44,
+                paddingHorizontal: 14,
+                borderRadius: RADII.small,
                 borderWidth: 1,
-                borderColor: `${color}25`,
-              }}
-            >
-              <Text className="font-bold" style={{ color, fontSize: isTablet ? 12 : 11 }}>
-                View Details
-              </Text>
-              <Feather name="arrow-right" size={11} color={color} />
-            </View>
+                borderColor: hexToRgba(color, hovered ? 0.5 : 0.25),
+                backgroundColor: hexToRgba(color, pressed ? 0.16 : 0.07),
+              },
+            ]}
+          >
+            <Text className="font-bold" style={{ color, fontSize: isTablet ? 14 : 13 }}>
+              View details
+            </Text>
+            <Feather name="arrow-right" size={14} color={color} />
           </Pressable>
         </View>
       </View>

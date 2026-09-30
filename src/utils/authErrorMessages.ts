@@ -68,16 +68,31 @@ export interface AuthErrorPresentation extends AuthErrorCopy {
   normalized: NormalizedApiError;
 }
 
+const KNOWN_CODES = new Set<string>(Object.values(ERROR_CODES));
+
+/**
+ * The login result arrives as a plain `{ code, message }` that normalizeApiError
+ * cannot tell apart from an unknown client fault, so it would come back as
+ * CLIENT_ERROR and the account-status copy below would never match. A known
+ * code carried on the value itself wins.
+ */
+const carriedCode = (error: unknown): string | null => {
+  if (typeof error !== "object" || error === null || !("code" in error)) return null;
+  const { code } = error as { code: unknown };
+  return typeof code === "string" && KNOWN_CODES.has(code) ? code : null;
+};
+
 export const getAuthErrorPresentation = (
   error: unknown,
   defaultTitle: string,
   defaultMessage: string
 ): AuthErrorPresentation => {
   const normalized = normalizeApiError(error);
-  const override = OVERRIDES[normalized.code];
+  const code = carriedCode(error) ?? normalized.code;
+  const override = OVERRIDES[code];
 
   if (override) {
-    return { ...override, code: normalized.code, normalized };
+    return { ...override, code, normalized };
   }
 
   const message =
@@ -86,9 +101,9 @@ export const getAuthErrorPresentation = (
       : normalized.message || defaultMessage;
 
   return {
-    title: TITLE_ONLY[normalized.code] ?? defaultTitle,
+    title: TITLE_ONLY[code] ?? defaultTitle,
     message,
-    code: normalized.code,
+    code,
     normalized,
   };
 };

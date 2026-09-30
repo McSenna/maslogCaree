@@ -19,42 +19,42 @@ export type LearnMoreStep = {
 
 export const LEARN_MORE_INTRO = {
   eyebrow: "MaslogCare",
-  titleLead: "Better Access to",
-  titleAccent: "Barangay Healthcare",
+  titleLead: "Barangay health visits,",
+  titleAccent: "requested from your phone",
   description:
-    "MaslogCare helps Barangay Maslog residents access local healthcare services more conveniently through a centralized appointment and healthcare scheduling experience.",
-  imageCaption: "Healthy Residents. Stronger Community.",
+    "MaslogCare is the appointment app of the Barangay Maslog health office. Residents send a request from the mobile app, and health staff set the date and time of each visit.",
+  imageCaption: "Barangay 61 Maslog, Legazpi City",
 };
 
 export const LEARN_MORE_FEATURES: LearnMoreFeature[] = [
   {
     key: "book",
     icon: "calendar-outline",
-    title: "Book Appointments",
+    title: "Request a visit",
     description:
-      "Schedule available healthcare services quickly without manually coordinating every visit.",
+      "Choose a service and describe your concern. You do not pick a time. The health team assigns one.",
     tone: "blue",
   },
   {
     key: "services",
     icon: "medkit-outline",
-    title: "Access Health Services",
-    description: "Connect with available barangay healthcare services.",
+    title: "Barangay health services",
+    description: "The services you can request in the app:",
     tone: "green",
     services: [
-      "General Checkup",
+      "General checkup",
       "Consultation",
-      "Blood Pressure Checking",
+      "Blood pressure checking",
       "Immunization",
-      "Prenatal Care",
+      "Prenatal care",
     ],
   },
   {
     key: "updates",
     icon: "notifications-outline",
-    title: "Stay Updated",
+    title: "Schedule updates",
     description:
-      "Receive important appointment updates, schedules, announcements, and reminders.",
+      "Your confirmed date and time, any changes, and barangay health announcements appear in the app.",
     tone: "orange",
   },
 ];
@@ -62,28 +62,28 @@ export const LEARN_MORE_FEATURES: LearnMoreFeature[] = [
 export const LEARN_MORE_STEPS: LearnMoreStep[] = [
   {
     key: "account",
-    title: "Create Account",
-    description: "Register and verify your resident account.",
+    title: "Create an account",
+    description: "Register, then wait for the health office to approve your account.",
   },
   {
     key: "service",
-    title: "Choose a Service",
-    description: "Select an available healthcare service.",
+    title: "Send a request",
+    description: "Choose a service and describe your concern.",
   },
   {
     key: "schedule",
-    title: "Pick a Schedule",
-    description: "Choose an available date and time.",
+    title: "Wait for your slot",
+    description: "Infants, children, and seniors are scheduled first.",
   },
   {
     key: "confirmed",
-    title: "Get Confirmed",
-    description: "Receive confirmation and visit on your scheduled date.",
+    title: "Visit on your date",
+    description: "You get the date and time in the app and by email.",
   },
 ];
 
 export const LEARN_MORE_FOOTER = {
   brand: "MaslogCare",
   tagline: "Serbisyong Mas Malapit, Mas Maaasahan.",
-  location: "Barangay Maslog, Legazpi City",
+  location: "Barangay 61 Maslog, Legazpi City",
 };

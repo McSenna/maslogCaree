@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import { useAuth } from "@/contexts/AuthContext";
 import type { NotificationItem } from "@/features/notifications/notification.types";
 import {
@@ -140,10 +141,12 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
 
     try {
       await markAllNotificationsRead();
+      toast.success("All notifications marked as read");
     } catch (e: unknown) {
       setNotifications(snapshot);
       setUnreadCount(snapshot.filter((n) => !n.isRead).length);
       setError(getApiErrorMessage(e, "Unable to mark all notifications as read."));
+      toast.error("Notifications not marked as read");
     }
   }, []);
 

@@ -1,10 +1,10 @@
-import { useRouter, type Href } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 
 import { useInteractionState } from "@/hooks/useInteractionState";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
 import { LEGAL_ROUTES } from "../legalContent";
+import { showLegalDocument } from "../showLegalDocument";
 
 type LegalLinksProps = {
   /** Overrides navigation, e.g. to open the document in a dialog over a form. */
@@ -56,7 +56,6 @@ const LegalLink = ({
 /** The two legal links, for footers and settings screens. */
 const LegalLinks = ({ onOpen, align = "center", color }: LegalLinksProps) => {
   const colors = useThemeColors();
-  const router = useRouter();
   const tint = color ?? colors.primary;
 
   return (
@@ -76,7 +75,7 @@ const LegalLinks = ({ onOpen, align = "center", color }: LegalLinksProps) => {
           label={link.label}
           color={tint}
           focusRing={colors.focusRing}
-          onPress={() => (onOpen ? onOpen(link.kind) : router.push(LEGAL_ROUTES[link.kind] as Href))}
+          onPress={() => (onOpen ?? showLegalDocument)(link.kind)}
         />
       ))}
     </View>

@@ -1,12 +1,12 @@
 import { useEffect, useState, type ReactNode } from "react";
 import {
   Animated,
-  Modal,
   Platform,
   Pressable,
   StyleSheet,
   View,
 } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";

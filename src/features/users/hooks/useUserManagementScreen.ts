@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { notifyToast } from "@/components/feedback/toast/toastStore";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { useSearchParamValue } from "@/hooks/useSearchParamValue";
 import { USER_SECTIONS, type UserSection } from "../components/UserSectionTabs";
@@ -15,7 +15,6 @@ import { useUserStatusChange } from "./useUserStatusChange";
 
 export const useUserManagementScreen = () => {
   const insets = useRoleScreenInsets();
-  const showToast = notifyToast;
 
   const [contentWidth, setContentWidth] = useState(insets.width);
   const [tableAreaWidth, setTableAreaWidth] = useState(0);
@@ -23,7 +22,7 @@ export const useUserManagementScreen = () => {
   const { users, loading, error, refreshing, fetchUsers, refreshUsers, applyUserUpdate } =
     useUsers();
 
-  const requests = useUserRequests(showToast);
+  const requests = useUserRequests();
   // `?section=requests` is the dashboard's "Review registrations" shortcut.
   const sectionParam = useSearchParamValue("section");
   const initialSection = (USER_SECTIONS as readonly string[]).includes(sectionParam)
@@ -43,14 +42,16 @@ export const useUserManagementScreen = () => {
 
   const statusChange = useUserStatusChange({
     applyUserUpdate,
-    onResult: showToast,
+    onResult: (message, tone) =>
+      tone === "success" ? toast.success(message) : toast.error("User not updated", message),
   });
 
   const selection = useUserSelection(filters.pageUsers);
 
   const addUser = () => {
-    showToast(
-      "Creating a user from here isn't available yet. Accounts are added through registration."
+    toast.info(
+      "Adding users isn't available here",
+      "Accounts are added through registration."
     );
   };
 
@@ -61,7 +62,6 @@ export const useUserManagementScreen = () => {
 
   return {
     insets,
-    showToast,
     section,
     setSection,
     sectionCounts,

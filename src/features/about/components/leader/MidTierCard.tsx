@@ -62,8 +62,8 @@ const MidTierCard = ({
           <Text
             style={{
               color: HC.teal,
-              fontSize: isTablet ? 11 : 9.5,
-              fontWeight: "900",
+              fontSize: isTablet ? 15 : 14,
+              fontWeight: "800",
               textAlign: "center",
             }}
             numberOfLines={2}
@@ -75,7 +75,7 @@ const MidTierCard = ({
         <Text
           style={{
             color: HC.slateLight,
-            fontSize: isTablet ? 8.5 : 7.5,
+            fontSize: isTablet ? 12 : 11,
             fontWeight: "700",
             textTransform: "uppercase",
             letterSpacing: 0.8,
@@ -86,8 +86,8 @@ const MidTierCard = ({
         </Text>
         <Text
           style={{
-            color: "#CBD5E1",
-            fontSize: isTablet ? 7.5 : 6.5,
+            color: HC.slate,
+            fontSize: isTablet ? 13 : 12,
             textAlign: "center",
             marginTop: 2,
           }}

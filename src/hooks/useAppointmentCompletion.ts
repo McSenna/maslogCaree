@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "@/components/feedback/toast/toastStore";
 import type { AppointmentRecord } from "@/services/appointments";
 import {
   fetchCompletionForms,
@@ -6,6 +7,7 @@ import {
   type CompletionForm,
   type MedicalRecord,
 } from "@/services/medicalRecords";
+import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 export const useAppointmentCompletion = ({
   onCompleted,
@@ -81,8 +83,13 @@ export const useAppointmentCompletion = ({
       try {
         const { medicalRecord, form } = await fetchMedicalRecord(String(recordId));
         if (mounted.current) setViewing({ record: medicalRecord, form });
-      } catch {
-        if (mounted.current) setViewing(null);
+      } catch (error: unknown) {
+        if (!mounted.current) return;
+        setViewing(null);
+        toast.error(
+          "Medical record not opened",
+          getApiErrorMessage(error, "The record could not be loaded. Please try again.")
+        );
       } finally {
         if (mounted.current) setViewLoading(false);
       }

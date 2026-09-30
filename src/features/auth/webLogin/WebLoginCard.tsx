@@ -1,8 +1,8 @@
 import { useRef, useState, type FormEvent, type KeyboardEvent } from "react";
+import { SECURITY_NOTICE } from "@/config/landingContent";
 import ForgotPasswordFlow from "../forgotPassword/ForgotPasswordFlow";
 import PlatformAccessModal from "../components/PlatformAccessModal";
 import {
-  AlertCircleIcon,
   CheckIcon,
   EyeIcon,
   EyeOffIcon,
@@ -11,6 +11,8 @@ import {
   ShieldCheckIcon,
 } from "./LoginIcons";
 import { useWebLogin } from "./useWebLogin";
+import WebLoginCardHeader from "./WebLoginCardHeader";
+import WebLoginLegalLinks from "./WebLoginLegalLinks";
 import s from "./webLogin.module.css";
 
 type WebLoginCardProps = {
@@ -19,8 +21,6 @@ type WebLoginCardProps = {
 };
 
 const cx = (...names: (string | false | null | undefined)[]) => names.filter(Boolean).join(" ");
-
-const describedBy = (...ids: (string | false | null)[]) => cx(...ids) || undefined;
 
 const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
   const form = useWebLogin();
@@ -52,19 +52,7 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
         aria-busy={form.status === "submitting"}
         onSubmit={handleSubmit}
       >
-        <h1 id="login-title" className={s.title}>
-          Welcome back
-        </h1>
-        <p id="login-subtitle" className={s.subtitle}>
-          Sign in to continue to MaslogCare
-        </p>
-
-        {form.formError ? (
-          <div className={s.alert} role="alert">
-            <AlertCircleIcon className={s.alertIcon} />
-            <p>{form.formError}</p>
-          </div>
-        ) : null}
+        <WebLoginCardHeader />
 
         <div className={s.fields}>
           <div className={s.fieldGroup}>
@@ -85,21 +73,12 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
                 value={form.identifier}
                 readOnly={busy}
                 aria-invalid={Boolean(form.errors.identifier)}
-                aria-describedby={describedBy(form.errors.identifier && "login-identifier-error")}
                 onChange={(event) => form.setIdentifier(event.target.value)}
                 onBlur={form.validateIdentifierOnBlur}
               />
               <label htmlFor="login-identifier" className={s.label}>
-                Email address or phone number
+                Email or mobile number
               </label>
-            </div>
-            <div aria-live="polite">
-              {form.errors.identifier ? (
-                <p id="login-identifier-error" className={s.fieldError}>
-                  <AlertCircleIcon className={s.fieldErrorIcon} />
-                  {form.errors.identifier}
-                </p>
-              ) : null}
             </div>
           </div>
 
@@ -120,10 +99,7 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
                 value={form.password}
                 readOnly={busy}
                 aria-invalid={Boolean(form.errors.password)}
-                aria-describedby={describedBy(
-                  form.errors.password && "login-password-error",
-                  capsLock && "login-caps-lock"
-                )}
+                aria-describedby={capsLock ? "login-caps-lock" : undefined}
                 onChange={(event) => form.setPassword(event.target.value)}
                 onKeyDown={trackCapsLock}
                 onKeyUp={trackCapsLock}
@@ -143,14 +119,6 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
                 {showPassword ? <EyeIcon className={s.toggleIcon} /> : <EyeOffIcon className={s.toggleIcon} />}
               </button>
             </div>
-            <div aria-live="polite">
-              {form.errors.password ? (
-                <p id="login-password-error" className={s.fieldError}>
-                  <AlertCircleIcon className={s.fieldErrorIcon} />
-                  {form.errors.password}
-                </p>
-              ) : null}
-            </div>
             <p id="login-caps-lock" className={s.capsHint} aria-live="polite">
               {capsLock ? "Caps Lock is on." : ""}
             </p>
@@ -168,7 +136,7 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
               Logging in…
             </>
           ) : (
-            "Log In"
+            "Log in"
           )}
         </button>
 
@@ -183,7 +151,7 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
         </div>
 
         <button type="button" className={cx(s.button, s.buttonSecondary)} onClick={onOpenRegister}>
-          Create New Account
+          Create an account
         </button>
 
         <p className={s.srOnly} role="status">
@@ -192,13 +160,10 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
 
         <p className={s.security}>
           <ShieldCheckIcon className={s.securityIcon} />
-          Your data is secure with MaslogCare
+          {SECURITY_NOTICE}
         </p>
 
-        <p className={s.legal}>
-          <a href="/privacy">Privacy policy</a>
-          <a href="/terms">Terms and conditions</a>
-        </p>
+        <WebLoginLegalLinks />
       </form>
 
       {form.status === "success" ? (
@@ -207,7 +172,7 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
             <CheckIcon className={s.successIcon} />
           </span>
           <p className={s.successTitle}>You&apos;re signed in</p>
-          <p className={s.successText}>Taking you to your appointments…</p>
+          <p className={s.successText}>Opening your dashboard…</p>
         </div>
       ) : null}
 

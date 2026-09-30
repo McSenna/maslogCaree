@@ -35,6 +35,61 @@ module.exports = {
         "text-secondary": "#334155",
         "text-tertiary": "#56657A",
         "text-disabled": "#94A3B8",
+
+        // Admin announcements palette. Values live in src/theme/announcementTokens.ts
+        // (light and dark) and reach these names through CSS variables set by
+        // useAnnouncementThemeVars, so one class works in both themes.
+        page: "var(--an-page)",
+        canvas: "var(--an-canvas)",
+        ink: "var(--an-ink)",
+        text2: "var(--an-text2)",
+        text3: "var(--an-text3)",
+        body: "var(--an-body)",
+        placeholder: "var(--an-placeholder)",
+        brand: {
+          DEFAULT: "var(--an-brand)",
+          hover: "var(--an-brand-hover)",
+          tint: "var(--an-brand-tint)",
+          on: "var(--an-brand-on)",
+        },
+        avatar: "var(--an-avatar)",
+        line: "var(--an-line)",
+        divider: "var(--an-divider)",
+        field: "var(--an-field)",
+        shell: "var(--an-shell)",
+        head: "var(--an-head)",
+        rowopen: "var(--an-rowopen)",
+        neutral: "var(--an-neutral)",
+        navhover: "var(--an-navhover)",
+        status: {
+          active: "var(--an-status-active)",
+          draft: "var(--an-status-draft)",
+          expired: "var(--an-status-expired)",
+        },
+        destructive: {
+          DEFAULT: "var(--an-destructive)",
+          bg: "var(--an-destructive-bg)",
+          border: "var(--an-destructive-border)",
+        },
+        toast: {
+          DEFAULT: "var(--an-toast)",
+          text: "var(--an-toast-text)",
+          action: "var(--an-toast-action)",
+          icon: "var(--an-toast-icon)",
+        },
+        scrim: "var(--an-scrim)",
+      },
+
+      fontFamily: {
+        ps: ["PublicSans_400Regular"],
+        "ps-medium": ["PublicSans_500Medium"],
+        "ps-semibold": ["PublicSans_600SemiBold"],
+        "ps-bold": ["PublicSans_700Bold"],
+      },
+
+      lineHeight: {
+        21: "21px",
+        23: "23px",
       },
 
       fontSize: {
@@ -48,6 +103,14 @@ module.exports = {
         "4xl": ["28px", { lineHeight: "1.4" }],
         "5xl": ["32px", { lineHeight: "1.4" }],
         "6xl": ["36px", { lineHeight: "1.4" }],
+
+        // Exact sizes for the admin announcements screen.
+        12: "12px",
+        13: "13px",
+        14: "14px",
+        15: "15px",
+        22: "22px",
+        24: "24px",
       },
 
       fontWeight: {
@@ -90,6 +153,11 @@ module.exports = {
         "2xl": "24px",
         "3xl": "32px",
         full: "9999px",
+
+        // Admin announcements: controls, count badges, table container.
+        control: "6px",
+        badge: "4px",
+        panel: "8px",
       },
 
       boxShadow: {

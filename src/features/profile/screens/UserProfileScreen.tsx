@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { ScrollView, View } from "react-native";
 import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { HelpSupportOverlays } from "@/features/help-center";
 import { usePageMaxWidth, useResponsive } from "@/hooks/useResponsive";
 import { SOCIAL_COLORS } from "../config/profileSocialTheme";
@@ -82,7 +83,7 @@ const UserProfileScreen = () => {
       <ChangePasswordDialog
         visible={state.changePasswordVisible}
         onClose={state.closeChangePassword}
-        onSuccess={() => state.edit.showToast("Password changed")}
+        onSuccess={() => toast.success("Password changed")}
       />
 
     </View>

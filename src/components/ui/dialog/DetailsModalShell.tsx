@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import { Animated, Modal, Platform, Pressable, View } from "react-native";
+import { Animated, Platform, Pressable, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { createShadow } from "@/design/shadow";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";

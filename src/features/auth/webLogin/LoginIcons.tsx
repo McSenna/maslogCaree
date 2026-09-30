@@ -18,6 +18,21 @@ const Outline = ({ className, children }: IconProps & { children: ReactNode }) =
   </svg>
 );
 
+export const ArrowRightIcon = (props: IconProps) => (
+  <Outline {...props}>
+    <path d="M5 12h14" />
+    <path d="m13 6 6 6-6 6" />
+  </Outline>
+);
+
+export const InfoIcon = (props: IconProps) => (
+  <Outline {...props}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5" />
+    <path d="M12 8h.01" />
+  </Outline>
+);
+
 export const CalendarClockIcon = (props: IconProps) => (
   <Outline {...props}>
     <path d="M21 7.5V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3.5" />
@@ -88,14 +103,6 @@ export const ShieldCheckIcon = (props: IconProps) => (
   <Outline {...props}>
     <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
     <path d="m9 12 2 2 4-4" />
-  </Outline>
-);
-
-export const AlertCircleIcon = (props: IconProps) => (
-  <Outline {...props}>
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 8v4" />
-    <path d="M12 16h.01" />
   </Outline>
 );
 

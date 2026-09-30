@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { notifyToast } from "@/components/feedback/toast/toastStore";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { cancelAppointment } from "@/services/appointmentActionsApi";
 import type { AppointmentRecord } from "@/types/appointments.types";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
@@ -34,10 +34,12 @@ export const useResidentAppointmentActions = (refresh: () => Promise<void> | voi
       try {
         await cancelAppointment(cancelTarget._id, reason);
         setCancelTarget(null);
-        notifyToast("Appointment cancelled");
+        toast.success("Appointment cancelled");
         await refresh();
       } catch (e: unknown) {
+        // The reason stays in the cancel form; the toast marks the failed attempt.
         setCancelError(getApiErrorMessage(e, "Unable to cancel appointment."));
+        toast.error("Appointment not cancelled");
       } finally {
         setIsCancelling(false);
       }
@@ -47,7 +49,7 @@ export const useResidentAppointmentActions = (refresh: () => Promise<void> | voi
 
   const confirmReschedule = useCallback(async () => {
     setRescheduleTarget(null);
-    notifyToast("Appointment rescheduled");
+    toast.success("Appointment rescheduled");
     await refresh();
   }, [refresh]);
 

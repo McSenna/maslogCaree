@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Modal, Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";

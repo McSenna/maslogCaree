@@ -13,12 +13,14 @@ import { useResidentAppointmentActions } from "@/features/appointments/hooks/use
 import { useMedicalRecordViewer } from "@/hooks/useMedicalRecordViewer";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
 import { useResponsive } from "@/hooks/useResponsive";
+import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { useSearchParamValue } from "@/hooks/useSearchParamValue";
 import type { AppointmentRecord } from "@/services/appointments";
 
 const ResidentAppointments = () => {
   const { classes } = useTheme();
   const { isMobile } = useResponsive();
+  const insets = useRoleScreenInsets();
   const palette = useQueuePalette();
 
   const { appointments, loading, error, refresh, revalidate } = useResidentAppointments();
@@ -37,7 +39,11 @@ const ResidentAppointments = () => {
 
   return (
     <>
-      <ScrollView className={`flex-1 ${classes.scrollBg}`} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className={`flex-1 ${classes.scrollBg}`}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: insets.gutter, paddingTop: insets.paddingTop }}
+      >
         <View className="gap-6 pb-4">
           <PageHeader
             title="Appointments"

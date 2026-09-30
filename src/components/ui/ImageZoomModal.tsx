@@ -1,4 +1,5 @@
-import { Image, Modal, Platform, ScrollView, View } from "react-native";
+import { Image, Platform, ScrollView, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import IconButton from "@/components/buttons/IconButton";

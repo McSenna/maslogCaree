@@ -1,10 +1,7 @@
-import React, { useEffect } from "react";
-import { Animated, Platform, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LANDING_COLORS } from "@/config/landingAssets";
-import { useInteractiveLift } from "./motion/useInteractiveLift";
-import { USE_NATIVE_DRIVER } from "@/theme/motion";
-import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 
 export type FeatureMetrics = {
   iconBox: number;
@@ -23,6 +20,7 @@ interface FeatureItemProps {
   metrics: FeatureMetrics;
 }
 
+// Static information: no hover or press feedback, since nothing happens on click.
 const FeatureItem = ({
   icon,
   customIcon,
@@ -31,102 +29,61 @@ const FeatureItem = ({
   title,
   description,
   metrics,
-}: FeatureItemProps) => {
-  const lift = useInteractiveLift({ lift: 3, pressScale: 1 });
-  const iconScale = useAnimatedValue(1);
-
-  useEffect(() => {
-    const animation = Animated.spring(iconScale, {
-      toValue: lift.hovered ? 1.07 : 1,
-      useNativeDriver: USE_NATIVE_DRIVER,
-      speed: 24,
-      bounciness: 4,
-    });
-
-    animation.start();
-
-    return () => animation.stop();
-  }, [lift.hovered, iconScale]);
-
-  return (
-    <Animated.View
-      accessible
-      accessibilityRole="summary"
-      accessibilityLabel={`${title}. ${description}`}
-      onPointerEnter={lift.handlers.onHoverIn}
-      onPointerLeave={lift.handlers.onHoverOut}
+}: FeatureItemProps) => (
+  <View
+    accessible
+    accessibilityRole="summary"
+    accessibilityLabel={`${title}. ${description}`}
+    style={[
+      styles.row,
+      {
+        gap: Math.round(metrics.iconBox * 0.28),
+        paddingVertical: metrics.rowPadding,
+      },
+    ]}
+  >
+    <View
       style={[
-        styles.row,
+        styles.iconBox,
         {
-          gap: Math.round(metrics.iconBox * 0.28),
-          padding: metrics.rowPadding,
-          marginHorizontal: -metrics.rowPadding,
+          width: metrics.iconBox,
+          height: metrics.iconBox,
+          borderRadius: Math.round(metrics.iconBox * 0.31),
+          backgroundColor: iconBgColor,
         },
-        lift.hovered && styles.rowHovered,
-        lift.liftStyle,
       ]}
     >
-      <Animated.View
+      {customIcon ? customIcon : icon ? <Ionicons name={icon} size={28} color={iconColor} /> : null}
+    </View>
+
+    <View style={styles.textContainer}>
+      <Text
         style={[
-          styles.iconBox,
+          styles.title,
+          { fontSize: metrics.titleSize, lineHeight: Math.round(metrics.titleSize * 1.3) },
+        ]}
+      >
+        {title}
+      </Text>
+      <Text
+        style={[
+          styles.description,
           {
-            width: metrics.iconBox,
-            height: metrics.iconBox,
-            borderRadius: Math.round(metrics.iconBox * 0.31),
-            backgroundColor: iconBgColor,
-            transform: [{ scale: iconScale }],
+            fontSize: metrics.descriptionSize,
+            lineHeight: Math.round(metrics.descriptionSize * 1.45),
           },
         ]}
       >
-        {customIcon ? customIcon : icon ? <Ionicons name={icon} size={28} color={iconColor} /> : null}
-      </Animated.View>
-
-      <View style={styles.textContainer}>
-        <Text
-          numberOfLines={1}
-          style={[
-            styles.title,
-            { fontSize: metrics.titleSize, lineHeight: Math.round(metrics.titleSize * 1.3) },
-          ]}
-        >
-          {title}
-        </Text>
-        <Text
-          numberOfLines={2}
-          style={[
-            styles.description,
-            {
-              fontSize: metrics.descriptionSize,
-              lineHeight: Math.round(metrics.descriptionSize * 1.45),
-            },
-          ]}
-        >
-          {description}
-        </Text>
-      </View>
-    </Animated.View>
-  );
-};
+        {description}
+      </Text>
+    </View>
+  </View>
+);
 
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: "transparent",
-    ...Platform.select({
-      web: {
-        transition: "background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease",
-      },
-    }),
-  },
-  rowHovered: {
-    backgroundColor: "rgba(255, 255, 255, 0.72)",
-    borderColor: "#DCE8F8",
-    ...Platform.select({
-      web: { boxShadow: "0px 12px 28px rgba(8, 21, 47, 0.08)" },
-    }),
   },
   iconBox: {
     alignItems: "center",

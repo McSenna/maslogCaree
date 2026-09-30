@@ -7,7 +7,8 @@ import { getStatusLabel } from "@/components/status/appointmentStatusModel";
 import { PALETTE } from "@/theme/palette";
 
 export const TWO_COLUMN_WIDTH = 1100;
-export const TABLE_WIDTH = 820;
+// Window width: below this the sidebar leaves the full-width table too narrow for its seven columns.
+export const TABLE_WIDTH = 1100;
 export const FOUR_CARD_WIDTH = 900;
 
 export const QUEUE_RADIUS = { panel: 16, card: 14, control: 12, pill: 999 } as const;

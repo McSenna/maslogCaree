@@ -22,6 +22,9 @@ const valid = () => ({
   date: "2026-07-04",
   time: "09:00",
   location: "Barangay Maslog Health Center",
+  audience: "Everyone" as const,
+  endDate: "",
+  isDraft: false,
 });
 
 describe("date and time parsing", () => {
@@ -62,7 +65,7 @@ describe("validateAnnouncementForm", () => {
 
   it("flags every missing field at once", () => {
     const errors = validateAnnouncementForm(
-      { title: "", message: " ", date: "", time: "", location: "" },
+      { ...valid(), title: "", message: " ", date: "", time: "", location: "" },
       NOW
     );
     assert.deepEqual(Object.keys(errors).sort(), ["date", "location", "message", "time", "title"]);
@@ -98,17 +101,56 @@ describe("validateAnnouncementForm", () => {
   });
 });
 
+describe("end date and edits", () => {
+  it("allows no end date", () => {
+    assert.equal(validateAnnouncementForm({ ...valid(), endDate: "" }, NOW).endDate, undefined);
+  });
+
+  it("rejects an end date before the event or in the past", () => {
+    assert.equal(
+      validateAnnouncementForm({ ...valid(), endDate: "2026-07-03" }, NOW).endDate,
+      "The end date cannot be before the event."
+    );
+    assert.equal(
+      validateAnnouncementForm({ ...valid(), date: "2026-06-20", endDate: "2026-06-25" }, NOW).endDate,
+      "The end date cannot be in the past."
+    );
+  });
+
+  it("lets an edit keep a stored date that has since passed", () => {
+    const stored = { ...valid(), date: "2026-06-20", time: "09:00", endDate: "2026-06-25" };
+    assert.deepEqual(validateAnnouncementForm(stored, NOW, stored), {});
+    assert.equal(
+      validateAnnouncementForm({ ...stored, date: "2026-06-21" }, NOW, stored).date,
+      "The date cannot be in the past."
+    );
+  });
+});
+
 describe("payload and server errors", () => {
   it("trims text and sends the combined instant as ISO", () => {
     const payload = toCreatePayload({ ...valid(), title: "  Free vaccination drive " });
     assert.equal(payload.title, "Free vaccination drive");
     assert.equal(payload.eventAt, new Date(2026, 6, 4, 9, 0).toISOString());
+    assert.equal(payload.expiresAt, null);
+    assert.equal(payload.audience, "Everyone");
+    assert.equal(payload.isDraft, false);
+  });
+
+  it("keeps an announcement up through its whole end day", () => {
+    const payload = toCreatePayload({ ...valid(), endDate: "2026-07-10" });
+    assert.equal(payload.expiresAt, new Date(2026, 6, 10, 23, 59).toISOString());
   });
 
   it("maps the API's eventAt error onto the date field", () => {
     assert.deepEqual(
-      mapServerFieldErrors({ eventAt: "The date cannot be in the past.", title: "Title is required.", extra: "x" }),
-      { date: "The date cannot be in the past.", title: "Title is required." }
+      mapServerFieldErrors({
+        eventAt: "The date cannot be in the past.",
+        title: "Title is required.",
+        expiresAt: "Enter a valid end date.",
+        extra: "x",
+      }),
+      { date: "The date cannot be in the past.", title: "Title is required.", endDate: "Enter a valid end date." }
     );
   });
 });

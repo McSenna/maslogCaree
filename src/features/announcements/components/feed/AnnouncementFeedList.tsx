@@ -51,7 +51,7 @@ const CardSkeleton = () => {
 };
 
 /** A refresh failed but older results are still on screen. */
-const StaleBanner = ({ message, onRetry, retrying }: { message: string; onRetry: () => void; retrying: boolean }) => {
+export const StaleBanner = ({ message, onRetry, retrying }: { message: string; onRetry: () => void; retrying: boolean }) => {
   const colors = useThemeColors();
 
   return (

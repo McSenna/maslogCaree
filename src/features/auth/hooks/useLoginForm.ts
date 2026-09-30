@@ -1,13 +1,14 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "expo-router";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPath } from "@/config/roleRoutes";
-import { PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
+import { ERROR_CODES, PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
+import { LOGIN_MESSAGES, checkIdentifier, checkPassword } from "../webLogin/loginIdentifier";
 
-const EMAIL_REQUIRED = "Please enter your email address or phone number.";
-const PASSWORD_REQUIRED = "Please enter your password.";
+export type LoginField = "email" | "password";
 
 export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => {
   const { login } = useAuth();
@@ -21,6 +22,8 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPlatformNotice, setShowPlatformNotice] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  // A ref, not state, so a second tap in the same frame is already blocked.
+  const inFlight = useRef(false);
 
   const setEmail = useCallback((value: string) => {
     setEmailValue(value);
@@ -34,49 +37,61 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
     setFormError(null);
   }, []);
 
-  const submit = useCallback(async () => {
-    if (isSubmitting) return;
+  /** Returns the first invalid field so the caller can move focus to it. */
+  const submit = useCallback(async (): Promise<LoginField | null> => {
+    if (inFlight.current) return null;
 
-    const missingEmail = !email.trim();
-    const missingPassword = !password;
+    // Same rules as the web login, so "0917 123 4567" and "+63 917..." reach
+    // the server in the 09 form instead of failing as unknown accounts.
+    const idCheck = checkIdentifier(email);
+    const nextPasswordError = checkPassword(password);
 
-    setEmailError(missingEmail ? EMAIL_REQUIRED : null);
-    setPasswordError(missingPassword ? PASSWORD_REQUIRED : null);
+    setEmailError(idCheck.ok ? null : idCheck.message);
+    setPasswordError(nextPasswordError);
 
-    if (missingEmail || missingPassword) return;
+    if (!idCheck.ok) return "email";
+    if (nextPasswordError) return "password";
 
+    inFlight.current = true;
     setFormError(null);
     setIsSubmitting(true);
     try {
-      const result = await login(email.trim(), password);
+      const result = await login(idCheck.value, password);
       if (result.success && result.role) {
         onSuccess?.();
         router.replace(getDashboardPath(result.role) as never);
-        return;
+        return null;
       }
 
       if (result.code && PLATFORM_DENIED_CODES.includes(result.code)) {
         setPasswordValue("");
         setShowPlatformNotice(true);
-        return;
+        return null;
       }
 
+      // The alert under the fields explains what went wrong; the toast marks the failed attempt.
+      toast.error("Couldn't log in");
       setFormError(
-        getAuthErrorPresentation(
-          { code: result.code, message: result.error },
-          "Login failed",
-          result.error ?? "Invalid email or password."
-        )
+        result.code === ERROR_CODES.INVALID_CREDENTIALS
+          ? { title: "Login failed", message: LOGIN_MESSAGES.credentialsMismatch }
+          : getAuthErrorPresentation(
+              { code: result.code, message: result.error },
+              "Login failed",
+              result.error ?? LOGIN_MESSAGES.credentialsMismatch
+            )
       );
     } catch (error: unknown) {
+      toast.error("Couldn't log in");
       setFormError({
         title: "Login failed",
         message: getApiErrorMessage(error, "An unexpected error occurred. Please try again."),
       });
     } finally {
+      inFlight.current = false;
       setIsSubmitting(false);
     }
-  }, [isSubmitting, email, password, login, router, onSuccess]);
+    return null;
+  }, [email, password, login, router, onSuccess]);
 
   const forgotPassword = useCallback(() => setShowForgotPassword(true), []);
 

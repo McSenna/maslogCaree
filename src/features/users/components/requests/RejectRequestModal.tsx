@@ -1,4 +1,5 @@
-import { Modal, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import BottomSheet, { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import { useTheme } from "@/contexts/ThemeContext";

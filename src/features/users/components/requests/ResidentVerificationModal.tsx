@@ -1,4 +1,5 @@
-import { Modal, Pressable, ScrollView, View } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
+import Modal from "@/components/ui/AppModal";
 
 import { useTheme } from "@/contexts/ThemeContext";
 

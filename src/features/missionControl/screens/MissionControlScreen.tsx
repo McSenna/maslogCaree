@@ -68,7 +68,7 @@ const MissionControlScreen = () => {
       >
         <View>
           <Text className="text-[22px] font-bold" style={{ color: palette.heading }}>
-            Appointment &amp; Queue Management
+            Appointments &amp; Queue
           </Text>
           <Text className="mt-1 text-[13px]" style={{ color: palette.muted }}>
             {control.scopeDescription}

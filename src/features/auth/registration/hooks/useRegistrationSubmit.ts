@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import { registerResident } from "@/services/auth";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
 
@@ -99,6 +100,7 @@ export const useRegistrationSubmit = ({
         ? applyServerFieldErrors(normalized.fieldErrors)
         : false;
       if (!placed) setSubmitError(message);
+      toast.error("Registration not submitted");
     } finally {
       setIsSubmitting(false);
     }

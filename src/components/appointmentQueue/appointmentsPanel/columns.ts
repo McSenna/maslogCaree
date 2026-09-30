@@ -5,5 +5,5 @@ export const COLUMNS = {
   date: 1.3,
   time: 1,
   status: 1.1,
-  action: 132,
+  action: 144,
 } as const;

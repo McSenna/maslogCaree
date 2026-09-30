@@ -1,12 +1,12 @@
-import { ActivityIndicator, Text, View } from "react-native";
+import { useRef } from "react";
+import { ActivityIndicator, Text, View, type TextInput } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
-import InlineAlert from "@/components/feedback/InlineAlert";
 import AuthDivider from "@/components/landing/AuthDivider";
-import AuthField from "@/components/landing/AuthField";
 import AuthHeader from "@/components/landing/AuthHeader";
 import SecurityNotice from "@/components/landing/SecurityNotice";
 import { useLoginForm } from "../hooks/useLoginForm";
 import AuthActionButton from "./AuthActionButton";
+import AuthCardFields from "./AuthCardFields";
 import AuthCardShell from "./AuthCardShell";
 import { authCardMetrics } from "./authCardMetrics";
 import { authCardStyles as styles } from "./authCardStyles";
@@ -32,12 +32,13 @@ const AuthCard = ({
   const form = useLoginForm();
   const metrics = authCardMetrics(isMobile, density);
 
-  const fieldProps = {
-    labelSize: metrics.labelSize,
-    labelGap: metrics.labelGap,
-    height: metrics.fieldHeight,
-    fontSize: metrics.fieldFontSize,
-    disabled: form.isSubmitting,
+  const emailRef = useRef<TextInput>(null);
+  const passwordRef = useRef<TextInput>(null);
+
+  const submit = async () => {
+    const invalidField = await form.submit();
+    if (invalidField === "email") emailRef.current?.focus();
+    if (invalidField === "password") passwordRef.current?.focus();
   };
 
   return (
@@ -50,46 +51,24 @@ const AuthCard = ({
       <View style={{ marginBottom: metrics.headerGap }}>
         <AuthHeader
           centered={isMobile}
-          compact={isMobile || compact}
-          headingSize={isMobile ? metrics.headingSize : undefined}
-          subtitleSize={isMobile ? metrics.subtitleSize : undefined}
-          gap={isMobile ? metrics.headerTextGap : undefined}
+          headingSize={metrics.headingSize}
+          subtitleSize={metrics.subtitleSize}
+          gap={metrics.headerTextGap}
+          eyebrowGap={metrics.eyebrowGap}
         />
       </View>
 
-      <View style={[styles.form, { gap: metrics.fieldGap, marginBottom: metrics.formGap }]}>
-        <AuthField
-          {...fieldProps}
-          label="Email or Phone Number"
-          icon="mail-outline"
-          placeholder="Enter your email or phone"
-          value={form.email}
-          onChangeText={form.setEmail}
-          keyboardType="email-address"
-          autoComplete="username"
-          returnKeyType="next"
-          error={form.emailError}
-        />
-
-        <AuthField
-          {...fieldProps}
-          label="Password"
-          icon="lock-closed-outline"
-          placeholder="Enter your password"
-          value={form.password}
-          onChangeText={form.setPassword}
-          secureTextEntry
-          autoComplete="current-password"
-          returnKeyType="go"
-          onSubmitEditing={() => void form.submit()}
-          error={form.passwordError}
-        />
-        {form.formError ? <InlineAlert title={form.formError.title} message={form.formError.message} /> : null}
-      </View>
+      <AuthCardFields
+        form={form}
+        metrics={metrics}
+        emailRef={emailRef}
+        passwordRef={passwordRef}
+        onSubmit={() => void submit()}
+      />
 
       <AuthActionButton
-        accessibilityLabel="Log In"
-        onPress={() => void form.submit()}
+        accessibilityLabel="Log in"
+        onPress={() => void submit()}
         disabled={form.isSubmitting}
         forcePressed={form.isSubmitting}
         height={metrics.buttonHeight}
@@ -101,15 +80,16 @@ const AuthCard = ({
         {form.isSubmitting ? (
           <View style={styles.loadingRow}>
             <ActivityIndicator size="small" color="#FFFFFF" />
-            <Text style={styles.loginButtonText}>Logging In...</Text>
+            <Text style={styles.loginButtonText}>Logging in…</Text>
           </View>
         ) : (
-          <Text style={styles.loginButtonText}>Log In</Text>
+          <Text style={styles.loginButtonText}>Log in</Text>
         )}
       </AuthActionButton>
 
       <ForgotPasswordLink
         onPress={form.forgotPassword}
+        disabled={form.isSubmitting}
         marginBottom={metrics.afterForgotGap}
       />
 
@@ -118,15 +98,16 @@ const AuthCard = ({
       </View>
 
       <AuthActionButton
-        accessibilityLabel="Create New Account"
+        accessibilityLabel="Create an account"
         onPress={onOpenRegister}
+        disabled={form.isSubmitting}
         height={metrics.buttonHeight}
         marginBottom={metrics.afterCreateGap}
         backgroundColor={LANDING_COLORS.green}
         baseStyle={styles.createButton}
         trailingIcon="person-add-outline"
       >
-        <Text style={styles.createButtonText}>Create New Account</Text>
+        <Text style={styles.createButtonText}>Create an account</Text>
       </AuthActionButton>
 
       <View style={styles.securityWrapper}>

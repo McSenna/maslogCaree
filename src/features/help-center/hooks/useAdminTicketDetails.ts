@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { toast } from "@/components/feedback/toast/toastStore";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import {
   fetchAdminSupportTicket,
@@ -42,7 +43,10 @@ export const useAdminTicketDetails = (ticketId: string | null, onChanged?: () =>
   }, [ticketId]);
 
   const run = useCallback(
-    async (action: (id: string) => Promise<void>) => {
+    async (
+      action: (id: string) => Promise<void>,
+      outcome: { success: string; failure: string }
+    ) => {
       if (!ticketId || busy) return false;
 
       setBusy(true);
@@ -51,9 +55,13 @@ export const useAdminTicketDetails = (ticketId: string | null, onChanged?: () =>
       try {
         await action(ticketId);
         onChanged?.();
+        toast.success(outcome.success);
         return true;
       } catch (caught: unknown) {
-        setError(getApiErrorMessage(caught));
+        const message = getApiErrorMessage(caught);
+        setError(message);
+        // The phone sheet has no error area, so the toast carries the reason too.
+        toast.error(outcome.failure, message);
         return false;
       } finally {
         setBusy(false);
@@ -67,7 +75,7 @@ export const useAdminTicketDetails = (ticketId: string | null, onChanged?: () =>
       run(async (id) => {
         const updated = await updateAdminTicketStatus(id, status);
         setLoaded({ id, ticket: updated });
-      }),
+      }, { success: "Ticket status updated", failure: "Status not changed" }),
     [run]
   );
 
@@ -83,7 +91,7 @@ export const useAdminTicketDetails = (ticketId: string | null, onChanged?: () =>
               }
             : current
         );
-      }),
+      }, { success: "Reply sent", failure: "Reply not sent" }),
     [run]
   );
 

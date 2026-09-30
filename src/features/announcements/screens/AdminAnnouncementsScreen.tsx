@@ -1,87 +1,67 @@
 import { useState } from "react";
-import { RefreshControl, ScrollView, Text, View } from "react-native";
+import { View, type LayoutChangeEvent } from "react-native";
 
-import Button from "@/components/buttons/Button";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
-import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
-import { usePageMaxWidth } from "@/hooks/useResponsive";
+import { getSidebarWidth } from "@/components/navigation/sidebar/sidebarTheme";
+import { useResponsive } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { useSearchParamValue } from "@/hooks/useSearchParamValue";
 
-import CreateAnnouncementDialog from "../components/create/CreateAnnouncementDialog";
-import AnnouncementFeedList from "../components/feed/AnnouncementFeedList";
-import { useAnnouncementFeed } from "../hooks/useAnnouncementFeed";
-import { fetchAdminAnnouncements } from "../services/announcementService";
+import PhoneAnnouncementsView from "../admin/components/phone/PhoneAnnouncementsView";
+import { LoadingRows } from "../admin/components/ui/ScreenStates";
+import { TABLE_MIN_WIDTH } from "../admin/components/wide/tableColumns";
+import WideAnnouncementsView from "../admin/components/wide/WideAnnouncementsView";
+import { useAnnouncementsScreen } from "../admin/hooks/useAnnouncementsScreen";
+import { useExportCsv } from "../admin/hooks/useExportCsv";
+import { useAnnouncementTheme } from "../admin/useAnnouncementTheme";
+import { usePublicSans } from "../admin/usePublicSans";
+import AnnouncementEditorDialog from "../components/create/AnnouncementEditorDialog";
 
+// The role shell's content padding on either side of the page from tablet width up.
+const SHELL_PADDING_X = 48;
+
+/**
+ * Admin announcements. The table needs the width beside the app sidebar, not
+ * the window, so the page measures itself: below the table's minimum it shows
+ * the phone list, which also covers tablets in portrait.
+ */
 const AdminAnnouncementsScreen = () => {
-  const maxWidth = usePageMaxWidth("feed");
-  const palette = useAdminSurfacePalette();
+  const fontsReady = usePublicSans();
+  const theme = useAnnouncementTheme();
   const insets = useRoleScreenInsets();
-  const feed = useAnnouncementFeed(fetchAdminAnnouncements);
+  const { isMobile, width: windowWidth, breakpoint } = useResponsive();
+  const [measuredWidth, setMeasuredWidth] = useState<number | null>(null);
   // `?compose=1` is the dashboard's "New announcement" shortcut.
-  const [creating, setCreating] = useState(useSearchParamValue("compose") === "1");
+  const screen = useAnnouncementsScreen(useSearchParamValue("compose") === "1");
+  const exportCsv = useExportCsv(screen.visible);
 
-  const openCreate = () => setCreating(true);
+  // Until the first layout, estimate the content width from the window.
+  const width = measuredWidth ?? windowWidth - getSidebarWidth(breakpoint) - SHELL_PADDING_X;
+  const wide = !isMobile && width - insets.gutter * 2 >= TABLE_MIN_WIDTH;
+
+  const handleLayout = (event: LayoutChangeEvent) => setMeasuredWidth(event.nativeEvent.layout.width);
+  const onExport = () => void exportCsv();
+
+  const body = !fontsReady ? (
+    <LoadingRows />
+  ) : wide ? (
+    <WideAnnouncementsView screen={screen} width={width} insets={insets} onExport={onExport} />
+  ) : (
+    <PhoneAnnouncementsView screen={screen} onExport={onExport} />
+  );
 
   return (
-    <View style={{ flex: 1, width: "100%", backgroundColor: palette.pageBg }}>
-      <RoleScreenBackdrop color={palette.pageBg} insets={insets} />
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={feed.refreshing}
-            onRefresh={() => void feed.refresh()}
-            tintColor={palette.primary}
-            colors={[palette.primary]}
-          />
-        }
-        contentContainerStyle={{
-          width: "100%",
-          paddingHorizontal: insets.gutter,
-          paddingTop: insets.paddingTop,
-          paddingBottom: insets.paddingBottom + 40,
-        }}
-      >
-        <View style={{ width: "100%", maxWidth, alignSelf: "center", gap: 20 }}>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "flex-end", gap: 16 }}>
-            <View style={{ flex: 1, minWidth: 240, gap: 4 }}>
-              <Text
-                accessibilityRole="header"
-                style={{ fontSize: 22, fontWeight: "700", letterSpacing: -0.2, color: palette.heading }}
-              >
-                Announcements
-              </Text>
-              <Text style={{ fontSize: 13.5, lineHeight: 20, color: palette.muted }}>
-                Tell every resident and staff member what is happening, when, and where. Posts
-                arrive in their MaslogCare notifications.
-              </Text>
-            </View>
-
-            <Button
-              label="New announcement"
-              icon="plus"
-              onPress={openCreate}
-              accessibilityHint="Opens the form to write and post an announcement"
-            />
-          </View>
-
-          <AnnouncementFeedList
-            feed={feed}
-            showAdminMeta
-            emptyTitle="No announcements yet"
-            emptyDescription="Post the first one to let everyone know about an upcoming event, schedule change, or health drive."
-            emptyAction={{ label: "New announcement", onPress: openCreate }}
-          />
-        </View>
-      </ScrollView>
-
-      <CreateAnnouncementDialog
-        visible={creating}
-        onClose={() => setCreating(false)}
-        onCreated={feed.prepend}
-      />
+    <View style={theme.vars} onLayout={handleLayout} className="w-full flex-1">
+      <RoleScreenBackdrop color={theme.palette.page} insets={insets} />
+      {body}
+      {screen.editor ? (
+        <AnnouncementEditorDialog
+          key={screen.editor === "new" ? "new" : screen.editor.id}
+          editing={screen.editor === "new" ? null : screen.editor}
+          onClose={screen.closeEditor}
+          onSaved={screen.data.upsert}
+        />
+      ) : null}
     </View>
   );
 };
