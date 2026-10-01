@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import type { ConsultationCategory } from "@/services/appointments";
 import {
@@ -22,6 +22,8 @@ type MissionCategoryCardProps = {
   onToggle: (categoryKey: string) => void;
   onDurationChange: (category: ConsultationCategory, minutes: number) => void;
   compact?: boolean;
+  /** Set when the service cannot run on the mission's date; locks the card off. */
+  offDayNote?: string | null;
 };
 
 const MissionCategoryCard = ({
@@ -31,9 +33,12 @@ const MissionCategoryCard = ({
   onToggle,
   onDurationChange,
   compact = false,
+  offDayNote = null,
 }: MissionCategoryCardProps) => {
   const palette = useMissionSchedulePalette();
-  const tone = enabled ? palette.toneFor(category.key) : palette.neutralTone;
+  const isOn = enabled && !offDayNote;
+  const tone = isOn ? palette.toneFor(category.key) : palette.neutralTone;
+  const caption = offDayNote ?? category.description;
 
   const variable = isVariableDuration(category);
   const duration = resolveDuration(category, durations);
@@ -44,7 +49,7 @@ const MissionCategoryCard = ({
       min={category.durationMinutesMin ?? duration}
       max={category.durationMinutesMax ?? duration}
       onChange={(minutes) => onDurationChange(category, minutes)}
-      disabled={!enabled}
+      disabled={!isOn}
       label={category.label}
     />
   ) : (
@@ -57,7 +62,7 @@ const MissionCategoryCard = ({
         backgroundColor: palette.subtle,
         borderWidth: 1,
         borderColor: palette.border,
-        opacity: enabled ? 1 : 0.6,
+        opacity: isOn ? 1 : 0.6,
       }}
     >
       <Text className="text-[13.5px] font-semibold tabular-nums" style={{ color: palette.body }}>
@@ -73,7 +78,7 @@ const MissionCategoryCard = ({
         borderRadius: MISSION_RADIUS.card,
         borderWidth: 1,
         borderColor: palette.border,
-        backgroundColor: enabled ? palette.surface : palette.subtle,
+        backgroundColor: isOn ? palette.surface : palette.subtle,
       }}
     >
       <View className="min-w-0 flex-1 flex-row items-center gap-3">
@@ -92,14 +97,21 @@ const MissionCategoryCard = ({
           <Text
             numberOfLines={1}
             className="text-[15px] font-bold"
-            style={{ color: enabled ? palette.heading : palette.body }}
+            style={{ color: isOn ? palette.heading : palette.body }}
           >
             {category.label}
           </Text>
-          {category.description ? (
-            <Text numberOfLines={compact ? 2 : 1} className="text-[12.5px]" style={{ color: palette.muted }}>
-              {category.description}
-            </Text>
+          {caption ? (
+            <View className="flex-row items-center gap-1.5">
+              {offDayNote ? <Feather name="calendar" size={12} color={palette.muted} /> : null}
+              <Text
+                numberOfLines={compact ? 2 : 1}
+                className="min-w-0 flex-shrink text-[12.5px]"
+                style={{ color: palette.muted }}
+              >
+                {caption}
+              </Text>
+            </View>
           ) : null}
         </View>
       </View>
@@ -107,9 +119,10 @@ const MissionCategoryCard = ({
       <View className={compact ? "flex-row items-center justify-between gap-3" : "flex-row items-center gap-4"}>
         {durationControl}
         <ServiceToggle
-          value={enabled}
+          value={isOn}
           onChange={() => onToggle(category.key)}
-          label={`${category.label} on this mission`}
+          disabled={Boolean(offDayNote)}
+          label={offDayNote ? `${category.label} on this mission. ${offDayNote}` : `${category.label} on this mission`}
         />
       </View>
     </View>

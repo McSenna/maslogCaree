@@ -29,6 +29,7 @@ const OptionRow = ({ label, selected, onPress, disabled = false }: OptionRowProp
         disabled={disabled}
         accessibilityRole="radio"
         accessibilityState={{ checked: selected, disabled }}
+        aria-checked={selected}
         style={[
           {
             minHeight: 44,

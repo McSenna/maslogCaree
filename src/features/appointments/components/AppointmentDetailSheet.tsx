@@ -13,6 +13,7 @@ import {
   appointmentServiceLabel,
   appointmentWhen,
   buildAppointmentTimeline,
+  childDetailRows,
   medicalRecordIdOf,
 } from "../appointmentPresenter";
 import { AppointmentSheetActions } from "./detailSheet/AppointmentSheetActions";
@@ -59,6 +60,7 @@ const AppointmentDetailSheet = ({
   const rows = [
     { label: "Reference no.", value: appointmentReference(appointment) },
     { label: "Service", value: service },
+    ...childDetailRows(appointment),
     { label: "Scheduled", value: appointment.slotStart ? appointmentWhen(appointment) : "" },
     { label: "Seen by", value: getAssignedStaffName(appointment.completedBy) },
     { label: "Scheduled by", value: getAssignedStaffName(appointment.assignedBy) },

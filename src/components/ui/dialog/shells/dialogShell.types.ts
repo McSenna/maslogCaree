@@ -5,6 +5,8 @@ export type DialogShellProps = {
   visible: boolean;
   title: string;
   icon: keyof typeof Feather.glyphMap;
+  /** Replaces the icon badge, e.g. the barangay seal. Decorative: hidden from screen readers. */
+  media?: ReactNode;
   tint?: string;
   tintSoft?: string;
   onClose: () => void;

@@ -4,6 +4,7 @@ import { Pressable, Text, View } from "react-native";
 
 import LegalDocumentDialog from "@/features/legal/components/LegalDocumentDialog";
 import LegalLinks from "@/features/legal/components/LegalLinks";
+import type { LegalDocumentKind } from "@/features/legal/types/legalDocument.types";
 
 import { REG_COLORS } from "../registrationTheme";
 
@@ -14,7 +15,7 @@ type ConsentCheckboxProps = {
 
 const ConsentCheckbox = ({ checked, onChange }: ConsentCheckboxProps) => {
   // The documents open over the form so nothing typed so far is lost.
-  const [reading, setReading] = useState<"privacy" | "terms" | null>(null);
+  const [reading, setReading] = useState<LegalDocumentKind | null>(null);
 
   return (
     <View style={{ gap: 6 }}>
@@ -68,7 +69,7 @@ const ConsentCheckbox = ({ checked, onChange }: ConsentCheckboxProps) => {
         />
       </View>
 
-      <LegalDocumentDialog kind={reading} onClose={() => setReading(null)} />
+      <LegalDocumentDialog kind={reading} onClose={() => setReading(null)} onOpenRelated={setReading} />
     </View>
   );
 };

@@ -3,11 +3,13 @@ import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import type { QueuePalette } from "../queueTheme";
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
-import { scheduleFor } from "./appointmentSchedule";
+import { TYPE } from "@/theme/typography";
+import { isRescheduledRequest, scheduleFor } from "./appointmentSchedule";
 import { COLUMNS } from "./columns";
 import QueueAvatar from "./QueueAvatar";
 import RowActions, { type RowActionProps } from "./RowActions";
 import TableCell from "./TableCell";
+import { appointmentPatientName, childCaption } from "@/utils/appointmentPatient";
 
 type AppointmentsTableRowProps = RowActionProps & {
   index: number;
@@ -36,7 +38,7 @@ const AppointmentsTableRow = ({
         ? {
             onPress: () => open(appointment),
             accessibilityRole: "button" as const,
-            accessibilityLabel: `View the medical record for ${appointment.resident?.fullname ?? "this appointment"}`,
+            accessibilityLabel: `View the medical record for ${appointmentPatientName(appointment, "this appointment")}`,
           }
         : {})}
       onPointerEnter={() => setHovered(true)}
@@ -57,14 +59,17 @@ const AppointmentsTableRow = ({
 
       <TableCell flex={COLUMNS.patient}>
         <View className="flex-row items-center gap-2.5">
-          <QueueAvatar name={appointment.resident?.fullname ?? ""} palette={palette} />
-          <Text
-            numberOfLines={1}
-            className="min-w-0 flex-1 text-[14px] font-semibold"
-            style={{ color: palette.heading }}
-          >
-            {appointment.resident?.fullname || "Unnamed patient"}
-          </Text>
+          <QueueAvatar name={appointmentPatientName(appointment, "")} palette={palette} />
+          <View className="min-w-0 flex-1">
+            <Text numberOfLines={1} className="text-[14px] font-semibold" style={{ color: palette.heading }}>
+              {appointmentPatientName(appointment)}
+            </Text>
+            {childCaption(appointment) ? (
+              <Text numberOfLines={1} style={[TYPE.caption, { color: palette.muted }]}>
+                {childCaption(appointment)}
+              </Text>
+            ) : null}
+          </View>
         </View>
       </TableCell>
 
@@ -72,6 +77,11 @@ const AppointmentsTableRow = ({
         <Text numberOfLines={1} className="text-[13.5px]" style={{ color: palette.body }}>
           {serviceLabel}
         </Text>
+        {isRescheduledRequest(appointment) ? (
+          <Text numberOfLines={1} style={[TYPE.caption, { color: palette.muted }]}>
+            Rescheduled
+          </Text>
+        ) : null}
       </TableCell>
 
       <TableCell flex={COLUMNS.date}>

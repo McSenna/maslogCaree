@@ -1,57 +1,35 @@
-import { Feather } from "@expo/vector-icons";
-import { Pressable, Text, View } from "react-native";
-import { PROFILE_COLORS, PROFILE_RADIUS } from "../../config/profileTheme";
+import { Text, View } from "react-native";
+import Button from "@/components/buttons/Button";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 
-export const SectionEditLink = ({
-  label,
-  onPress,
-}: {
-  label: string;
-  onPress: () => void;
-}) => (
-  <Pressable
-    accessibilityRole="button"
-    accessibilityLabel={label}
-    onPress={onPress}
-    className="flex-row items-center active:opacity-75"
-    style={{
-      gap: 4,
-      minHeight: 32,
-      paddingHorizontal: 12,
-      borderRadius: 8,
-      backgroundColor: PROFILE_COLORS.primarySoft,
-    }}
-  >
-    <Feather name="edit-2" size={12} color={PROFILE_COLORS.primary} />
-    <Text style={{ fontSize: 13, fontWeight: "700", color: PROFILE_COLORS.primary }}>Edit</Text>
-  </Pressable>
+export const SectionEditLink = ({ label, onPress }: { label: string; onPress: () => void }) => (
+  <Button label="Edit" icon="edit-2" variant="ghost" size="sm" accessibilityLabel={label} onPress={onPress} />
 );
 
-export const SectionEditingBadge = () => (
-  <View
-    accessibilityRole="text"
-    accessibilityLabel="Currently editing this section"
-    className="flex-row items-center"
-    style={{
-      gap: 5,
-      minHeight: 28,
-      paddingHorizontal: 10,
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: PROFILE_COLORS.primaryBorder,
-      backgroundColor: PROFILE_COLORS.primarySoft,
-    }}
-  >
+export const SectionEditingBadge = () => {
+  const colors = useThemeColors();
+
+  return (
     <View
+      accessibilityRole="text"
+      accessibilityLabel="Currently editing this section"
       style={{
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-        backgroundColor: PROFILE_COLORS.primary,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: SPACING.xs,
+        minHeight: 28,
+        paddingHorizontal: SPACING.sm,
+        borderRadius: RADII.small,
+        backgroundColor: colors.primarySoft,
       }}
-    />
-    <Text style={{ fontSize: 12, fontWeight: "700", color: PROFILE_COLORS.primary }}>
-      Editing
-    </Text>
-  </View>
-);
+    >
+      <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: colors.primary }} />
+      <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.caption, fontWeight: "700", color: colors.primary }}>
+        Editing
+      </Text>
+    </View>
+  );
+};

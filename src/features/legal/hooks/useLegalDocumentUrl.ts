@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import { Platform } from "react-native";
 
-import { LEGAL_DOCUMENTS, LEGAL_ROUTES } from "./legalContent";
-import { closeLegalDocumentDialog, type LegalDocumentKind } from "./legalDocumentStore";
+import { LEGAL_CATALOG } from "../constants/legalCatalog";
+import { closeLegalDocumentDialog } from "../services/legalDocumentStore";
+import type { LegalDocumentKind } from "../types/legalDocument.types";
 
 const MARKER = "legalDocument";
 
@@ -25,13 +26,13 @@ export const useLegalDocumentUrl = (kind: LegalDocumentKind | null) => {
     if (kind) {
       // The tab names the document while its URL is showing, like the direct-link page does.
       pageTitle.current ??= document.title;
-      document.title = `${LEGAL_DOCUMENTS[kind].title} · MaslogCare`;
+      document.title = `${LEGAL_CATALOG[kind].title} · MaslogCare`;
 
       const state = { ...(window.history.state ?? {}), [MARKER]: kind };
       if (pushed.current) {
-        window.history.replaceState(state, "", LEGAL_ROUTES[kind]);
+        window.history.replaceState(state, "", LEGAL_CATALOG[kind].route);
       } else {
-        window.history.pushState(state, "", LEGAL_ROUTES[kind]);
+        window.history.pushState(state, "", LEGAL_CATALOG[kind].route);
         pushed.current = true;
       }
       return;

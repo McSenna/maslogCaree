@@ -1,31 +1,33 @@
 import { Animated, View } from "react-native";
-import { PROFILE_COLORS, PROFILE_RADIUS, PROFILE_SHADOW } from "../../config/profileTheme";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import { SPACING } from "@/theme/spacing";
 import Block from "./Block";
 
+/** Placeholder for a section card: a title, then icon-led two-line rows. */
 const CardSkeleton = ({ rows, opacity }: { rows: number; opacity: Animated.Value }) => {
+  const colors = useThemeColors();
+
   return (
     <View
       style={{
-        gap: 14,
-        padding: 16,
-        borderRadius: PROFILE_RADIUS.card,
-        backgroundColor: PROFILE_COLORS.surface,
+        gap: SPACING.lg,
+        padding: SPACING.lg,
+        borderRadius: RADII.large,
+        backgroundColor: colors.surface,
         borderWidth: 1,
-        borderColor: PROFILE_COLORS.border,
-        ...PROFILE_SHADOW.card,
+        borderColor: colors.border,
       }}
     >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-        <Block width={38} height={38} radius={12} opacity={opacity} />
-        <Block width="55%" height={16} opacity={opacity} />
-      </View>
+      <Block width="45%" height={18} opacity={opacity} />
 
       {Array.from({ length: rows }).map((_, index) => (
-        <View key={index} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <Block width={20} height={20} radius={6} opacity={opacity} />
-          <Block width="35%" height={12} opacity={opacity} />
-          <View style={{ flex: 1 }} />
-          <Block width="28%" height={12} opacity={opacity} />
+        <View key={index} style={{ flexDirection: "row", alignItems: "flex-start", gap: SPACING.md }}>
+          <Block width={20} height={20} radius={RADII.small} opacity={opacity} />
+          <View style={{ flex: 1, gap: SPACING.xs }}>
+            <Block width="62%" height={14} opacity={opacity} />
+            <Block width="34%" height={11} opacity={opacity} />
+          </View>
         </View>
       ))}
     </View>

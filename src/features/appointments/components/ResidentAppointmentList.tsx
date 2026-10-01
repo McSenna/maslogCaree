@@ -52,7 +52,7 @@ const ResidentAppointmentList = ({
       <EmptyState
         icon="calendar"
         title="No appointments yet"
-        description="Your health center appointments will appear here once you send a request."
+        description="Your health center appointments will appear here once you book one."
         action={{ label: "Book appointment", onPress: onBook }}
       />
     );

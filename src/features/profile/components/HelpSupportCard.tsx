@@ -1,10 +1,13 @@
 import { View } from "react-native";
+import { LEGAL_CATALOG } from "@/features/legal/constants/legalCatalog";
+import { showLegalDocument } from "@/features/legal/services/showLegalDocument";
 
-import { showLegalDocument } from "@/features/legal/showLegalDocument";
-
-import { HELP_SUPPORT_MENU, type HelpSupportMenuKey } from "../config/helpSupportMenu";
+import {
+  HELP_SUPPORT_MENU,
+  type HelpSupportMenuKey,
+} from "../config/helpSupportMenu";
 import ProfileSectionCard from "./ProfileSectionCard";
-import SettingsRow, { type SettingsRowSize } from "./SettingsRow";
+import SettingsRow from "./SettingsRow";
 
 export type HelpSupportHandlers = {
   onHelpCenter?: () => void;
@@ -14,7 +17,6 @@ export type HelpSupportHandlers = {
   onAbout?: () => void;
   supportBadge?: string;
   appVersion?: string;
-  size?: SettingsRowSize;
 };
 
 const HelpSupportCard = ({
@@ -25,7 +27,6 @@ const HelpSupportCard = ({
   onAbout,
   supportBadge,
   appVersion,
-  size = "regular",
 }: HelpSupportHandlers) => {
   const handlers: Record<HelpSupportMenuKey, (() => void) | undefined> = {
     helpCenter: onHelpCenter,
@@ -35,7 +36,7 @@ const HelpSupportCard = ({
   };
 
   return (
-    <ProfileSectionCard title="Help & Support" icon="help-circle">
+    <ProfileSectionCard title="Help and support">
       <View>
         {HELP_SUPPORT_MENU.map((entry) => (
           <SettingsRow
@@ -45,23 +46,20 @@ const HelpSupportCard = ({
             icon={entry.icon}
             badge={entry.key === "supportRequests" ? supportBadge : undefined}
             onPress={handlers[entry.key]}
-            size={size}
           />
         ))}
 
         <SettingsRow
-          label="Privacy policy"
-          description="What MaslogCare collects and how to ask about your data."
+          label={LEGAL_CATALOG.privacy.title}
+          description={LEGAL_CATALOG.privacy.description}
           icon="lock"
           onPress={() => showLegalDocument("privacy")}
-          size={size}
         />
         <SettingsRow
-          label="Terms and conditions"
-          description="The rules for using MaslogCare."
+          label={LEGAL_CATALOG.terms.title}
+          description={LEGAL_CATALOG.terms.description}
           icon="file-text"
           onPress={() => showLegalDocument("terms")}
-          size={size}
         />
 
         <SettingsRow
@@ -69,8 +67,6 @@ const HelpSupportCard = ({
           icon="info"
           value={appVersion}
           onPress={onAbout}
-          size={size}
-          showDivider={false}
         />
       </View>
     </ProfileSectionCard>

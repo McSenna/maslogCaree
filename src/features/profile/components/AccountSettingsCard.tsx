@@ -1,32 +1,27 @@
 import { View } from "react-native";
 import ProfileSectionCard from "./ProfileSectionCard";
-import SettingsRow, { type SettingsRowSize } from "./SettingsRow";
+import SettingsRow from "./SettingsRow";
 
 export type AccountSettingsHandlers = {
   onChangePassword?: () => void;
   onNotificationSettings?: () => void;
-  size?: SettingsRowSize;
 };
 
 const AccountSettingsCard = ({
   onChangePassword,
   onNotificationSettings,
-  size = "regular",
 }: AccountSettingsHandlers) => (
-  <ProfileSectionCard title="Account Settings" icon="settings" tone="green">
+  <ProfileSectionCard title="Account settings">
     <View>
       <SettingsRow
-        label="Change Password"
+        label="Change password"
         icon="lock"
         onPress={onChangePassword}
-        size={size}
       />
       <SettingsRow
-        label="Notification Settings"
+        label="Notification settings"
         icon="bell"
         onPress={onNotificationSettings}
-        size={size}
-        showDivider={false}
       />
     </View>
   </ProfileSectionCard>

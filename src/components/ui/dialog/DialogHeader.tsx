@@ -1,4 +1,5 @@
 import { Feather } from "@expo/vector-icons";
+import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
@@ -7,6 +8,7 @@ export type DialogHeaderProps = {
   palette: ResidentDialogPalette;
   title: string;
   icon: keyof typeof Feather.glyphMap;
+  media?: ReactNode;
   tint?: string;
   tintSoft?: string;
   titleId?: string;
@@ -17,6 +19,7 @@ export const DialogHeader = ({
   palette,
   title,
   icon,
+  media,
   tint,
   tintSoft,
   titleId,
@@ -37,16 +40,19 @@ export const DialogHeader = ({
   >
     <View style={{ minWidth: 0, flex: 1, flexDirection: "row", alignItems: "center", gap: 10 }}>
       <View
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+        aria-hidden
         style={{
           width: 36,
           height: 36,
           borderRadius: 18,
-          backgroundColor: tintSoft ?? palette.accentSoft,
+          backgroundColor: media ? undefined : (tintSoft ?? palette.accentSoft),
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Feather name={icon} size={17} color={tint ?? palette.accent} />
+        {media ?? <Feather name={icon} size={17} color={tint ?? palette.accent} />}
       </View>
       <Text
         nativeID={titleId}

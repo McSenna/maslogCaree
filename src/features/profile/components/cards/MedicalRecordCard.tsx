@@ -1,8 +1,8 @@
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import type { MedicalRecord } from "@/services/medicalRecords";
-import { SOCIAL_COLORS } from "../../config/profileSocialTheme";
-import { PROFILE_RADIUS } from "../../config/profileTheme";
+import { RADII } from "@/theme/radius";
 import {
   recordDate,
   recordFollowUp,
@@ -16,6 +16,7 @@ type MedicalRecordCardProps = {
 };
 
 const MedicalRecordCard = ({ record }: MedicalRecordCardProps) => {
+  const colors = useThemeColors();
   const title = recordServiceLabel(record);
   const provider = recordProviderName(record);
   const summary = recordSummary(record);
@@ -29,10 +30,10 @@ const MedicalRecordCard = ({ record }: MedicalRecordCardProps) => {
       style={{
         gap: 10,
         padding: 14,
-        borderRadius: PROFILE_RADIUS.card,
-        backgroundColor: SOCIAL_COLORS.surface,
+        borderRadius: RADII.large,
+        backgroundColor: colors.surface,
         borderWidth: 1,
-        borderColor: SOCIAL_COLORS.border,
+        borderColor: colors.border,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 11 }}>
@@ -43,24 +44,24 @@ const MedicalRecordCard = ({ record }: MedicalRecordCardProps) => {
             borderRadius: 12,
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: SOCIAL_COLORS.greenSoft,
+            backgroundColor: colors.success.bg,
           }}
         >
-          <Feather name="file-text" size={17} color={SOCIAL_COLORS.greenDeep} />
+          <Feather name="file-text" size={17} color={colors.success.fg} />
         </View>
 
         <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
           <Text
             numberOfLines={1}
             maxFontSizeMultiplier={1.2}
-            style={{ fontSize: 15, fontWeight: "700", color: SOCIAL_COLORS.navy }}
+            style={{ fontSize: 15, fontWeight: "700", color: colors.heading }}
           >
             {title}
           </Text>
           <Text
             numberOfLines={1}
             maxFontSizeMultiplier={1.2}
-            style={{ fontSize: 12.5, color: SOCIAL_COLORS.muted }}
+            style={{ fontSize: 12.5, color: colors.muted }}
           >
             {provider ? `${recordDate(record)} · ${provider}` : recordDate(record)}
           </Text>
@@ -74,9 +75,9 @@ const MedicalRecordCard = ({ record }: MedicalRecordCardProps) => {
           style={{
             fontSize: 13.5,
             lineHeight: 19,
-            color: SOCIAL_COLORS.body,
+            color: colors.body,
             borderTopWidth: 1,
-            borderTopColor: SOCIAL_COLORS.divider,
+            borderTopColor: colors.divider,
             paddingTop: 10,
           }}
         >
@@ -85,7 +86,7 @@ const MedicalRecordCard = ({ record }: MedicalRecordCardProps) => {
       ) : null}
 
       {followUp ? (
-        <Text style={{ fontSize: 12.5, fontWeight: "600", color: SOCIAL_COLORS.primary }}>
+        <Text style={{ fontSize: 12.5, fontWeight: "600", color: colors.primary }}>
           {followUp}
         </Text>
       ) : null}

@@ -2,21 +2,21 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { APPOINTMENT_FIELD_ICONS } from "@/config/appointmentServices";
 import type { AppointmentBooking } from "../hooks/useAppointmentBooking";
-import { AUTO_SCHEDULE_NOTE } from "../constants/bookingCopy";
-import { APPOINTMENT_COLORS, TEXT_LIMIT } from "./appointmentTheme";
+import { BOOKING_NOTE } from "../constants/bookingCopy";
+import { APPOINTMENT_COLORS } from "./appointmentTheme";
 import AppointmentAlert from "./AppointmentAlert";
 import BookingActionButton from "./BookingActionButton";
 import ConfirmationCheckbox from "./ConfirmationCheckbox";
 import FormSelectField from "./FormSelectField";
-import FormTextArea from "./FormTextArea";
+import ImmunizationVisitFields from "./ImmunizationVisitFields";
+import MissionVisitFields from "./MissionVisitFields";
 import ResidentInfoCard from "./ResidentInfoCard";
 
 type BookingRequestStepProps = {
   booking: AppointmentBooking;
-  onClose: () => void;
 };
 
-const BookingRequestStep = ({ booking, onClose }: BookingRequestStepProps) => {
+const BookingRequestStep = ({ booking }: BookingRequestStepProps) => {
   const { errors, submitting, servicesUnavailable } = booking;
 
   return (
@@ -31,7 +31,7 @@ const BookingRequestStep = ({ booking, onClose }: BookingRequestStepProps) => {
           Appointment Details
         </Text>
 
-        <AppointmentAlert tone="info" message={AUTO_SCHEDULE_NOTE} />
+        <AppointmentAlert tone="info" message={BOOKING_NOTE} />
 
         {booking.servicesError ? (
           <AppointmentAlert
@@ -54,10 +54,7 @@ const BookingRequestStep = ({ booking, onClose }: BookingRequestStepProps) => {
           icon={APPOINTMENT_FIELD_ICONS.service}
           options={booking.serviceOptions}
           value={booking.serviceType}
-          onChange={(id) => {
-            booking.setServiceType(id);
-            booking.clearError("serviceType");
-          }}
+          onChange={booking.chooseService}
           error={errors.serviceType}
           loading={booking.servicesLoading}
           loadingText="Loading services…"
@@ -66,30 +63,7 @@ const BookingRequestStep = ({ booking, onClose }: BookingRequestStepProps) => {
           helperText={booking.selectedService?.helper ?? null}
         />
 
-        <FormTextArea
-          label="Reason for Visit / Symptoms"
-          required
-          placeholder="Describe your symptoms or reason for visit..."
-          icon={APPOINTMENT_FIELD_ICONS.reason}
-          value={booking.reason}
-          onChangeText={(next) => {
-            booking.setReason(next);
-            if (next.trim()) booking.clearError("reason");
-          }}
-          error={errors.reason}
-          maxLength={TEXT_LIMIT}
-        />
-
-        <FormTextArea
-          label="Additional Notes"
-          optional
-          placeholder="Add any additional information (optional)..."
-          icon={APPOINTMENT_FIELD_ICONS.notes}
-          value={booking.notes}
-          onChangeText={booking.setNotes}
-          maxLength={TEXT_LIMIT}
-          minHeight={80}
-        />
+        {booking.weekly ? <ImmunizationVisitFields booking={booking} /> : <MissionVisitFields booking={booking} />}
       </View>
 
       <ConfirmationCheckbox
@@ -101,9 +75,7 @@ const BookingRequestStep = ({ booking, onClose }: BookingRequestStepProps) => {
         error={errors.confirmed}
       />
 
-      {booking.submitError ? (
-        <AppointmentAlert tone="danger" message={booking.submitError} />
-      ) : null}
+      {booking.submitError ? <AppointmentAlert tone="danger" message={booking.submitError} /> : null}
 
       <View style={{ gap: 10 }}>
         <BookingActionButton
@@ -116,9 +88,9 @@ const BookingRequestStep = ({ booking, onClose }: BookingRequestStepProps) => {
           opacity={submitting || servicesUnavailable ? 0.55 : booking.isComplete ? 1 : 0.75}
           icon={
             submitting ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
+              <ActivityIndicator size="small" color={APPOINTMENT_COLORS.white} />
             ) : (
-              <Feather name="send" size={17} color="#FFFFFF" />
+              <Feather name="calendar" size={17} color={APPOINTMENT_COLORS.white} />
             )
           }
         />
@@ -126,8 +98,8 @@ const BookingRequestStep = ({ booking, onClose }: BookingRequestStepProps) => {
         <BookingActionButton
           variant="neutral"
           label="Cancel"
-          accessibilityLabel="Cancel"
-          onPress={onClose}
+          accessibilityLabel="Cancel booking"
+          onPress={booking.close}
           disabled={submitting}
           opacity={submitting ? 0.6 : 1}
         />

@@ -1,4 +1,5 @@
 import type { Feather } from "@expo/vector-icons";
+import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 import Button from "@/components/buttons/Button";
 import ResponsiveDialog from "@/components/ui/dialog/ResponsiveDialog";
@@ -20,13 +21,14 @@ type ActionDialogProps = {
   title: string;
   message?: string;
   icon?: keyof typeof Feather.glyphMap;
+  media?: ReactNode;
   destructive?: boolean;
   actions: ActionDialogButton[];
   onClose: () => void;
   busy?: boolean;
 };
 
-const ActionDialog = ({ visible, title, message, icon, destructive = false, actions, onClose, busy = false }: ActionDialogProps) => {
+const ActionDialog = ({ visible, title, message, icon, media, destructive = false, actions, onClose, busy = false }: ActionDialogProps) => {
   const colors = useThemeColors();
   const { isMobile } = useResponsive();
   const stacked = isMobile && actions.length > 2;
@@ -63,6 +65,7 @@ const ActionDialog = ({ visible, title, message, icon, destructive = false, acti
       visible={visible}
       title={title}
       icon={icon ?? (destructive ? "alert-triangle" : "help-circle")}
+      media={media}
       tint={destructive ? colors.danger.fg : undefined}
       tintSoft={destructive ? colors.danger.bg : undefined}
       onClose={guardedClose}

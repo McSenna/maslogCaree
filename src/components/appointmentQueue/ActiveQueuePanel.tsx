@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import type { AppointmentRecord } from "@/services/appointments";
 
 import AnimatedListItem from "@/components/animations/AnimatedListItem";
+import { useAppToday } from "@/hooks/useAppToday";
 
 import QueuePanel from "./QueuePanel";
 import { QUEUE_RADIUS, useQueuePalette } from "./queueTheme";
@@ -35,6 +36,7 @@ const ActiveQueuePanel = ({
   emptyTitle?: string;
 }) => {
   const palette = useQueuePalette();
+  const today = useAppToday();
 
   const trailing = (
     <View
@@ -65,6 +67,7 @@ const ActiveQueuePanel = ({
                 serviceLabel={serviceLabels[appointment.consultationType] ?? appointment.consultationType}
                 isLast={i === appointments.length - 1}
                 canComplete={canComplete}
+                today={today}
                 busy={busyId === appointment._id}
                 onComplete={onComplete}
                 onView={onView}

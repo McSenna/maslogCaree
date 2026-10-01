@@ -20,12 +20,12 @@ const AppointmentModal = ({
   onBooked,
 }: AppointmentModalProps) => {
   const insets = useSafeAreaInsets();
-  const booking = useAppointmentBooking(visible, onBooked);
+  const booking = useAppointmentBooking(visible, onClose, onBooked);
 
   if (!visible) return null;
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose} transparent={false}>
+    <Modal visible={visible} animationType="slide" onRequestClose={booking.close} transparent={false}>
       <View className="flex-1" style={{ backgroundColor: APPOINTMENT_COLORS.pageBg }}>
         {/* "padding" on Android too: with edge-to-edge the OS does not reliably
             resize this window for the keyboard. KeyboardAvoidingView measures the
@@ -42,13 +42,13 @@ const AppointmentModal = ({
               gap: 16,
             }}
           >
-            <AppointmentFormHeader onClose={onClose} disabled={booking.submitting} />
+            <AppointmentFormHeader onClose={booking.close} disabled={booking.submitting} />
             <StepProgress step={booking.step} />
 
-            {booking.step === 1 ? (
-              <BookingRequestStep booking={booking} onClose={onClose} />
+            {booking.booked ? (
+              <BookingConfirmedStep appointment={booking.booked} onClose={booking.close} />
             ) : (
-              <BookingConfirmedStep booking={booking} onClose={onClose} />
+              <BookingRequestStep booking={booking} />
             )}
           </ScrollView>
         </KeyboardAvoidingView>

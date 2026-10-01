@@ -10,12 +10,10 @@ import {
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
-import type { AppointmentRecord } from "@/services/appointments";
 import AddMissionButton from "../components/AddMissionButton";
 import MissionToolsButton from "../components/MissionToolsButton";
 import QueueDashboardSections from "../components/QueueDashboardSections";
 import { useMissionControl } from "../hooks/useMissionControl";
-import type { AssignMode } from "../hooks/useSlotAssignment";
 import MissionControlModals from "./MissionControlModals";
 
 const MissionControlScreen = () => {
@@ -32,10 +30,7 @@ const MissionControlScreen = () => {
   const asTable = insets.width >= TABLE_WIDTH;
   const fourCards = insets.width >= FOUR_CARD_WIDTH;
 
-  const openAssign = useCallback(
-    (appointment: AppointmentRecord, mode: AssignMode) => control.assignment.openFor(appointment, mode),
-    [control.assignment]
-  );
+  const { openAssign } = control;
 
   const closeEdit = useCallback(() => {
     actions.closeEdit();

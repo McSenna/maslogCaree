@@ -36,6 +36,9 @@ const ServiceToggle = ({ value, onChange, label, disabled = false }: ServiceTogg
       disabled={disabled}
       accessibilityRole="switch"
       accessibilityState={{ checked: value, disabled }}
+      // react-native-web drops accessibilityState.checked; without this a screen
+      // reader on web cannot tell an on switch from an off one.
+      aria-checked={value}
       accessibilityLabel={label}
       hitSlop={{ top: 7, bottom: 7, left: 4, right: 4 }}
       style={{ opacity: disabled ? 0.5 : 1 }}

@@ -8,7 +8,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import ServiceCatalogItem from "@/features/resident/ServiceCatalogItem";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
-import { AUTO_SCHEDULE_NOTE } from "@/features/appointments/constants/bookingCopy";
+import { BOOKING_NOTE } from "@/features/appointments/constants/bookingCopy";
 import AppointmentAlert from "@/features/appointments/components/AppointmentAlert";
 
 // `?book=1` opens the booking form on the appointments screen.
@@ -29,7 +29,7 @@ const ResidentServicesRoute = () => {
       <View className="gap-6 pb-4">
         <PageHeader
           title="Health services"
-          subtitle="What you can request from the Barangay Maslog health office."
+          subtitle="What you can book at the Barangay Maslog health office."
           actions={
             <Button
               label="Book appointment"
@@ -40,7 +40,7 @@ const ResidentServicesRoute = () => {
           }
         />
 
-        <AppointmentAlert tone="info" message={AUTO_SCHEDULE_NOTE} />
+        <AppointmentAlert tone="info" message={BOOKING_NOTE} />
 
         <View className="gap-3">
           {SERVICE_TYPES.map((service) => (

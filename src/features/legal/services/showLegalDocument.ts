@@ -1,8 +1,9 @@
 import { router, type Href } from "expo-router";
 import { Platform } from "react-native";
 
-import { LEGAL_ROUTES } from "./legalContent";
-import { openLegalDocumentDialog, type LegalDocumentKind } from "./legalDocumentStore";
+import { LEGAL_CATALOG } from "../constants/legalCatalog";
+import type { LegalDocumentKind } from "../types/legalDocument.types";
+import { openLegalDocumentDialog } from "./legalDocumentStore";
 
 /**
  * Web opens the document in a centred dialog over the current screen, so a
@@ -13,5 +14,5 @@ export const showLegalDocument = (kind: LegalDocumentKind): void => {
     openLegalDocumentDialog(kind);
     return;
   }
-  router.push(LEGAL_ROUTES[kind] as Href);
+  router.push(LEGAL_CATALOG[kind].route as Href);
 };

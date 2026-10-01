@@ -10,10 +10,15 @@ import {
   startOfToday,
 } from "./calendarMonth";
 
-export const useDateOfBirthDraft = (value: string, visible: boolean) => {
+export type CalendarStart = { year: number; monthIndex: number };
+
+const ADULT_START: CalendarStart = { year: DEFAULT_BIRTH_YEAR, monthIndex: 0 };
+
+/** `opensAt` is the month shown while nothing is picked: an adult's default year, or this month for a child. */
+export const useDateOfBirthDraft = (value: string, visible: boolean, opensAt: CalendarStart = ADULT_START) => {
   const initial = parseIsoDate(value);
-  const [year, setYear] = useState(initial?.year ?? DEFAULT_BIRTH_YEAR);
-  const [monthIndex, setMonthIndex] = useState(initial?.monthIndex ?? 0);
+  const [year, setYear] = useState(initial?.year ?? opensAt.year);
+  const [monthIndex, setMonthIndex] = useState(initial?.monthIndex ?? opensAt.monthIndex);
   const [selected, setSelected] = useState(value && initial ? value : "");
 
   // Re-seed the draft each time the picker opens so Cancel truly discards edits.
@@ -21,8 +26,8 @@ export const useDateOfBirthDraft = (value: string, visible: boolean) => {
     if (!visible) return;
 
     const parsed = parseIsoDate(value);
-    setYear(parsed?.year ?? DEFAULT_BIRTH_YEAR);
-    setMonthIndex(parsed?.monthIndex ?? 0);
+    setYear(parsed?.year ?? opensAt.year);
+    setMonthIndex(parsed?.monthIndex ?? opensAt.monthIndex);
     setSelected(parsed ? value : "");
   });
 

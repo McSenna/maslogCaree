@@ -1,6 +1,6 @@
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { View } from "react-native";
-import { SOCIAL_COLORS } from "../../config/profileSocialTheme";
-import { PROFILE_RADIUS } from "../../config/profileTheme";
+import { RADII } from "@/theme/radius";
 import Block from "../skeleton/Block";
 import { useShimmer } from "../skeleton/useShimmer";
 
@@ -9,6 +9,7 @@ type TabSkeletonProps = {
 };
 
 const TabSkeleton = ({ rows = 3 }: TabSkeletonProps) => {
+  const colors = useThemeColors();
   const opacity = useShimmer();
 
   return (
@@ -25,10 +26,10 @@ const TabSkeleton = ({ rows = 3 }: TabSkeletonProps) => {
             alignItems: "center",
             gap: 12,
             padding: 14,
-            borderRadius: PROFILE_RADIUS.card,
-            backgroundColor: SOCIAL_COLORS.surface,
+            borderRadius: RADII.large,
+            backgroundColor: colors.surface,
             borderWidth: 1,
-            borderColor: SOCIAL_COLORS.border,
+            borderColor: colors.border,
           }}
         >
           <Block width={38} height={38} radius={19} opacity={opacity} />

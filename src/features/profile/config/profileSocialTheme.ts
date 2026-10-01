@@ -1,23 +1,7 @@
-import { PROFILE_COLORS } from "./profileTheme";
-import { PALETTE } from "@/theme/palette";
+/** Header geometry for the profile's cover and overlapping avatar, per layout. */
+export const COVER_HEIGHT = { compact: 136, wide: 216 } as const;
 
-export const COVER_COLOR = PALETTE.blue[700];
+export const AVATAR_SIZE = { compact: 112, wide: 160 } as const;
 
-export const COVER_HEIGHT = { compact: 104, wide: 168 } as const;
-
-export const AVATAR_SIZE = { compact: 96, wide: 132 } as const;
-
-export const SOCIAL_COLORS = {
-  ...PROFILE_COLORS,
-  coverText: "#FFFFFF",
-  tabActive: PROFILE_COLORS.primary,
-  tabInactive: PROFILE_COLORS.muted,
-  tabIndicator: PROFILE_COLORS.primary,
-  statValue: PROFILE_COLORS.navy,
-  verifiedBg: PROFILE_COLORS.greenSoft,
-  verifiedText: PROFILE_COLORS.greenDeep,
-  verifiedBorder: "#A7F3D0",
-  pendingBg: "#FFFBEB",
-  pendingText: "#B45309",
-  pendingBorder: "#FDE68A",
-} as const;
+/** How far the avatar rises into the cover, as a share of its size. */
+export const AVATAR_OVERLAP = 0.5;

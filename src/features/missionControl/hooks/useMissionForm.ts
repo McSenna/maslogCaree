@@ -67,8 +67,8 @@ export const useMissionForm = (initialDate: string) => {
 
   const toPayload = useCallback(
     (categories: ConsultationCategory[]): MissionCategoryPayload[] =>
-      buildCategoriesPayload(categories, enabled, durations),
-    [enabled, durations]
+      buildCategoriesPayload(categories, enabled, durations, values.date),
+    [enabled, durations, values.date]
   );
 
   return {

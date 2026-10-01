@@ -1,24 +1,27 @@
-import { View } from "react-native";
-
 import ScreenScroll from "@/components/layout/ScreenScroll";
-import { usePageMaxWidth } from "@/hooks/useResponsive";
+import { SPACING } from "@/theme/spacing";
 
 import LegalDocumentView from "../components/LegalDocumentView";
-import LegalLinks from "../components/LegalLinks";
-import { LEGAL_DOCUMENTS } from "../legalContent";
+import { LEGAL_MEASURE } from "../constants/legalLayout";
+import { LEGAL_DOCUMENTS } from "../content";
+import { showLegalDocument } from "../services/showLegalDocument";
+import type { LegalDocumentKind } from "../types/legalDocument.types";
 
-/** `/privacy` and `/terms`: one readable column, with a link across to the other document. */
-const LegalDocumentScreen = ({ kind }: { kind: keyof typeof LEGAL_DOCUMENTS }) => {
-  const maxWidth = usePageMaxWidth("reading");
+const CONTENT_STYLE = {
+  width: "100%",
+  maxWidth: LEGAL_MEASURE,
+  alignSelf: "center",
+  paddingBottom: SPACING.xxxl,
+} as const;
 
-  return (
-    <ScreenScroll contentContainerStyle={{ width: "100%", maxWidth, alignSelf: "center", paddingBottom: 40 }}>
-      <View style={{ gap: 36 }}>
-        <LegalDocumentView document={LEGAL_DOCUMENTS[kind]} />
-        <LegalLinks align="left" />
-      </View>
-    </ScreenScroll>
-  );
-};
+/**
+ * `/privacy` and `/terms` in the app: one readable column on the light public
+ * layout, ending with a link across to the other document.
+ */
+const LegalDocumentScreen = ({ kind }: { kind: LegalDocumentKind }) => (
+  <ScreenScroll contentContainerStyle={CONTENT_STYLE}>
+    <LegalDocumentView document={LEGAL_DOCUMENTS[kind]} surface="public" onOpenRelated={showLegalDocument} />
+  </ScreenScroll>
+);
 
 export default LegalDocumentScreen;

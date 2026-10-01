@@ -1,6 +1,5 @@
 import { View } from "react-native";
-import { SOCIAL_COLORS } from "../../config/profileSocialTheme";
-import { PROFILE_RADIUS, PROFILE_SHADOW } from "../../config/profileTheme";
+import { SPACING } from "@/theme/spacing";
 import type { ProfileTabDefinition } from "../../config/profileTabs";
 import type { ProfileTabKey } from "../../types/profile.types";
 import ProfileTabButton from "./ProfileTabButton";
@@ -17,14 +16,8 @@ const ProfileTabs = ({ tabs, activeTab, onSelect, compact }: ProfileTabsProps) =
     accessibilityRole="tablist"
     style={{
       flexDirection: "row",
-      alignItems: "stretch",
-      paddingHorizontal: 6,
-      borderRadius: PROFILE_RADIUS.card,
-      backgroundColor: SOCIAL_COLORS.surface,
-      borderWidth: 1,
-      borderColor: SOCIAL_COLORS.border,
-      overflow: "hidden",
-      ...PROFILE_SHADOW.card,
+      gap: compact ? 0 : SPACING.xs,
+      paddingHorizontal: compact ? SPACING.sm : SPACING.lg,
     }}
   >
     {tabs.map((tab) => (

@@ -13,6 +13,7 @@ export const DialogSheetShell = ({
   visible,
   title,
   icon,
+  media,
   tint,
   tintSoft,
   onClose,
@@ -39,6 +40,7 @@ export const DialogSheetShell = ({
           palette={palette}
           title={title}
           icon={icon}
+          media={media}
           tint={tint}
           tintSoft={tintSoft}
           onClose={requestClose}

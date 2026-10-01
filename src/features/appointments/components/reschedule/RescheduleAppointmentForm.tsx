@@ -54,10 +54,13 @@ export const RescheduleAppointmentForm = ({
     <RescheduleSelectStep
       palette={palette}
       appointment={appointment}
-      schedules={form.schedules}
+      dayChoices={form.dayChoices}
+      weekly={form.weekly}
       scheduleId={form.scheduleId}
       availableSlots={form.availableSlots}
       slotStart={form.slotStart}
+      assignsEarliestSlot={form.assignsEarliestSlot}
+      isCurrentSlot={form.isCurrentSlot}
       error={form.submitError}
       onSelectSchedule={form.selectSchedule}
       onSelectSlot={form.selectSlot}

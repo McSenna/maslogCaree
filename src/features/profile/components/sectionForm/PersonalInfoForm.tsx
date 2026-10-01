@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { SPACING } from "@/theme/spacing";
 import type { EditProfileFormState } from "../../hooks/useEditProfileForm";
 import { calculateAge } from "../../utils/profileHelpers";
 import DateOfBirthField from "../profileForm/DateOfBirthField";
@@ -15,9 +16,9 @@ const PersonalInfoForm = ({ form }: PersonalInfoFormProps) => {
   const age = calculateAge(values.dateOfBirth || null);
 
   return (
-    <View style={{ gap: 14 }}>
+    <View style={{ gap: SPACING.lg }}>
       <ProfileFieldInput
-        label="First Name"
+        label="First name"
         value={values.firstName}
         onChangeText={(text) => setField("firstName", text)}
         autoCapitalize="words"
@@ -25,7 +26,7 @@ const PersonalInfoForm = ({ form }: PersonalInfoFormProps) => {
       />
 
       <ProfileFieldInput
-        label="Middle Name"
+        label="Middle name"
         hint="Optional"
         value={values.middleName}
         onChangeText={(text) => setField("middleName", text)}
@@ -34,7 +35,7 @@ const PersonalInfoForm = ({ form }: PersonalInfoFormProps) => {
       />
 
       <ProfileFieldInput
-        label="Last Name"
+        label="Last name"
         value={values.surname}
         onChangeText={(text) => setField("surname", text)}
         autoCapitalize="words"
@@ -42,7 +43,7 @@ const PersonalInfoForm = ({ form }: PersonalInfoFormProps) => {
       />
 
       <DateOfBirthField
-        label="Date of Birth"
+        label="Date of birth"
         value={values.dateOfBirth}
         onChange={(isoDate) => setField("dateOfBirth", isoDate)}
         error={errors.dateOfBirth}

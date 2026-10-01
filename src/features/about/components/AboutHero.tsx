@@ -55,8 +55,8 @@ const AboutHero = ({ isTablet }: { isTablet: boolean }) => {
           color: "rgba(255,255,255,0.92)",
         }}
       >
-        The appointment app of the Barangay Maslog health office. Residents request health visits
-        from their phone, and health staff schedule them, keep visit records, and post
+        The appointment app of the Barangay Maslog health office. Residents book health visits
+        from their phone, and health staff run the mission days, keep visit records, and post
         announcements.
       </Text>
 

@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { SPACING } from "@/theme/spacing";
 import type { AppointmentRecord } from "@/services/appointments";
 import ProfileAppointmentCard from "../cards/ProfileAppointmentCard";
 import ProfileTabState from "../common/ProfileTabState";
@@ -11,6 +12,8 @@ type AppointmentsTabProps = {
   isResident: boolean;
   twoColumn: boolean;
 };
+
+const GUTTER = SPACING.md;
 
 const AppointmentsTab = ({
   appointments,
@@ -43,13 +46,14 @@ const AppointmentsTab = ({
       style={{
         flexDirection: twoColumn ? "row" : "column",
         flexWrap: twoColumn ? "wrap" : "nowrap",
-        gap: 12,
+        marginHorizontal: twoColumn ? -GUTTER / 2 : 0,
+        rowGap: GUTTER,
       }}
     >
       {appointments.map((appointment) => (
         <View
           key={appointment._id}
-          style={{ width: twoColumn ? "48.6%" : "100%", minWidth: 0 }}
+          style={{ width: twoColumn ? "50%" : "100%", minWidth: 0, paddingHorizontal: twoColumn ? GUTTER / 2 : 0 }}
         >
           <ProfileAppointmentCard appointment={appointment} />
         </View>

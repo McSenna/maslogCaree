@@ -4,6 +4,7 @@ import { formatDateTime } from "@/utils/dateFormatter";
 import QueuePanel from "./QueuePanel";
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { useQueuePalette, type QueuePalette } from "./queueTheme";
+import { appointmentPatientName } from "@/utils/appointmentPatient";
 
 const ScheduleRow = ({
   appointment,
@@ -38,7 +39,7 @@ const ScheduleRow = ({
       <View className={`min-w-0 flex-1 flex-row items-center gap-2 ${isLast ? "pb-1" : "pb-3"} pt-2.5`}>
         <View className="min-w-0 flex-1">
           <Text numberOfLines={1} className="text-[14px] font-semibold" style={{ color: palette.heading }}>
-            {appointment.resident?.fullname || "Unnamed patient"}
+            {appointmentPatientName(appointment)}
           </Text>
           <Text numberOfLines={1} className="mt-0.5 text-[12.5px]" style={{ color: palette.muted }}>
             {serviceLabel}

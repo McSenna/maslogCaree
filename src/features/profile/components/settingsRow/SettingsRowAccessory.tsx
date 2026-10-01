@@ -1,45 +1,44 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-
-import { PROFILE_COLORS, PROFILE_RADIUS, PROFILE_TYPE } from "../../config/profileTheme";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 
 type SettingsRowAccessoryProps = {
   value?: string;
   badge?: string;
-  large: boolean;
 };
 
-const SettingsRowAccessory = ({ value, badge, large }: SettingsRowAccessoryProps) => (
-  <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-    {badge ? (
-      <View
-        style={{
-          paddingHorizontal: 9,
-          paddingVertical: 3,
-          borderRadius: PROFILE_RADIUS.pill,
-          backgroundColor: PROFILE_COLORS.primarySoft,
-        }}
-      >
-        <Text
-          maxFontSizeMultiplier={1.2}
-          style={{ fontSize: 11.5, fontWeight: "700", color: PROFILE_COLORS.primary }}
+const SettingsRowAccessory = ({ value, badge }: SettingsRowAccessoryProps) => {
+  const colors = useThemeColors();
+
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: SPACING.sm }}>
+      {badge ? (
+        <View
+          style={{
+            paddingHorizontal: SPACING.sm,
+            paddingVertical: SPACING.xxs,
+            borderRadius: RADII.small,
+            backgroundColor: colors.primarySoft,
+          }}
         >
-          {badge}
+          <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.caption, fontWeight: "700", color: colors.primary }}>
+            {badge}
+          </Text>
+        </View>
+      ) : null}
+
+      {value ? (
+        <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.caption, color: colors.muted }}>
+          {value}
         </Text>
-      </View>
-    ) : null}
+      ) : null}
 
-    {value ? (
-      <Text
-        maxFontSizeMultiplier={1.2}
-        style={{ fontSize: PROFILE_TYPE.meta, color: PROFILE_COLORS.subtle }}
-      >
-        {value}
-      </Text>
-    ) : null}
-
-    <Feather name="chevron-right" size={large ? 19 : 18} color={PROFILE_COLORS.subtle} />
-  </View>
-);
+      <Feather name="chevron-right" size={18} color={colors.muted} />
+    </View>
+  );
+};
 
 export default SettingsRowAccessory;

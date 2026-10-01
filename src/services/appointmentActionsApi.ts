@@ -4,12 +4,11 @@ import type { AppointmentRecord, RescheduleOptionsResponse } from "@/types/appoi
 
 export const assignAppointment = async (
   id: string,
-  body: {
-    missionScheduleId: string;
-    categoryKey: string;
-    slotStart: string;
-    durationMinutes?: number;
-  }): Promise<AppointmentRecord> => {
+  // A weekly request (immunization) sends no mission: the server takes the first open position.
+  body:
+    | { missionScheduleId: string; categoryKey: string; slotStart: string; durationMinutes?: number }
+    | { appointmentDate?: string }
+): Promise<AppointmentRecord> => {
   const { data } = await api.patch<{ success: boolean; appointment: AppointmentRecord }>(
     `/appointments/${id}/assign`,
     body
@@ -50,10 +49,8 @@ export const cancelAppointment = async (id: string, reason?: string): Promise<Ap
 
 export const rescheduleAppointment = async (
   id: string,
-  body: {
-    missionScheduleId: string;
-    slotStart: string;
-  }): Promise<AppointmentRecord> => {
+  body: { missionScheduleId: string; slotStart: string } | { appointmentDate: string }
+): Promise<AppointmentRecord> => {
   const { data } = await api.patch<{ success: boolean; appointment: AppointmentRecord }>(
     `/appointments/${id}/reschedule`,
     body

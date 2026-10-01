@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { StyleSheet, View, type LayoutChangeEvent } from "react-native";
-import { COVER_COLOR } from "../../config/profileSocialTheme";
-import { PROFILE_RADIUS } from "../../config/profileTheme";
-import ProfileHeroDecor from "../ProfileHeroDecor";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import CoverEngraving from "./CoverEngraving";
 
 type ProfileCoverProps = {
   height: number;
 };
 
 const ProfileCover = ({ height }: ProfileCoverProps) => {
+  const colors = useThemeColors();
   const [width, setWidth] = useState(0);
 
   const handleLayout = (event: LayoutChangeEvent) => {
-    const next = event.nativeEvent.layout.width;
+    const next = Math.round(event.nativeEvent.layout.width);
     setWidth((prev) => (prev === next ? prev : next));
   };
 
@@ -24,15 +25,14 @@ const ProfileCover = ({ height }: ProfileCoverProps) => {
       style={{
         height,
         overflow: "hidden",
-        borderTopLeftRadius: PROFILE_RADIUS.card,
-        borderTopRightRadius: PROFILE_RADIUS.card,
-        backgroundColor: COVER_COLOR,
+        borderTopLeftRadius: RADII.large,
+        borderTopRightRadius: RADII.large,
+        backgroundColor: colors.primarySoft,
       }}
     >
-
       {width > 0 ? (
-        <View style={[StyleSheet.absoluteFill, { opacity: 0.55 }]}>
-          <ProfileHeroDecor width={Math.round(width * 0.62)} height={height} />
+        <View style={StyleSheet.absoluteFill}>
+          <CoverEngraving width={width} height={height} color={colors.primary} />
         </View>
       ) : null}
     </View>

@@ -18,7 +18,7 @@ export const PROFILE_TAB_DEFINITIONS: Record<ProfileTabKey, ProfileTabDefinition
   },
   records: {
     key: "records",
-    label: "Medical Records",
+    label: "Medical records",
     shortLabel: "Records",
     icon: "file-text",
   },

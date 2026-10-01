@@ -1,8 +1,8 @@
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import type { AppointmentRecord } from "@/services/appointments";
-import { SOCIAL_COLORS } from "../../config/profileSocialTheme";
-import { PROFILE_RADIUS } from "../../config/profileTheme";
+import { RADII } from "@/theme/radius";
 import {
   appointmentDetailLines,
   appointmentTitle,
@@ -14,6 +14,7 @@ type ProfileAppointmentCardProps = {
 };
 
 const ProfileAppointmentCard = ({ appointment }: ProfileAppointmentCardProps) => {
+  const colors = useThemeColors();
   const title = appointmentTitle(appointment);
   const lines = appointmentDetailLines(appointment);
 
@@ -25,10 +26,10 @@ const ProfileAppointmentCard = ({ appointment }: ProfileAppointmentCardProps) =>
       style={{
         gap: 10,
         padding: 14,
-        borderRadius: PROFILE_RADIUS.card,
-        backgroundColor: SOCIAL_COLORS.surface,
+        borderRadius: RADII.large,
+        backgroundColor: colors.surface,
         borderWidth: 1,
-        borderColor: SOCIAL_COLORS.border,
+        borderColor: colors.border,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
@@ -40,7 +41,7 @@ const ProfileAppointmentCard = ({ appointment }: ProfileAppointmentCardProps) =>
             minWidth: 0,
             fontSize: 15,
             fontWeight: "700",
-            color: SOCIAL_COLORS.navy,
+            color: colors.heading,
           }}
         >
           {title}
@@ -52,11 +53,11 @@ const ProfileAppointmentCard = ({ appointment }: ProfileAppointmentCardProps) =>
       <View style={{ gap: 6 }}>
         {lines.map((line) => (
           <View key={line.key} style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <Feather name={line.icon} size={14} color={SOCIAL_COLORS.subtle} />
+            <Feather name={line.icon} size={14} color={colors.subtle} />
             <Text
               numberOfLines={2}
               maxFontSizeMultiplier={1.2}
-              style={{ flex: 1, minWidth: 0, fontSize: 13, color: SOCIAL_COLORS.body }}
+              style={{ flex: 1, minWidth: 0, fontSize: 13, color: colors.body }}
             >
               {line.value}
             </Text>

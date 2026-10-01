@@ -5,7 +5,6 @@ export const LOGIN_MESSAGES = {
   mobileLength: "Mobile numbers have 11 digits, like 0917 123 4567.",
   emailFormat: "Check your email address. It should look like juan@email.com.",
   passwordRequired: "Enter your password.",
-  bothRequired: "Enter your email or mobile number and your password.",
   credentialsMismatch:
     "That email or mobile number and password don't match. Check both and try again, or reset your password.",
 } as const;

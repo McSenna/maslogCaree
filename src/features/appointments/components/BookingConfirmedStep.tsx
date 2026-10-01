@@ -1,20 +1,23 @@
 import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import type { AppointmentBooking } from "../hooks/useAppointmentBooking";
-import { QUEUE_MESSAGE } from "../constants/bookingCopy";
+import type { AppointmentRecord } from "@/services/appointments";
+import { CONFIRMED_MESSAGE } from "../constants/bookingCopy";
 import { APPOINTMENT_COLORS, APPOINTMENT_METRICS } from "./appointmentTheme";
-import AppointmentSummaryRow from "./AppointmentSummaryRow";
 import BookingActionButton from "./BookingActionButton";
+import BookingSummaryRows from "./BookingSummaryRows";
 
 type BookingConfirmedStepProps = {
-  booking: AppointmentBooking;
+  appointment: AppointmentRecord;
   onClose: () => void;
 };
 
-const BookingConfirmedStep = ({ booking, onClose }: BookingConfirmedStepProps) => {
+/** Shows the booking exactly as the server saved it, never the form's local copy. */
+const BookingConfirmedStep = ({ appointment, onClose }: BookingConfirmedStepProps) => {
   return (
     <View style={{ gap: 16 }}>
       <View
+        accessible
+        accessibilityLiveRegion="polite"
         className="items-center"
         style={{
           borderRadius: APPOINTMENT_METRICS.radiusCard,
@@ -41,13 +44,13 @@ const BookingConfirmedStep = ({ booking, onClose }: BookingConfirmedStepProps) =
           className="text-center"
           style={{ fontSize: 19, fontWeight: "800", color: APPOINTMENT_COLORS.primary }}
         >
-          Appointment Requested
+          Appointment Confirmed
         </Text>
         <Text
           className="text-center"
           style={{ fontSize: 13.5, lineHeight: 20, color: APPOINTMENT_COLORS.mutedText }}
         >
-          {QUEUE_MESSAGE}
+          {CONFIRMED_MESSAGE}
         </Text>
       </View>
 
@@ -60,28 +63,10 @@ const BookingConfirmedStep = ({ booking, onClose }: BookingConfirmedStepProps) =
           gap: 12,
         }}
       >
-        <AppointmentSummaryRow
-          label="Service Type"
-          value={booking.selectedService?.label ?? "Not set"}
-        />
-        <AppointmentSummaryRow label="Healthcare Provider" value="To be assigned" />
-        <AppointmentSummaryRow label="Reason for Visit" value={booking.reason.trim() || "Not set"} />
-        {booking.notes.trim() ? (
-          <AppointmentSummaryRow label="Additional Notes" value={booking.notes.trim()} />
-        ) : null}
-        <AppointmentSummaryRow
-          label="Schedule"
-          value="Assigned automatically by the health team"
-        />
-        <AppointmentSummaryRow label="Status" value="Pending" />
+        <BookingSummaryRows appointment={appointment} />
       </View>
 
-      <BookingActionButton
-        variant="primary"
-        label="Done"
-        accessibilityLabel="Done"
-        onPress={onClose}
-      />
+      <BookingActionButton variant="primary" label="Done" accessibilityLabel="Done" onPress={onClose} />
     </View>
   );
 };

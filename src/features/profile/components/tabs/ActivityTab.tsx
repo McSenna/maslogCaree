@@ -1,6 +1,6 @@
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { View } from "react-native";
-import { SOCIAL_COLORS } from "../../config/profileSocialTheme";
-import { PROFILE_RADIUS, PROFILE_SHADOW } from "../../config/profileTheme";
+import { RADII } from "@/theme/radius";
 import type { ProfileActivityItem } from "../../types/profile.types";
 import ActivityRow from "../cards/ActivityRow";
 import ProfileTabState from "../common/ProfileTabState";
@@ -13,6 +13,7 @@ type ActivityTabProps = {
 };
 
 const ActivityTab = ({ activity, loading, error, onRetry }: ActivityTabProps) => {
+  const colors = useThemeColors();
   if (loading || error || activity.length === 0) {
     return (
       <ProfileTabState
@@ -33,11 +34,10 @@ const ActivityTab = ({ activity, loading, error, onRetry }: ActivityTabProps) =>
       style={{
         paddingHorizontal: 16,
         paddingVertical: 4,
-        borderRadius: PROFILE_RADIUS.card,
-        backgroundColor: SOCIAL_COLORS.surface,
+        borderRadius: RADII.large,
+        backgroundColor: colors.surface,
         borderWidth: 1,
-        borderColor: SOCIAL_COLORS.border,
-        ...PROFILE_SHADOW.card,
+        borderColor: colors.border,
       }}
     >
       {activity.map((item, index) => (

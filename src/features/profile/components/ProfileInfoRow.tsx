@@ -1,78 +1,48 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { PROFILE_COLORS, PROFILE_TYPE } from "../config/profileTheme";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 
 type ProfileInfoRowProps = {
   label: string;
   value: string;
   icon: keyof typeof Feather.glyphMap;
   provided?: boolean;
-  showDivider?: boolean;
-  stacked?: boolean;
+  iconColor?: string;
 };
 
-const ProfileInfoRow = ({
-  label,
-  value,
-  icon,
-  provided = true,
-  showDivider = true,
-  stacked = false,
-}: ProfileInfoRowProps) => (
-  <View
-    accessible
-    accessibilityLabel={`${label}: ${value}`}
-    style={{
-      flexDirection: "row",
-      alignItems: stacked ? "flex-start" : "center",
-      gap: 12,
-      paddingVertical: 12,
-      borderBottomWidth: showDivider ? 1 : 0,
-      borderBottomColor: PROFILE_COLORS.divider,
-    }}
-  >
-    <View style={{ width: 22, alignItems: "center", paddingTop: stacked ? 1 : 0 }}>
-      <Feather name={icon} size={17} color={PROFILE_COLORS.primary} />
-    </View>
+/** Facebook "Intro" style: the value leads, its label sits quietly underneath. */
+const ProfileInfoRow = ({ label, value, icon, provided = true, iconColor }: ProfileInfoRowProps) => {
+  const colors = useThemeColors();
 
+  return (
     <View
-      style={{
-        flex: 1,
-        minWidth: 0,
-        flexDirection: stacked ? "column" : "row",
-        alignItems: stacked ? "flex-start" : "center",
-        gap: stacked ? 2 : 12,
-      }}
+      accessible
+      accessibilityLabel={`${label}: ${value}`}
+      style={{ flexDirection: "row", alignItems: "flex-start", gap: SPACING.md, paddingVertical: SPACING.sm }}
     >
-      <Text
-        numberOfLines={1}
-        maxFontSizeMultiplier={1.3}
-        style={{
-          fontSize: PROFILE_TYPE.label,
-          fontWeight: "500",
-          color: PROFILE_COLORS.muted,
-          ...(stacked ? {} : { width: 132 }),
-        }}
-      >
-        {label}
-      </Text>
+      <View style={{ width: 24, height: TYPE.body.lineHeight, alignItems: "center", justifyContent: "center" }}>
+        <Feather name={icon} size={18} color={iconColor ?? colors.muted} />
+      </View>
 
-      <Text
-        maxFontSizeMultiplier={1.3}
-        style={{
-          flex: stacked ? undefined : 1,
-          minWidth: 0,
-          fontSize: PROFILE_TYPE.value,
-          fontWeight: provided ? "600" : "500",
-          textAlign: stacked ? "left" : "right",
-          color: provided ? PROFILE_COLORS.heading : PROFILE_COLORS.subtle,
-          fontStyle: provided ? "normal" : "italic",
-        }}
-      >
-        {value}
-      </Text>
+      <View style={{ flex: 1, minWidth: 0 }}>
+        <Text
+          maxFontSizeMultiplier={1.3}
+          style={{
+            ...(provided ? TYPE.bodyStrong : TYPE.body),
+            color: provided ? colors.heading : colors.subtle,
+            fontStyle: provided ? "normal" : "italic",
+          }}
+        >
+          {value}
+        </Text>
+        <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.caption, color: colors.muted }}>
+          {label}
+        </Text>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 export default ProfileInfoRow;

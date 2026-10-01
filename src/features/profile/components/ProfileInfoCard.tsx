@@ -1,4 +1,5 @@
 import { View, type LayoutChangeEvent } from "react-native";
+import { SPACING } from "@/theme/spacing";
 import { isProfileEditSection } from "../config/profileEditSections";
 import type { ProfileEditState } from "../hooks/useEditProfile";
 import type { ProfileInfoGroup } from "../types/profile.types";
@@ -14,12 +15,11 @@ import ProfileSectionCard from "./ProfileSectionCard";
 
 type ProfileInfoCardProps = {
   group: ProfileInfoGroup;
-  stacked?: boolean;
   edit?: ProfileEditState;
   onLayout?: (event: LayoutChangeEvent) => void;
 };
 
-const ProfileInfoCard = ({ group, stacked = false, edit, onLayout }: ProfileInfoCardProps) => {
+const ProfileInfoCard = ({ group, edit, onLayout }: ProfileInfoCardProps) => {
   const section = isProfileEditSection(group.key) ? group.key : null;
   const editable = Boolean(edit && section);
   const isEditing = editable && edit?.editingSection === section;
@@ -41,7 +41,7 @@ const ProfileInfoCard = ({ group, stacked = false, edit, onLayout }: ProfileInfo
   const renderBody = () => {
     if (isEditing && edit && section) {
       return (
-        <View style={{ paddingBottom: 6 }}>
+        <View style={{ paddingTop: SPACING.xs, paddingBottom: SPACING.xs }}>
           {section === "personal" ? (
             <PersonalInfoForm form={edit.editForm} />
           ) : (
@@ -63,15 +63,13 @@ const ProfileInfoCard = ({ group, stacked = false, edit, onLayout }: ProfileInfo
 
     return (
       <View>
-        {group.items.map((item, index) => (
+        {group.items.map((item) => (
           <ProfileInfoRow
             key={item.key}
             label={item.label}
             value={item.value}
             icon={item.icon}
             provided={item.provided}
-            stacked={stacked}
-            showDivider={index < group.items.length - 1}
           />
         ))}
       </View>
@@ -82,7 +80,6 @@ const ProfileInfoCard = ({ group, stacked = false, edit, onLayout }: ProfileInfo
     <View onLayout={onLayout}>
       <ProfileSectionCard
         title={group.title}
-        icon={group.icon}
         action={renderAction()}
         highlighted={isEditing}
       >

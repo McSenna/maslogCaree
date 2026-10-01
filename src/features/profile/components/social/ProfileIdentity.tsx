@@ -1,67 +1,59 @@
+import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { SOCIAL_COLORS } from "../../config/profileSocialTheme";
-import { PROFILE_TYPE } from "../../config/profileTheme";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
+import type { ProfileStat } from "../../types/profile.types";
 import type { ProfileData } from "../../utils/profileData";
-import VerifiedPill from "./VerifiedPill";
+import ProfileStatLine from "./ProfileStatLine";
 
 type ProfileIdentityProps = {
   profile: ProfileData;
-  centered: boolean;
+  wide: boolean;
+  stats: ProfileStat[];
+  statsLoading: boolean;
+  statsUnavailable: boolean;
 };
 
-const ProfileIdentity = ({ profile, centered }: ProfileIdentityProps) => (
-  <View
-    style={{
-      flex: centered ? undefined : 1,
-      width: centered ? "100%" : undefined,
-      minWidth: 0,
-      gap: 7,
-      alignItems: centered ? "center" : "flex-start",
-    }}
-  >
-    <Text
-      numberOfLines={2}
-      maxFontSizeMultiplier={1.2}
-      accessibilityRole="header"
-      style={{
-        fontSize: centered ? PROFILE_TYPE.nameCompact : PROFILE_TYPE.name,
-        lineHeight: centered ? 28 : 31,
-        fontWeight: "800",
-        letterSpacing: -0.5,
-        textAlign: centered ? "center" : "left",
-        color: SOCIAL_COLORS.navy,
-      }}
-    >
-      {profile.name}
-    </Text>
+const ProfileIdentity = ({
+  profile,
+  wide,
+  stats,
+  statsLoading,
+  statsUnavailable,
+}: ProfileIdentityProps) => {
+  const colors = useThemeColors();
+  const nameType = wide ? TYPE.display : TYPE.headline;
+  const verification = profile.verified
+    ? `verified ${profile.role.label.toLowerCase()}`
+    : "verification pending";
 
-    <Text
-      numberOfLines={1}
-      maxFontSizeMultiplier={1.2}
-      style={{
-        fontSize: PROFILE_TYPE.value,
-        fontWeight: "600",
-        color: SOCIAL_COLORS.muted,
-      }}
-    >
-      {`${profile.role.label} · ${profile.displayId}`}
-    </Text>
+  return (
+    <View style={{ flexGrow: 1, flexShrink: 1, flexBasis: 260, minWidth: 0, gap: SPACING.xs }}>
+      <Text
+        accessibilityRole="header"
+        accessibilityLabel={`${profile.name}, ${verification}`}
+        numberOfLines={3}
+        maxFontSizeMultiplier={1.3}
+        style={{ ...nameType, letterSpacing: -0.4, color: colors.heading }}
+      >
+        {profile.name}
+        {profile.verified ? (
+          <Text>
+            {" "}
+            <Feather name="check-circle" size={wide ? 20 : 17} color={colors.primary} />
+          </Text>
+        ) : null}
+      </Text>
 
-    <VerifiedPill verified={profile.verified} roleLabel={profile.role.label} />
-
-    <Text
-      numberOfLines={2}
-      maxFontSizeMultiplier={1.2}
-      style={{
-        fontSize: PROFILE_TYPE.meta,
-        lineHeight: 18,
-        textAlign: centered ? "center" : "left",
-        color: SOCIAL_COLORS.subtle,
-      }}
-    >
-      {profile.role.tagline}
-    </Text>
-  </View>
-);
+      <ProfileStatLine
+        roleLabel={profile.role.label}
+        stats={stats}
+        loading={statsLoading}
+        unavailable={statsUnavailable}
+      />
+    </View>
+  );
+};
 
 export default ProfileIdentity;

@@ -1,12 +1,11 @@
 import { useMemo } from "react";
 import { View, type LayoutChangeEvent } from "react-native";
+import { SPACING } from "@/theme/spacing";
 import type { ProfileScreenState } from "../hooks/useProfileScreen";
 import type { ProfileData } from "../utils/profileData";
 import { buildProfileGroups } from "../utils/profileGroups";
 import ProfileHeaderCard from "./social/ProfileHeaderCard";
-import ProfileStats from "./social/ProfileStats";
-import ProfileTabs from "./social/ProfileTabs";
-import ProfileSettingsSection from "./ProfileSettingsSection";
+import OverviewTab from "./tabs/OverviewTab";
 import ProfileTabPanel from "./tabs/ProfileTabPanel";
 
 type ProfileScreenContentProps = {
@@ -14,7 +13,7 @@ type ProfileScreenContentProps = {
   state: ProfileScreenState;
   wide: boolean;
   twoColumn: boolean;
-  stacked: boolean;
+  onBookAppointment?: () => void;
   onTabPanelLayout: (event: LayoutChangeEvent) => void;
   onPersonalCardLayout: (event: LayoutChangeEvent) => void;
 };
@@ -24,7 +23,7 @@ const ProfileScreenContent = ({
   state,
   wide,
   twoColumn,
-  stacked,
+  onBookAppointment,
   onTabPanelLayout,
   onPersonalCardLayout,
 }: ProfileScreenContentProps) => {
@@ -32,56 +31,39 @@ const ProfileScreenContent = ({
   const { insights, tabs } = state;
 
   return (
-    <View style={{ gap: 14 }}>
+    <View style={{ gap: SPACING.lg }}>
       <ProfileHeaderCard
         profile={profile}
         wide={wide}
+        actionsInline={twoColumn}
+        stats={insights.stats}
+        statsLoading={insights.loading}
+        statsUnavailable={Boolean(insights.error)}
+        tabs={tabs}
+        onEditProfile={state.onEditProfile}
+        onBookAppointment={onBookAppointment}
         onChangePhoto={state.onChangePhoto}
         changingPhoto={state.edit.savingAvatar}
       />
 
-      <ProfileStats
-        stats={insights.stats}
-        loading={insights.loading}
-        compact={!wide}
-        unavailable={Boolean(insights.error)}
-      />
-
-      <ProfileTabs
-        tabs={tabs.tabs}
-        activeTab={tabs.activeTab}
-        onSelect={tabs.selectTab}
-        compact={!wide}
-      />
-
       <View onLayout={onTabPanelLayout}>
-        <ProfileTabPanel
-          activeTab={tabs.activeTab}
-          insights={insights}
-          groups={groups}
-          twoColumn={twoColumn}
-          stacked={stacked}
-          isResident={state.isResident}
-          edit={state.edit}
-          onPersonalCardLayout={onPersonalCardLayout}
-        />
+        {tabs.activeTab === "overview" ? (
+          <OverviewTab
+            profile={profile}
+            groups={groups}
+            state={state}
+            twoColumn={twoColumn}
+            onPersonalCardLayout={onPersonalCardLayout}
+          />
+        ) : (
+          <ProfileTabPanel
+            activeTab={tabs.activeTab}
+            insights={insights}
+            twoColumn={twoColumn}
+            isResident={state.isResident}
+          />
+        )}
       </View>
-
-      {tabs.activeTab === "overview" ? (
-        <ProfileSettingsSection
-          twoColumn={twoColumn}
-          appVersion={state.appVersion}
-          supportBadge={state.supportBadge}
-          onChangePassword={state.onChangePassword}
-          onNotificationSettings={state.onNotificationSettings}
-          onPrivacySecurity={state.onPrivacySecurity}
-          onHelpCenter={state.onHelpCenter}
-          onContactSupport={state.onContactSupport}
-          onSupportRequests={state.onSupportRequests}
-          onAbout={state.onAbout}
-          onRequestLogout={state.requestLogout}
-        />
-      ) : null}
     </View>
   );
 };

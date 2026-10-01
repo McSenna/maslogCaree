@@ -2,9 +2,11 @@ import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { QUEUE_RADIUS, type QueuePalette } from "../queueTheme";
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
-import { scheduleFor } from "./appointmentSchedule";
+import { isRescheduledRequest, scheduleFor } from "./appointmentSchedule";
 import QueueAvatar from "./QueueAvatar";
 import RowActions, { type RowActionProps } from "./RowActions";
+import { TYPE } from "@/theme/typography";
+import { appointmentPatientName, childCaption } from "@/utils/appointmentPatient";
 
 type AppointmentCardProps = RowActionProps & {
   serviceLabel: string;
@@ -29,18 +31,23 @@ const AppointmentCard = ({
       }}
     >
       <View className="flex-row items-center gap-3">
-        <QueueAvatar name={appointment.resident?.fullname ?? ""} palette={palette} />
+        <QueueAvatar name={appointmentPatientName(appointment, "")} palette={palette} />
         <View className="min-w-0 flex-1">
           <Text
             numberOfLines={1}
             className="text-[15px] font-bold"
             style={{ color: palette.heading }}
           >
-            {appointment.resident?.fullname || "Unnamed patient"}
+            {appointmentPatientName(appointment)}
           </Text>
           <Text numberOfLines={1} className="mt-0.5 text-[13px]" style={{ color: palette.muted }}>
-            {serviceLabel}
+            {isRescheduledRequest(appointment) ? `${serviceLabel} · Rescheduled` : serviceLabel}
           </Text>
+          {childCaption(appointment) ? (
+            <Text numberOfLines={1} style={[TYPE.caption, { color: palette.muted }]}>
+              {childCaption(appointment)}
+            </Text>
+          ) : null}
         </View>
       </View>
 

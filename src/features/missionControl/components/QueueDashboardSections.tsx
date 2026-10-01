@@ -47,7 +47,7 @@ const QueueDashboardSections = ({
             busyId={completion.busyId}
             onComplete={completion.openComplete}
             emptyTitle="No patients waiting"
-            emptyMessage="Approved appointments for today will appear here in queue order."
+            emptyMessage="Confirmed appointments for today will appear here in queue order."
           />
         </View>
 

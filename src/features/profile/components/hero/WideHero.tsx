@@ -3,7 +3,6 @@ import { Text, View, type LayoutChangeEvent } from "react-native";
 
 import { PROFILE_COLORS, PROFILE_TYPE } from "../../config/profileTheme";
 import type { ProfileData } from "../../utils/profileData";
-import EditProfileButton from "../EditProfileButton";
 import ProfileHeroDecor from "../ProfileHeroDecor";
 import RoleBadge from "../RoleBadge";
 import ContactItem from "./ContactItem";
@@ -14,10 +13,9 @@ type Props = {
   size: { width: number; height: number };
   onLayout: (e: LayoutChangeEvent) => void;
   surface: object;
-  onEditProfile?: () => void;
 };
 
-const WideHero = ({ profile, photo, size, onLayout, surface, onEditProfile }: Props) => {
+const WideHero = ({ profile, photo, size, onLayout, surface }: Props) => {
   return (
     <View onLayout={onLayout} style={surface}>
       {size.width > 0 ? <ProfileHeroDecor width={size.width} height={size.height} /> : null}
@@ -64,7 +62,6 @@ const WideHero = ({ profile, photo, size, onLayout, surface, onEditProfile }: Pr
               </Text>
             </View>
 
-            <EditProfileButton onPress={onEditProfile} />
           </View>
 
           <View

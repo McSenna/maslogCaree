@@ -1,82 +1,44 @@
-import { Feather } from "@expo/vector-icons";
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
-import {
-  PROFILE_COLORS,
-  PROFILE_RADIUS,
-  PROFILE_SHADOW,
-  PROFILE_TYPE,
-} from "../config/profileTheme";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 
 type ProfileSectionCardProps = {
   title: string;
-  icon: keyof typeof Feather.glyphMap;
-  tone?: "blue" | "green";
   action?: ReactNode;
   highlighted?: boolean;
   children: ReactNode;
 };
 
-const TONES = {
-  blue: { bg: PROFILE_COLORS.primarySoft, fg: PROFILE_COLORS.primary },
-  green: { bg: PROFILE_COLORS.greenSoft, fg: PROFILE_COLORS.greenDeep },
-} as const;
-
 const ProfileSectionCard = ({
   title,
-  icon,
-  tone = "blue",
   action,
   highlighted = false,
   children,
 }: ProfileSectionCardProps) => {
-  const palette = TONES[tone];
+  const colors = useThemeColors();
 
   return (
     <View
       style={{
-        borderRadius: PROFILE_RADIUS.card,
-        backgroundColor: PROFILE_COLORS.surface,
+        borderRadius: RADII.large,
+        backgroundColor: colors.surface,
         borderWidth: 1,
-        borderColor: highlighted ? PROFILE_COLORS.primaryBorder : PROFILE_COLORS.border,
-        overflow: "hidden",
-        ...PROFILE_SHADOW.card,
+        borderColor: highlighted ? colors.primary : colors.border,
+        paddingHorizontal: SPACING.lg,
+        paddingTop: SPACING.lg,
+        paddingBottom: SPACING.md,
+        gap: SPACING.sm,
       }}
     >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 12,
-          paddingHorizontal: 16,
-          paddingTop: 16,
-          paddingBottom: 12,
-        }}
-      >
-        <View
-          style={{
-            width: 38,
-            height: 38,
-            borderRadius: 12,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: palette.bg,
-          }}
-        >
-          <Feather name={icon} size={19} color={palette.fg} />
-        </View>
-
+      <View style={{ flexDirection: "row", alignItems: "center", gap: SPACING.md, minHeight: 32 }}>
         <Text
-          numberOfLines={1}
+          numberOfLines={2}
           maxFontSizeMultiplier={1.3}
           accessibilityRole="header"
-          style={{
-            flex: 1,
-            fontSize: PROFILE_TYPE.sectionTitle,
-            fontWeight: "700",
-            letterSpacing: -0.2,
-            color: PROFILE_COLORS.navy,
-          }}
+          style={{ ...TYPE.title, flex: 1, minWidth: 0, color: colors.heading }}
         >
           {title}
         </Text>
@@ -84,7 +46,7 @@ const ProfileSectionCard = ({
         {action}
       </View>
 
-      <View style={{ paddingHorizontal: 16, paddingBottom: 10 }}>{children}</View>
+      {children}
     </View>
   );
 };

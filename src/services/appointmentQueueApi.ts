@@ -2,6 +2,7 @@ import api from "@/services/api";
 
 import type {
   AppointmentRecord,
+  BookingOptionsResponse,
   ConsultationCategory,
   QueueOverview,
   ServiceProvider,
@@ -22,13 +23,47 @@ export const fetchServiceProviders = async (serviceType: string): Promise<Servic
   return data.providers ?? [];
 };
 
-export const createResidentAppointment = async (body: {
+export const fetchBookingOptions = async (consultationType: string): Promise<BookingOptionsResponse> => {
+  const { data } = await api.get<Partial<BookingOptionsResponse> & { success: boolean }>(
+    "/appointments/booking-options",
+    { params: { consultationType } }
+  );
+  return {
+    consultationType: data.consultationType ?? consultationType,
+    scheduling: data.scheduling === "weekly" ? "weekly" : "mission",
+    schedules: data.schedules ?? [],
+    days: data.days ?? [],
+    intervalMinutes: data.intervalMinutes ?? null,
+  };
+};
+
+type MissionBookingBody = {
   consultationType: string;
   description: string;
   additionalNotes?: string;
+  missionScheduleId: string;
+  slotStart: string;
+  requestKey: string;
   preferredProvider?: string | null;
   isUrgent?: boolean;
-}): Promise<{ message?: string; appointment: AppointmentRecord }> => {
+};
+
+/** A weekly service (immunization): the server picks the time, so only the day is sent. */
+type WeeklyBookingBody = {
+  consultationType: string;
+  childName: string;
+  childDateOfBirth: string;
+  appointmentDate: string;
+  requestKey: string;
+};
+
+/**
+ * Books and confirms in one call. `requestKey` stays the same across retries of
+ * one attempt, so a repeat returns the first booking instead of making another.
+ */
+export const createResidentAppointment = async (
+  body: MissionBookingBody | WeeklyBookingBody
+): Promise<{ message?: string; appointment: AppointmentRecord }> => {
   const { data } = await api.post<{
     success: boolean;
     message?: string;

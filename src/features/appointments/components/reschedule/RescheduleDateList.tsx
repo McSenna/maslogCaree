@@ -3,16 +3,19 @@ import { Pressable, Text, View } from "react-native";
 
 import { EmptyNote } from "@/components/ui/dialog/DialogPieces";
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
-import type { RescheduleOptionSchedule } from "@/types/appointments.types";
 
+import type { DayChoice } from "./dayChoices";
 import { formatScheduleDate } from "./rescheduleFormat";
 
 type Props = {
   palette: ResidentDialogPalette;
-  schedules: RescheduleOptionSchedule[];
+  options: DayChoice[];
   selectedId: string | null;
-  onSelect: (missionScheduleId: string) => void;
+  onSelect: (id: string) => void;
+  emptyMessage?: string;
 };
+
+const slotCountLabel = (count: number): string => (count === 1 ? "1 open time" : `${count} open times`);
 
 const SlotCountBadge = ({
   palette,
@@ -36,36 +39,38 @@ const SlotCountBadge = ({
         color: count > 0 ? palette.successFg : palette.muted,
       }}
     >
-      {count > 0 ? `${count} slots` : "Fully booked"}
+      {count > 0 ? slotCountLabel(count) : "Fully booked"}
     </Text>
   </View>
 );
 
-export const RescheduleDateList = ({ palette, schedules, selectedId, onSelect }: Props) => {
-  if (!schedules.length) {
-    return (
-      <EmptyNote
-        palette={palette}
-        message="No upcoming mission schedules are open for this service yet."
-      />
-    );
+export const RescheduleDateList = ({
+  palette,
+  options,
+  selectedId,
+  onSelect,
+  emptyMessage = "No upcoming mission schedules are open for this service yet.",
+}: Props) => {
+  if (!options.length) {
+    return <EmptyNote palette={palette} message={emptyMessage} />;
   }
 
   return (
     <View style={{ gap: 8 }}>
-      {schedules.map((schedule) => {
-        const isSelected = selectedId === schedule.missionScheduleId;
-        const count = schedule.availableSlotStarts.length;
-        const dateLabel = formatScheduleDate(schedule.date);
+      {options.map((option) => {
+        const isSelected = selectedId === option.id;
+        const count = option.openCount;
+        const dateLabel = formatScheduleDate(option.date);
 
         return (
           <Pressable
-            key={schedule.missionScheduleId}
-            onPress={() => onSelect(schedule.missionScheduleId)}
+            key={option.id}
+            onPress={() => onSelect(option.id)}
             disabled={count === 0}
             accessibilityRole="radio"
-            accessibilityState={{ selected: isSelected, disabled: count === 0 }}
-            accessibilityLabel={`${dateLabel}, ${count > 0 ? `${count} slots available` : "fully booked"}`}
+            accessibilityState={{ checked: isSelected, disabled: count === 0 }}
+            aria-checked={isSelected}
+            accessibilityLabel={`${dateLabel}, ${count > 0 ? `${slotCountLabel(count)} available` : "fully booked"}`}
             style={{
               flexDirection: "row",
               alignItems: "center",

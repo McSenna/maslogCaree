@@ -4,18 +4,19 @@ import { useResponsive } from "@/hooks/useResponsive";
 
 import DateOfBirthBottomSheet from "./DateOfBirthBottomSheet";
 import DateOfBirthModal from "./DateOfBirthModal";
-import { useDateOfBirthDraft } from "./useDateOfBirthDraft";
+import { useDateOfBirthDraft, type CalendarStart } from "./useDateOfBirthDraft";
 
 type DateOfBirthPickerProps = {
   visible: boolean;
   value: string;
   onConfirm: (isoDate: string) => void;
   onClose: () => void;
+  opensAt?: CalendarStart;
 };
 
-const DateOfBirthPicker = ({ visible, value, onConfirm, onClose }: DateOfBirthPickerProps) => {
+const DateOfBirthPicker = ({ visible, value, onConfirm, onClose, opensAt }: DateOfBirthPickerProps) => {
   const { isMobile } = useResponsive();
-  const draft = useDateOfBirthDraft(value, visible);
+  const draft = useDateOfBirthDraft(value, visible, opensAt);
 
   const handleConfirm = () => {
     if (!draft.selected) return;

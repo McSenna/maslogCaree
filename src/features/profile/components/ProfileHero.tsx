@@ -10,7 +10,6 @@ import WideHero from "./hero/WideHero";
 type ProfileHeroProps = {
   profile: ProfileData;
   variant: "wide" | "compact";
-  onEditProfile?: () => void;
   onChangePhoto?: () => void;
   changingPhoto?: boolean;
 };
@@ -20,7 +19,6 @@ const PHOTO_SIZE = { wide: 128, compact: 96 } as const;
 const ProfileHero = ({
   profile,
   variant,
-  onEditProfile,
   onChangePhoto,
   changingPhoto = false,
 }: ProfileHeroProps) => {
@@ -67,7 +65,6 @@ const ProfileHero = ({
       size={size}
       onLayout={handleLayout}
       surface={surface}
-      onEditProfile={onEditProfile}
     />
   );
 };

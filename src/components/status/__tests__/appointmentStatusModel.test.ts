@@ -4,9 +4,9 @@ import { describe, it } from "node:test";
 import { getStatusLabel, getStatusMeta } from "../appointmentStatusModel.ts";
 
 describe("getStatusMeta", () => {
-  it("labels a confirmed appointment as Approved for every audience", () => {
-    assert.equal(getStatusLabel("confirmed", "staff"), "Approved");
-    assert.equal(getStatusLabel("confirmed", "resident"), "Approved");
+  it("labels a confirmed appointment as Confirmed for every audience, since nobody approves bookings", () => {
+    assert.equal(getStatusLabel("confirmed", "staff"), "Confirmed");
+    assert.equal(getStatusLabel("confirmed", "resident"), "Confirmed");
   });
 
   it("uses resident-friendly wording for an appointment being served", () => {

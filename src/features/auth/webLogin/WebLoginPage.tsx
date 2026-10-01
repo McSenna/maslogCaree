@@ -43,7 +43,8 @@ const PHOTO_SRC = assetUri(landingAssets.barangayBackground);
 
 const subscribe = () => () => {};
 
-const ENTRANCE_MS = 400;
+// Only used when no entrance is running to read from; otherwise the CSS duration is read live.
+const ENTRANCE_FALLBACK_MS = 600;
 
 const useEntranceStyle = () => {
   const isClient = useSyncExternalStore(subscribe, () => true, () => false);
@@ -52,8 +53,10 @@ const useEntranceStyle = () => {
     if (!isClient) return undefined;
     const painted = document.querySelector<HTMLElement>("[data-login-card]");
     if (!painted) return undefined;
-    const elapsed = Number(painted.getAnimations()[0]?.currentTime ?? ENTRANCE_MS);
-    return { animationDelay: `-${Math.round(Math.min(elapsed, ENTRANCE_MS))}ms` };
+    const entrance = painted.getAnimations()[0];
+    const total = Number(entrance?.effect?.getComputedTiming().duration ?? ENTRANCE_FALLBACK_MS);
+    const elapsed = Number(entrance?.currentTime ?? total);
+    return { animationDelay: `-${Math.round(Math.min(elapsed, total))}ms` };
   });
   return style;
 };
@@ -88,7 +91,7 @@ const Mist = () => (
 const WebLoginPage = ({ onOpenRegister, onOpenLearnMore }: WebLoginPageProps) => {
   const entranceStyle = useEntranceStyle();
 
-  // Login failures arrive as toasts; at the top they never cover Forgotten password or Create an account.
+  // Password-recovery toasts sit at the top, so they never cover Forgotten password or Create new account.
   useEffect(() => {
     setToastPlacement("top");
     return () => setToastPlacement("bottom");

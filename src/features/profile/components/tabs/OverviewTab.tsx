@@ -1,49 +1,83 @@
 import { View, type LayoutChangeEvent } from "react-native";
-import type { ProfileEditState } from "../../hooks/useEditProfile";
+import { SPACING } from "@/theme/spacing";
+import type { ProfileScreenState } from "../../hooks/useProfileScreen";
 import type { ProfileInfoGroup } from "../../types/profile.types";
+import type { ProfileData } from "../../utils/profileData";
+import AccountSettingsCard from "../AccountSettingsCard";
+import HelpSupportCard from "../HelpSupportCard";
+import LogoutButton from "../LogoutButton";
 import ProfileInfoCard from "../ProfileInfoCard";
+import ProfileAboutCard from "../social/ProfileAboutCard";
 
 type OverviewTabProps = {
+  profile: ProfileData;
   groups: ProfileInfoGroup[];
+  state: ProfileScreenState;
   twoColumn: boolean;
-  stacked: boolean;
-  edit?: ProfileEditState;
   onPersonalCardLayout?: (event: LayoutChangeEvent) => void;
 };
 
-const OverviewTab = ({
-  groups,
-  twoColumn,
-  stacked,
-  edit,
-  onPersonalCardLayout,
-}: OverviewTabProps) => {
-  const renderGroup = (group: ProfileInfoGroup) => (
+/**
+ * Desktop mirrors a Facebook profile: a narrow "About" column beside the main
+ * column. Phones and tablets stack the same cards in reading order.
+ */
+const OverviewTab = ({ profile, groups, state, twoColumn, onPersonalCardLayout }: OverviewTabProps) => {
+  const about = <ProfileAboutCard profile={profile} />;
+
+  const details = groups.map((group) => (
     <ProfileInfoCard
       key={group.key}
       group={group}
-      stacked={stacked}
-      edit={edit}
+      edit={state.edit}
       onLayout={group.key === "personal" ? onPersonalCardLayout : undefined}
+    />
+  ));
+
+  const account = (
+    <AccountSettingsCard
+      onChangePassword={state.onChangePassword}
+      onNotificationSettings={state.onNotificationSettings}
     />
   );
 
+  const support = (
+    <HelpSupportCard
+      onHelpCenter={state.onHelpCenter}
+      onContactSupport={state.onContactSupport}
+      onSupportRequests={state.onSupportRequests}
+      onPrivacySecurity={state.onPrivacySecurity}
+      onAbout={state.onAbout}
+      supportBadge={state.supportBadge}
+      appVersion={state.appVersion}
+    />
+  );
+
+  const logout = <LogoutButton onPress={state.requestLogout} />;
+
   if (!twoColumn) {
-    return <View style={{ gap: 14 }}>{groups.map(renderGroup)}</View>;
+    return (
+      <View style={{ gap: SPACING.lg }}>
+        {about}
+        {details}
+        {account}
+        {support}
+        {logout}
+      </View>
+    );
   }
 
-  const columns = [
-    groups.filter((_, index) => index % 2 === 0),
-    groups.filter((_, index) => index % 2 === 1),
-  ];
-
   return (
-    <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 16 }}>
-      {columns.map((column, index) => (
-        <View key={index} style={{ flex: 1, minWidth: 0, gap: 16 }}>
-          {column.map(renderGroup)}
-        </View>
-      ))}
+    <View style={{ flexDirection: "row", alignItems: "flex-start", gap: SPACING.lg }}>
+      <View style={{ flexBasis: "38%", flexShrink: 0, maxWidth: 420, minWidth: 0, gap: SPACING.lg }}>
+        {about}
+        {support}
+      </View>
+
+      <View style={{ flex: 1, minWidth: 0, gap: SPACING.lg }}>
+        {details}
+        {account}
+        {logout}
+      </View>
     </View>
   );
 };

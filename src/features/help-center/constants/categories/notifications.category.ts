@@ -10,9 +10,9 @@ export const NOTIFICATIONS_CATEGORY: HelpCategory = {
   articles: [
     {
       id: "appointment-approval-notice",
-      title: "Appointment approval notices",
-      summary: "You are notified once staff approve or decline your appointment request.",
-      keywords: ["approval", "approved", "declined", "notice"],
+      title: "Appointment confirmation notices",
+      summary: "You are notified when you book an appointment and whenever the health team changes or declines it.",
+      keywords: ["confirmation", "confirmed", "booked", "approval", "approved", "declined", "notice"],
     },
     {
       id: "appointment-reminders",

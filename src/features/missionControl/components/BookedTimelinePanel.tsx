@@ -8,6 +8,7 @@ import { SPACING } from "@/theme/spacing";
 import { TYPE } from "@/theme/typography";
 import { formatSlotLabel } from "../utils/slotLabels";
 import WorkspacePanel, { PanelEmpty } from "./WorkspacePanel";
+import { appointmentPatientName } from "@/utils/appointmentPatient";
 
 type BookedTimelinePanelProps = {
   timeline: AppointmentRecord[];
@@ -35,7 +36,7 @@ const BookedTimelinePanel = ({ timeline, onReschedule }: BookedTimelinePanelProp
               <AppointmentStatusBadge status={appointment.status} />
             </View>
             <Text style={[TYPE.body, { color: colors.body }]}>
-              {appointment.resident?.fullname ?? "Patient"} · {appointment.assignedCategoryKey ?? appointment.consultationType}
+              {appointmentPatientName(appointment, "Patient")} · {appointment.assignedCategoryKey ?? appointment.consultationType}
             </Text>
             <Button variant="text" size="sm" label="Reschedule" onPress={() => onReschedule(appointment)} />
           </AnimatedListItem>

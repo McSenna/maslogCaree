@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Platform } from "react-native";
 
+import { useLegalDocumentUrl } from "../hooks/useLegalDocumentUrl";
 import {
   closeLegalDocumentDialog,
+  openLegalDocumentDialog,
   subscribeToLegalDocument,
-  type LegalDocumentKind,
-} from "../legalDocumentStore";
-import { useLegalDocumentUrl } from "../useLegalDocumentUrl";
+} from "../services/legalDocumentStore";
+import type { LegalDocumentKind } from "../types/legalDocument.types";
 import LegalDocumentDialog from "./LegalDocumentDialog";
 
 /** Mounted once at the root. Web only: the app opens /privacy and /terms as pages. */
@@ -18,7 +19,13 @@ const LegalDocumentHost = () => {
 
   if (Platform.OS !== "web") return null;
 
-  return <LegalDocumentDialog kind={kind} onClose={closeLegalDocumentDialog} />;
+  return (
+    <LegalDocumentDialog
+      kind={kind}
+      onClose={closeLegalDocumentDialog}
+      onOpenRelated={openLegalDocumentDialog}
+    />
+  );
 };
 
 export default LegalDocumentHost;

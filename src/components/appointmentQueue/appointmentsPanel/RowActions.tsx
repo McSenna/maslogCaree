@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import type { AppointmentRecord } from "@/services/appointments";
 import { QUEUE_RADIUS, useQueuePalette, type QueuePalette } from "../queueTheme";
+import { appointmentPatientName } from "@/utils/appointmentPatient";
 
 export type RowActionProps = {
   appointment: AppointmentRecord;
@@ -94,7 +95,7 @@ const RowActions = ({
       <MoreButton
         onPress={() => onMore?.(appointment)}
         palette={palette}
-        label={`More actions for ${appointment.resident?.fullname ?? "this appointment"}`}
+        label={`More actions for ${appointmentPatientName(appointment, "this appointment")}`}
       />
     </View>
   );

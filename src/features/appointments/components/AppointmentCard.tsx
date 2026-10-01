@@ -7,6 +7,7 @@ import { getServiceVisual, resolveVisual } from "@/config/serviceVisuals";
 import type { AppointmentRecord } from "@/services/appointments";
 import {
   appointmentServiceLabel,
+  appointmentSubline,
   appointmentWhen,
   canCancelAppointment,
   canRescheduleAppointment,
@@ -73,9 +74,9 @@ const AppointmentCard = ({
         <AppointmentStatusBadge status={appointment.status} audience="resident" />
       </View>
 
-      {appointment.description ? (
+      {appointmentSubline(appointment) ? (
         <Text className="text-[13px] leading-[19px]" style={{ color: palette.body }} numberOfLines={2}>
-          {appointment.description}
+          {appointmentSubline(appointment)}
         </Text>
       ) : null}
 

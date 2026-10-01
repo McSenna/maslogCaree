@@ -1,6 +1,6 @@
-// Residents never choose a time: health staff assign slots from the queue, in age-priority order.
-export const AUTO_SCHEDULE_NOTE =
-  "You do not pick a time. The health team assigns your date and time and sends it to you in the app and by email.";
+// Booking is confirmed by the server the moment it is saved; nobody reviews it first.
+export const BOOKING_NOTE =
+  "Your appointment is confirmed as soon as you book it. Immunization runs every Wednesday, and its times are assigned first come, first served.";
 
-export const QUEUE_MESSAGE =
-  "Your appointment is in queue. Please wait for the health team to assign your schedule.";
+export const CONFIRMED_MESSAGE =
+  "Your time is reserved. You can find this appointment under Appointments, and the details are in your notifications.";

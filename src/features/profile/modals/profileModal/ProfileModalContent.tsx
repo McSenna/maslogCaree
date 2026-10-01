@@ -33,7 +33,6 @@ const ProfileModalContent = ({ state, twoColumn }: Props) => {
       <ProfileHero
         profile={profile}
         variant="wide"
-        onEditProfile={state.onEditProfile}
         onChangePhoto={state.onChangePhoto}
         changingPhoto={state.edit.savingAvatar}
       />

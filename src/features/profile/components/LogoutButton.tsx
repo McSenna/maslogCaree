@@ -1,67 +1,53 @@
 import { Feather } from "@expo/vector-icons";
-
-import { Animated, Pressable, Text, View } from "react-native";
-import { PROFILE_COLORS, PROFILE_RADIUS } from "../config/profileTheme";
-import { USE_NATIVE_DRIVER } from "@/theme/motion";
-import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { Animated, Pressable, Text } from "react-native";
+import { useInteractionState } from "@/hooks/useInteractionState";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { webTransition } from "@/theme/motion";
+import { RADII } from "@/theme/radius";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
+import { webStyle } from "@/theme/webStyle";
 
 type LogoutButtonProps = {
   onPress: () => void;
 };
 
-const LogoutButton = ({ onPress }: LogoutButtonProps) => {
-  const scale = useAnimatedValue(1);
+const LOGOUT_WEB = webStyle({ cursor: "pointer", transition: webTransition("background-color", "border-color") });
 
-  const animate = (toValue: number) =>
-    Animated.spring(scale, {
-      toValue,
-      useNativeDriver: USE_NATIVE_DRIVER,
-      speed: 40,
-      bounciness: 0,
-    }).start();
+const LogoutButton = ({ onPress }: LogoutButtonProps) => {
+  const colors = useThemeColors();
+  const { hovered, pressed, focused, scaleStyle, handlers } = useInteractionState();
+  const active = hovered || pressed;
 
   return (
-    <Animated.View style={{ transform: [{ scale }] }}>
+    <Animated.View style={scaleStyle}>
       <Pressable
+        {...handlers}
         accessibilityRole="button"
         accessibilityLabel="Log out of MaslogCare"
+        accessibilityHint="Asks you to confirm before signing out"
         onPress={onPress}
-        onPressIn={() => animate(0.98)}
-        onPressOut={() => animate(1)}
-        className="flex-row items-center justify-center active:opacity-85"
         style={{
-          gap: 11,
-          minHeight: 58,
-          paddingHorizontal: 18,
-          borderRadius: PROFILE_RADIUS.card,
+          minHeight: 52,
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: SPACING.sm,
+          paddingHorizontal: SPACING.lg,
+          borderRadius: RADII.large,
           borderWidth: 1,
-          borderColor: PROFILE_COLORS.dangerBorder,
-          backgroundColor: PROFILE_COLORS.dangerSoft,
+          borderColor: active ? colors.danger.border : colors.border,
+          backgroundColor: active ? colors.danger.bg : colors.surface,
+          outlineWidth: focused ? 3 : 0,
+          outlineColor: colors.focusRing,
+          outlineStyle: "solid",
+          outlineOffset: 2,
+          ...LOGOUT_WEB,
         }}
       >
-        <View
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 11,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: PROFILE_COLORS.surface,
-          }}
-        >
-          <Feather name="log-out" size={17} color={PROFILE_COLORS.danger} />
-        </View>
-
-        <Text
-          maxFontSizeMultiplier={1.3}
-          style={{
-            fontSize: 16,
-            fontWeight: "700",
-            letterSpacing: -0.2,
-            color: PROFILE_COLORS.danger,
-          }}
-        >
-          Log Out
+        <Feather name="log-out" size={17} color={colors.danger.fg} />
+        <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.bodyStrong, color: colors.danger.fg }}>
+          Log out
         </Text>
       </Pressable>
     </Animated.View>

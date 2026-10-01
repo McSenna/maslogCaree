@@ -32,7 +32,6 @@ export {
   PROFILE_SHADOW,
   PROFILE_TYPE,
 } from "./config/profileTheme";
-export { SOCIAL_COLORS } from "./config/profileSocialTheme";
 
 export { buildProfileData, buildDisplayId, getInitials } from "./utils/profileData";
 export type { ProfileData, ProfileField } from "./utils/profileData";

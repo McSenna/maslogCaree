@@ -1,4 +1,5 @@
 import type { AppointmentRecord } from "@/services/appointments";
+import { appointmentPatientBirthDate, appointmentPatientName, isChildVisit } from "@/utils/appointmentPatient";
 
 export type PatientFacts = {
   name: string;
@@ -34,14 +35,16 @@ export const sexLabel = (gender: string | null | undefined): string | null => {
   return SEX_LABELS[key] ?? key.charAt(0).toUpperCase() + key.slice(1);
 };
 
+/** For an immunization the patient is the child: their name and age; the contact is the parent's. */
 export const patientFactsOf = (appointment: AppointmentRecord): PatientFacts => {
   const resident = appointment.resident;
-  const years = ageInYears(resident?.dateOfBirth);
+  const child = isChildVisit(appointment);
+  const years = ageInYears(appointmentPatientBirthDate(appointment));
 
   return {
-    name: resident?.fullname?.trim() || "Unnamed patient",
+    name: appointmentPatientName(appointment),
     age: years === null ? null : `${years} yr${years === 1 ? "" : "s"}`,
-    sex: sexLabel(resident?.gender),
+    sex: child ? null : sexLabel(resident?.gender),
     contact: resident?.phone?.trim() || null,
     email: resident?.email?.trim() || null,
   };

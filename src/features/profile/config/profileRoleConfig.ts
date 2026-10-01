@@ -22,18 +22,18 @@ export type ProfileFieldDefinition = {
 };
 
 export const PROFILE_FIELDS: Record<ProfileFieldKey, ProfileFieldDefinition> = {
-  fullName: { label: "Full Name", icon: "user" },
+  fullName: { label: "Full name", icon: "user" },
   userId: { label: "User ID", icon: "credit-card" },
   specialization: { label: "Specialization", icon: "activity" },
-  facility: { label: "Assigned Facility", icon: "home" },
-  assignedArea: { label: "Assigned Purok / Area", icon: "map" },
+  facility: { label: "Assigned facility", icon: "home" },
+  assignedArea: { label: "Assigned purok or area", icon: "map" },
   address: { label: "Address", icon: "map-pin" },
-  phone: { label: "Contact Number", icon: "phone" },
-  email: { label: "Email Address", icon: "mail" },
-  dateOfBirth: { label: "Date of Birth", icon: "calendar" },
+  phone: { label: "Contact number", icon: "phone" },
+  email: { label: "Email address", icon: "mail" },
+  dateOfBirth: { label: "Date of birth", icon: "calendar" },
   gender: { label: "Gender", icon: "users" },
-  dateJoined: { label: "Date Joined", icon: "clock" },
-  accountStatus: { label: "Account Status", icon: "check-circle" },
+  dateJoined: { label: "Date joined", icon: "clock" },
+  accountStatus: { label: "Account status", icon: "check-circle" },
 };
 
 export type RoleBadgeStyle = {

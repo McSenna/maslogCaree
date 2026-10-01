@@ -1,7 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
 import { ActivityIndicator, Image, Pressable, Text, View } from "react-native";
-import { PROFILE_COLORS } from "../config/profileTheme";
+import { useInteractionState } from "@/hooks/useInteractionState";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { webTransition } from "@/theme/motion";
+import { webStyle } from "@/theme/webStyle";
 
 type ProfilePhotoProps = {
   size: number;
@@ -13,6 +16,8 @@ type ProfilePhotoProps = {
   changingPhoto?: boolean;
 };
 
+const BADGE_WEB = webStyle({ cursor: "pointer", transition: webTransition("background-color") });
+
 const ProfilePhoto = ({
   size,
   imageUrl,
@@ -22,12 +27,16 @@ const ProfilePhoto = ({
   onChangePhoto,
   changingPhoto = false,
 }: ProfilePhotoProps) => {
+  const colors = useThemeColors();
   const [failed, setFailed] = useState(false);
+  const badgeState = useInteractionState({ disabled: changingPhoto });
 
   const uri = imageUrl?.trim() ? imageUrl.trim() : null;
   const showFallback = !uri || failed;
   const radius = shape === "circle" ? size / 2 : Math.round(size * 0.22);
-  const badge = Math.min(38, Math.max(32, Math.round(size * 0.3)));
+  const ring = size >= 120 ? 4 : 3;
+  const badge = Math.min(40, Math.max(32, Math.round(size * 0.26)));
+  const badgeActive = badgeState.hovered || badgeState.pressed;
 
   return (
     <View style={{ width: size, height: size }}>
@@ -42,11 +51,9 @@ const ProfilePhoto = ({
           overflow: "hidden",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: PROFILE_COLORS.primarySoft,
-          borderWidth: 3,
-          borderColor: PROFILE_COLORS.surface,
-          boxShadow: "0px 4px 14px rgba(37, 99, 235, 0.14)",
-          elevation: 4,
+          backgroundColor: colors.primary,
+          borderWidth: ring,
+          borderColor: colors.surface,
         }}
       >
         {showFallback ? (
@@ -57,17 +64,13 @@ const ProfilePhoto = ({
                 fontSize: Math.round(size * 0.34),
                 fontWeight: "700",
                 letterSpacing: 0.5,
-                color: PROFILE_COLORS.primary,
+                color: colors.onPrimary,
               }}
             >
               {initials}
             </Text>
           ) : (
-            <Feather
-              name="user"
-              size={Math.round(size * 0.42)}
-              color={PROFILE_COLORS.primary}
-            />
+            <Feather name="user" size={Math.round(size * 0.42)} color={colors.onPrimary} />
           )
         ) : (
           <Image
@@ -81,29 +84,37 @@ const ProfilePhoto = ({
 
       {onChangePhoto ? (
         <Pressable
+          {...badgeState.handlers}
           accessibilityRole="button"
           accessibilityLabel="Change profile photo"
           accessibilityState={{ disabled: changingPhoto, busy: changingPhoto }}
           onPress={onChangePhoto}
           disabled={changingPhoto}
           hitSlop={8}
-          className="absolute items-center justify-center active:opacity-85"
           style={{
-            right: -2,
-            bottom: -2,
+            position: "absolute",
+            right: shape === "circle" ? Math.round(size * 0.02) : -4,
+            bottom: shape === "circle" ? Math.round(size * 0.02) : -4,
             width: badge,
             height: badge,
             borderRadius: badge / 2,
-            backgroundColor: PROFILE_COLORS.primary,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: badgeActive ? colors.borderStrong : colors.surfaceMuted,
             borderWidth: 3,
-            borderColor: PROFILE_COLORS.surface,
+            borderColor: colors.surface,
             opacity: changingPhoto ? 0.6 : 1,
+            outlineWidth: badgeState.focused ? 3 : 0,
+            outlineColor: colors.focusRing,
+            outlineStyle: "solid",
+            outlineOffset: 1,
+            ...BADGE_WEB,
           }}
         >
           {changingPhoto ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
+            <ActivityIndicator size="small" color={colors.heading} />
           ) : (
-            <Feather name="camera" size={Math.round(badge * 0.45)} color="#FFFFFF" />
+            <Feather name="camera" size={Math.round(badge * 0.45)} color={colors.heading} />
           )}
         </Pressable>
       ) : null}

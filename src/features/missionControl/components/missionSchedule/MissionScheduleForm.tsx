@@ -37,6 +37,7 @@ const MissionScheduleForm = ({
 
       <MissionCategorySection
         categories={categories}
+        dateKey={form.values.date}
         enabled={form.enabled}
         durations={form.durations}
         onToggle={form.toggleCategory}

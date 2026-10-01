@@ -15,7 +15,7 @@ type StatusSpec = { staff: string; resident: string; tone: StatusTone; dot: stri
 // runner; the blue is PALETTE.blue[600] from src/theme/palette.ts.
 const SPECS: Record<string, StatusSpec> = {
   pending: { staff: "Pending", resident: "Pending", tone: "warning", dot: "#F59E0B" },
-  confirmed: { staff: "Approved", resident: "Approved", tone: "success", dot: "#10B981" },
+  confirmed: { staff: "Confirmed", resident: "Confirmed", tone: "success", dot: "#10B981" },
   rescheduled: { staff: "Rescheduled", resident: "Rescheduled", tone: "info", dot: "#1565D8" },
   processing: { staff: "In Progress", resident: "Being seen", tone: "progress", dot: "#8B5CF6" },
   completed: { staff: "Completed", resident: "Completed", tone: "success", dot: "#10B981" },

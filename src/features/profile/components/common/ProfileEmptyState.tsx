@@ -1,7 +1,10 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable, Text, View } from "react-native";
-import { SOCIAL_COLORS } from "../../config/profileSocialTheme";
-import { PROFILE_RADIUS } from "../../config/profileTheme";
+import { Text, View } from "react-native";
+import Button from "@/components/buttons/Button";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 import type { ProfileIconName } from "../../types/profile.types";
 
 type ProfileEmptyStateProps = {
@@ -12,27 +15,23 @@ type ProfileEmptyStateProps = {
   action?: { label: string; onPress: () => void };
 };
 
-const ProfileEmptyState = ({
-  icon,
-  title,
-  body,
-  tone = "neutral",
-  action,
-}: ProfileEmptyStateProps) => {
+const ProfileEmptyState = ({ icon, title, body, tone = "neutral", action }: ProfileEmptyStateProps) => {
+  const colors = useThemeColors();
   const isError = tone === "error";
+  const badge = isError ? colors.danger : { bg: colors.surfaceMuted, fg: colors.muted };
 
   return (
     <View
       accessibilityRole={isError ? "alert" : "summary"}
       style={{
         alignItems: "center",
-        gap: 9,
-        paddingVertical: 40,
-        paddingHorizontal: 24,
-        borderRadius: PROFILE_RADIUS.card,
-        backgroundColor: SOCIAL_COLORS.surface,
+        gap: SPACING.sm,
+        paddingVertical: SPACING.xxxl,
+        paddingHorizontal: SPACING.xl,
+        borderRadius: RADII.large,
+        backgroundColor: colors.surface,
         borderWidth: 1,
-        borderColor: SOCIAL_COLORS.border,
+        borderColor: colors.border,
       }}
     >
       <View
@@ -42,54 +41,25 @@ const ProfileEmptyState = ({
           borderRadius: 24,
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: isError ? SOCIAL_COLORS.dangerSoft : SOCIAL_COLORS.primarySoft,
+          backgroundColor: badge.bg,
         }}
       >
-        <Feather
-          name={icon}
-          size={21}
-          color={isError ? SOCIAL_COLORS.danger : SOCIAL_COLORS.primary}
-        />
+        <Feather name={icon} size={21} color={badge.fg} />
       </View>
 
-      <Text
-        maxFontSizeMultiplier={1.2}
-        style={{ fontSize: 15.5, fontWeight: "700", color: SOCIAL_COLORS.navy }}
-      >
+      <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.title, textAlign: "center", color: colors.heading }}>
         {title}
       </Text>
 
       <Text
-        maxFontSizeMultiplier={1.2}
-        style={{
-          maxWidth: 380,
-          fontSize: 13.5,
-          lineHeight: 19,
-          textAlign: "center",
-          color: SOCIAL_COLORS.muted,
-        }}
+        maxFontSizeMultiplier={1.3}
+        style={{ ...TYPE.body, maxWidth: 380, textAlign: "center", color: colors.muted }}
       >
         {body}
       </Text>
 
       {action ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={action.label}
-          onPress={action.onPress}
-          className="items-center justify-center active:opacity-85"
-          style={{
-            marginTop: 8,
-            minHeight: 44,
-            paddingHorizontal: 22,
-            borderRadius: PROFILE_RADIUS.control,
-            backgroundColor: SOCIAL_COLORS.primary,
-          }}
-        >
-          <Text style={{ fontSize: 14, fontWeight: "700", color: "#FFFFFF" }}>
-            {action.label}
-          </Text>
-        </Pressable>
+        <Button label={action.label} onPress={action.onPress} style={{ marginTop: SPACING.sm, alignSelf: "center" }} />
       ) : null}
     </View>
   );

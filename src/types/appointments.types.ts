@@ -5,6 +5,8 @@ export type ConsultationCategory = {
   description?: string;
   residentBookable?: boolean;
   queueRole?: string;
+  /** "weekly": its own recurring schedule (immunization), never booked on a medical mission. */
+  scheduling?: "mission" | "weekly";
   durationMinutes?: number;
   durationMinutesMin?: number;
   durationMinutesMax?: number;
@@ -74,6 +76,11 @@ export type AppointmentRecord = {
   slotEnd?: string | null;
   declineReason?: string;
   cancelReason?: string;
+  /** Immunization only: the child the visit is for; the account holder is the parent. */
+  childName?: string | null;
+  childDateOfBirth?: string | null;
+  /** Set when the resident rescheduled a first-slot service (immunization); sorts first in the pending queue. */
+  reschedulePriorityAt?: string | null;
   assignedBy?: { _id?: string; fullname?: string; role?: string } | null;
 
   approvedAt?: string | null;
@@ -110,6 +117,26 @@ export type RescheduleOptionSchedule = {
   availableSlotStarts: string[];
 };
 
+/** A day on a weekly service's own schedule, with the time the next booking would get right now. */
+export type WeeklyDayOption = {
+  dateKey: string;
+  date: string;
+  nextStart: string | null;
+  openPositions: number;
+  totalPositions: number;
+};
+
+export type ServiceScheduling = "mission" | "weekly";
+
+/** Open dates for a new booking: mission days and times, or a weekly service's own days. */
+export type BookingOptionsResponse = {
+  consultationType: string;
+  scheduling: ServiceScheduling;
+  schedules: RescheduleOptionSchedule[];
+  days: WeeklyDayOption[];
+  intervalMinutes: number | null;
+};
+
 export type RescheduleOptionsResponse = {
   appointment: {
     _id: string;
@@ -119,5 +146,9 @@ export type RescheduleOptionsResponse = {
     slotEnd?: string | null;
     missionSchedule?: string | null;
   };
+  /** True when the server assigns the chosen date's first open time instead of letting the resident pick. */
+  assignsEarliestSlot?: boolean;
+  scheduling?: ServiceScheduling;
   schedules: RescheduleOptionSchedule[];
+  days?: WeeklyDayOption[];
 };

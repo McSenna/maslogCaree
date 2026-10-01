@@ -20,9 +20,9 @@ export type LearnMoreStep = {
 export const LEARN_MORE_INTRO = {
   eyebrow: "MaslogCare",
   titleLead: "Barangay health visits,",
-  titleAccent: "requested from your phone",
+  titleAccent: "booked from your phone",
   description:
-    "MaslogCare is the appointment app of the Barangay Maslog health office. Residents send a request from the mobile app, and health staff set the date and time of each visit.",
+    "MaslogCare is the appointment app of the Barangay Maslog health office. Residents pick an open date and time in the mobile app, and each booking is confirmed right away.",
   imageCaption: "Barangay 61 Maslog, Legazpi City",
 };
 
@@ -30,16 +30,16 @@ export const LEARN_MORE_FEATURES: LearnMoreFeature[] = [
   {
     key: "book",
     icon: "calendar-outline",
-    title: "Request a visit",
+    title: "Book a visit",
     description:
-      "Choose a service and describe your concern. You do not pick a time. The health team assigns one.",
+      "Choose a service, then pick an open date and time. Your appointment is confirmed right away.",
     tone: "blue",
   },
   {
     key: "services",
     icon: "medkit-outline",
     title: "Barangay health services",
-    description: "The services you can request in the app:",
+    description: "The services you can book in the app:",
     tone: "green",
     services: [
       "General checkup",
@@ -67,13 +67,13 @@ export const LEARN_MORE_STEPS: LearnMoreStep[] = [
   },
   {
     key: "service",
-    title: "Send a request",
-    description: "Choose a service and describe your concern.",
+    title: "Book a visit",
+    description: "Choose a service, then an open date and time.",
   },
   {
     key: "schedule",
-    title: "Wait for your slot",
-    description: "Infants, children, and seniors are scheduled first.",
+    title: "Get confirmed",
+    description: "Your appointment is confirmed as soon as you book it.",
   },
   {
     key: "confirmed",

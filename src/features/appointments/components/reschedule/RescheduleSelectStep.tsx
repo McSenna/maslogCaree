@@ -3,19 +3,27 @@ import { Text, View } from "react-native";
 
 import { DialogActions, InlineError } from "@/components/ui/dialog/DialogPieces";
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
-import type { AppointmentRecord, RescheduleOptionSchedule } from "@/types/appointments.types";
+import type { AppointmentRecord } from "@/types/appointments.types";
+import { serviceDayNote } from "@/utils/serviceDays";
 
 import { appointmentServiceLabel, appointmentWhen } from "../../appointmentPresenter";
+import type { DayChoice } from "./dayChoices";
+import { FirstSlotCard } from "./FirstSlotCard";
 import { RescheduleDateList } from "./RescheduleDateList";
 import { RescheduleTimeGrid } from "./RescheduleTimeGrid";
+import { ServiceDayNote } from "./ServiceDayNote";
 
 type Props = {
   palette: ResidentDialogPalette;
   appointment: AppointmentRecord;
-  schedules: RescheduleOptionSchedule[];
+  dayChoices: DayChoice[];
+  /** A weekly service (immunization): Wednesdays on its own schedule, time assigned on save. */
+  weekly: boolean;
   scheduleId: string | null;
   availableSlots: string[];
   slotStart: string | null;
+  assignsEarliestSlot: boolean;
+  isCurrentSlot: boolean;
   error: string | null;
   onSelectSchedule: (id: string) => void;
   onSelectSlot: (slotStart: string) => void;
@@ -38,80 +46,103 @@ const FieldLabel = ({
 export const RescheduleSelectStep = ({
   palette,
   appointment,
-  schedules,
+  dayChoices,
+  weekly,
   scheduleId,
   availableSlots,
   slotStart,
+  assignsEarliestSlot,
+  isCurrentSlot,
   error,
   onSelectSchedule,
   onSelectSlot,
   onCancel,
   onContinue,
-}: Props) => (
-  <View style={{ gap: 16 }}>
-    <View
-      style={{
-        padding: 14,
-        borderRadius: 12,
-        backgroundColor: palette.card,
-        borderColor: palette.border,
-        borderWidth: 1,
-      }}
-    >
-      <Text
+}: Props) => {
+  const dayNote = serviceDayNote(appointment.consultationType, appointmentServiceLabel(appointment));
+
+  return (
+    <View style={{ gap: 16 }}>
+      <View
         style={{
-          fontSize: 11,
-          fontWeight: "600",
-          color: palette.muted,
-          textTransform: "uppercase",
-          letterSpacing: 0.4,
+          padding: 14,
+          borderRadius: 12,
+          backgroundColor: palette.card,
+          borderColor: palette.border,
+          borderWidth: 1,
         }}
       >
-        Current Appointment
-      </Text>
-      <Text style={{ fontSize: 16, fontWeight: "700", color: palette.heading, marginTop: 2 }}>
-        {appointmentServiceLabel(appointment)}
-      </Text>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 }}>
-        <Feather name="clock" size={13} color={palette.muted} />
-        <Text style={{ fontSize: 13, color: palette.body }}>{appointmentWhen(appointment)}</Text>
+        <Text
+          style={{
+            fontSize: 11,
+            fontWeight: "600",
+            color: palette.muted,
+            textTransform: "uppercase",
+            letterSpacing: 0.4,
+          }}
+        >
+          Current Appointment
+        </Text>
+        <Text style={{ fontSize: 16, fontWeight: "700", color: palette.heading, marginTop: 2 }}>
+          {appointmentServiceLabel(appointment)}
+        </Text>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 }}>
+          <Feather name="clock" size={13} color={palette.muted} />
+          <Text style={{ fontSize: 13, color: palette.body }}>{appointmentWhen(appointment)}</Text>
+        </View>
       </View>
-    </View>
 
-    {error ? <InlineError palette={palette} message={error} /> : null}
+      {error ? <InlineError palette={palette} message={error} /> : null}
 
-    <View accessibilityRole="radiogroup">
-      <FieldLabel palette={palette}>Select New Date</FieldLabel>
-      <RescheduleDateList
-        palette={palette}
-        schedules={schedules}
-        selectedId={scheduleId}
-        onSelect={onSelectSchedule}
-      />
-    </View>
+      {dayNote ? <ServiceDayNote palette={palette} message={dayNote} /> : null}
 
-    {scheduleId ? (
       <View accessibilityRole="radiogroup">
-        <FieldLabel palette={palette}>Select Available Time</FieldLabel>
-        <RescheduleTimeGrid
+        <FieldLabel palette={palette}>{weekly ? "Select New Wednesday" : "Select New Date"}</FieldLabel>
+        <RescheduleDateList
           palette={palette}
-          slots={availableSlots}
-          selected={slotStart}
-          onSelect={onSelectSlot}
+          options={dayChoices}
+          emptyMessage={weekly ? "Every Wednesday in the next 8 weeks is full. Please check again later." : undefined}
+          selectedId={scheduleId}
+          onSelect={onSelectSchedule}
         />
       </View>
-    ) : null}
 
-    <DialogActions
-      palette={palette}
-      secondaryLabel="Cancel"
-      onSecondary={onCancel}
-      primaryLabel="Continue"
-      onPrimary={onContinue}
-      primaryDisabled={!slotStart}
-      icon="arrow-right"
-    />
-  </View>
-);
+      {scheduleId && assignsEarliestSlot ? (
+        <View>
+          <FieldLabel palette={palette}>Your Time</FieldLabel>
+          <FirstSlotCard
+            palette={palette}
+            serviceLabel={appointmentServiceLabel(appointment)}
+            slotStart={slotStart}
+            isCurrentSlot={isCurrentSlot}
+            explanation={weekly ? "Your new time is assigned when you confirm: the earliest open time on that Wednesday." : undefined}
+          />
+        </View>
+      ) : null}
+
+      {scheduleId && !assignsEarliestSlot ? (
+        <View accessibilityRole="radiogroup">
+          <FieldLabel palette={palette}>Select Available Time</FieldLabel>
+          <RescheduleTimeGrid
+            palette={palette}
+            slots={availableSlots}
+            selected={slotStart}
+            onSelect={onSelectSlot}
+          />
+        </View>
+      ) : null}
+
+      <DialogActions
+        palette={palette}
+        secondaryLabel="Cancel"
+        onSecondary={onCancel}
+        primaryLabel="Continue"
+        onPrimary={onContinue}
+        primaryDisabled={!slotStart || isCurrentSlot}
+        icon="arrow-right"
+      />
+    </View>
+  );
+};
 
 export default RescheduleSelectStep;

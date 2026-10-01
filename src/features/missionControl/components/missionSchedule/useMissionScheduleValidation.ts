@@ -1,7 +1,11 @@
 import { useMemo } from "react";
 import type { ConsultationCategory, MissionScheduleRecord } from "@/services/appointments";
 import { isEndAfterStart } from "../../utils/dateTime";
-import { hasMissionOnDate, type CategoryEnabledMap } from "../../utils/missionCategories";
+import {
+  hasMissionOnDate,
+  isCategoryOffered,
+  type CategoryEnabledMap,
+} from "../../utils/missionCategories";
 import type { MissionFormValues } from "../../hooks/useMissionForm";
 
 export type MissionScheduleErrors = {
@@ -26,7 +30,9 @@ export const useMissionScheduleValidation = ({
   excludeMissionId = null,
 }: ValidationInput): { errors: MissionScheduleErrors; isValid: boolean } => {
   return useMemo(() => {
-    const selectedCount = categories.filter((category) => enabled[category.key]).length;
+    const selectedCount = categories.filter((category) =>
+      isCategoryOffered(category, enabled, values.date)
+    ).length;
 
     const errors: MissionScheduleErrors = {
       date: !values.date

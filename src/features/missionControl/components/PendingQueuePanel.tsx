@@ -5,6 +5,8 @@ import { useThemeColors } from "@/hooks/useThemeColors";
 import type { AppointmentRecord } from "@/services/appointments";
 import { SPACING } from "@/theme/spacing";
 import { TYPE } from "@/theme/typography";
+import { appointmentPatientName, childCaption } from "@/utils/appointmentPatient";
+import { isWeeklyService } from "@/utils/serviceDays";
 import { formatPriorityTier } from "../utils/slotLabels";
 import WorkspacePanel, { PanelEmpty } from "./WorkspacePanel";
 
@@ -18,7 +20,10 @@ const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelPr
   const colors = useThemeColors();
 
   return (
-    <WorkspacePanel title="Pending queue" subtitle="Sorted by priority tier, then first come, first served.">
+    <WorkspacePanel
+      title="Pending queue"
+      subtitle="Rescheduled immunizations first, then priority tier, then first come, first served."
+    >
       {pending.length === 0 ? (
         <PanelEmpty>No residents are waiting for a slot.</PanelEmpty>
       ) : (
@@ -29,17 +34,30 @@ const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelPr
             style={{ gap: SPACING.xs, paddingBottom: SPACING.md, borderBottomWidth: 1, borderBottomColor: colors.divider }}
           >
             <Text style={[TYPE.bodyStrong, { color: colors.heading }]}>
-              {appointment.resident?.fullname ?? "Resident"}
+              {appointmentPatientName(appointment, "Resident")}
             </Text>
             <Text style={[TYPE.caption, { color: colors.muted }]}>
+              {appointment.reschedulePriorityAt ? (
+                <Text style={{ color: colors.heading, fontWeight: "700" }}>Rescheduled · </Text>
+              ) : null}
               {formatPriorityTier(appointment.ageTier)} · requested {appointment.consultationType}
               {appointment.isUrgent ? " · " : ""}
               {appointment.isUrgent ? <Text style={{ color: colors.danger.fg, fontWeight: "700" }}>Urgent</Text> : null}
             </Text>
-            <Text style={[TYPE.body, { color: colors.body }]}>{appointment.description || "Not set"}</Text>
+            {/* Immunization has no reason to show: it is identified by the child instead. */}
+            <Text style={[TYPE.body, { color: colors.body }]}>
+              {isWeeklyService(appointment.consultationType)
+                ? (childCaption(appointment) ?? "Older request with no child details")
+                : appointment.description || "Not set"}
+            </Text>
 
             <View style={{ marginTop: SPACING.xs, flexDirection: "row", flexWrap: "wrap", gap: SPACING.sm }}>
-              <Button size="sm" label="Assign slot" icon="calendar" onPress={() => onAssign(appointment)} />
+              <Button
+                size="sm"
+                label={isWeeklyService(appointment.consultationType) ? "Place on next open Wednesday" : "Assign slot"}
+                icon="calendar"
+                onPress={() => onAssign(appointment)}
+              />
               <Button size="sm" variant="secondary" label="Decline" onPress={() => onDecline(appointment)} />
             </View>
           </AnimatedListItem>

@@ -16,25 +16,25 @@ export type HelpSupportMenuEntry = {
 export const HELP_SUPPORT_MENU: readonly HelpSupportMenuEntry[] = [
   {
     key: "helpCenter",
-    label: "Help Center",
+    label: "Help center",
     description: "Find answers and learn how to use MaslogCare.",
     icon: "help-circle",
   },
   {
     key: "contactSupport",
-    label: "Contact Support",
+    label: "Contact support",
     description: "Send a concern or request assistance from the support team.",
     icon: "headphones",
   },
   {
     key: "supportRequests",
-    label: "My Support Requests",
+    label: "My support requests",
     description: "View and track your submitted support tickets.",
     icon: "inbox",
   },
   {
     key: "privacySecurity",
-    label: "Privacy & Security",
+    label: "Privacy and security",
     description: "Learn how MaslogCare protects your personal and health information.",
     icon: "shield",
   },

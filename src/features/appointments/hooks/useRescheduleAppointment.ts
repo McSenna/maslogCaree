@@ -1,19 +1,23 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { fetchRescheduleOptions, rescheduleAppointment } from "@/services/appointmentActionsApi";
-import type { AppointmentRecord, RescheduleOptionSchedule } from "@/types/appointments.types";
+import type { AppointmentRecord, RescheduleOptionsResponse } from "@/types/appointments.types";
 import { getApiErrorMessage, isConflictError } from "@/utils/apiErrorHandler";
+import { getServiceLabel } from "@/config/appointmentServices";
+import { isServiceDay, serviceDayNote } from "@/utils/serviceDays";
+
+import { chosenStartOf, dayChoicesOf, firstBookableId, isSameInstant, rescheduleBodyOf } from "./rescheduleSelection";
 
 export type RescheduleStep = "select" | "confirm";
 
 const SLOT_TAKEN_MESSAGE = "That time was just taken. Please pick another slot.";
 
-const firstBookableId = (schedules: RescheduleOptionSchedule[]): string | null =>
-  (schedules.find((s) => s.availableSlotStarts.length > 0) ?? schedules[0])?.missionScheduleId ??
-  null;
+type Options = Pick<RescheduleOptionsResponse, "schedules" | "days" | "scheduling" | "assignsEarliestSlot">;
+
+const EMPTY_OPTIONS: Options = { schedules: [], days: [], scheduling: "mission", assignsEarliestSlot: false };
 
 /**
- * Loads the slots the backend says are still free for this appointment, then
+ * Loads the dates the backend says are still open for this appointment, then
  * walks the resident through pick → confirm → submit. Availability is
  * re-checked server side on submit, so a slot taken in the meantime sends the
  * resident back to a freshly loaded list rather than failing silently.
@@ -22,26 +26,33 @@ export const useRescheduleAppointment = (
   appointment: AppointmentRecord,
   onSuccess: (appointment: AppointmentRecord) => void
 ) => {
-  const [schedules, setSchedules] = useState<RescheduleOptionSchedule[]>([]);
+  const [options, setOptions] = useState<Options>(EMPTY_OPTIONS);
   const [loadingOptions, setLoadingOptions] = useState(true);
   const [optionsError, setOptionsError] = useState<string | null>(null);
-
   const [scheduleId, setScheduleId] = useState<string | null>(null);
   const [slotStart, setSlotStart] = useState<string | null>(null);
-
   const [step, setStep] = useState<RescheduleStep>("select");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const appointmentId = appointment._id;
+  const serviceKey = appointment.consultationType;
   const active = useRef(true);
 
   const loadOptions = useCallback(async () => {
     try {
-      const { schedules: rows } = await fetchRescheduleOptions(appointmentId);
+      const response = await fetchRescheduleOptions(appointmentId);
       if (!active.current) return;
-      setSchedules(rows ?? []);
-      setScheduleId((current) => current ?? firstBookableId(rows ?? []));
+      // The server already limits fixed-day services to their day; this keeps
+      // an older or unexpected response from offering a date it would refuse.
+      const next: Options = {
+        scheduling: response.scheduling === "weekly" ? "weekly" : "mission",
+        assignsEarliestSlot: Boolean(response.assignsEarliestSlot),
+        schedules: (response.schedules ?? []).filter((row) => isServiceDay(serviceKey, row.date)),
+        days: (response.days ?? []).filter((day) => isServiceDay(serviceKey, day.date)),
+      };
+      setOptions(next);
+      setScheduleId((current) => current ?? firstBookableId(dayChoicesOf(next)));
       setOptionsError(null);
     } catch (e: unknown) {
       if (!active.current) return;
@@ -49,7 +60,7 @@ export const useRescheduleAppointment = (
     } finally {
       if (active.current) setLoadingOptions(false);
     }
-  }, [appointmentId]);
+  }, [appointmentId, serviceKey]);
 
   useEffect(() => {
     active.current = true;
@@ -62,10 +73,11 @@ export const useRescheduleAppointment = (
     };
   }, [loadOptions]);
 
-  const activeSchedule = useMemo(
-    () => schedules.find((s) => s.missionScheduleId === scheduleId) ?? null,
-    [schedules, scheduleId]
-  );
+  const dayChoices = useMemo(() => dayChoicesOf(options), [options]);
+  const activeSchedule = options.schedules.find((s) => s.missionScheduleId === scheduleId) ?? null;
+  const assignsEarliestSlot = options.assignsEarliestSlot || options.scheduling === "weekly";
+  const chosenSlot = chosenStartOf(options, scheduleId, slotStart);
+  const isCurrentSlot = assignsEarliestSlot && isSameInstant(chosenSlot, appointment.slotStart);
 
   const selectSchedule = useCallback((id: string) => {
     setScheduleId(id);
@@ -73,20 +85,19 @@ export const useRescheduleAppointment = (
   }, []);
 
   const submit = useCallback(async () => {
-    if (!scheduleId || !slotStart || isSubmitting) return;
+    if (!scheduleId || !chosenSlot || isSubmitting) return;
+    if (!isServiceDay(serviceKey, chosenSlot)) {
+      setStep("select");
+      setSubmitError(serviceDayNote(serviceKey, getServiceLabel(serviceKey)));
+      return;
+    }
 
     setIsSubmitting(true);
     setSubmitError(null);
-
     try {
-      const updated = await rescheduleAppointment(appointmentId, {
-        missionScheduleId: scheduleId,
-        slotStart,
-      });
-      onSuccess(updated);
+      onSuccess(await rescheduleAppointment(appointmentId, rescheduleBodyOf(options, scheduleId, chosenSlot)));
     } catch (e: unknown) {
       if (!active.current) return;
-
       if (isConflictError(e)) {
         setSlotStart(null);
         setStep("select");
@@ -98,16 +109,19 @@ export const useRescheduleAppointment = (
     } finally {
       if (active.current) setIsSubmitting(false);
     }
-  }, [appointmentId, scheduleId, slotStart, isSubmitting, onSuccess, loadOptions]);
+  }, [appointmentId, serviceKey, scheduleId, chosenSlot, isSubmitting, onSuccess, loadOptions, options]);
 
   return {
-    schedules,
+    dayChoices,
     loadingOptions,
     optionsError,
     activeSchedule,
     availableSlots: activeSchedule?.availableSlotStarts ?? [],
     scheduleId,
-    slotStart,
+    slotStart: chosenSlot,
+    assignsEarliestSlot,
+    weekly: options.scheduling === "weekly",
+    isCurrentSlot,
     step,
     isSubmitting,
     submitError,

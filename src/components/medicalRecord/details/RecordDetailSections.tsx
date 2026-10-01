@@ -39,7 +39,9 @@ export const VisitBlock = ({ record, form, palette }: SectionProps) => {
 
   return (
     <Block title="Visit" palette={palette}>
-      <Row label="Patient" value={residentName || "Not recorded"} palette={palette} />
+      {/* An immunization record is the child's; the account holder is the parent. */}
+      <Row label="Patient" value={appointment?.childName?.trim() || residentName || "Not recorded"} palette={palette} />
+      {appointment?.childName?.trim() && residentName ? <Row label="Parent" value={residentName} palette={palette} /> : null}
       <Row label="Service" value={form?.label ?? record.serviceType} palette={palette} />
       <Row label="Provider" value={providerName || "Not recorded"} palette={palette} />
       <Row

@@ -1,6 +1,6 @@
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { SOCIAL_COLORS } from "../../config/profileSocialTheme";
 import type { ActivityTone, ProfileActivityItem } from "../../types/profile.types";
 
 type ActivityRowProps = {
@@ -8,14 +8,14 @@ type ActivityRowProps = {
   showDivider: boolean;
 };
 
-const TONE_COLORS: Record<ActivityTone, { bg: string; fg: string }> = {
-  info: { bg: SOCIAL_COLORS.primarySoft, fg: SOCIAL_COLORS.primary },
-  success: { bg: SOCIAL_COLORS.greenSoft, fg: SOCIAL_COLORS.greenDeep },
-  warning: { bg: SOCIAL_COLORS.pendingBg, fg: SOCIAL_COLORS.pendingText },
-};
-
 const ActivityRow = ({ item, showDivider }: ActivityRowProps) => {
-  const tone = TONE_COLORS[item.tone];
+  const colors = useThemeColors();
+  const tones: Record<ActivityTone, { bg: string; fg: string }> = {
+    info: { bg: colors.primarySoft, fg: colors.primary },
+    success: colors.success,
+    warning: colors.warning,
+  };
+  const tone = tones[item.tone];
 
   return (
     <View
@@ -27,7 +27,7 @@ const ActivityRow = ({ item, showDivider }: ActivityRowProps) => {
         gap: 12,
         paddingVertical: 12,
         borderBottomWidth: showDivider ? 1 : 0,
-        borderBottomColor: SOCIAL_COLORS.divider,
+        borderBottomColor: colors.divider,
       }}
     >
       <View
@@ -47,14 +47,14 @@ const ActivityRow = ({ item, showDivider }: ActivityRowProps) => {
         <Text
           numberOfLines={1}
           maxFontSizeMultiplier={1.2}
-          style={{ fontSize: 14, fontWeight: "700", color: SOCIAL_COLORS.heading }}
+          style={{ fontSize: 14, fontWeight: "700", color: colors.heading }}
         >
           {item.title}
         </Text>
         <Text
           numberOfLines={2}
           maxFontSizeMultiplier={1.2}
-          style={{ fontSize: 13, lineHeight: 18, color: SOCIAL_COLORS.muted }}
+          style={{ fontSize: 13, lineHeight: 18, color: colors.muted }}
         >
           {item.detail}
         </Text>
@@ -64,7 +64,7 @@ const ActivityRow = ({ item, showDivider }: ActivityRowProps) => {
         <Text
           numberOfLines={1}
           maxFontSizeMultiplier={1.2}
-          style={{ fontSize: 11.5, color: SOCIAL_COLORS.subtle }}
+          style={{ fontSize: 11.5, color: colors.subtle }}
         >
           {item.time}
         </Text>

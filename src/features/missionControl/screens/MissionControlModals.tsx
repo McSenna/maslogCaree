@@ -80,7 +80,7 @@ const MissionControlModals = ({
       <NewMissionScheduleModal
         visible={newMissionOpen}
         form={createForm}
-        categories={catalogue.categories}
+        categories={control.missionCategories}
         missions={catalogue.missions}
         saving={actions.saving}
         onOpenPicker={(field: MissionFormField) => picker.open("create", field)}
@@ -91,7 +91,7 @@ const MissionControlModals = ({
       <EditMissionScheduleModal
         visible={actions.editOpen}
         form={editForm}
-        categories={catalogue.categories}
+        categories={control.missionCategories}
         missions={catalogue.missions}
         editingMissionId={actions.editMissionId}
         saving={actions.saving}
@@ -104,7 +104,7 @@ const MissionControlModals = ({
         visible={assignment.open}
         mode={assignment.mode}
         mission={control.selectedMission}
-        categories={catalogue.categories}
+        categories={control.missionCategories}
         categoryKey={assignment.categoryKey}
         onCategoryChange={assignment.setCategoryKey}
         duration={assignment.duration}

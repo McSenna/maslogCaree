@@ -12,8 +12,8 @@ export const APPOINTMENTS_CATEGORY: HelpCategory = {
       id: "book-appointment",
       title: "Booking an appointment",
       summary:
-        "Choose a service, pick an available date and time slot, then confirm your booking request.",
-      keywords: ["book", "booking", "schedule", "slot", "consultation"],
+        "Choose a service, pick an open date and time, then book. Your appointment is confirmed right away. For immunization, enter your child's name and date of birth and pick a Wednesday; the time is assigned first come, first served.",
+      keywords: ["book", "booking", "schedule", "slot", "consultation", "immunization", "vaccine", "child", "wednesday"],
     },
     {
       id: "view-appointments",
@@ -25,7 +25,7 @@ export const APPOINTMENTS_CATEGORY: HelpCategory = {
       id: "reschedule-appointment",
       title: "Rescheduling an appointment",
       summary:
-        "Open the appointment, choose Reschedule, then select a new available slot. Approved appointments may need staff confirmation.",
+        "Open the appointment, choose Reschedule, then select a new open time. The new time is confirmed right away. An immunization moves to another Wednesday and gets that day's first open time.",
       keywords: ["reschedule", "move", "change date", "rebook"],
     },
     {
@@ -52,8 +52,8 @@ export const APPOINTMENTS_CATEGORY: HelpCategory = {
       id: "appointment-status",
       title: "Appointment status explained",
       summary:
-        "Pending awaits review, Approved is confirmed, Processing means you are being attended to, Completed is finished, Cancelled was called off, and Rescheduled moved to a new slot.",
-      keywords: ["status", "pending", "approved", "processing", "completed", "cancelled", "rescheduled"],
+        "Confirmed means your time is booked. Rescheduled means it moved to a new time. Pending means the health team changed that mission day and your visit is waiting for a new time. Processing means you are being attended to, Completed is finished, Declined means the health team could not take the visit, and Cancelled was called off.",
+      keywords: ["status", "pending", "confirmed", "approved", "processing", "completed", "declined", "cancelled", "rescheduled"],
     },
   ],
 };

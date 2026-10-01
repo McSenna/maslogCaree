@@ -4,7 +4,7 @@
  * over what it is showing, without each screen mounting its own dialog.
  */
 
-export type LegalDocumentKind = "privacy" | "terms";
+import type { LegalDocumentKind } from "../types/legalDocument.types.ts";
 
 type Listener = (kind: LegalDocumentKind | null) => void;
 

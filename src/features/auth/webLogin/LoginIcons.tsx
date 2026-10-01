@@ -111,3 +111,11 @@ export const CheckIcon = (props: IconProps) => (
     <path d="M20 6 9 17l-5-5" />
   </Outline>
 );
+
+export const AlertCircleIcon = (props: IconProps) => (
+  <Outline {...props}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 8v4.5" />
+    <path d="M12 16h.01" />
+  </Outline>
+);

@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { SPACING } from "@/theme/spacing";
 import type { MedicalRecord } from "@/services/medicalRecords";
 import MedicalRecordCard from "../cards/MedicalRecordCard";
 import ProfileTabState from "../common/ProfileTabState";
@@ -10,6 +11,8 @@ type MedicalRecordsTabProps = {
   onRetry: () => void;
   twoColumn: boolean;
 };
+
+const GUTTER = SPACING.md;
 
 const MedicalRecordsTab = ({
   records,
@@ -37,11 +40,12 @@ const MedicalRecordsTab = ({
       style={{
         flexDirection: twoColumn ? "row" : "column",
         flexWrap: twoColumn ? "wrap" : "nowrap",
-        gap: 12,
+        marginHorizontal: twoColumn ? -GUTTER / 2 : 0,
+        rowGap: GUTTER,
       }}
     >
       {records.map((record) => (
-        <View key={record._id} style={{ width: twoColumn ? "48.6%" : "100%", minWidth: 0 }}>
+        <View key={record._id} style={{ width: twoColumn ? "50%" : "100%", minWidth: 0, paddingHorizontal: twoColumn ? GUTTER / 2 : 0 }}>
           <MedicalRecordCard record={record} />
         </View>
       ))}

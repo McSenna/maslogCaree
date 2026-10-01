@@ -9,9 +9,11 @@ import { useMissionCatalogue } from "./useMissionCatalogue";
 import { useMissionDateTimePicker } from "./useMissionDateTimePicker";
 import { useMissionForm } from "./useMissionForm";
 import { useQueueDashboard } from "@/hooks/useQueueDashboard";
-import { useSlotAssignment } from "./useSlotAssignment";
-
-const todayDateKey = () => new Date().toISOString().slice(0, 10);
+import { todayDateKey } from "@/utils/dateFormatter";
+import type { AppointmentRecord } from "@/services/appointments";
+import { isWeeklyService } from "@/utils/serviceDays";
+import { useSlotAssignment, type AssignMode } from "./useSlotAssignment";
+import { useWeeklyPlacement } from "./useWeeklyPlacement";
 
 export const useMissionControl = () => {
   const { user } = useAuth();
@@ -40,12 +42,30 @@ export const useMissionControl = () => {
     [refreshLists, dashboard, loadMissionDetail]
   );
 
+  // Mission slots are for mission services only; the categories here feed the mission editor and slot dialog.
+  const missionCategories = useMemo(() => categories.filter((category) => !isWeeklyService(category.key)), [categories]);
+
   const assignment = useSlotAssignment({
     selectedMissionId,
-    categories,
+    categories: missionCategories,
     setSaving: actions.setSaving,
     onAssigned: handleAssigned,
   });
+
+  const placeWeekly = useWeeklyPlacement({
+    setSaving: actions.setSaving,
+    onPlaced: async () => {
+      await refreshLists();
+      await dashboard.refreshAll();
+    },
+  });
+
+  /** Immunization is placed on its own Wednesday schedule; everything else opens the mission slot dialog. */
+  const openAssign = useCallback(
+    (appointment: AppointmentRecord, mode: AssignMode) =>
+      isWeeklyService(appointment.consultationType) ? void placeWeekly(appointment, mode) : assignment.openFor(appointment, mode),
+    [assignment, placeWeekly]
+  );
 
   const completion = useAppointmentCompletion({
     onCompleted: async () => {
@@ -55,8 +75,8 @@ export const useMissionControl = () => {
 
   const { mergeDefaults } = createForm;
   useEffect(() => {
-    mergeDefaults(catalogueDefaults(categories));
-  }, [categories, mergeDefaults]);
+    mergeDefaults(catalogueDefaults(missionCategories));
+  }, [missionCategories, mergeDefaults]);
 
   const serviceLabels = useMemo(
     () => Object.fromEntries(categories.map((category) => [category.key, category.label])),
@@ -100,6 +120,8 @@ export const useMissionControl = () => {
     catalogue,
     actions,
     assignment,
+    openAssign,
+    missionCategories,
     completion,
     createForm,
     editForm,

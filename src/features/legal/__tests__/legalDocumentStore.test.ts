@@ -5,8 +5,8 @@ import {
   closeLegalDocumentDialog,
   openLegalDocumentDialog,
   subscribeToLegalDocument,
-  type LegalDocumentKind,
-} from "../legalDocumentStore.ts";
+} from "../services/legalDocumentStore.ts";
+import type { LegalDocumentKind } from "../types/legalDocument.types.ts";
 
 const record = () => {
   const seen: (LegalDocumentKind | null)[] = [];

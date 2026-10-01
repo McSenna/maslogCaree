@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
 
 type FieldShellProps = {
   label: string;
@@ -8,23 +11,35 @@ type FieldShellProps = {
   children: ReactNode;
 };
 
-const FieldShell = ({ label, hint, error, children }: FieldShellProps) => (
-  <View>
-    <View className="mb-1.5 flex-row items-center gap-2">
-      <Text className="text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-        {label}
-      </Text>
-      {hint ? <Text className="text-[11px] font-medium text-slate-300">{hint}</Text> : null}
+const FieldShell = ({ label, hint, error, children }: FieldShellProps) => {
+  const colors = useThemeColors();
+
+  return (
+    <View style={{ gap: SPACING.xs }}>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "baseline", columnGap: SPACING.sm }}>
+        <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.label, color: colors.heading }}>
+          {label}
+        </Text>
+        {hint ? (
+          <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.caption, color: colors.subtle }}>
+            {hint}
+          </Text>
+        ) : null}
+      </View>
+
+      {children}
+
+      {error ? (
+        <Text
+          accessibilityLiveRegion="polite"
+          maxFontSizeMultiplier={1.3}
+          style={{ ...TYPE.caption, color: colors.danger.fg }}
+        >
+          {error}
+        </Text>
+      ) : null}
     </View>
-
-    {children}
-
-    {error ? (
-      <Text accessibilityLiveRegion="polite" className="mt-1 text-[11px] text-red-500">
-        {error}
-      </Text>
-    ) : null}
-  </View>
-);
+  );
+};
 
 export default FieldShell;

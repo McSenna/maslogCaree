@@ -60,7 +60,8 @@ const createChannels = async (): Promise<void> => {
       importance: notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
       lightColor: "#0284C7",
-      sound: "default",
+      // No `sound` key: Android then uses the system default. Any string here,
+      // "default" included, is looked up as a res/raw file and logs an error when missing.
       enableLights: true,
       enableVibrate: true,
       showBadge: false,

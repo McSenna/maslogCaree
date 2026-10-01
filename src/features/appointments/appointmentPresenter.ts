@@ -1,6 +1,8 @@
 import type { AppointmentRecord } from "@/services/appointments";
 import { getServiceLabel } from "@/config/appointmentServices";
 import { getStatusLabel } from "@/components/status/appointmentStatusModel";
+import { formatBirthDate } from "@/features/auth/utils/dateOfBirth";
+import { appDateKey } from "./hooks/booking/childDetailsRules";
 
 export type AppointmentStatus = AppointmentRecord["status"];
 
@@ -13,9 +15,9 @@ export const residentStatusLabel = (status: string | undefined): string =>
 const CANCELLABLE_STATUSES: AppointmentStatus[] = ["pending", "confirmed", "rescheduled"];
 
 /**
- * Only an appointment that already holds a slot can be moved. A pending
- * request has no schedule yet: it is still waiting for the priority queue to
- * assign one, and letting a resident pick their own would jump that queue.
+ * Only an appointment that already holds a slot can be moved. New bookings
+ * always have one; a pending row is one whose mission was edited or removed,
+ * and it waits for the system to place it again rather than jumping that queue.
  */
 const RESCHEDULABLE_STATUSES: AppointmentStatus[] = ["confirmed", "rescheduled"];
 
@@ -42,6 +44,26 @@ export const appointmentWhen = (appointment: AppointmentRecord): string => {
   });
 };
 
+/** The line under a card's title: who an immunization is for, otherwise the reason given. */
+export const appointmentSubline = (appointment: AppointmentRecord): string => {
+  const child = appointment.childName?.trim();
+  return child ? `For ${child}` : (appointment.description ?? "");
+};
+
+/** Detail rows only an immunization has: the child, and how its time was set. */
+export const childDetailRows = (appointment: AppointmentRecord): { label: string; value: string }[] => {
+  const child = appointment.childName?.trim();
+  if (!child) return [];
+  return [
+    { label: "Child", value: child },
+    {
+      label: "Child's date of birth",
+      value: appointment.childDateOfBirth ? formatBirthDate(appDateKey(appointment.childDateOfBirth)) : "",
+    },
+    { label: "Time", value: "Assigned first come, first served" },
+  ];
+};
+
 export const appointmentSortTime = (appointment: AppointmentRecord): number => {
   const raw = appointment.slotStart || appointment.createdAt;
   const t = raw ? new Date(raw).getTime() : 0;
@@ -57,7 +79,7 @@ export type AppointmentStep = {
 
 const STEP_LABELS: Record<AppointmentStatus, string> = {
   pending: "Appointment requested",
-  confirmed: "Appointment approved",
+  confirmed: "Appointment confirmed",
   rescheduled: "Appointment rescheduled",
   processing: "Healthcare service performed",
   completed: "Completed",
@@ -80,7 +102,7 @@ export const buildAppointmentTimeline = (appointment: AppointmentRecord): Appoin
   return (
     [
       { key: "created", label: STEP_LABELS.pending, at: appointment.createdAt ?? null },
-      { key: "approved", label: STEP_LABELS.confirmed, at: appointment.approvedAt ?? null },
+      { key: "confirmed", label: STEP_LABELS.confirmed, at: appointment.approvedAt ?? null },
       { key: "processing", label: STEP_LABELS.processing, at: appointment.processingAt ?? null },
       { key: "completed", label: STEP_LABELS.completed, at: appointment.completedAt ?? null },
     ] as const

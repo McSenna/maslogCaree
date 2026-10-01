@@ -20,6 +20,7 @@ export const DialogModalShell = ({
   visible,
   title,
   icon,
+  media,
   tint,
   tintSoft,
   onClose,
@@ -64,6 +65,7 @@ export const DialogModalShell = ({
             palette={palette}
             title={title}
             icon={icon}
+          media={media}
             tint={tint}
             tintSoft={tintSoft}
             titleId={titleId}

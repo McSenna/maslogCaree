@@ -1,12 +1,19 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import type { ConsultationCategory } from "@/services/appointments";
-import type { CategoryDurationMap, CategoryEnabledMap } from "../../utils/missionCategories";
+import { serviceDayNames } from "@/utils/serviceDays";
+import {
+  isCategoryOffered,
+  isCategoryOnDate,
+  type CategoryDurationMap,
+  type CategoryEnabledMap,
+} from "../../utils/missionCategories";
 import MissionCategoryCard from "./MissionCategoryCard";
 import { useMissionSchedulePalette } from "./missionScheduleTheme";
 
 type MissionCategorySectionProps = {
   categories: ConsultationCategory[];
+  dateKey: string;
   enabled: CategoryEnabledMap;
   durations: CategoryDurationMap;
   onToggle: (categoryKey: string) => void;
@@ -15,8 +22,15 @@ type MissionCategorySectionProps = {
   error?: string | null;
 };
 
+const offDayNote = (category: ConsultationCategory, dateKey: string): string | null => {
+  if (isCategoryOnDate(category, dateKey)) return null;
+  const days = serviceDayNames(category.key);
+  return `Runs every ${days} only. Choose a ${days} to add it.`;
+};
+
 const MissionCategorySection = ({
   categories,
+  dateKey,
   enabled,
   durations,
   onToggle,
@@ -25,7 +39,9 @@ const MissionCategorySection = ({
   error,
 }: MissionCategorySectionProps) => {
   const palette = useMissionSchedulePalette();
-  const selectedCount = categories.filter((category) => enabled[category.key]).length;
+  const selectedCount = categories.filter((category) =>
+    isCategoryOffered(category, enabled, dateKey)
+  ).length;
 
   return (
     <View className="w-full gap-3">
@@ -53,6 +69,7 @@ const MissionCategorySection = ({
             onToggle={onToggle}
             onDurationChange={onDurationChange}
             compact={compact}
+            offDayNote={offDayNote(category, dateKey)}
           />
         ))}
       </View>

@@ -47,13 +47,13 @@ const ResidentAppointments = () => {
         <View className="gap-6 pb-4">
           <PageHeader
             title="Appointments"
-            subtitle="Request a mission visit and track scheduling from your health team."
-            actions={<Button label="New request" icon="plus" onPress={openBooking} fullWidth={isMobile} />}
+            subtitle="Book a health visit and keep track of your appointments."
+            actions={<Button label="Book appointment" icon="plus" onPress={openBooking} fullWidth={isMobile} />}
           />
 
           <Text className={`text-sm leading-relaxed ${classes.textMuted}`}>
-            Your request joins the mission queue. Date and time appear here after a health worker
-            assigns your slot. You can move or cancel it from the card once it is scheduled.
+            Your appointment is confirmed as soon as you book it. Immunization times are assigned first
+            come, first served. You can move or cancel any appointment from its card.
           </Text>
 
           <ResidentAppointmentList

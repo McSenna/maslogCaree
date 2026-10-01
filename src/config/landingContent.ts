@@ -2,13 +2,13 @@ export const LANDING_CONTENT = {
   eyebrow: "Barangay Maslog Health Office",
 
   headline: {
-    lead: "Request a health visit",
+    lead: "Book a health visit",
     accent: "from your phone",
   },
 
-  // Matches the backend flow: residents never pick a time; staff assign slots in age-priority order.
+  // Matches the backend flow: residents pick an open mission slot and the booking is confirmed on save.
   description:
-    "Choose a service and describe your concern. The barangay health team schedules each request and sends you the date and time.",
+    "Choose a service, then pick an open date and time. Your appointment is confirmed right away.",
 
   actions: {
     primary: { label: "Get started", icon: "arrow-forward" as const },
@@ -16,7 +16,7 @@ export const LANDING_CONTENT = {
   },
 } as const;
 
-// States the law that applies (see legalContent.ts) rather than promising a level of security.
+// States the law that applies (see src/features/legal/content) rather than promising a level of security.
 // The non-breaking space keeps "RA 10173" together when the line wraps.
 export const SECURITY_NOTICE = "Health data is covered by the Data Privacy Act (RA\u00A010173).";
 
@@ -30,17 +30,17 @@ export type LandingFeatureCopy = {
 export const LANDING_FEATURE_COPY: readonly LandingFeatureCopy[] = [
   {
     key: "request",
-    title: "Request a visit",
-    description: "Pick a service and describe your concern.",
+    title: "Book a visit",
+    description: "Pick a service and an open date and time.",
   },
   {
     key: "priority",
-    title: "Seen by priority",
-    description: "Infants, children, and seniors are scheduled first.",
+    title: "Confirmed right away",
+    description: "Your appointment is confirmed as soon as you book it.",
   },
   {
     key: "schedule",
-    title: "Get your schedule",
-    description: "Your date and time arrive in the app and by email.",
+    title: "Keep the details",
+    description: "Your date and time are saved in the app and sent by email.",
   },
 ];

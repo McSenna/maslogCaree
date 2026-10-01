@@ -1,59 +1,71 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { toast } from "@/components/feedback/toast/toastStore";
-import { createResidentAppointment } from "@/services/appointments";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { createResidentAppointment, type AppointmentRecord } from "@/services/appointments";
+import { getApiErrorMessage, normalizeApiError } from "@/utils/apiErrorHandler";
+import { createBookingRequestKey } from "./bookingRules";
+import { classifyDraftFailure, draftBody, validateDraft, type BookingDraft } from "./bookingDraft";
 import type { BookingErrors } from "./bookingTypes";
 
+const CONNECTION_MESSAGE =
+  "We could not reach the health center, so your booking may not have gone through. Your details are kept. Tap Book appointment again; you will not be booked twice.";
+const FALLBACK_MESSAGE = "We could not book your appointment. Check your details, then try again.";
+
+/**
+ * Sends the booking and reports what happened. Every field the resident typed
+ * stays as it was on failure. One request key covers every retry of this form,
+ * so a request that timed out after the server saved it cannot book twice.
+ */
 export const useBookingSubmit = ({
-  serviceType,
-  reason,
-  notes,
-  confirmed,
+  draft,
   onBooked,
   setErrors,
-  onSubmitted,
+  onSlotRefused,
 }: {
-  serviceType: string | null;
-  reason: string;
-  notes: string;
-  confirmed: boolean;
-  onBooked?: () => void;
+  draft: BookingDraft;
+  onBooked: (appointment: AppointmentRecord) => void;
   setErrors: (errors: BookingErrors) => void;
-  onSubmitted: () => void;
+  onSlotRefused: () => void;
 }) => {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const inFlight = useRef(false);
+  const requestKey = useRef<string | null>(null);
+
+  /** Event handlers only: a new form gets a new key. */
+  const startNewAttempt = useCallback(() => {
+    requestKey.current = null;
+  }, []);
 
   const submit = useCallback(async () => {
-    if (submitting) return;
+    if (inFlight.current) return;
 
-    const found: BookingErrors = {};
-    if (!serviceType) found.serviceType = "Please select a service type.";
-    if (!reason.trim()) found.reason = "Please describe your reason for visit or symptoms.";
-    if (!confirmed) found.confirmed = "Please confirm that the appointment details are correct.";
-
+    const found = validateDraft(draft);
     setErrors(found);
-    if (Object.keys(found).length > 0) return;
+    if (Object.keys(found).length > 0) {
+      setSubmitError("Some details are missing. Check the highlighted fields.");
+      return;
+    }
 
+    inFlight.current = true;
+    requestKey.current ??= createBookingRequestKey();
     setSubmitting(true);
     setSubmitError(null);
     try {
-      await createResidentAppointment({
-        consultationType: serviceType as string,
-        description: reason.trim(),
-        additionalNotes: notes.trim(),
-      });
-      onBooked?.();
-      onSubmitted();
+      const { appointment } = await createResidentAppointment(draftBody(draft, requestKey.current));
+      onBooked(appointment);
     } catch (error: unknown) {
-      setSubmitError(
-        getApiErrorMessage(error, "Could not submit your appointment request. Please try again.")
-      );
-      toast.error("Request not submitted");
+      const failure = classifyDraftFailure(draft, normalizeApiError(error));
+      if (failure === "slot_unavailable") {
+        setErrors({ slot: draft.weekly ? "Choose another Wednesday." : "Choose another time." });
+        onSlotRefused();
+      }
+      setSubmitError(failure === "connection" ? CONNECTION_MESSAGE : getApiErrorMessage(error, FALLBACK_MESSAGE));
+      toast.error("Appointment not booked");
     } finally {
+      inFlight.current = false;
       setSubmitting(false);
     }
-  }, [submitting, serviceType, reason, notes, confirmed, onBooked, setErrors, onSubmitted]);
+  }, [draft, onBooked, setErrors, onSlotRefused]);
 
-  return { submitting, submitError, setSubmitError, submit };
+  return { submitting, submitError, setSubmitError, submit, startNewAttempt };
 };

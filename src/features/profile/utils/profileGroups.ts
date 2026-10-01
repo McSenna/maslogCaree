@@ -12,13 +12,13 @@ type GroupDefinition = {
 const GROUP_DEFINITIONS: GroupDefinition[] = [
   {
     key: "personal",
-    title: "Personal Information",
+    title: "Personal information",
     icon: "user",
     keys: ["fullName", "dateOfBirth", "gender"],
   },
   {
     key: "contact",
-    title: "Contact Information",
+    title: "Contact information",
     icon: "phone",
     keys: ["phone", "email", "address"],
   },

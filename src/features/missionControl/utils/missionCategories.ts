@@ -1,4 +1,5 @@
 import type { ConsultationCategory, MissionScheduleRecord } from "@/services/appointments";
+import { isServiceDay } from "@/utils/serviceDays";
 import { FALLBACK_DURATION_MINUTES } from "../constants/missionSchedule";
 import { isoTimestampToDateKey } from "./dateTime";
 
@@ -33,13 +34,28 @@ export const clampDuration = (category: ConsultationCategory, minutes: number): 
   return Math.min(max, Math.max(min, minutes));
 };
 
+/** False for a fixed-day service (immunization) on any other day; true until a date is picked. */
+export const isCategoryOnDate = (category: ConsultationCategory, dateKey: string): boolean =>
+  !dateKey || isServiceDay(category.key, dateKey);
+
+/**
+ * A switched-on service only joins the mission when it runs on the chosen
+ * date. The toggle state itself is kept, so picking a valid day restores it.
+ */
+export const isCategoryOffered = (
+  category: ConsultationCategory,
+  enabled: CategoryEnabledMap,
+  dateKey: string
+): boolean => Boolean(enabled[category.key]) && isCategoryOnDate(category, dateKey);
+
 export const buildCategoriesPayload = (
   categories: ConsultationCategory[],
   enabled: CategoryEnabledMap,
-  durations: CategoryDurationMap
+  durations: CategoryDurationMap,
+  dateKey: string
 ): MissionCategoryPayload[] => {
   return categories
-    .filter((category) => enabled[category.key])
+    .filter((category) => isCategoryOffered(category, enabled, dateKey))
     .map((category) => ({
       categoryKey: category.key,
       durationMinutes: resolveDuration(category, durations),

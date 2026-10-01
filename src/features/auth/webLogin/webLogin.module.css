@@ -1,10 +1,14 @@
 .page {
   --ink: #0b1233;
   --ink-soft: #3d4560;
-  --ink-muted: #4a5470;
   --brand: #0052fd;
   --error: #b42318;
+  /* Darker than --error so error text clears 7:1 on white; the border keeps the brand red. */
+  --error-text: #a01f15;
+  --label: #1b2338;
+  --placeholder: #6b7488;
   --line: #d3dae6;
+  --readonly: #f5f7fb;
   --haze: #eef3fd;
 
   container: page / inline-size;
@@ -310,7 +314,7 @@
   border-radius: 20px;
   background: #fff;
   box-shadow: 0 24px 50px -24px rgba(30, 60, 140, 0.26);
-  animation: card-in 400ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: card-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes card-in {
@@ -329,24 +333,10 @@
   flex-direction: column;
 }
 
-/* The introduction above the form: account, greeting, instruction, then a rule. */
 .cardHeader {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e4e9f1;
-}
-
-.eyebrow {
-  margin-bottom: 12px;
-  padding: 4px 10px;
-  border-radius: 8px;
-  background: #ebf1ff;
-  color: #0a3fc0;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 18px;
 }
 
 .title {
@@ -377,8 +367,44 @@
 .fields {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  margin-top: 20px;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+/* A sign-in the server refused, above the first label. */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #f3c5bf;
+  border-radius: 10px;
+  background: #fef3f2;
+  color: #7a1a12;
+  font-size: 14px;
+  line-height: 20px;
+  animation: settle-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.alertIcon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+/* Above its box, never inside it, so it stays readable once the box is filled. */
+.label {
+  align-self: flex-start;
+  margin-bottom: 6px;
+  color: var(--label);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  cursor: default;
+}
+
+.labelInvalid {
+  color: var(--error-text);
 }
 
 .fieldGroup {
@@ -392,11 +418,9 @@
   border: 1.5px solid var(--line);
   border-radius: 10px;
   background: #fff;
-  transition:
-    border-color 150ms ease-out,
-    box-shadow 150ms ease-out;
 }
 
+/* No transition: focus usually arrives by Tab or tap, and the ring should be there at once. */
 .field:focus-within {
   border-color: var(--brand);
   box-shadow: 0 0 0 4px rgba(0, 82, 253, 0.13);
@@ -411,8 +435,8 @@
   box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.13);
 }
 
-.fieldInvalid .label {
-  color: var(--error);
+.fieldBusy {
+  background: var(--readonly);
 }
 
 .fieldIcon {
@@ -435,7 +459,7 @@
   inset: 0;
   width: 100%;
   margin: 0;
-  padding: 22px 14px 0 48px;
+  padding: 0 14px 0 48px;
   border: 0;
   border-radius: 9px;
   outline: none;
@@ -450,39 +474,22 @@
   padding-right: 56px;
 }
 
+.input::placeholder {
+  color: var(--placeholder);
+  opacity: 1;
+}
+
 .input:-webkit-autofill {
   -webkit-text-fill-color: var(--ink);
   box-shadow: 0 0 0 100px #fff inset;
 }
 
+.fieldBusy .input:-webkit-autofill {
+  box-shadow: 0 0 0 100px var(--readonly) inset;
+}
+
 .input[readonly] {
   cursor: progress;
-}
-
-.label {
-  position: absolute;
-  top: 50%;
-  left: 48px;
-  max-width: calc(100% - 62px);
-  overflow: hidden;
-  color: var(--ink-muted);
-  font-size: 16px;
-  line-height: 22px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  transform: translateY(-50%);
-  transform-origin: left center;
-  transition: transform 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  pointer-events: none;
-}
-
-.input:focus + .label,
-.input:not(:placeholder-shown) + .label {
-  transform: translateY(calc(-50% - 11px)) scale(0.76);
-}
-
-.input:-webkit-autofill + .label {
-  transform: translateY(calc(-50% - 11px)) scale(0.76);
 }
 
 .toggle {
@@ -505,6 +512,28 @@
 .toggleIcon {
   width: 22px;
   height: 22px;
+}
+
+/* Empty but kept in the page, so the live region exists before a message arrives. */
+.fieldError {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 6px;
+  color: var(--error-text);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.fieldError:empty {
+  margin: 0;
+}
+
+.fieldErrorIcon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
 }
 
 .capsHint {
@@ -625,33 +654,6 @@
   color: var(--ink-soft);
   font-size: 15px;
   line-height: 24px;
-}
-
-/* Inline flow, so on a narrow card the icon wraps with the first word instead of standing apart. */
-.legal {
-  margin: 10px 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px 18px;
-  font-size: 13px;
-  line-height: 20px;
-}
-
-.legal a {
-  color: var(--ink-soft);
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 4px;
-}
-
-.legal a:hover {
-  text-decoration: underline;
-}
-
-.legal a:focus-visible {
-  outline: 2px solid #1565d8;
-  outline-offset: 2px;
 }
 
 .security {
@@ -1182,15 +1184,6 @@
 
   .cardHeader {
     align-items: flex-start;
-    padding-bottom: clamp(20px, calc(32 * var(--s)), 36px);
-  }
-
-  .eyebrow {
-    margin-bottom: clamp(12px, calc(18 * var(--s)), 20px);
-    padding: clamp(4px, calc(5 * var(--s)), 6px) clamp(10px, calc(12 * var(--s)), 14px);
-    border-radius: var(--radius);
-    font-size: clamp(13px, calc(15 * var(--s)), 16px);
-    line-height: 1.35;
   }
 
   .title {
@@ -1224,8 +1217,7 @@
   }
 
   .input {
-    padding: calc(var(--field-h) * 0.4) var(--field-inset) 0
-      calc(var(--field-inset) + var(--icon) + clamp(12px, calc(18 * var(--s)), 22px));
+    padding: 0 var(--field-inset) 0 calc(var(--field-inset) + var(--icon) + clamp(12px, calc(18 * var(--s)), 22px));
     border-radius: calc(var(--radius) - 1px);
     font-size: clamp(16px, calc(19 * var(--s)), 22px);
     line-height: 1.3;
@@ -1236,16 +1228,19 @@
   }
 
   .label {
-    left: calc(var(--field-inset) + var(--icon) + clamp(12px, calc(18 * var(--s)), 22px));
-    max-width: calc(100% - var(--field-inset) * 2 - var(--icon) - 18px);
-    font-size: clamp(16px, calc(19 * var(--s)), 22px);
-    line-height: 1.3;
+    margin-bottom: clamp(6px, calc(9 * var(--s)), 10px);
+    font-size: clamp(14px, calc(17 * var(--s)), 19px);
+    line-height: 1.4;
   }
 
-  .input:focus + .label,
-  .input:not(:placeholder-shown) + .label,
-  .input:-webkit-autofill + .label {
-    transform: translateY(calc(-50% - var(--field-h) * 0.19)) scale(0.74);
+  .alert,
+  .fieldError {
+    font-size: clamp(14px, calc(16 * var(--s)), 18px);
+    line-height: 1.4;
+  }
+
+  .fieldError {
+    margin-top: 7px;
   }
 
   .toggle {
@@ -1359,14 +1354,6 @@
     padding-top: 20px;
   }
 
-  .cardHeader {
-    padding-bottom: 12px;
-  }
-
-  .eyebrow {
-    margin-bottom: 8px;
-  }
-
   .subtitle {
     margin-top: 4px;
   }
@@ -1388,12 +1375,11 @@
     animation: fade-in 200ms ease-out both;
   }
 
-  .success {
+  .success,
+  .alert {
     animation: fade-in 150ms ease-out;
   }
 
-  .field,
-  .label,
   .button,
   .action,
   .actionIcon,
