@@ -1,12 +1,14 @@
 /**
- * Colour values for the admin announcements screen, the one place they are
+ * Colour values for the admin announcements and users screens, the one place they are
  * written down. tailwind.config.js maps each class name (`text-ink`,
  * `bg-brand`, ...) to the matching `--an-*` variable, and
  * `useAnnouncementThemeVars` sets these values on the screen root, so every
  * class follows the app's light or dark theme without a `dark:` twin.
  *
- * Import-free on purpose so tests and the hook can share it.
+ * Imports only the import-free palette, so tests and the hook can share it.
  */
+
+import { PALETTE } from "./palette.ts";
 
 export type AnnouncementTokenName =
   | "page"
@@ -32,6 +34,12 @@ export type AnnouncementTokenName =
   | "status-active"
   | "status-draft"
   | "status-expired"
+  | "status-approved"
+  | "status-deactivated"
+  | "selected"
+  | "selected-border"
+  | "line-hover"
+  | "disabled"
   | "destructive"
   | "destructive-bg"
   | "destructive-border"
@@ -43,78 +51,89 @@ export type AnnouncementTokenName =
 
 export type AnnouncementPalette = Record<AnnouncementTokenName, string>;
 
+// Values follow the admin dashboard palette (src/design/adminDashboard), the
+// design source for every admin page, so Announcements and Users read as the
+// same product as the Dashboard. Comments name the dashboard role each mirrors.
+const { blue, slate, green, amber } = PALETTE;
+
 export const ANNOUNCEMENT_LIGHT: AnnouncementPalette = {
-  // Behind the cards, the same as the admin dashboard's pageBg (PALETTE.mist).
-  page: "#F7FAFE",
-  canvas: "#FFFFFF",
-  ink: "#1B2120",
-  text2: "#5A6563",
-  text3: "#4A5553",
-  body: "#2E3634",
-  // Brief value #6F7A78 measured 4.43:1 on white; nudged to clear 4.5:1.
-  placeholder: "#6B7674",
-  brand: "#0D6B62",
-  "brand-hover": "#09514A",
-  "brand-tint": "#E0EEEC",
-  "brand-on": "#FFFFFF",
-  avatar: "#DDE7E5",
-  line: "#E1E5E4",
-  divider: "#EBEEED",
-  field: "#D5DBDA",
-  shell: "#F6F7F7",
-  head: "#F8F9F9",
-  rowopen: "#FAFBFB",
-  neutral: "#EEF1F0",
-  navhover: "#ECEFEE",
-  "status-active": "#1E8A4C",
-  "status-draft": "#9AA4A2",
-  "status-expired": "#C25A1B",
-  destructive: "#A33A1E",
-  "destructive-bg": "#FBEDEA",
-  "destructive-border": "#F0C9BE",
-  toast: "#1B2120",
-  "toast-text": "#FFFFFF",
-  "toast-action": "#8FD3C9",
-  "toast-icon": "#B7C2C0",
-  // Behind the audience sheet and menu: dims the page without blurring it.
-  scrim: "rgba(27, 33, 32, 0.4)",
+  page: PALETTE.mist, // pageBg
+  canvas: PALETTE.white, // cardBg
+  ink: PALETTE.ink, // heading
+  text2: slate[600], // muted
+  text3: slate[700], // body
+  body: slate[700],
+  placeholder: slate[500], // subtle
+  brand: blue[600], // primary
+  "brand-hover": blue[700],
+  "brand-tint": blue[50],
+  "brand-on": PALETTE.white,
+  avatar: blue[50], // bannerBg: blue[100] left initials at 4.4:1
+  line: "#E4EBF4", // cardBorder
+  divider: "#EDF2F8",
+  field: slate[300], // controlBorder
+  shell: "#F8FBFF", // subtleSurface
+  head: "#EDF2F8", // table header band
+  rowopen: "#F1F6FD", // hoverBg
+  neutral: "#E6EDF6", // skeleton
+  navhover: "#F1F6FD",
+  "status-active": green[600],
+  "status-draft": amber[700],
+  "status-expired": slate[400],
+  destructive: "#B91C1C", // statusTones.danger
+  "destructive-bg": "#FEF1F1",
+  "destructive-border": "#FBD0D0",
+  toast: PALETTE.ink,
+  "toast-text": PALETTE.white,
+  "toast-action": blue[200],
+  "toast-icon": slate[300],
+  scrim: "rgba(15, 23, 42, 0.20)", // MODAL_BACKDROP_LIGHT
+  "status-approved": blue[600],
+  "status-deactivated": slate[400],
+  selected: blue[50], // rowSelected
+  "selected-border": "#D5E4FA", // bannerBorder
+  "line-hover": blue[200],
+  disabled: slate[300],
 };
 
-// Dark mode matches the admin dashboard: slate-950 page, slate-900 cards,
-// slate-800 borders. Only the brand stays teal; it turns light so it still
-// reads as text and underline, and `brand-on` flips to dark ink.
 export const ANNOUNCEMENT_DARK: AnnouncementPalette = {
-  page: "#020617",
-  canvas: "#0F172A",
-  ink: "#F1F5F9",
-  text2: "#94A3B8",
-  text3: "#CBD5E1",
-  body: "#CBD5E1",
-  placeholder: "#7B8AA0",
-  brand: "#3FB1A3",
-  "brand-hover": "#62C5B8",
-  "brand-tint": "#0F2F33",
-  "brand-on": "#0B1211",
-  avatar: "#1E293B",
-  line: "#1E293B",
-  divider: "#1A2438",
-  field: "#334155",
-  shell: "#0F172A",
-  head: "#111B2E",
+  page: slate[950],
+  canvas: slate[900],
+  ink: slate[50],
+  text2: slate[400],
+  text3: slate[300],
+  body: slate[300],
+  placeholder: "#7D8CA3",
+  brand: blue[400],
+  "brand-hover": blue[300],
+  "brand-tint": "#0B1F3A",
+  "brand-on": "#0B1220",
+  avatar: "#0B1F3A",
+  line: slate[800],
+  divider: slate[800],
+  field: slate[700],
+  shell: "#111C33",
+  head: slate[800],
   rowopen: "#16213A",
-  neutral: "#1E293B",
-  navhover: "#1E293B",
-  "status-active": "#40B474",
-  "status-draft": "#64748B",
-  "status-expired": "#E07B3C",
-  destructive: "#F08A6C",
-  "destructive-bg": "#2A1512",
-  "destructive-border": "#5B2A1F",
-  toast: "#334155",
-  "toast-text": "#FFFFFF",
-  "toast-action": "#8FD3C9",
-  "toast-icon": "#B7C2C0",
-  scrim: "rgba(0, 0, 0, 0.6)",
+  neutral: slate[800],
+  navhover: "#16213A",
+  "status-active": "#34D399",
+  "status-draft": amber[300],
+  "status-expired": slate[500],
+  destructive: "#FB7185",
+  "destructive-bg": "#2A1218",
+  "destructive-border": "#5B1F2A",
+  toast: slate[700],
+  "toast-text": PALETTE.white,
+  "toast-action": blue[300],
+  "toast-icon": slate[300],
+  scrim: "rgba(15, 23, 42, 0.45)", // MODAL_BACKDROP_DARK
+  "status-approved": blue[300],
+  "status-deactivated": slate[500],
+  selected: "#0B1F3A",
+  "selected-border": "#1E3A5F",
+  "line-hover": slate[600],
+  disabled: slate[700],
 };
 
 /** `{ "--an-ink": "#1B2120", ... }` for NativeWind's `vars()`. */

@@ -1,25 +1,37 @@
-import { Download, Plus } from "lucide-react-native";
 import { Text, View } from "react-native";
+
+import DashboardHeader from "@/components/dashboard/kit/DashboardHeader";
+import { CardTop } from "@/components/dashboard/kit/TableCard";
+import SearchField from "@/components/ui/SearchField";
+import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { AnnouncementsScreenState } from "../../hooks/useAnnouncementsScreen";
 import AudiencePicker from "../ui/AudiencePicker";
-import { PrimaryButton, SecondaryButton } from "../ui/Buttons";
-import SearchField from "../ui/SearchField";
 import StatusTabs from "../ui/StatusTabs";
-import { COLUMN, type TableMode } from "./tableColumns";
+import { COLUMN, TOOLBAR_ONE_ROW_WIDTH, type TableMode } from "./tableColumns";
 
 type WideHeaderProps = {
   screen: AnnouncementsScreenState;
   mode: TableMode;
+  width: number;
   onExport: () => void;
 };
 
+export const ANNOUNCEMENTS_TITLE = "Announcements";
+export const ANNOUNCEMENTS_SUBTITLE = "Notices shown to patients and health staff in the app.";
+
+const SEARCH_WIDTH = { width: 280 };
+const SEARCH_FILL = { flex: 1, minWidth: 220 };
+
 const HeaderCell = ({ label, className = "" }: { label: string; className?: string }) => (
-  <Text className={`font-ps-semibold text-12 text-text2 ${className}`}>{label}</Text>
+  <Text numberOfLines={1} className={`text-[12px] font-semibold text-text2 ${className}`}>
+    {label}
+  </Text>
 );
 
+/** The dashboard table's tinted heading band. */
 const ColumnHeadings = ({ mode }: { mode: TableMode }) => (
-  <View className="mt-5 min-h-10 flex-row items-center gap-6 rounded-t-panel border border-line bg-head px-4 py-2">
+  <View className="min-h-9 flex-row items-center gap-3 rounded-control bg-head px-3 py-2">
     <HeaderCell label="Title" className="min-w-0 flex-1" />
     <HeaderCell label="Audience" className={COLUMN.audience} />
     <HeaderCell label="Status" className={COLUMN.status} />
@@ -29,45 +41,42 @@ const ColumnHeadings = ({ mode }: { mode: TableMode }) => (
   </View>
 );
 
-/** Page title, actions, the tab and filter toolbar, and the table's column headings. */
-const WideHeader = ({ screen, mode, onExport }: WideHeaderProps) => {
+/** The dashboard's page header and toolbar, then the top of the table card. */
+const WideHeader = ({ screen, mode, width, onExport }: WideHeaderProps) => {
+  const palette = useAdminSurfacePalette();
   const { view, filters, counts } = screen;
   const showControls = view === "list" || view === "noResults";
-  const showHeadings = showControls || view === "loading";
+  const oneRow = width >= TOOLBAR_ONE_ROW_WIDTH;
 
   return (
-    <View>
-      <View className="flex-row flex-wrap items-start justify-between gap-4">
-        <View className="min-w-0 shrink gap-1">
-          <Text accessibilityRole="header" className="font-ps-bold text-24 tracking-[-0.2px] text-ink">
-            Announcements
-          </Text>
-          <Text className="font-ps text-14 text-text2">Notices shown to patients and health staff in the app.</Text>
-        </View>
-        <View className="flex-row items-center gap-2">
-          <SecondaryButton compact label="Export CSV" icon={Download} onPress={onExport} disabled={view !== "list"} />
-          <PrimaryButton compact label="New announcement" icon={Plus} onPress={screen.openCreate} />
-        </View>
-      </View>
+    <View className="gap-4">
+      <DashboardHeader
+        palette={palette}
+        compact={false}
+        title={ANNOUNCEMENTS_TITLE}
+        subtitle={ANNOUNCEMENTS_SUBTITLE}
+        primaryAction={{ key: "new", label: "New announcement", icon: "edit-2", onPress: screen.openCreate }}
+        secondaryActions={view === "list" ? [{ key: "export", label: "Export CSV", icon: "download", onPress: onExport }] : []}
+      />
 
       {showControls ? (
-        // wrap-reverse: when the row is too narrow, the filters move above the
-        // tabs, so the tab underline still sits on the toolbar's bottom rule.
-        <View className="mt-5 flex-row flex-wrap-reverse items-end justify-between gap-x-6 border-b border-line">
-          <StatusTabs wide value={filters.status} counts={counts} onChange={screen.setStatus} />
-          <View className="min-w-0 max-w-full shrink flex-row gap-2 pb-2 pt-1">
-            <SearchField wide value={filters.query} onChange={screen.setQuery} />
-            <AudiencePicker wide value={filters.audience} onChange={screen.setAudience} />
+        <View className={oneRow ? "flex-row items-center justify-between gap-4" : "gap-3"}>
+          <StatusTabs value={filters.status} counts={counts} onChange={screen.setStatus} />
+          <View className={`flex-row gap-2 ${oneRow ? "" : "w-full"}`}>
+            <SearchField
+              value={filters.query}
+              onChangeText={screen.setQuery}
+              placeholder="Search title or message"
+              accessibilityLabel="Search announcements"
+              style={oneRow ? SEARCH_WIDTH : SEARCH_FILL}
+            />
+            <AudiencePicker fixed value={filters.audience} onChange={screen.setAudience} />
           </View>
         </View>
       ) : null}
 
-      {showHeadings ? (
-        <ColumnHeadings mode={mode} />
-      ) : (
-        // Empty and error states still sit in the table frame, without headings to label nothing.
-        <View className="mt-5 rounded-t-panel border-x border-t border-line bg-canvas pt-1" />
-      )}
+      {/* Empty and error states still sit in the table card, without headings that label nothing. */}
+      <CardTop>{view === "list" || view === "loading" ? <ColumnHeadings mode={mode} /> : null}</CardTop>
     </View>
   );
 };

@@ -8,13 +8,11 @@ import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { useSearchParamValue } from "@/hooks/useSearchParamValue";
 
 import PhoneAnnouncementsView from "../admin/components/phone/PhoneAnnouncementsView";
-import { LoadingRows } from "../admin/components/ui/ScreenStates";
 import { TABLE_MIN_WIDTH } from "../admin/components/wide/tableColumns";
 import WideAnnouncementsView from "../admin/components/wide/WideAnnouncementsView";
 import { useAnnouncementsScreen } from "../admin/hooks/useAnnouncementsScreen";
 import { useExportCsv } from "../admin/hooks/useExportCsv";
 import { useAnnouncementTheme } from "../admin/useAnnouncementTheme";
-import { usePublicSans } from "../admin/usePublicSans";
 import AnnouncementEditorDialog from "../components/create/AnnouncementEditorDialog";
 
 // The role shell's content padding on either side of the page from tablet width up.
@@ -26,7 +24,6 @@ const SHELL_PADDING_X = 48;
  * the phone list, which also covers tablets in portrait.
  */
 const AdminAnnouncementsScreen = () => {
-  const fontsReady = usePublicSans();
   const theme = useAnnouncementTheme();
   const insets = useRoleScreenInsets();
   const { isMobile, width: windowWidth, breakpoint } = useResponsive();
@@ -42,9 +39,7 @@ const AdminAnnouncementsScreen = () => {
   const handleLayout = (event: LayoutChangeEvent) => setMeasuredWidth(event.nativeEvent.layout.width);
   const onExport = () => void exportCsv();
 
-  const body = !fontsReady ? (
-    <LoadingRows />
-  ) : wide ? (
+  const body = wide ? (
     <WideAnnouncementsView screen={screen} width={width} insets={insets} onExport={onExport} />
   ) : (
     <PhoneAnnouncementsView screen={screen} onExport={onExport} />

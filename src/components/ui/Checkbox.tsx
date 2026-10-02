@@ -24,6 +24,8 @@ const Checkbox = ({
       accessibilityRole="checkbox"
       accessibilityLabel={accessibilityLabel}
       accessibilityState={{ checked: indeterminate ? "mixed" : checked }}
+      // react-native-web drops accessibilityState.checked, so the web attribute is set directly.
+      aria-checked={indeterminate ? "mixed" : checked}
       hitSlop={13}
       className="h-[18px] w-[18px] items-center justify-center border"
       style={{
@@ -33,9 +35,9 @@ const Checkbox = ({
       }}
     >
       {indeterminate ? (
-        <View className="h-0.5 w-2.5 rounded-full bg-white" />
+        <View className="h-0.5 w-2.5 rounded-full" style={{ backgroundColor: palette.onPrimary }} />
       ) : checked ? (
-        <Feather name="check" size={12} color="#FFFFFF" />
+        <Feather name="check" size={12} color={palette.onPrimary} />
       ) : null}
     </Pressable>
   );

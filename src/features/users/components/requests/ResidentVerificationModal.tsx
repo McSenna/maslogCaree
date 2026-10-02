@@ -26,6 +26,7 @@ type ResidentVerificationModalProps = {
   onApprove: () => void;
   onReject: (reason: string, remarks?: string) => void;
   onClose: () => void;
+  startWithReject?: boolean;
 };
 
 const ResidentVerificationModal = ({
@@ -38,10 +39,11 @@ const ResidentVerificationModal = ({
   onApprove,
   onReject,
   onClose,
+  startWithReject,
 }: ResidentVerificationModalProps) => {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const decision = useVerificationDecision({ visible, onApprove, onReject });
+  const decision = useVerificationDecision({ visible, onApprove, onReject, startWithReject });
 
   if (!visible) return null;
 

@@ -36,7 +36,7 @@ module.exports = {
         "text-tertiary": "#56657A",
         "text-disabled": "#94A3B8",
 
-        // Admin announcements palette. Values live in src/theme/announcementTokens.ts
+        // Admin announcements and users palette, derived from the dashboard palette. Values live in src/theme/announcementTokens.ts
         // (light and dark) and reach these names through CSS variables set by
         // useAnnouncementThemeVars, so one class works in both themes.
         page: "var(--an-page)",
@@ -65,7 +65,15 @@ module.exports = {
           active: "var(--an-status-active)",
           draft: "var(--an-status-draft)",
           expired: "var(--an-status-expired)",
+          approved: "var(--an-status-approved)",
+          deactivated: "var(--an-status-deactivated)",
         },
+        selected: {
+          DEFAULT: "var(--an-selected)",
+          border: "var(--an-selected-border)",
+        },
+        "line-hover": "var(--an-line-hover)",
+        disabled: "var(--an-disabled)",
         destructive: {
           DEFAULT: "var(--an-destructive)",
           bg: "var(--an-destructive-bg)",
@@ -80,12 +88,6 @@ module.exports = {
         scrim: "var(--an-scrim)",
       },
 
-      fontFamily: {
-        ps: ["PublicSans_400Regular"],
-        "ps-medium": ["PublicSans_500Medium"],
-        "ps-semibold": ["PublicSans_600SemiBold"],
-        "ps-bold": ["PublicSans_700Bold"],
-      },
 
       lineHeight: {
         21: "21px",
@@ -154,10 +156,11 @@ module.exports = {
         "3xl": "32px",
         full: "9999px",
 
-        // Admin announcements: controls, count badges, table container.
-        control: "6px",
+        // Admin pages, matching the dashboard (src/design/adminSurfaces RADIUS):
+        // controls and menus 10px, cards and table containers 16px.
+        control: "10px",
         badge: "4px",
-        panel: "8px",
+        panel: "16px",
       },
 
       boxShadow: {

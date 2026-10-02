@@ -1,6 +1,6 @@
 # MaslogCare — mobile & web app
 
-The client for MaslogCare, the Barangay 61 Maslog (Legazpi City) health-center system. It's one Expo / React Native codebase that ships to Android, iOS and the web. Residents book and track appointments, and staff (admin, doctor, midwife, BHW) run the queue, missions, inventory and records.
+The client for MaslogCare, the Barangay 61 Maslog (Legazpi City) health-center system. It's one Expo / React Native codebase that ships to Android and the web. Residents book and track appointments, and staff (admin, doctor, midwife, BHW) run the queue, missions, inventory and records.
 
 ## Getting started
 
@@ -62,3 +62,8 @@ New feature code goes in `src/features/<feature>/`. Only promote something to `s
 - **Resetting state when a modal opens or a prop changes:** use `useSyncOnChange(deps, sync)` instead of a `useEffect` that calls setters. The new state is in place before paint, so a reopened form never flashes old values.
 - **Data fetching in effects** is fine. Mark the call with `// eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch …` so intentional cases stay distinguishable from accidental ones.
 - **Images:** bundle right-sized assets. `assets/images/maslog-seal.png` (320 px) and `maslog-background.jpg` are for in-app use. The full-resolution `maslogicon.png` is only for app icons in `app.json`.
+
+
+## New Added Feature
+
+- **Master List** Used to validate registered users by comparing their submitted information with the records in the Barangay Maslog master list. If the submitted information matches an existing record, the user is automatically approved.

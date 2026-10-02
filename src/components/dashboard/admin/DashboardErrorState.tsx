@@ -10,6 +10,10 @@ type DashboardErrorStateProps = {
   /** The API error, shown under the headline. */
   message?: string | null;
   retrying?: boolean;
+  /** Block headline; defaults to the dashboard's own. */
+  title?: string;
+  /** Spoken name of the retry button. */
+  retryLabel?: string;
 };
 
 const DashboardErrorState = ({
@@ -18,6 +22,8 @@ const DashboardErrorState = ({
   variant = "block",
   message,
   retrying = false,
+  title = "Unable to load dashboard data.",
+  retryLabel = "Retry loading the dashboard",
 }: DashboardErrorStateProps) => {
   const isBanner = variant === "banner";
 
@@ -36,7 +42,7 @@ const DashboardErrorState = ({
 
       <View className={isBanner ? "min-w-0 flex-1 gap-0.5" : "items-center gap-1"}>
         <Text className="text-[14px] font-semibold" style={{ color: palette.heading }}>
-          {isBanner ? "Couldn't refresh. Showing the last loaded data." : "Unable to load dashboard data."}
+          {isBanner ? "Couldn't refresh. Showing the last loaded data." : title}
         </Text>
         <Text
           className={`text-[12.5px] ${isBanner ? "" : "text-center"}`}
@@ -53,7 +59,7 @@ const DashboardErrorState = ({
         icon="rotate-cw"
         loading={retrying}
         onPress={onRetry}
-        accessibilityLabel="Retry loading the dashboard"
+        accessibilityLabel={retryLabel}
       />
     </View>
   );

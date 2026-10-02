@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "expo-router";
+import { handOffActivitySearch } from "@/features/systemLogs/activitySearchHandoff";
+
 import type { AdminUser } from "../../services/userService";
 
 export const useUserDetailsState = (users: AdminUser[], loading: boolean, error: string | null) => {
@@ -19,7 +21,8 @@ export const useUserDetailsState = (users: AdminUser[], loading: boolean, error:
   const viewActivity = useCallback(
     (user: AdminUser) => {
       setDetailsUserId(null);
-      router.push({ pathname: "/admin/system-logs", params: { search: user.email } });
+      handOffActivitySearch(user.email);
+      router.push("/admin/system-logs");
     },
     [router]
   );

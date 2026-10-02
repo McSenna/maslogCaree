@@ -13,6 +13,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { handOffActivitySearch } from "@/features/systemLogs/activitySearchHandoff";
 import { useAdminDashboard } from "@/hooks/useAdminDashboard";
 import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
 import type { AdminDashboardData } from "@/services/adminDashboardService";
@@ -50,8 +51,11 @@ const AdminDashboardScreen = () => {
       toSupport: () => router.push("/admin/support"),
       toInventory: () => router.push("/admin/inventory"),
       toSystemLogs: () => router.push("/admin/system-logs"),
-      toActivity: (activity) =>
-        router.push({ pathname: "/admin/system-logs", params: { search: activity.actorName ?? "" } } as never),
+      toActivity: (activity) => {
+        // The name filters the logs in memory; it must not land in the URL.
+        handOffActivitySearch(activity.actorName);
+        router.push("/admin/system-logs");
+      },
     }),
     [router]
   );

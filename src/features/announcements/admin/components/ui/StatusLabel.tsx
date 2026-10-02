@@ -1,20 +1,22 @@
-import { Text, View } from "react-native";
+import type { Feather } from "@expo/vector-icons";
+
+import StatusPill from "@/components/dashboard/kit/StatusPill";
+import type { StatusToneName } from "@/design/adminDashboardTheme";
+import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { Status } from "../../adminAnnouncement.types";
 import { STATUS_LABELS } from "../../adminAnnouncementModel";
 
-const DOT: Record<Status, string> = {
-  active: "bg-status-active",
-  draft: "bg-status-draft",
-  expired: "bg-status-expired",
+const LOOK: Record<Status, { tone: StatusToneName; icon: keyof typeof Feather.glyphMap }> = {
+  active: { tone: "success", icon: "check-circle" },
+  draft: { tone: "warning", icon: "edit-3" },
+  expired: { tone: "neutral", icon: "clock" },
 };
 
-/** A small coloured dot and the status word; the word carries the meaning. */
-const StatusLabel = ({ status, compact }: { status: Status; compact?: boolean }) => (
-  <View className="flex-row items-center gap-1.5">
-    <View className={`h-2 w-2 rounded-full ${DOT[status]}`} importantForAccessibility="no" />
-    <Text className={`font-ps text-ink ${compact ? "text-13" : "text-14"}`}>{STATUS_LABELS[status]}</Text>
-  </View>
-);
+/** The dashboard's status pill: colour, icon and word, so colour is never the only signal. */
+const StatusLabel = ({ status }: { status: Status }) => {
+  const palette = useAdminSurfacePalette();
+  return <StatusPill palette={palette} tone={LOOK[status].tone} icon={LOOK[status].icon} label={STATUS_LABELS[status]} />;
+};
 
 export default StatusLabel;

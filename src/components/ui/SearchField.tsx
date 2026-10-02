@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
-import { TextInput, View } from "react-native";
+import { Pressable, TextInput, View } from "react-native";
 import { CONTROL_HEIGHT, RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
@@ -9,7 +9,7 @@ type SearchFieldProps = {
   onChangeText: (value: string) => void;
   placeholder: string;
   accessibilityLabel: string;
-  style?: { flex?: number; width?: `${number}%`; minWidth?: number };
+  style?: { flex?: number; width?: number | `${number}%`; minWidth?: number };
 };
 
 const SearchField = ({
@@ -46,8 +46,19 @@ const SearchField = ({
         accessibilityLabel={accessibilityLabel}
         autoCapitalize="none"
         autoCorrect={false}
-        clearButtonMode="while-editing"
       />
+      {value ? (
+        // One clear control on every platform (iOS's built-in one would double it).
+        <Pressable
+          onPress={() => onChangeText("")}
+          accessibilityRole="button"
+          accessibilityLabel="Clear search"
+          hitSlop={8}
+          className="h-8 w-8 items-center justify-center rounded-sm web:cursor-pointer"
+        >
+          <Feather name="x" size={16} color={palette.muted} />
+        </Pressable>
+      ) : null}
     </View>
   );
 };

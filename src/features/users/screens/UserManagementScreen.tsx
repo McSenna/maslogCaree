@@ -1,37 +1,67 @@
-import { View } from "react-native";
+import { useState } from "react";
+import { View, type LayoutChangeEvent } from "react-native";
+
+import { toast } from "@/components/feedback";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
-import UsersDesktopLayout from "../components/UsersDesktopLayout";
-import UsersEmptyState from "../components/UsersEmptyState";
-import UsersMobileLayout from "../components/UsersMobileLayout";
-import UsersOverlays from "../components/UsersOverlays";
-import UsersToolbar from "../components/UsersToolbar";
-import { useUsersPalette } from "../components/usersTheme";
-import { useUserManagementScreen } from "../hooks/useUserManagementScreen";
+import { getSidebarWidth } from "@/components/navigation/sidebar/sidebarTheme";
+// The announcements CSV saver is format-agnostic: a file download on web, the share sheet on phones.
+import { exportAnnouncementsCsv as saveCsv } from "@/features/announcements/admin/services/exportAnnouncementsCsv";
+import { useResponsive } from "@/hooks/useResponsive";
+import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
+import { useSearchParamValue } from "@/hooks/useSearchParamValue";
 
+import PhoneUsersView from "../admin/components/phone/PhoneUsersView";
+import ScreenOverlays from "../admin/components/shared/ScreenOverlays";
+import { TABLE_MIN_WIDTH } from "../admin/components/wide/tableColumns";
+import WideUsersView from "../admin/components/wide/WideUsersView";
+import { tabFromParam } from "../admin/hooks/useUserFilterState";
+import { useUsersScreen } from "../admin/hooks/useUsersScreen";
+import { buildUsersCsv, usersCsvFileName } from "../admin/userCsv";
+import { useUsersTheme } from "../admin/useUsersTheme";
+
+// The role shell's content padding on either side of the page from tablet width up.
+const SHELL_PADDING_X = 48;
+
+/**
+ * Admin Users. The table needs the width beside the app sidebar, not the
+ * window, so the page measures itself: below the table's minimum it shows the
+ * phone list, which also covers tablets in portrait.
+ */
 const UserManagementScreen = () => {
-  const palette = useUsersPalette();
-  const controller = useUserManagementScreen();
+  const theme = useUsersTheme();
+  const insets = useRoleScreenInsets();
+  const { isMobile, width: windowWidth, breakpoint } = useResponsive();
+  const [measuredWidth, setMeasuredWidth] = useState<number | null>(null);
+  const screen = useUsersScreen({ initialTab: tabFromParam(useSearchParamValue("section")), isPhone: isMobile });
 
-  const toolbar = <UsersToolbar controller={controller} />;
-  const emptyState = (
-    <UsersEmptyState
-      error={controller.error}
-      hasActiveFilters={controller.filters.hasActiveFilters}
-      onRetry={controller.fetchUsers}
-    />
+  // Until the first layout, estimate the content width from the window.
+  const width = measuredWidth ?? windowWidth - getSidebarWidth(breakpoint) - SHELL_PADDING_X;
+  const wide = !isMobile && width - insets.gutter * 2 >= TABLE_MIN_WIDTH;
+
+  const handleLayout = (event: LayoutChangeEvent) => setMeasuredWidth(event.nativeEvent.layout.width);
+
+  // Exports the rows on screen, so the file matches the tab, search and filters.
+  const onExport = () => {
+    saveCsv(buildUsersCsv(screen.rows), usersCsvFileName()).catch(() =>
+      toast.error("Could not export users.", "Try again in a moment.")
+    );
+  };
+
+  // NOTE: there is no endpoint for creating accounts here yet. Residents
+  // register in the app; this says so rather than opening a form that cannot save.
+  const onAddUser = () => toast.info("Adding users is not available here yet", "Residents create their accounts by registering in the app.");
+
+  const body = wide ? (
+    <WideUsersView screen={screen} width={width} insets={insets} onExport={onExport} onAddUser={onAddUser} />
+  ) : (
+    <PhoneUsersView screen={screen} width={width} onExport={onExport} onAddUser={onAddUser} />
   );
 
   return (
-    <View className="flex-1" onLayout={controller.measureContent}>
-      <RoleScreenBackdrop color={palette.pageBg} insets={controller.insets} />
-
-      {controller.showTable ? (
-        <UsersDesktopLayout controller={controller} toolbar={toolbar} emptyState={emptyState} />
-      ) : (
-        <UsersMobileLayout controller={controller} toolbar={toolbar} emptyState={emptyState} />
-      )}
-
-      <UsersOverlays controller={controller} />
+    <View style={theme.vars} onLayout={handleLayout} className="w-full flex-1">
+      <RoleScreenBackdrop color={theme.palette.page} insets={insets} />
+      {body}
+      <ScreenOverlays screen={screen} phone={!wide} />
     </View>
   );
 };

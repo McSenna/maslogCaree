@@ -26,6 +26,7 @@ type ResidentVerificationSheetProps = {
   onApprove: () => void;
   onReject: (reason: string, remarks?: string) => void;
   onClose: () => void;
+  startWithReject?: boolean;
   onRetry?: () => void;
 };
 
@@ -40,9 +41,10 @@ const ResidentVerificationSheet = ({
   onReject,
   onClose,
   onRetry,
+  startWithReject,
 }: ResidentVerificationSheetProps) => {
   const palette = useUserDetailsPalette();
-  const decision = useVerificationDecision({ visible, onApprove, onReject });
+  const decision = useVerificationDecision({ visible, onApprove, onReject, startWithReject });
 
   const resident = request?.resident;
   const verification = request?.verification;

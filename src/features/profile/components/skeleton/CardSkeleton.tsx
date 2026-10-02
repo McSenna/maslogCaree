@@ -4,7 +4,6 @@ import { RADII } from "@/theme/radius";
 import { SPACING } from "@/theme/spacing";
 import Block from "./Block";
 
-/** Placeholder for a section card: a title, then icon-led two-line rows. */
 const CardSkeleton = ({ rows, opacity }: { rows: number; opacity: Animated.Value }) => {
   const colors = useThemeColors();
 

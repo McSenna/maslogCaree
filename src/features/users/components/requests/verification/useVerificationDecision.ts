@@ -5,9 +5,11 @@ type Options = {
   visible: boolean;
   onApprove: () => void;
   onReject: (reason: string, remarks?: string) => void;
+  /** Opens straight to the rejection reasons (the Users table's Reject button). */
+  startWithReject?: boolean;
 };
 
-export const useVerificationDecision = ({ visible, onApprove, onReject }: Options) => {
+export const useVerificationDecision = ({ visible, onApprove, onReject, startWithReject = false }: Options) => {
   const [showFullIdNumber, setShowFullIdNumber] = useState(false);
   const [showApproveConfirm, setShowApproveConfirm] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
@@ -17,6 +19,8 @@ export const useVerificationDecision = ({ visible, onApprove, onReject }: Option
       setShowFullIdNumber(false);
       setShowApproveConfirm(false);
       setShowRejectModal(false);
+    } else if (startWithReject) {
+      setShowRejectModal(true);
     }
   });
 

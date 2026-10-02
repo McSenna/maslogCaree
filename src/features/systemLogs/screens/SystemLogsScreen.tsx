@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import LogDetailsBottomSheet from "../components/LogDetailsBottomSheet";
 import LogSummaryCards from "../components/LogSummaryCards";
+import { clearActivitySearch, peekActivitySearch } from "../activitySearchHandoff";
 import { useSystemLogsPalette } from "../components/systemLogsTheme";
 import { useLogExport } from "../hooks/useLogExport";
 import { useLogFilters } from "../hooks/useLogFilters";
@@ -22,8 +22,9 @@ const SystemLogsScreen = () => {
   const { isDesktop } = useResponsive();
   const insets = useRoleScreenInsets();
 
-  const { search: searchParam } = useLocalSearchParams<{ search?: string | string[] }>();
-  const initialSearch = (Array.isArray(searchParam) ? searchParam[0] : searchParam) ?? "";
+  // "View activity" hands its search over in memory, never in the URL.
+  const [initialSearch] = useState(peekActivitySearch);
+  useEffect(clearActivitySearch, []);
 
   const [tableAreaWidth, setTableAreaWidth] = useState(0);
 

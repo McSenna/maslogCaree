@@ -1,9 +1,10 @@
 import { Feather } from "@expo/vector-icons";
-import { ActivityIndicator, Animated, Pressable, Text } from "react-native";
+import { ActivityIndicator, Animated, Platform, Pressable, Text } from "react-native";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { useInteractionState } from "@/hooks/useInteractionState";
+import { dashboardButtonColors, type DashboardButtonVariant } from "./dashboardButtonColors";
 
-type Variant = "primary" | "secondary" | "link";
+type Variant = DashboardButtonVariant;
 
 type DashboardButtonProps = {
   palette: AdminDashboardPalette;
@@ -53,17 +54,7 @@ const DashboardButton = ({
 
   const isLink = variant === "link";
   const isPrimary = variant === "primary";
-
-  const foreground = isPrimary ? palette.onPrimary : palette.primary;
-  const background = isPrimary
-    ? palette.primary
-    : isLink
-      ? hovered || pressed
-        ? palette.tones.blue.cardBg
-        : "transparent"
-      : hovered || pressed
-        ? palette.hoverBg
-        : palette.cardBg;
+  const { foreground, background, border } = dashboardButtonColors(palette, variant, hovered || pressed);
 
   const content = loading ? (
     <ActivityIndicator size="small" color={foreground} />
@@ -79,7 +70,8 @@ const DashboardButton = ({
         {...handlers}
         onPress={onPress}
         disabled={inactive}
-        accessibilityRole={isLink ? "link" : "button"}
+        // react-native-web ignores Enter on role="link" without an href, so the web keeps "button".
+        accessibilityRole={isLink && Platform.OS !== "web" ? "link" : "button"}
         accessibilityLabel={accessibilityLabel ?? label}
         accessibilityHint={accessibilityHint}
         accessibilityState={{ disabled: inactive, busy: loading }}
@@ -93,8 +85,8 @@ const DashboardButton = ({
           justifyContent: "center",
           gap: 6,
           borderRadius: 10,
-          borderWidth: variant === "secondary" ? 1 : 0,
-          borderColor: palette.cardBorder,
+          borderWidth: border ? 1 : 0,
+          borderColor: border ?? undefined,
           backgroundColor: background,
           opacity: isPrimary && (hovered || pressed) ? 0.9 : 1,
           outlineWidth: focused ? 2 : 0,

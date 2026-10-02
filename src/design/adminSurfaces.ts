@@ -8,6 +8,15 @@ export const CARD_SHADOW = createShadow({
   elevation: 1,
 });
 
+/** Dropdowns and row menus (SelectMenu's lift), so every admin menu floats the same way. */
+export const MENU_SHADOW = createShadow({
+  color: "#0F172A",
+  opacity: 0.12,
+  radius: 16,
+  offsetY: 2,
+  elevation: 6,
+});
+
 export const MODAL_SHADOW = {
   ...createShadow({
     color: "#0F172A",

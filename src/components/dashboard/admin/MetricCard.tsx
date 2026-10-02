@@ -6,6 +6,7 @@ import {
   type AdminDashboardPalette,
   type MetricTone,
 } from "@/design/adminDashboardTheme";
+import MetricCardFrame from "./MetricCardFrame";
 import TrendPill from "./TrendPill";
 
 export type MetricProgress = {
@@ -27,7 +28,13 @@ export type MetricCardProps = {
   progress?: MetricProgress;
   compact?: boolean;
   dense?: boolean;
+  /** Makes the card a control (e.g. "show this list"); left out, it is plain text. */
+  onPress?: () => void;
+  accessibilityHint?: string;
+  /** The card matching what is shown below it: a 2px primary border. */
+  selected?: boolean;
 };
+
 
 const ProgressBar = ({ palette, progress }: { palette: AdminDashboardPalette; progress: MetricProgress }) => {
   const share = progress.total > 0 ? Math.min(1, Math.max(0, progress.value / progress.total)) : 0;
@@ -46,6 +53,12 @@ const ProgressBar = ({ palette, progress }: { palette: AdminDashboardPalette; pr
   );
 };
 
+const padding = (compact: boolean, dense: boolean, selected: boolean): string => {
+  if (!compact) return selected ? "p-[15px]" : "p-4";
+  if (dense) return selected ? "p-[11px]" : "p-3";
+  return selected ? "p-[13px]" : "p-3.5";
+};
+
 /**
  * An overview number. The label sits above the value and the icon keeps to the corner, so values in a
  * row of cards share one left edge and can be compared at a glance.
@@ -61,6 +74,9 @@ const MetricCard = ({
   progress,
   compact = false,
   dense = false,
+  onPress,
+  accessibilityHint,
+  selected = false,
 }: MetricCardProps) => {
   const toneStyle = palette.tones[tone];
   const showTrend = typeof growth === "number" && Number.isFinite(growth);
@@ -77,13 +93,17 @@ const MetricCard = ({
   const iconSize = compact ? (dense ? 30 : 32) : 36;
 
   return (
-    <View
-      accessible
+    <MetricCardFrame
+      onPress={onPress}
+      selected={selected}
+      activeStyle={{ borderColor: palette.tones.blue.cardBorder, backgroundColor: palette.hoverBg }}
       accessibilityLabel={accessibilityLabel}
-      className={`min-w-0 flex-1 border ${compact ? (dense ? "p-3" : "p-3.5") : "p-4"}`}
+      accessibilityHint={accessibilityHint}
+      // A selected card's 2px border takes 1px from the padding, so nothing shifts.
+      className={`min-w-0 flex-1 ${selected ? "border-2" : "border"} ${padding(compact, dense, selected)}`}
       style={{
         backgroundColor: palette.cardBg,
-        borderColor: palette.cardBorder,
+        borderColor: selected ? palette.primary : palette.cardBorder,
         borderRadius: DASHBOARD_RADIUS.card,
         ...DASHBOARD_CARD_SHADOW,
       }}
@@ -121,14 +141,15 @@ const MetricCard = ({
 
       <Text
         className={compact ? "text-[12px] font-medium" : "text-[12.5px] font-medium"}
-        numberOfLines={1}
+        // Phone cards are narrow: two lines rather than cutting the description off.
+        numberOfLines={compact ? 2 : 1}
         style={{ color: palette.muted }}
       >
         {description}
       </Text>
 
       {progress ? <ProgressBar palette={palette} progress={progress} /> : null}
-    </View>
+    </MetricCardFrame>
   );
 };
 

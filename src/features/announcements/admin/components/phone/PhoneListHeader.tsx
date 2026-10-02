@@ -1,58 +1,64 @@
-import { Download, Plus } from "lucide-react-native";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+
+import DashboardHeader from "@/components/dashboard/kit/DashboardHeader";
+import { CardTop } from "@/components/dashboard/kit/TableCard";
+import SearchField from "@/components/ui/SearchField";
+import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { AnnouncementsScreenState } from "../../hooks/useAnnouncementsScreen";
 import AudiencePicker from "../ui/AudiencePicker";
-import { IconButton, PrimaryButton } from "../ui/Buttons";
-import SearchField from "../ui/SearchField";
 import StatusTabs from "../ui/StatusTabs";
+import { ANNOUNCEMENTS_SUBTITLE, ANNOUNCEMENTS_TITLE } from "../wide/WideHeader";
 
 type PhoneListHeaderProps = {
   screen: AnnouncementsScreenState;
   onExport: () => void;
 };
 
-/** Title, actions, tabs and filters: the list's header, so they scroll with the rows. */
+const SEARCH_FILL = { flex: 1, minWidth: 220 };
+
+/** The dashboard's compact header and controls: the list's header, so they scroll with the rows. */
 const PhoneListHeader = ({ screen, onExport }: PhoneListHeaderProps) => {
+  const palette = useAdminSurfacePalette();
   const { view, filters, counts } = screen;
   const showControls = view === "list" || view === "noResults";
 
   return (
-    <View>
-      <View className="flex-row flex-wrap items-center justify-between gap-3 px-4 pt-5">
-        <Text accessibilityRole="header" className="font-ps-bold text-22 tracking-[-0.2px] text-ink">
-          Announcements
-        </Text>
-        <View className="flex-row items-center gap-1.5">
-          <IconButton
-            label="Export CSV"
-            icon={Download}
-            bordered
-            color="ink"
-            onPress={onExport}
-            disabled={view !== "list"}
-            accessibilityHint="Shares the announcements shown as a spreadsheet file"
-          />
-          <PrimaryButton
-            label="New"
-            icon={Plus}
-            onPress={screen.openCreate}
-            accessibilityHint="Opens the form to write an announcement"
-          />
-        </View>
+    <View className="gap-3 pb-3 pt-4">
+      <View className="px-4">
+        <DashboardHeader
+          palette={palette}
+          compact
+          title={ANNOUNCEMENTS_TITLE}
+          subtitle={ANNOUNCEMENTS_SUBTITLE}
+          primaryAction={{ key: "new", label: "New announcement", icon: "edit-2", onPress: screen.openCreate }}
+          secondaryActions={
+            view === "list"
+              ? [{ key: "export", label: "Export CSV", icon: "download", onPress: onExport, showOnPhone: true, accessibilityHint: "Shares the announcements shown as a spreadsheet file" }]
+              : []
+          }
+        />
       </View>
 
       {showControls ? (
         <>
-          <StatusTabs value={filters.status} counts={counts} onChange={screen.setStatus} />
-          <View className="flex-row gap-2 px-4 py-3">
-            <SearchField value={filters.query} onChange={screen.setQuery} />
+          <StatusTabs scroll value={filters.status} counts={counts} onChange={screen.setStatus} />
+          <View className="flex-row flex-wrap gap-2 px-4">
+            <SearchField
+              value={filters.query}
+              onChangeText={screen.setQuery}
+              placeholder="Search title or message"
+              accessibilityLabel="Search announcements"
+              style={SEARCH_FILL}
+            />
             <AudiencePicker value={filters.audience} onChange={screen.setAudience} />
           </View>
         </>
-      ) : (
-        <View className="h-4" />
-      )}
+      ) : null}
+
+      <View className="mx-4">
+        <CardTop />
+      </View>
     </View>
   );
 };

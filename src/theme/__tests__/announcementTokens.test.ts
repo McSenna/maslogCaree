@@ -34,6 +34,8 @@ const TEXT_PAIRS: [AnnouncementTokenName, AnnouncementTokenName][] = [
   ["brand-on", "brand"], ["brand-on", "brand-hover"],
   ["destructive", "canvas"], ["destructive", "destructive-bg"],
   ["toast-text", "toast"], ["toast-action", "toast"],
+  // Users screen: text on a selected row and the bulk bar, and menu items on press.
+  ["ink", "selected"], ["text2", "selected"], ["brand", "selected"], ["ink", "neutral"],
 ];
 
 const check = (name: string, palette: AnnouncementPalette) => {
