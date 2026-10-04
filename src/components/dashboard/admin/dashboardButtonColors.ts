@@ -18,7 +18,7 @@ export const dashboardButtonColors = (
     case "primary":
       return { foreground: palette.onPrimary, background: palette.primary, border: null };
     case "link":
-      return { foreground: palette.primary, background: active ? palette.tones.blue.cardBg : "transparent", border: null };
+      return { foreground: palette.primary, background: active ? palette.tones.primary.cardBg : "transparent", border: null };
     case "danger": {
       const danger = palette.statusTones.danger;
       return { foreground: danger.fg, background: active ? danger.bg : palette.cardBg, border: danger.border };

@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 import { QUEUE_RADIUS } from "@/components/appointmentQueue/queueTheme";
 
 import { FieldHelper, FieldLabel, type FieldPartProps } from "./fieldShell";
+import { PALETTE } from "@/theme/palette";
 
 const BooleanField = ({
   field,
@@ -41,7 +42,7 @@ const BooleanField = ({
           >
             <Text
               className="text-[13.5px] font-semibold"
-              style={{ color: option.selected ? "#FFFFFF" : palette.muted }}
+              style={{ color: option.selected ? PALETTE.white : palette.muted }}
             >
               {option.label}
             </Text>

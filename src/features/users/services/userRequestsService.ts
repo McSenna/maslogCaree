@@ -39,9 +39,15 @@ export const getUserRequestById = async (id: string): Promise<UserRequestDetail>
   return data.request;
 };
 
-export const approveUserRequest = async (id: string): Promise<{ success: boolean; message: string }> => {
+// `masterResidentId`: a record ID to link, null to keep the account unlinked,
+// or left out so the server links only a clean sign-up match.
+export const approveUserRequest = async (
+  id: string,
+  masterResidentId?: string | null
+): Promise<{ success: boolean; message: string }> => {
   const { data } = await api.patch<{ success: boolean; message: string }>(
-    `/admin/user-requests/${id}/approve`
+    `/admin/user-requests/${id}/approve`,
+    masterResidentId === undefined ? {} : { masterResidentId }
   );
   return data;
 };

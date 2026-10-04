@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 
 import Button from "@/components/buttons/Button";
 import TextField from "@/components/forms/TextField";
+import { PASSWORD_MAX_LENGTH } from "@/features/auth/forgotPassword/passwordRules";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { RADII } from "@/theme/radius";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
@@ -53,6 +54,7 @@ export const ChangePasswordForm = ({ changePasswordState, onCancel, compact = fa
         onChangeText={(text) => setValue("currentPassword", text)}
         placeholder="Enter your current password"
         autoCapitalize="none"
+        maxLength={PASSWORD_MAX_LENGTH}
         autoCorrect={false}
         autoComplete="current-password"
         textContentType="password"
@@ -71,6 +73,7 @@ export const ChangePasswordForm = ({ changePasswordState, onCancel, compact = fa
         onChangeText={(text) => setValue("newPassword", text)}
         placeholder="Enter your new password"
         autoCapitalize="none"
+        maxLength={PASSWORD_MAX_LENGTH}
         autoCorrect={false}
         autoComplete="new-password"
         textContentType="newPassword"
@@ -90,6 +93,7 @@ export const ChangePasswordForm = ({ changePasswordState, onCancel, compact = fa
         onChangeText={(text) => setValue("confirmPassword", text)}
         placeholder="Re-enter your new password"
         autoCapitalize="none"
+        maxLength={PASSWORD_MAX_LENGTH}
         autoCorrect={false}
         autoComplete="new-password"
         textContentType="newPassword"

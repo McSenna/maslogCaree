@@ -6,7 +6,7 @@ export const APPOINTMENTS_CATEGORY: HelpCategory = {
   description:
     "Learn how to book, reschedule, cancel, track, and manage your healthcare appointments.",
   icon: "calendar",
-  tone: "blue",
+  tone: "primary",
   articles: [
     {
       id: "book-appointment",

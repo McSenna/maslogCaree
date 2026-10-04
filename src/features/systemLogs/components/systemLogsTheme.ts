@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { getAdminDashboardPalette, type StatusTone as SharedStatusTone } from "@/design/adminDashboardTheme";
 import type { SystemLogSeverity, SystemLogStatus } from "@/features/systemLogs/services/systemLogService";
 import { createShadow } from "@/design/shadow";
 import { PALETTE } from "@/theme/palette";
@@ -12,29 +12,12 @@ export type StatusTone = {
   dot: string;
 };
 
-const SEVERITY_TONES: Record<SystemLogSeverity, StatusTone> = {
-  info: { label: "Info", text: "#1E40AF", bg: "#DBEAFE", dot: PALETTE.blue[600] },
-  success: { label: "Success", text: "#166534", bg: "#DCFCE7", dot: "#22C55E" },
-  warning: { label: "Warning", text: "#92400E", bg: "#FEF3C7", dot: "#F59E0B" },
-  error: { label: "Error", text: "#991B1B", bg: "#FEE2E2", dot: "#EF4444" },
-};
-
-const STATUS_TONES: Record<SystemLogStatus, StatusTone> = {
-  Success: SEVERITY_TONES.success,
-  Failed: SEVERITY_TONES.error,
-};
-
-const SEVERITY_TONES_DARK: Record<SystemLogSeverity, StatusTone> = {
-  info: { label: "Info", text: "#93C5FD", bg: "rgba(22,119,255,0.16)", dot: "#60A5FA" },
-  success: { label: "Success", text: "#86EFAC", bg: "rgba(34,197,94,0.16)", dot: "#34D399" },
-  warning: { label: "Warning", text: "#FCD34D", bg: "rgba(245,158,11,0.16)", dot: "#FBBF24" },
-  error: { label: "Error", text: "#FCA5A5", bg: "rgba(239,68,68,0.16)", dot: "#FB7185" },
-};
-
-const STATUS_TONES_DARK: Record<SystemLogStatus, StatusTone> = {
-  Success: SEVERITY_TONES_DARK.success,
-  Failed: SEVERITY_TONES_DARK.error,
-};
+const logBadge = (label: string, tone: SharedStatusTone): StatusTone => ({
+  label,
+  text: tone.fg,
+  bg: tone.bg,
+  dot: tone.fg,
+});
 
 export type SystemLogsPalette = ReturnType<typeof useSystemLogsPalette>;
 
@@ -45,21 +28,29 @@ export const useSystemLogsPalette = () => {
     const base = getAdminDashboardPalette(resolvedTheme);
     const isDark = resolvedTheme === "dark";
 
+    const { statusTones } = base;
+    const severity: Record<SystemLogSeverity, StatusTone> = {
+      info: logBadge("Info", statusTones.info),
+      success: logBadge("Success", statusTones.success),
+      warning: logBadge("Warning", statusTones.warning),
+      error: logBadge("Error", statusTones.danger),
+    };
+
     return {
       ...base,
-      subtleSurface: isDark ? "#111C33" : "#F5F9FF",
-      rowHover: isDark ? "#111C33" : "#F8FBFF",
+      subtleSurface: isDark ? PALETTE.night.raised : PALETTE.slate[50],
+      rowHover: base.hoverBg,
       rowSelected: base.bannerBg,
-      iconWell: isDark ? "#111C33" : "#EEF3FA",
-      severity: isDark ? SEVERITY_TONES_DARK : SEVERITY_TONES,
-      status: isDark ? STATUS_TONES_DARK : STATUS_TONES,
+      iconWell: isDark ? PALETTE.night.raised : PALETTE.slate[100],
+      severity,
+      status: { Success: severity.success, Failed: severity.error } satisfies Record<SystemLogStatus, StatusTone>,
       isDark,
     };
   }, [resolvedTheme]);
 };
 
 export const CARD_SHADOW = createShadow({
-  color: "#0F172A",
+  color: PALETTE.ink,
   opacity: 0.04,
   radius: 12,
   offsetY: 2,

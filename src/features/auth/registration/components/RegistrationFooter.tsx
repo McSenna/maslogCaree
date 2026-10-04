@@ -9,6 +9,10 @@ type RegistrationFooterProps = {
   isSubmitting: boolean;
   canSubmit: boolean;
   height: number;
+  /** Final-step wording and icon; default to creating a resident account. */
+  finalLabel?: string;
+  finalBusyLabel?: string;
+  finalIcon?: keyof typeof Feather.glyphMap;
 };
 
 const RegistrationFooter = ({
@@ -18,12 +22,15 @@ const RegistrationFooter = ({
   isSubmitting,
   canSubmit,
   height,
+  finalLabel = "Create Account",
+  finalBusyLabel = "Creating Account...",
+  finalIcon = "user-check",
 }: RegistrationFooterProps) => {
   const disabled = isSubmitting || (isFinalStep && !canSubmit);
   const label = isFinalStep
     ? isSubmitting
-      ? "Creating Account..."
-      : "Create Account"
+      ? finalBusyLabel
+      : finalLabel
     : "Next";
 
   return (
@@ -74,7 +81,7 @@ const RegistrationFooter = ({
         <Text style={{ fontSize: 15, fontWeight: "700", color: REG_COLORS.surface }}>{label}</Text>
         {!isSubmitting ? (
           <Feather
-            name={isFinalStep ? "user-check" : "arrow-right"}
+            name={isFinalStep ? finalIcon : "arrow-right"}
             size={17}
             color={REG_COLORS.surface}
           />

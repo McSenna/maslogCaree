@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useSheetLayoutContext } from "@/components/ui/sheetLayout/SheetLayoutContext";
 
 import { CONTROL_HEIGHT, RADIUS, useInventoryPalette } from "../inventoryTheme";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   isMobile: boolean;
@@ -68,7 +69,7 @@ const InventoryModalFooter = ({
           opacity: submitDisabled || submitting ? 0.55 : 1,
         }}
       >
-        {submitting ? <ActivityIndicator size="small" color="#FFFFFF" /> : null}
+        {submitting ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
         <Text className="text-[14px] font-semibold text-white">
           {submitting ? "Saving…" : submitLabel}
         </Text>

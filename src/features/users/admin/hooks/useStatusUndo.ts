@@ -9,6 +9,11 @@ export type StatusBatch = { ids: string[]; names: string[]; action: StatusAction
 
 type Settled = { batch: StatusBatch; rows: unknown };
 
+const statusFailedTitle = ({ ids, action }: StatusBatch): string => {
+  const verb = action === "deactivate" ? "deactivated" : "reactivated";
+  return ids.length === 1 ? `Account not ${verb}` : `Accounts not ${verb}`;
+};
+
 /**
  * Deactivate or reactivate with undo, on the shared undoable action. The one
  * users-only rule: a committed change keeps applying until the refetched
@@ -24,15 +29,14 @@ export const useStatusUndo = (commit: (batch: StatusBatch) => Promise<void>, row
     },
     [commit, rows]
   );
-  const undoable = useUndoableAction(commitAndHold);
+  const undoable = useUndoableAction(commitAndHold, statusFailedTitle);
   const { pending, toast } = undoable;
 
   const batches: StatusBatch[] = [];
   if (settled && settled.rows === rows) batches.push(settled.batch);
   if (pending) batches.push(pending);
 
-  const message =
-    toast?.kind === "pending" ? statusToastMessage(toast.item.names, toast.item.action) : toast ? "Could not update. Try again." : null;
+  const message = toast ? statusToastMessage(toast.item.names, toast.item.action) : null;
 
   return { ...undoable, batches, message };
 };

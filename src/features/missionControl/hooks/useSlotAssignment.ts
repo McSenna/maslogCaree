@@ -6,8 +6,8 @@ import {
   type AppointmentRecord,
   type ConsultationCategory,
 } from "@/services/appointments";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { toast } from "@/components/feedback/toast/toastStore";
+import { toastError } from "@/utils/errorToast/toastError";
 
 export type AssignMode = "assign" | "reassign";
 
@@ -70,7 +70,7 @@ export const useSlotAssignment = ({
       if (pack.suggestedNextSlotStart) setSelectedSlot(pack.suggestedNextSlotStart);
       if (pack.durationMinutes && !duration) setDuration(String(pack.durationMinutes));
     } catch (error: unknown) {
-      toast.error("Unable to load time slots", getApiErrorMessage(error, "Could not load available time slots."));
+      toastError("Unable to load time slots", error, { fallback: "Could not load available time slots." });
     } finally {
       setLoadingSlots(false);
     }
@@ -98,7 +98,7 @@ export const useSlotAssignment = ({
       await onAssigned(selectedMissionId);
       toast.success(mode === "assign" ? "Appointment confirmed" : "Appointment rescheduled");
     } catch (error: unknown) {
-      toast.error("Unable to schedule appointment", getApiErrorMessage(error, "The appointment could not be scheduled."));
+      toastError("Unable to schedule appointment", error, { fallback: "The appointment could not be scheduled." });
     } finally {
       setSaving(false);
     }

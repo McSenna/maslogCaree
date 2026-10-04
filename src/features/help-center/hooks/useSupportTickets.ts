@@ -1,8 +1,17 @@
 import { useCallback, useEffect, useState } from "react";
 
+import { useRealtimePagedList } from "@/hooks/realtime/useRealtimePagedList";
+import { foldFirstPage, removeItem, upsertItem } from "@/lib/realtime/collectionReducer";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { toastBackgroundError } from "@/utils/errorToast/toastError";
 import { fetchMySupportTickets } from "../services/supportService";
 import type { SupportTicketSummary } from "../types/support.types";
+
+const ticketId = (ticket: SupportTicketSummary) => ticket.id;
+
+// The order GET /support/tickets/my returns: latest activity first.
+const latestActivityFirst = (a: SupportTicketSummary, b: SupportTicketSummary) =>
+  new Date(b.lastActivityAt ?? 0).getTime() - new Date(a.lastActivityAt ?? 0).getTime();
 
 export const useSupportTickets = () => {
   const [tickets, setTickets] = useState<SupportTicketSummary[]>([]);
@@ -55,6 +64,28 @@ export const useSupportTickets = () => {
       active = false;
     };
   }, []);
+
+  // A staff reply or status change moves the ticket to the top at once; the
+  // quiet reload then folds the first page in without dropping loaded pages.
+  const reloadQuietly = useCallback(async () => {
+    try {
+      const result = await fetchMySupportTickets(1);
+      setTickets((current) => foldFirstPage(current, result.tickets, ticketId));
+    } catch (caught: unknown) {
+      // The list on screen stays as it is; the next change or reconnect retries.
+      toastBackgroundError("Support requests not updated", caught);
+    }
+  }, []);
+
+  useRealtimePagedList("supportTicket", {
+    patch: (change) =>
+      setTickets((current) =>
+        change.action === "deleted"
+          ? removeItem(current, change.id, ticketId)
+          : upsertItem(current, change.record, { getId: ticketId, sort: latestActivityFirst })
+      ),
+    reload: () => void reloadQuietly(),
+  });
 
   const refresh = useCallback(async () => {
     setLoading(true);

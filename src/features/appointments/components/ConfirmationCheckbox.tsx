@@ -1,6 +1,7 @@
 import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { APPOINTMENT_COLORS } from "./appointmentTheme";
+import { PALETTE } from "@/theme/palette";
 
 type ConfirmationCheckboxProps = {
   checked: boolean;
@@ -35,7 +36,7 @@ const ConfirmationCheckbox = ({
             backgroundColor: checked ? APPOINTMENT_COLORS.primaryBright : APPOINTMENT_COLORS.white,
           }}
         >
-          {checked ? <Feather name="check" size={15} color="#FFFFFF" /> : null}
+          {checked ? <Feather name="check" size={15} color={PALETTE.white} /> : null}
         </View>
 
         <Text

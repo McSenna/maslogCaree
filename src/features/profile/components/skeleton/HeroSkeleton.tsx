@@ -1,6 +1,7 @@
 import { Animated, View } from "react-native";
 import { PROFILE_RADIUS } from "../../config/profileTheme";
 import Block from "./Block";
+import { PALETTE } from "@/theme/palette";
 
 const HeroSkeleton = ({ opacity }: { opacity: Animated.Value }) => (
   <View
@@ -10,9 +11,9 @@ const HeroSkeleton = ({ opacity }: { opacity: Animated.Value }) => (
       gap: 18,
       padding: 20,
       borderRadius: PROFILE_RADIUS.hero,
-      backgroundColor: "#F1F7FE",
+      backgroundColor: PALETTE.slate[100],
       borderWidth: 1,
-      borderColor: "#DCEAFB",
+      borderColor: PALETTE.blue[100],
     }}
   >
     <Block width={112} height={112} radius={56} opacity={opacity} />

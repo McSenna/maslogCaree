@@ -1,24 +1,25 @@
 import { Platform, StyleSheet } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { webStyle } from "@/theme/webStyle";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const AUTH_INPUT_COLORS = {
-  border: "#D9E3EF",
-  borderHover: "#B9CBE4",
-  surface: "#F8FAFC",
-  placeholder: "#64748B",
-  icon: "#64748B",
-  error: "#DC2626",
-  errorSurface: "#FEF7F7",
-  disabledSurface: "#F1F5F9",
-  disabledBorder: "#E2E8F0",
-  disabledText: "#94A3B8",
-  label: "#334155",
+  border: PALETTE.blue[200],
+  borderHover: PALETTE.slate[300],
+  surface: PALETTE.slate[50],
+  placeholder: PALETTE.slate[500],
+  icon: PALETTE.slate[500],
+  error: PALETTE.red[600],
+  errorSurface: PALETTE.slate[50],
+  disabledSurface: PALETTE.slate[100],
+  disabledBorder: PALETTE.slate[200],
+  disabledText: PALETTE.slate[400],
+  label: PALETTE.slate[700],
 } as const;
 
-export const FOCUS_RING = "0px 0px 0px 3px rgba(21, 101, 216, 0.16)";
+export const FOCUS_RING = `0px 0px 0px 3px ${withAlpha(PALETTE.blue[600], 0.16)}`;
 
-export const ERROR_RING = "0px 0px 0px 3px rgba(220, 38, 38, 0.14)";
+export const ERROR_RING = `0px 0px 0px 3px ${withAlpha(PALETTE.red[600], 0.14)}`;
 
 const FONT_FAMILY = Platform.select({
   ios: "System",
@@ -93,6 +94,6 @@ export const authInputStyles = StyleSheet.create({
       }),
   },
   eyeButtonActive: {
-    backgroundColor: "rgba(21, 101, 216, 0.10)",
+    backgroundColor: withAlpha(PALETTE.blue[600], 0.10),
   },
 });

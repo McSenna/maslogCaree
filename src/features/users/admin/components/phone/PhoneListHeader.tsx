@@ -16,11 +16,10 @@ type PhoneListHeaderProps = {
   screen: UsersScreenState;
   width: number;
   onExport: () => void;
-  onAddUser: () => void;
 };
 
 /** The dashboard's compact header, cards and controls: the list's header, so they scroll with the rows. */
-const PhoneListHeader = ({ screen, width, onExport, onAddUser }: PhoneListHeaderProps) => {
+const PhoneListHeader = ({ screen, width, onExport }: PhoneListHeaderProps) => {
   const palette = useAdminSurfacePalette();
   const { filters, requestTab } = screen;
 
@@ -32,9 +31,15 @@ const PhoneListHeader = ({ screen, width, onExport, onAddUser }: PhoneListHeader
           compact
           title={USERS_TITLE}
           subtitle={USERS_SUBTITLE}
-          primaryAction={{ key: "add", label: "Add user", icon: "user-plus", onPress: onAddUser }}
           secondaryActions={requestTab ? [] : [{ key: "export", label: "Export CSV", icon: "download", onPress: onExport, showOnPhone: true }]}
         />
+        <OverviewCards compact dense={width < 360} columns={2} summary={screen.summary.data} tab={filters.tab} onSelectTab={screen.setTab} onShowNewest={screen.showNewest} newestSelected={screen.filters.tab === "accounts" && screen.filters.sort === "joined_desc"} />
+      </View>
+
+      <UserTabs scroll value={filters.tab} summary={screen.summary.data} onChange={screen.setTab} />
+
+      {/* Search sits under the tabs, as on the Masterlist tab, with the filters it combines with. */}
+      <View className="gap-2 px-4">
         <SearchField
           value={filters.queryInput}
           onChangeText={filters.setQuery}
@@ -42,16 +47,8 @@ const PhoneListHeader = ({ screen, width, onExport, onAddUser }: PhoneListHeader
           placeholder={width >= 360 ? "Search name, email or location" : "Search users"}
           accessibilityLabel="Search users"
         />
-        <OverviewCards compact dense={width < 360} columns={2} summary={screen.summary.data} tab={filters.tab} onSelectTab={screen.setTab} />
+        {requestTab ? null : <UserFilters filters={filters} height={CONTROL_HEIGHT} />}
       </View>
-
-      <UserTabs scroll value={filters.tab} summary={screen.summary.data} onChange={screen.setTab} />
-
-      {requestTab ? null : (
-        <View className="px-4">
-          <UserFilters filters={filters} height={CONTROL_HEIGHT} />
-        </View>
-      )}
 
       <View className="mx-4">
         <CardTop />

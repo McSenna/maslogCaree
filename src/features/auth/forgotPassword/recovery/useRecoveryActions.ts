@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { toast } from "@/components/feedback/toast/toastStore";
 import {
   requestPasswordResetCode,
   resetPasswordWithCode,
@@ -9,6 +8,7 @@ import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { isValidEmail, meetsAllPasswordRules } from "../passwordRules";
 import { OTP_LENGTH } from "./otpConfig";
 import type { useRecoveryFormState } from "./useRecoveryFormState";
+import { toastError } from "@/utils/errorToast/toastError";
 
 export const useRecoveryActions = (
   form: ReturnType<typeof useRecoveryFormState>,
@@ -54,7 +54,7 @@ export const useRecoveryActions = (
       } catch (e: unknown) {
         if (!mounted.current) return;
         setError(getApiErrorMessage(e, "The code could not be sent."));
-        toast.error("Code not sent");
+        toastError("Code not sent", e, { inline: true });
       } finally {
         if (mounted.current) setIsLoading(false);
       }
@@ -103,7 +103,7 @@ export const useRecoveryActions = (
       if (!mounted.current) return;
       const message = getApiErrorMessage(e, "The password could not be reset.");
       setError(message);
-      toast.error("Password not reset");
+      toastError("Password not reset", e, { inline: true });
       if (/expired|incorrect/i.test(message)) setStep("otp");
     } finally {
       if (mounted.current) setIsLoading(false);

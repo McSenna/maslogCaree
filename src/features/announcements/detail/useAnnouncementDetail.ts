@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useMemo } from "react";
 
+import { useRealtimeItem } from "@/hooks/realtime/useRealtimeItem";
+import type { NormalizedApiError } from "@/utils/apiErrorHandler";
 import { ERROR_CODES } from "@/utils/errorCodes";
-import { normalizeApiError } from "@/utils/apiErrorHandler";
 
 import type { AnnouncementRecord } from "../announcement.types";
 import { fetchAnnouncement } from "../services/announcementService";
@@ -25,41 +26,27 @@ const isUsable = (value: unknown): value is AnnouncementRecord => {
   );
 };
 
-/** Loads one announcement for the detail dialog; the dialog remounts per request. */
+const isGone = (error: NormalizedApiError) =>
+  error.status === 404 || error.code === ERROR_CODES.ANNOUNCEMENT_NOT_FOUND || error.code === ERROR_CODES.INVALID_ID;
+
+const asRecord = (record: AnnouncementRecord) => record;
+
+/**
+ * Loads one announcement for the detail dialog and keeps it current: an edit
+ * shows at once, and one withdrawn while open turns into the "missing" state.
+ */
 export const useAnnouncementDetail = (announcementId: string | null) => {
-  const [state, setState] = useState<AnnouncementDetailState>(
-    announcementId ? { status: "loading" } : { status: "missing" }
-  );
-  const [attempt, setAttempt] = useState(0);
+  const { item, loading, error, deleted, reload } = useRealtimeItem("announcement", announcementId, fetchAnnouncement, {
+    toItem: asRecord,
+    isGone,
+  });
 
-  useEffect(() => {
-    if (!announcementId) return;
-    let active = true;
+  const state = useMemo<AnnouncementDetailState>(() => {
+    if (!announcementId || deleted) return { status: "missing" };
+    if (loading && !item) return { status: "loading" };
+    if (error && !item) return { status: "error", message: error };
+    return isUsable(item) ? { status: "ready", announcement: item } : { status: "missing" };
+  }, [announcementId, deleted, loading, item, error]);
 
-    fetchAnnouncement(announcementId)
-      .then((announcement) => {
-        if (!active) return;
-        setState(isUsable(announcement) ? { status: "ready", announcement } : { status: "missing" });
-      })
-      .catch((caught: unknown) => {
-        if (!active) return;
-        const error = normalizeApiError(caught);
-        const gone =
-          error.status === 404 ||
-          error.code === ERROR_CODES.ANNOUNCEMENT_NOT_FOUND ||
-          error.code === ERROR_CODES.INVALID_ID;
-        setState(gone ? { status: "missing" } : { status: "error", message: error.message });
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [announcementId, attempt]);
-
-  const retry = useCallback(() => {
-    setState({ status: "loading" });
-    setAttempt((count) => count + 1);
-  }, []);
-
-  return { state, retry };
+  return { state, retry: reload };
 };

@@ -6,6 +6,7 @@ import {
   type AdminDashboardPalette,
   type MetricTone,
 } from "@/design/adminDashboardTheme";
+import AnimatedCount from "./AnimatedCount";
 import MetricCardFrame from "./MetricCardFrame";
 import TrendPill from "./TrendPill";
 
@@ -96,7 +97,7 @@ const MetricCard = ({
     <MetricCardFrame
       onPress={onPress}
       selected={selected}
-      activeStyle={{ borderColor: palette.tones.blue.cardBorder, backgroundColor: palette.hoverBg }}
+      activeStyle={{ borderColor: palette.bannerBorder, backgroundColor: palette.hoverBg }}
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       // A selected card's 2px border takes 1px from the padding, so nothing shifts.
@@ -125,7 +126,8 @@ const MetricCard = ({
       </View>
 
       <View className={`flex-row flex-wrap items-center ${compact ? "mt-1" : "mt-1.5"}`} style={{ columnGap: 8 }}>
-        <Text
+        <AnimatedCount
+          value={value}
           className={`font-bold ${compact ? (dense ? "text-[22px]" : "text-[24px]") : "text-[30px]"}`}
           style={{
             color: palette.heading,
@@ -133,9 +135,7 @@ const MetricCard = ({
             letterSpacing: -0.5,
             fontVariant: ["tabular-nums"],
           }}
-        >
-          {value.toLocaleString()}
-        </Text>
+        />
         {showTrend ? <TrendPill palette={palette} growth={growth as number} compact={compact} /> : null}
       </View>
 

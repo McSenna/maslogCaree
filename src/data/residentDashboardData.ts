@@ -6,7 +6,7 @@ export const quickActions: QuickAction[] = [
     label: "Book Appointment",
     shortLabel: "Book",
     icon: "calendar-outline",
-    tone: "blue",
+    tone: "primary",
     href: "/resident/appointments",
   },
   {
@@ -14,7 +14,7 @@ export const quickActions: QuickAction[] = [
     label: "View Health Records",
     shortLabel: "Records",
     icon: "document-text-outline",
-    tone: "green",
+    tone: "care",
     href: "/resident/records",
   },
   {
@@ -22,7 +22,7 @@ export const quickActions: QuickAction[] = [
     label: "Browse Services",
     shortLabel: "Services",
     icon: "medkit-outline",
-    tone: "purple",
+    tone: "neutral",
     href: "/resident/services",
   },
   {
@@ -30,7 +30,7 @@ export const quickActions: QuickAction[] = [
     label: "Announcements",
     shortLabel: "Announcements",
     icon: "megaphone-outline",
-    tone: "orange",
+    tone: "accent",
     href: "/resident/announcements",
   },
 ];

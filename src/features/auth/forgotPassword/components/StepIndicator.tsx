@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 import type { RecoveryStep } from "../useForgotPassword";
 import { RECOVERY_COLORS as C } from "../recoveryTheme";
+import { PALETTE } from "@/theme/palette";
 
 const STAGES: { key: RecoveryStep[]; label: string }[] = [
   { key: ["email", "sent"], label: "Email" },
@@ -59,7 +60,7 @@ const StepIndicator = ({ step, compact }: { step: RecoveryStep; compact?: boolea
               >
                 <Text
                   className="text-[11px] font-bold"
-                  style={{ color: done || active ? "#FFFFFF" : C.muted }}
+                  style={{ color: done || active ? PALETTE.white : C.muted }}
                 >
                   {index + 1}
                 </Text>

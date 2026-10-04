@@ -5,11 +5,11 @@ import {
   rejectAppointment,
   type AppointmentRecord,
 } from "@/services/appointments";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { showAlert } from "@/utils/notify";
 import { toast } from "@/components/feedback/toast/toastStore";
 
 import type { MissionCatalogue } from "../useMissionCatalogue";
+import { toastError } from "@/utils/errorToast/toastError";
 
 type Input = {
   catalogue: MissionCatalogue;
@@ -37,10 +37,7 @@ export const useMissionRemovalActions = ({ catalogue, revalidate, setSaving, clo
               closeEdit();
               toast.success("Mission schedule deleted", "Booked appointments were moved back to Pending.");
             } catch (error: unknown) {
-              toast.error(
-                "Unable to delete schedule",
-                getApiErrorMessage(error, "The mission schedule could not be deleted.")
-              );
+              toastError("Unable to delete schedule", error, { fallback: "The mission schedule could not be deleted." });
             } finally {
               setSaving(false);
             }
@@ -67,10 +64,7 @@ export const useMissionRemovalActions = ({ catalogue, revalidate, setSaving, clo
               }
               toast.success("Appointment declined");
             } catch (error: unknown) {
-              toast.error(
-                "Unable to decline appointment",
-                getApiErrorMessage(error, "The appointment could not be declined.")
-              );
+              toastError("Unable to decline appointment", error, { fallback: "The appointment could not be declined." });
             }
           },
         },

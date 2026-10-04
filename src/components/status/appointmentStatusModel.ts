@@ -1,29 +1,36 @@
+import { PALETTE } from "../../theme/palette.ts";
+
 export type StatusTone = "success" | "warning" | "danger" | "info" | "progress" | "neutral";
 
 export type StatusAudience = "staff" | "resident";
+
+/** Feather glyph names; kept as literals so this module stays import-free. */
+export type StatusIcon = "clock" | "check-circle" | "rotate-ccw" | "activity" | "check-square" | "x-circle" | "slash" | "help-circle";
 
 export type StatusMeta = {
   key: string;
   label: string;
   tone: StatusTone;
   dot: string;
+  icon: StatusIcon;
 };
 
-type StatusSpec = { staff: string; resident: string; tone: StatusTone; dot: string };
+type StatusSpec = { staff: string; resident: string; tone: StatusTone; dot: string; icon: StatusIcon };
 
-// Dot colours are literals so this module stays import-free for the node test
-// runner; the blue is PALETTE.blue[600] from src/theme/palette.ts.
+// Dot colours are the palette anchors. The relative import keeps this module
+// loadable by the node test runner, which has no "@/" alias. Dots always sit
+// beside the icon and label, so meaning never rests on colour alone.
 const SPECS: Record<string, StatusSpec> = {
-  pending: { staff: "Pending", resident: "Pending", tone: "warning", dot: "#F59E0B" },
-  confirmed: { staff: "Confirmed", resident: "Confirmed", tone: "success", dot: "#10B981" },
-  rescheduled: { staff: "Rescheduled", resident: "Rescheduled", tone: "info", dot: "#1565D8" },
-  processing: { staff: "In Progress", resident: "Being seen", tone: "progress", dot: "#8B5CF6" },
-  completed: { staff: "Completed", resident: "Completed", tone: "success", dot: "#10B981" },
-  declined: { staff: "Declined", resident: "Declined", tone: "danger", dot: "#EF4444" },
-  cancelled: { staff: "Cancelled", resident: "Cancelled", tone: "neutral", dot: "#64748B" },
+  pending: { staff: "Pending", resident: "Pending", tone: "warning", dot: PALETTE.amber[500], icon: "clock" },
+  confirmed: { staff: "Confirmed", resident: "Confirmed", tone: "success", dot: PALETTE.success[500], icon: "check-circle" },
+  rescheduled: { staff: "Rescheduled", resident: "Rescheduled", tone: "info", dot: PALETTE.blue[600], icon: "rotate-ccw" },
+  processing: { staff: "In Progress", resident: "Being seen", tone: "progress", dot: PALETTE.blue[600], icon: "activity" },
+  completed: { staff: "Completed", resident: "Completed", tone: "success", dot: PALETTE.success[500], icon: "check-square" },
+  declined: { staff: "Declined", resident: "Declined", tone: "danger", dot: PALETTE.red[500], icon: "x-circle" },
+  cancelled: { staff: "Cancelled", resident: "Cancelled", tone: "neutral", dot: PALETTE.slate[500], icon: "slash" },
 };
 
-const NEUTRAL_DOT = "#94A3B8";
+const NEUTRAL_DOT = PALETTE.slate[400];
 
 const titleCase = (value: string): string =>
   value
@@ -41,8 +48,8 @@ export const getStatusMeta = (
 ): StatusMeta => {
   const key = normalizeStatus(status);
   const spec = SPECS[key];
-  if (spec) return { key, label: spec[audience], tone: spec.tone, dot: spec.dot };
-  return { key, label: key ? titleCase(key) : "Unknown", tone: "neutral", dot: NEUTRAL_DOT };
+  if (spec) return { key, label: spec[audience], tone: spec.tone, dot: spec.dot, icon: spec.icon };
+  return { key, label: key ? titleCase(key) : "Unknown", tone: "neutral", dot: NEUTRAL_DOT, icon: "help-circle" };
 };
 
 export const getStatusLabel = (

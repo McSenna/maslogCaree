@@ -15,6 +15,7 @@ import {
 } from "./picker/PickerChrome";
 import { useInventorySearch } from "./picker/useInventorySearch";
 import { useResponsive } from "@/hooks/useResponsive";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const DESKTOP_EDGE = 16;
 
@@ -60,7 +61,7 @@ const InventoryPickerSheet = ({
       <SheetViewport
         layout={layout}
         style={{
-          backgroundColor: "rgba(15,37,87,0.35)",
+          backgroundColor: withAlpha(PALETTE.ink, 0.35),
           paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
         }}
       >
@@ -102,7 +103,7 @@ const InventoryPickerSheet = ({
 
           {picker.error ? (
             <View className="px-4 py-3">
-              <Text className="text-[12.5px] font-medium" style={{ color: "#DC2626" }}>
+              <Text className="text-[12.5px] font-medium" style={{ color: PALETTE.red[600] }}>
                 {picker.error}
               </Text>
             </View>

@@ -14,12 +14,13 @@ const EMPTY: Record<UserTab, { title: string; message: string; icon: "users" | "
   requests: { title: "No pending requests", message: "New sign-up requests from residents will appear here.", icon: "user-plus" },
   rejected: { title: "No rejected requests", message: "Requests you decline will be listed here.", icon: "user-x" },
   deactivated: { title: "No deactivated users", message: "Accounts you deactivate will be listed here and can be restored.", icon: "slash" },
-  masterlist: { title: "No registered users", message: "Every registered account, active or deactivated, will be listed here.", icon: "list" },
+  accounts: { title: "No registered users", message: "Every registered account, active or deactivated, will be listed here.", icon: "users" },
+  masterlist: { title: "No master list records", message: "The barangay's official resident records will be listed here.", icon: "list" },
 };
 
-/** One row-shaped placeholder, pulsing like the dashboard's skeletons. */
+/** One row-shaped placeholder, inset like the rows it stands in for (and the Masterlist's skeleton). */
 const SkeletonRow = ({ phone }: { phone?: boolean }) => (
-  <View className={`flex-row items-center gap-4 border-t border-divider ${phone ? "px-4 py-3.5" : "min-h-16 px-3 py-3"}`}>
+  <View className={`flex-row items-center gap-3 border-t border-divider ${phone ? "px-1 py-3" : "min-h-16 px-3 py-3"}`}>
     <Skeleton className={`${phone ? "h-10 w-10" : "h-8 w-8"} rounded-full`} />
     <View className="min-w-0 flex-1 gap-2">
       <Skeleton className="h-3.5 w-[40%]" />

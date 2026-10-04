@@ -16,7 +16,7 @@ const LogDetailsPanel = ({ log, onClose }: LogDetailsPanelProps) => {
 
   return (
     <View
-      className="h-full rounded-2xl border p-5"
+      className="h-full rounded-lg border p-5"
       style={{ backgroundColor: palette.cardBg, borderColor: palette.cardBorder, ...CARD_SHADOW }}
     >
       <View className="flex-row items-center justify-between">

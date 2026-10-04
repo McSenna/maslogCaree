@@ -8,6 +8,7 @@ import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import { createShadow } from "@/design/shadow";
 
 import { RECOVERY_COLORS as C, RECOVERY_RADIUS as R } from "../recoveryTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const DESKTOP_EDGE = 20;
 
@@ -45,7 +46,7 @@ const FlowShell = ({
       <SheetViewport
         layout={layout}
         style={{
-          backgroundColor: "rgba(15,23,42,0.45)",
+          backgroundColor: withAlpha(PALETTE.slate[800], 0.45),
           paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
         }}
       >
@@ -76,7 +77,7 @@ const FlowShell = ({
                 : Math.max(layout.bottomInset, 16) + 8
               : 26,
             ...createShadow({
-              color: "#0F172A",
+              color: PALETTE.slate[800],
               offsetY: 12,
               radius: 28,
               opacity: 0.14,

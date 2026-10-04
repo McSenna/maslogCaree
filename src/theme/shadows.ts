@@ -1,7 +1,8 @@
 import type { ViewStyle } from "react-native";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
-const INK = "#0B1744";
+const INK = PALETTE.ink;
 
 export const SHADOWS = {
   none: {} as ViewStyle,

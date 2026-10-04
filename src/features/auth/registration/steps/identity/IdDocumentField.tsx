@@ -11,6 +11,7 @@ import IdUploadDropzone from "./IdUploadDropzone";
 import ImageZoomModal from "@/components/ui/ImageZoomModal";
 import { formatFileSize, isPdfDocument } from "./idDocumentFormat";
 import { useIdDocumentUpload } from "./useIdDocumentUpload";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type Props = { form: RegistrationController };
 
@@ -57,11 +58,11 @@ const IdDocumentField = ({ form }: Props) => {
           <View
             style={{
               borderWidth: 1,
-              borderColor: "#CBD5E1",
+              borderColor: PALETTE.slate[300],
               borderRadius: REG_RADIUS.card,
-              backgroundColor: "#FFFFFF",
+              backgroundColor: PALETTE.white,
               overflow: "hidden",
-              boxShadow: "0px 2px 8px rgba(15,23,42,0.06)",
+              boxShadow: `0px 2px 8px ${withAlpha(PALETTE.ink, 0.06)}`,
             }}
           >
             {isPdf ? (

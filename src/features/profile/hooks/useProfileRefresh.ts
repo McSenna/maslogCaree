@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRealtimeEvents } from "@/hooks/realtime/useRealtimeEvents";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { getCachedAccessToken } from "@/utils/storage";
 import { getMyProfile } from "../services/profileService";
@@ -45,6 +46,19 @@ export const useProfileRefresh = (enabled: boolean): ProfileRefreshState => {
   }, [enabled, reloadToken, applyAuthUser]);
 
   const refreshProfile = useCallback(() => setReloadToken((token) => token + 1), []);
+
+  // An edit saved on another device (or by an admin) shows here at once. The
+  // pushed record is the same shape GET /profile returns, applied the same way.
+  useRealtimeEvents(
+    "profile",
+    (change) => {
+      if (change.action === "resync") return refreshProfile();
+      if (change.action === "deleted") return;
+      const token = getCachedAccessToken();
+      if (token) applyAuthUser(change.record, token);
+    },
+    enabled
+  );
 
   return { refreshing, refreshError, refreshProfile };
 };

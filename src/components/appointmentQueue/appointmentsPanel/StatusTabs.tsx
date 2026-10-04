@@ -7,6 +7,8 @@ import {
   type QueuePalette,
 } from "../queueTheme";
 
+import { PALETTE } from "@/theme/palette";
+
 type StatusTabsProps = {
   activeStatus: AppointmentStatus;
   onStatusChange: (status: AppointmentStatus) => void;
@@ -59,7 +61,7 @@ const StatusTabs = ({
             >
               <Text
                 className="text-[11px] font-bold"
-                style={{ color: isActive ? "#FFFFFF" : palette.muted }}
+                style={{ color: isActive ? PALETTE.white : palette.muted }}
               >
                 {count}
               </Text>

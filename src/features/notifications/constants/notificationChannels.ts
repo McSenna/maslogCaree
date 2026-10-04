@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
 import { loadNotificationsModule } from "../services/notificationModule";
 import { logPushEvent } from "../utils/pushLogger";
+import { PALETTE } from "@/theme/palette";
 
 export const NOTIFICATION_CHANNELS = {
   DEFAULT: "maslogcare-default",
@@ -59,7 +60,7 @@ const createChannels = async (): Promise<void> => {
       description: channel.description,
       importance: notifications.AndroidImportance.HIGH,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#0284C7",
+      lightColor: PALETTE.blue[500],
       // No `sound` key: Android then uses the system default. Any string here,
       // "default" included, is looked up as a res/raw file and logs an error when missing.
       enableLights: true,

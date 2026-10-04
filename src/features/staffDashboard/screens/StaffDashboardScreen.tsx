@@ -94,8 +94,6 @@ const StaffDashboardScreen = ({ role }: { role: StaffRole }) => {
         primaryAction={primaryAction}
         secondaryActions={secondaryActions}
         updatedLabel={data ? updatedLabel(data.generatedAt, now) : undefined}
-        onRefresh={data ? refresh : undefined}
-        refreshing={refreshing}
       />
 
       {error && data ? (

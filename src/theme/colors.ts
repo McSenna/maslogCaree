@@ -1,6 +1,6 @@
 import { dark } from "@/design/adminDashboard/darkPalette";
 import { light } from "@/design/adminDashboard/lightPalette";
-import { PALETTE } from "./palette";
+import { PALETTE, withAlpha } from "./palette";
 
 export type ColorScheme = "light" | "dark";
 
@@ -25,6 +25,9 @@ export type ThemeColors = {
   primarySoft: string;
   onPrimary: string;
   focusRing: string;
+  /** Form-field outlines for the invalid and valid states (3:1 or more on the surface). */
+  errorLine: string;
+  successLine: string;
   overlay: string;
   skeleton: string;
   success: Tone;
@@ -35,26 +38,31 @@ export type ThemeColors = {
   neutral: Tone;
 };
 
+const { blue, slate, night } = PALETTE;
+
 const lightColors: ThemeColors = {
   scheme: "light",
   page: light.pageBg,
   surface: light.cardBg,
-  surfaceMuted: "#F3F7FC",
-  surfaceHover: PALETTE.blue[50],
+  surfaceMuted: slate[50],
+  surfaceHover: blue[50],
   border: light.cardBorder,
-  borderStrong: PALETTE.slate[300],
+  borderStrong: PALETTE.controlLine,
   divider: light.divider,
   heading: light.heading,
   body: light.body,
   muted: light.muted,
   subtle: light.subtle,
   primary: light.primary,
-  primaryHover: PALETTE.blue[700],
-  primaryPressed: PALETTE.blue[800],
-  primarySoft: PALETTE.blue[50],
+  primaryHover: blue[700],
+  primaryPressed: blue[800],
+  primarySoft: blue[50],
   onPrimary: PALETTE.white,
-  focusRing: "rgba(21,101,216,0.35)",
-  overlay: "rgba(15,23,42,0.45)",
+  // Solid, not translucent: a ring must reach 3:1 against the surface it sits on.
+  focusRing: light.focusRing,
+  errorLine: PALETTE.red[500],
+  successLine: PALETTE.success[600],
+  overlay: withAlpha(PALETTE.ink, 0.5),
   skeleton: light.skeleton,
   success: light.statusTones.success,
   warning: light.statusTones.warning,
@@ -68,22 +76,24 @@ const darkColors: ThemeColors = {
   scheme: "dark",
   page: dark.pageBg,
   surface: dark.cardBg,
-  surfaceMuted: "#111C33",
-  surfaceHover: "#0B1220",
+  surfaceMuted: night.raised,
+  surfaceHover: night.raised,
   border: dark.cardBorder,
-  borderStrong: "#334155",
+  borderStrong: night.control,
   divider: dark.divider,
   heading: dark.heading,
   body: dark.body,
   muted: dark.muted,
   subtle: dark.subtle,
   primary: dark.primary,
-  primaryHover: PALETTE.blue[300],
-  primaryPressed: PALETTE.blue[500],
-  primarySoft: "rgba(21,101,216,0.18)",
-  onPrimary: "#0B1220",
-  focusRing: "rgba(90,150,242,0.45)",
-  overlay: "rgba(2,6,23,0.7)",
+  primaryHover: blue[300],
+  primaryPressed: blue[500],
+  primarySoft: withAlpha(blue[600], 0.18),
+  onPrimary: dark.onPrimary,
+  focusRing: dark.focusRing,
+  errorLine: PALETTE.red[500],
+  successLine: PALETTE.success[300],
+  overlay: withAlpha(night.page, 0.72),
   skeleton: dark.skeleton,
   success: dark.statusTones.success,
   warning: dark.statusTones.warning,

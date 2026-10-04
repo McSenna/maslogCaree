@@ -1,10 +1,12 @@
-// Kept import-free so `node --test` can load it without the `@/` alias.
+// Kept free of `@/` imports so `node --test` can load it.
+import { PASSWORD_MAX_LENGTH } from "../forgotPassword/passwordRules.ts";
 
 export const LOGIN_MESSAGES = {
   identifierRequired: "Enter your email or mobile number.",
   mobileLength: "Mobile numbers have 11 digits, like 0917 123 4567.",
   emailFormat: "Check your email address. It should look like juan@email.com.",
   passwordRequired: "Enter your password.",
+  passwordTooLong: `Passwords have at most ${PASSWORD_MAX_LENGTH} characters. Check what you entered.`,
   credentialsMismatch:
     "That email or mobile number and password don't match. Check both and try again, or reset your password.",
 } as const;
@@ -41,5 +43,9 @@ export const checkIdentifier = (raw: string): IdentifierCheck => {
   return { ok: false, message: LOGIN_MESSAGES.emailFormat };
 };
 
-export const checkPassword = (password: string): string | null =>
-  password ? null : LOGIN_MESSAGES.passwordRequired;
+export const checkPassword = (password: string): string | null => {
+  if (!password) return LOGIN_MESSAGES.passwordRequired;
+  // Inputs stop at the limit, but a script or autofill can still set a longer value.
+  if (password.length > PASSWORD_MAX_LENGTH) return LOGIN_MESSAGES.passwordTooLong;
+  return null;
+};

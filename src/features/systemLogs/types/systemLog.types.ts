@@ -35,6 +35,8 @@ export interface SystemLogsQuery {
   platform?: string;
   severity?: string;
   logType?: string;
+  /** "success" or "failed": the entry's stored result. */
+  outcome?: "success" | "failed";
   fromDate?: string;
   toDate?: string;
   sort?: "asc" | "desc";

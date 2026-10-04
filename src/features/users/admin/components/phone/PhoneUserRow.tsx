@@ -20,7 +20,7 @@ type PhoneUserRowProps = {
   menuOpen: boolean;
   onToggle: (id: string) => void;
   onOpenProfile: (id: string) => void;
-  onOpenMenu: (id: string, anchor: MenuAnchor | null) => void;
+  onOpenMenu: (id: string, anchor: MenuAnchor) => void;
 };
 
 /**
@@ -55,7 +55,7 @@ const PhoneUserRow = ({ user, first, selecting, selected, menuOpen, onToggle, on
             </View>
           </Pressable>
           {selecting ? null : (
-            <RowMenuButton name={user.fullName} open={menuOpen} popover={false} onOpen={() => onOpenMenu(user.id, null)} />
+            <RowMenuButton name={user.fullName} open={menuOpen} onOpen={(anchor) => onOpenMenu(user.id, anchor)} />
           )}
         </View>
       </CardSide>

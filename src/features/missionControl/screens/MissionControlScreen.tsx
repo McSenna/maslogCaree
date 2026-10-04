@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import QueueStatCards from "@/components/appointmentQueue/QueueStatCards";
+import QueueStatCards, { QUEUE_CARD_STATUS, type QueueCardKey } from "@/components/appointmentQueue/QueueStatCards";
 import {
   FOUR_CARD_WIDTH,
   TABLE_WIDTH,
@@ -10,11 +10,14 @@ import {
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import AddMissionButton from "../components/AddMissionButton";
 import MissionToolsButton from "../components/MissionToolsButton";
 import QueueDashboardSections from "../components/QueueDashboardSections";
 import { useMissionControl } from "../hooks/useMissionControl";
 import MissionControlModals from "./MissionControlModals";
+
+const QUEUE_SECTIONS = ["today", "list"] as const;
 
 const MissionControlScreen = () => {
   const palette = useQueuePalette();
@@ -25,6 +28,19 @@ const MissionControlScreen = () => {
   const [newMissionOpen, setNewMissionOpen] = useState(false);
 
   const { actions, picker } = control;
+  const { scrollRef, topRef, anchors, scrollTo } = useScrollToSection(QUEUE_SECTIONS, insets.paddingTop);
+  const { today: todayAnchor, list: listAnchor } = anchors;
+
+  // A summary card opens its list below: today's schedule, or an appointments tab.
+  const selectCard = (key: QueueCardKey) => {
+    const status = QUEUE_CARD_STATUS[key];
+    if (!status) {
+      scrollTo("today");
+      return;
+    }
+    control.dashboard.setActiveStatus(status);
+    scrollTo("list");
+  };
 
   const twoColumn = insets.width >= TWO_COLUMN_WIDTH;
   const asTable = insets.width >= TABLE_WIDTH;
@@ -52,6 +68,7 @@ const MissionControlScreen = () => {
       <RoleScreenBackdrop color={palette.pageBg} insets={insets} />
 
       <ScrollView
+        ref={scrollRef}
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -61,7 +78,7 @@ const MissionControlScreen = () => {
           gap: 16,
         }}
       >
-        <View>
+        <View ref={topRef}>
           <Text className="text-[22px] font-bold" style={{ color: palette.heading }}>
             Appointments &amp; Queue
           </Text>
@@ -74,6 +91,8 @@ const MissionControlScreen = () => {
           overview={control.dashboard.overview}
           loading={control.dashboard.overviewLoading}
           wide={fourCards}
+          activeStatus={control.dashboard.activeStatus}
+          onSelectCard={selectCard}
         />
 
         <QueueDashboardSections
@@ -81,6 +100,8 @@ const MissionControlScreen = () => {
           twoColumn={twoColumn}
           asTable={asTable}
           onAssign={openAssign}
+          todayRef={todayAnchor}
+          listRef={listAnchor}
           headerAction={
             control.canManageMissions ? (
               <View className="flex-row items-center gap-2">

@@ -9,8 +9,16 @@ import {
   type ConsultationCategory,
   type MissionScheduleRecord,
 } from "@/services/appointments";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
-import { toast } from "@/components/feedback/toast/toastStore";
+import { useRealtimeEvents } from "@/hooks/realtime/useRealtimeEvents";
+import { useRealtimeRefetch } from "@/hooks/realtime/useRealtimeRefetch";
+import { removeItem, upsertItem } from "@/lib/realtime/collectionReducer";
+import { toastError } from "@/utils/errorToast/toastError";
+
+const missionId = (mission: MissionScheduleRecord) => mission._id;
+
+// GET /mission-schedule's order: latest mission day first.
+const latestDayFirst = (a: MissionScheduleRecord, b: MissionScheduleRecord) =>
+  new Date(b.date).getTime() - new Date(a.date).getTime();
 
 export type CategoryAnalyticsRow = {
   _id: { category: string; status: string };
@@ -42,7 +50,7 @@ export const useMissionCatalogue = () => {
       setMissions(nextMissions);
       setPending(nextPending);
     } catch (error: unknown) {
-      toast.error("Unable to load missions", getApiErrorMessage(error, "Could not load mission data."));
+      toastError("Unable to load missions", error, { fallback: "Could not load mission data." });
     }
   }, []);
 
@@ -51,7 +59,7 @@ export const useMissionCatalogue = () => {
       setMissionDetail(await fetchMissionDetail(missionId));
       setAnalytics(await fetchCategoryAnalytics(missionId));
     } catch (error: unknown) {
-      toast.error("Unable to load schedule", getApiErrorMessage(error, "Could not load this mission schedule."));
+      toastError("Unable to load schedule", error, { fallback: "Could not load this mission schedule." });
     }
   }, []);
 
@@ -69,6 +77,23 @@ export const useMissionCatalogue = () => {
       setAnalytics([]);
     }
   }, [selectedMissionId, loadMissionDetail]);
+
+  // Another manager adding, moving or removing a mission day shows here at once.
+  useRealtimeEvents("missionSchedule", (change) => {
+    if (change.action === "resync") return;
+    if (change.action === "deleted") {
+      setMissions((current) => removeItem(current, change.id, missionId));
+      setSelectedMissionId((selected) => (selected === change.id ? null : selected));
+      return;
+    }
+    setMissions((current) => upsertItem(current, change.record, { getId: missionId, sort: latestDayFirst }));
+  });
+
+  // Pending requests, the open mission's bookings and its analytics are server
+  // computed, so a booking or a slot change anywhere reloads them.
+  useRealtimeRefetch(["appointment", "missionSchedule"], () =>
+    Promise.all([refreshLists(), selectedMissionId ? loadMissionDetail(selectedMissionId) : undefined])
+  );
 
   return {
     categories,

@@ -7,6 +7,7 @@ import MedicalFieldInput, { type FieldValue } from "./MedicalFieldInput";
 import FieldGroup from "./complete/FieldGroup";
 import { groupFields } from "./form/groupFields";
 import type { FormValues } from "./form/formValues";
+import { VisitDayProvider } from "./form/VisitDayContext";
 
 export type { FormValues } from "./form/formValues";
 export { emptyValues, toMedicalRecordInput, validateValues } from "./form/formValues";
@@ -20,6 +21,7 @@ const MedicalRecordForm = ({
   disabled,
   twoColumn = false,
   fieldOverrides,
+  visitDay = null,
 }: {
   form: CompletionForm;
   values: FormValues;
@@ -28,6 +30,8 @@ const MedicalRecordForm = ({
   disabled?: boolean;
   twoColumn?: boolean;
   fieldOverrides?: Record<string, (field: MedicalField) => React.ReactNode>;
+  /** The record's visit day (YYYY-MM-DD); left out, the visit is today. */
+  visitDay?: string | null;
 }) => {
   const followUpOn = values.followUpRequired === true;
 
@@ -57,31 +61,33 @@ const MedicalRecordForm = ({
   );
 
   return (
-    <View className="w-full gap-5">
-      {serviceGroups.map((group, index) => (
+    <VisitDayProvider value={visitDay}>
+      <View className="w-full gap-5">
+        {serviceGroups.map((group, index) => (
+          <FieldGroup
+            key={group.title ?? `ungrouped-${index}`}
+            title={group.title}
+            fields={group.fields}
+            twoColumn={twoColumn}
+            renderField={render}
+          />
+        ))}
+
         <FieldGroup
-          key={group.title ?? `ungrouped-${index}`}
-          title={group.title}
-          fields={group.fields}
+          title="Clinical assessment"
+          fields={form.common}
           twoColumn={twoColumn}
           renderField={render}
         />
-      ))}
 
-      <FieldGroup
-        title="Clinical assessment"
-        fields={form.common}
-        twoColumn={twoColumn}
-        renderField={render}
-      />
-
-      <FieldGroup
-        title="Follow-up"
-        fields={visibleFollowUp}
-        twoColumn={twoColumn}
-        renderField={render}
-      />
-    </View>
+        <FieldGroup
+          title="Follow-up"
+          fields={visibleFollowUp}
+          twoColumn={twoColumn}
+          renderField={render}
+        />
+      </View>
+    </VisitDayProvider>
   );
 };
 

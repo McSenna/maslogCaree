@@ -9,15 +9,18 @@ import { REG_COLORS } from "../../registration/registrationTheme";
 import DatePickerActions from "./DatePickerActions";
 import DatePickerPanel from "./DatePickerPanel";
 import type { useDateOfBirthDraft } from "./useDateOfBirthDraft";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type DateOfBirthModalProps = {
   visible: boolean;
   draft: ReturnType<typeof useDateOfBirthDraft>;
+  title: string;
+  confirmLabel: string;
   onCancel: () => void;
   onConfirm: () => void;
 };
 
-const DateOfBirthModal = ({ visible, draft, onCancel, onConfirm }: DateOfBirthModalProps) => {
+const DateOfBirthModal = ({ visible, draft, title, confirmLabel, onCancel, onConfirm }: DateOfBirthModalProps) => {
   const frame = useModalFrame(400);
 
   useWebModalBehavior(visible, onCancel);
@@ -31,7 +34,7 @@ const DateOfBirthModal = ({ visible, draft, onCancel, onConfirm }: DateOfBirthMo
           alignItems: "center",
           justifyContent: "center",
           padding: 16,
-          backgroundColor: "rgba(15, 23, 42, 0.45)",
+          backgroundColor: withAlpha(PALETTE.slate[800], 0.45),
         }}
       >
         <Pressable
@@ -67,7 +70,7 @@ const DateOfBirthModal = ({ visible, draft, onCancel, onConfirm }: DateOfBirthMo
               accessibilityRole="header"
               style={{ flex: 1, fontSize: 17, fontWeight: "800", color: REG_COLORS.text }}
             >
-              Select Date of Birth
+              {title}
             </Text>
             <Pressable
               accessibilityRole="button"
@@ -90,6 +93,7 @@ const DateOfBirthModal = ({ visible, draft, onCancel, onConfirm }: DateOfBirthMo
               onCancel={onCancel}
               onConfirm={onConfirm}
               canConfirm={Boolean(draft.selected)}
+              confirmLabel={confirmLabel}
               height={46}
             />
           </ScrollView>

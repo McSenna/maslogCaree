@@ -53,7 +53,7 @@ const OtpBox = ({ index, digit, length, label, palette, controller, disabled, in
           borderWidth: focused || invalid ? 2 : 1.5,
           borderColor,
           backgroundColor: disabled ? palette.disabled : filled ? palette.surfaceFilled : palette.surface,
-          boxShadow: ring ? `0px 0px 0px 3px ${ring}` : "0px 0px 0px 0px rgba(0,0,0,0)",
+          boxShadow: ring ? `0px 0px 0px 3px ${ring}` : "0px 0px 0px 0px transparent",
           alignItems: "center",
           justifyContent: "center",
         },

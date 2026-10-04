@@ -3,6 +3,7 @@ import { Animated, Platform, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion, webTransition } from "@/theme/motion";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type NavItemLinkProps = {
   label: string;
@@ -38,7 +39,7 @@ const NavItemLink = ({ label, icon, isActive, isDesktop }: NavItemLinkProps) => 
     return () => animation.stop();
   }, [isActive, hovered, reducedMotion, indicator]);
 
-  const tint = isActive || hovered ? "#FFFFFF" : "rgba(255,255,255,0.60)";
+  const tint = isActive || hovered ? PALETTE.white : withAlpha(PALETTE.white, 0.60);
 
   return (
     <Pressable
@@ -59,7 +60,7 @@ const NavItemLink = ({ label, icon, isActive, isDesktop }: NavItemLinkProps) => 
         paddingHorizontal: 14,
         paddingTop: 8,
         paddingBottom: 6,
-        backgroundColor: isActive ? "rgba(255,255,255,0.10)" : "transparent",
+        backgroundColor: isActive ? withAlpha(PALETTE.white, 0.10) : "transparent",
         transform: [{ scale: pressed && !reducedMotion ? 0.97 : 1 }],
         ...Platform.select({
           web: { cursor: "pointer", transition: webTransition("background-color", "transform") },
@@ -84,7 +85,7 @@ const NavItemLink = ({ label, icon, isActive, isDesktop }: NavItemLinkProps) => 
           height: 2,
           width: "100%",
           borderRadius: 2,
-          backgroundColor: isActive ? "#10b981" : "rgba(255,255,255,0.75)",
+          backgroundColor: isActive ? PALETTE.success[500] : withAlpha(PALETTE.white, 0.75),
           opacity: indicator,
           transform: [{ scaleX: indicator }],
         }}

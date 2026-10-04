@@ -1,5 +1,6 @@
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
+import { PALETTE } from "@/theme/palette";
 
 const FONT_FAMILY = Platform.select({
   ios: "System",
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1,
     height: 1,
-    backgroundColor: "#E2EAF4",
+    backgroundColor: PALETTE.blue[100],
   },
   text: {
     fontSize: 13,

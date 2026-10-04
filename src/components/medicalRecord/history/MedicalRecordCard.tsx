@@ -2,6 +2,7 @@ import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import { QUEUE_RADIUS, type QueuePalette } from "@/components/appointmentQueue/queueTheme";
 import type { MedicalRecord } from "@/services/medicalRecords";
+import { isEncodedRecord } from "@/services/medicalRecordTypes";
 import { formatDate } from "@/utils/dateFormatter";
 import { getServiceVisual, resolveVisual } from "@/config/serviceVisuals";
 import {
@@ -27,12 +28,14 @@ const MedicalRecordCard = ({
   const when = formatDate(record.completedAt);
   const summary = summarizeRecord(record);
   const completed = palette.statuses.completed;
+  const historical = isEncodedRecord(record);
+  const statusLabel = historical ? "Historical record" : "Completed";
 
   return (
     <Pressable
       onPress={() => onOpen(record)}
       accessibilityRole="button"
-      accessibilityLabel={`${service} on ${when}${provider ? `, ${provider}` : ""}. Completed. Open the full medical record.`}
+      accessibilityLabel={`${service} on ${when}${provider ? `, ${provider}` : ""}. ${statusLabel}. Open the full medical record.`}
       accessibilityHint="Opens the full medical record"
       className="w-full gap-3 p-4 active:opacity-80"
       style={{
@@ -76,13 +79,18 @@ const MedicalRecordCard = ({
         className="w-full flex-row items-center justify-between gap-3 pt-3"
         style={{ borderTopWidth: 1, borderTopColor: palette.divider }}
       >
+        {/* A record from the health center's files, not a visit booked in the app. */}
         <View
           className="flex-row items-center gap-1.5 px-2.5 py-1"
-          style={{ borderRadius: QUEUE_RADIUS.pill, backgroundColor: completed.bg }}
+          style={{ borderRadius: QUEUE_RADIUS.pill, backgroundColor: historical ? palette.primarySoft : completed.bg }}
         >
-          <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: completed.dot }} />
-          <Text className="text-[11.5px] font-semibold" style={{ color: completed.fg }}>
-            Completed
+          {historical ? (
+            <Feather name="archive" size={12} color={palette.primary} />
+          ) : (
+            <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: completed.dot }} />
+          )}
+          <Text className="text-[11.5px] font-semibold" style={{ color: historical ? palette.primary : completed.fg }}>
+            {statusLabel}
           </Text>
         </View>
 

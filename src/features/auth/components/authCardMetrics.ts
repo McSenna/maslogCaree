@@ -11,6 +11,8 @@ import {
   type AuthCardMetrics,
 } from "./authCardMetricPresets";
 
+import { PALETTE, withAlpha } from "@/theme/palette";
+
 export {
   COMPACT_DESKTOP_METRICS,
   DESKTOP_METRICS,
@@ -20,7 +22,7 @@ export {
 };
 export type { AuthCardMetrics };
 
-export const ANDROID_RIPPLE = { color: "rgba(255, 255, 255, 0.24)" } as const;
+export const ANDROID_RIPPLE = { color: withAlpha(PALETTE.white, 0.24) } as const;
 
 const METRIC_KEYS = Object.keys(MOBILE_METRICS) as (keyof AuthCardMetrics)[];
 

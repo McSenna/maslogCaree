@@ -19,7 +19,6 @@ type WideHeaderProps = {
   mode: TableMode;
   width: number;
   onExport: () => void;
-  onAddUser: () => void;
 };
 
 const SEARCH_WIDTH = { width: 300 };
@@ -27,9 +26,10 @@ const SEARCH_FILL = { flex: 1, minWidth: 220 };
 
 export const USERS_TITLE = "Users";
 export const USERS_SUBTITLE = "Accounts for health staff and residents who use the web and mobile app.";
+export const MASTER_LIST_SUBTITLE = "The barangay's official resident records. A record is not an app account.";
 
 /** The dashboard's page header, overview cards and toolbar, then the top of the table card. */
-const WideHeader = ({ screen, mode, width, onExport, onAddUser }: WideHeaderProps) => {
+const WideHeader = ({ screen, mode, width, onExport }: WideHeaderProps) => {
   const palette = useAdminSurfacePalette();
   const { filters, view, selection, requestTab } = screen;
   const oneRow = width >= TOOLBAR_ONE_ROW_WIDTH;
@@ -51,11 +51,10 @@ const WideHeader = ({ screen, mode, width, onExport, onAddUser }: WideHeaderProp
         compact={false}
         title={USERS_TITLE}
         subtitle={USERS_SUBTITLE}
-        primaryAction={{ key: "add", label: "Add user", icon: "user-plus", onPress: onAddUser }}
         secondaryActions={requestTab ? [] : [{ key: "export", label: "Export CSV", icon: "download", onPress: onExport }]}
       />
 
-      <OverviewCards summary={screen.summary.data} tab={filters.tab} onSelectTab={screen.setTab} columns={width >= 900 ? 4 : 2} />
+      <OverviewCards summary={screen.summary.data} tab={filters.tab} onSelectTab={screen.setTab} onShowNewest={screen.showNewest} newestSelected={screen.filters.tab === "accounts" && screen.filters.sort === "joined_desc"} columns={width >= 900 ? 4 : 2} />
 
       <View className={oneRow ? "flex-row items-center justify-between gap-4" : "gap-3"}>
         <UserTabs value={filters.tab} summary={screen.summary.data} onChange={screen.setTab} />

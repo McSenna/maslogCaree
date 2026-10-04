@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, StyleSheet, View } from "react-native";
 import { landingAssets } from "@/config/landingAssets";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 interface LandingBackgroundProps {
   variant: "desktop" | "mobile";
@@ -12,7 +13,7 @@ const LandingBackground = ({ variant }: LandingBackgroundProps) => {
   if (variant === "mobile") {
     return (
       <View style={[StyleSheet.absoluteFill, { pointerEvents: "none" }]}>
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "#E8F1FD" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: PALETTE.blue[100] }]} />
 
         {backgroundSource && (
           <Image
@@ -25,14 +26,14 @@ const LandingBackground = ({ variant }: LandingBackgroundProps) => {
         )}
 
         {/* One solid wash keeps text readable over the photo. */}
-        <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(230, 242, 255, 0.72)" }]} />
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: withAlpha(PALETTE.blue[50], 0.72) }]} />
       </View>
     );
   }
 
   return (
     <View style={[StyleSheet.absoluteFill, { pointerEvents: "none" }]}>
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "#EFF6FD" }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: PALETTE.slate[100] }]} />
 
       {backgroundSource && (
         <Image
@@ -44,7 +45,7 @@ const LandingBackground = ({ variant }: LandingBackgroundProps) => {
         />
       )}
 
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: "rgba(241, 247, 255, 0.82)" }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: withAlpha(PALETTE.slate[100], 0.82) }]} />
     </View>
   );
 };

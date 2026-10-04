@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 import { QUEUE_RADIUS, type QueuePalette } from "@/components/appointmentQueue/queueTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type Measurement = {
   label: string;
@@ -42,7 +43,7 @@ export const RecordSection = ({
           borderRadius: QUEUE_RADIUS.control,
           borderWidth: 1,
           borderColor: palette.panelBorder,
-          backgroundColor: palette.isDark ? "rgba(255,255,255,0.02)" : "#FCFDFF",
+          backgroundColor: palette.isDark ? withAlpha(PALETTE.white, 0.02) : PALETTE.slate[50],
         }}
       >
         {children}

@@ -6,6 +6,7 @@ import { useUserDetailsPalette } from "@/features/users/components/details/detai
 import ResidentSheetBody from "./ResidentSheetBody";
 import ResidentSheetHeader, { TITLE_ID } from "./ResidentSheetHeader";
 import type { ResidentDetailsProps } from "./ResidentDetailsPanel";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const dialogAccessibilityProps =
   Platform.OS === "web" ? ({ "aria-labelledby": TITLE_ID } as object) : {};
@@ -27,7 +28,7 @@ const ResidentDetailsSheet = ({
       accessibilityLabel="Resident details"
       surface={palette.cardBg}
       handleColor={palette.divider}
-      scrim="rgba(15,23,42,0.35)"
+      scrim={withAlpha(PALETTE.slate[800], 0.35)}
       header={(requestClose) => (
         <View {...dialogAccessibilityProps}>
           <ResidentSheetHeader onClose={requestClose} palette={palette} />

@@ -6,6 +6,7 @@ import BottomSheet, { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import { APPOINTMENT_COLORS } from "../appointmentTheme";
 import SelectOptionRow from "./SelectOptionRow";
 import type { SelectOption } from "./selectFieldTypes";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type Props = {
   open: boolean;
@@ -34,7 +35,7 @@ const SelectOptionSheet = ({
     accessibilityLabel={sheetTitle ?? label}
     surface={APPOINTMENT_COLORS.white}
     handleColor={APPOINTMENT_COLORS.track}
-    scrim="rgba(15,37,87,0.4)"
+    scrim={withAlpha(PALETTE.ink, 0.4)}
     maxHeightRatio={0.7}
     header={(requestClose) => (
       <>

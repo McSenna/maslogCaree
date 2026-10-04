@@ -1,4 +1,5 @@
-import { ERROR_CODES, SESSION_ENDING_CODES } from "@/utils/errorCodes";
+// Relative imports keep this loadable by `node --test` (the error toast policy reads it).
+import { ERROR_CODES, SESSION_ENDING_CODES } from "../errorCodes.ts";
 
 import type { NormalizedApiError } from "./ApiError";
 

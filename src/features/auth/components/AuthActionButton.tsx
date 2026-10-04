@@ -7,6 +7,7 @@ import { ANDROID_RIPPLE } from "./authCardMetrics";
 import { authCardStyles } from "./authCardStyles";
 import { USE_NATIVE_DRIVER } from "@/theme/motion";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { PALETTE } from "@/theme/palette";
 
 type AuthActionButtonProps = {
   accessibilityLabel: string;
@@ -73,7 +74,7 @@ const AuthActionButton = ({
 
       {trailingIcon ? (
         <Animated.View style={{ transform: [{ translateX: iconShift }] }}>
-          <Ionicons name={trailingIcon} size={17} color="#FFFFFF" />
+          <Ionicons name={trailingIcon} size={17} color={PALETTE.white} />
         </Animated.View>
       ) : null}
     </AnimatedPressable>

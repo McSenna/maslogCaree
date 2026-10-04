@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 interface WaveDecorationProps {
   variant: "desktop" | "mobile";
@@ -33,15 +34,15 @@ const WaveDecoration = ({
         >
           <Path
             d="M0 26 C70 6, 150 40, 232 24 C300 11, 356 32, 400 20 L400 92 L0 92 Z"
-            fill="rgba(173, 209, 255, 0.55)"
+            fill={withAlpha(PALETTE.blue[200], 0.55)}
           />
           <Path
             d="M0 44 C86 20, 172 54, 258 36 C322 22, 366 42, 400 34 L400 92 L0 92 Z"
-            fill="rgba(224, 238, 255, 0.9)"
+            fill={withAlpha(PALETTE.blue[100], 0.9)}
           />
           <Path
             d="M0 62 C100 40, 190 68, 288 52 C344 42, 378 56, 400 50 L400 92 L0 92 Z"
-            fill="#F2F7FD"
+            fill={PALETTE.slate[100]}
           />
         </Svg>
       </View>
@@ -58,19 +59,19 @@ const WaveDecoration = ({
       >
         <Path
           d="M0 58 C200 20, 420 46, 640 70 C900 98, 1180 124, 1450 142 C1640 154, 1810 160, 1920 162 L1920 210 L0 210 Z"
-          fill="#FFFFFF"
+          fill={PALETTE.white}
           opacity={0.72}
         />
 
         <Path
           d="M0 96 C190 58, 400 86, 620 110 C880 138, 1170 160, 1440 174 C1630 183, 1800 187, 1920 189 L1920 210 L0 210 Z"
-          fill="#DCEBFF"
+          fill={PALETTE.blue[100]}
           opacity={0.92}
         />
 
         <Path
           d="M0 136 C180 100, 390 126, 610 150 C870 178, 1170 192, 1450 199 C1640 203, 1810 205, 1920 206 L1920 210 L0 210 Z"
-          fill="#5E9BF5"
+          fill={PALETTE.blue[400]}
         />
       </Svg>
     </View>

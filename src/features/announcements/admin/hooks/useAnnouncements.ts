@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { toast } from "@/components/feedback";
+import { toastError } from "@/utils/errorToast/toastError";
+import { useRealtimeEvents, useResyncSignal } from "@/hooks/realtime/useRealtimeEvents";
 
 import type { AnnouncementRecord } from "../../announcement.types";
 import {
@@ -10,7 +11,7 @@ import {
 import type { Announcement } from "../adminAnnouncement.types";
 import { toAdminAnnouncement } from "../adminAnnouncementModel";
 
-type LoadMode = "initial" | "refresh";
+type LoadMode = "initial" | "refresh" | "silent";
 
 /** Every announcement for the admin screen, newest first. */
 export const useAnnouncements = () => {
@@ -26,7 +27,7 @@ export const useAnnouncements = () => {
     if (inFlightRef.current) return;
     inFlightRef.current = true;
     if (mode === "initial") setIsLoading(true);
-    else setIsRefreshing(true);
+    else if (mode === "refresh") setIsRefreshing(true);
 
     try {
       const records = await fetchAllAdminAnnouncements();
@@ -36,7 +37,7 @@ export const useAnnouncements = () => {
       loadedRef.current = true;
     } catch (caught: unknown) {
       // A failed refresh keeps the list already on screen and says so.
-      if (loadedRef.current) toast.error("Could not refresh announcements.", "Check your connection and try again.");
+      if (loadedRef.current) toastError("Could not refresh announcements.", caught, { reason: "Check your connection and try again." });
       else setError(caught);
     } finally {
       inFlightRef.current = false;
@@ -66,6 +67,14 @@ export const useAnnouncements = () => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void load("initial");
   }, [load]);
+
+  // Another admin's post, edit or delete appears here without a refresh.
+  useRealtimeEvents("adminAnnouncement", (change) => {
+    if (change.action === "resync") return void load("silent");
+    if (change.action === "deleted") setItems((current) => current.filter((item) => item.id !== change.id));
+    else upsert(change.record);
+  });
+  useResyncSignal(() => void load(loadedRef.current ? "silent" : "initial"));
 
   return {
     items,

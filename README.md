@@ -67,3 +67,7 @@ New feature code goes in `src/features/<feature>/`. Only promote something to `s
 ## New Added Feature
 
 - **Master List** Used to validate registered users by comparing their submitted information with the records in the Barangay Maslog master list. If the submitted information matches an existing record, the user is automatically approved.
+- **web socket** used to create the data transport anywhere realtime
+
+--next goal
+--pagination na pag ni refresh are di babalik sa page 1

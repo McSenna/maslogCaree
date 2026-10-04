@@ -6,7 +6,7 @@ export const ACCOUNT_CATEGORY: HelpCategory = {
   description:
     "Get help with registration, identity verification, account approval, login, and password recovery.",
   icon: "user-check",
-  tone: "green",
+  tone: "neutral",
   articles: [
     {
       id: "create-account",

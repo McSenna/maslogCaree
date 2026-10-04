@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useRealtimeEvents, useResyncSignal } from "@/hooks/realtime/useRealtimeEvents";
+import { removeItem, upsertItem } from "@/lib/realtime/collectionReducer";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 import type { AnnouncementRecord } from "../announcement.types";
@@ -7,7 +9,12 @@ import type { AnnouncementFetcher } from "../services/announcementService";
 
 const PAGE_SIZE = 20;
 
-type LoadMode = "initial" | "refresh";
+type LoadMode = "initial" | "refresh" | "silent";
+
+const announcementId = (item: AnnouncementRecord) => item.id;
+
+// The server's order: ids are ObjectIds, which sort by creation time.
+const newestFirst = (a: AnnouncementRecord, b: AnnouncementRecord) => b.id.localeCompare(a.id);
 
 /**
  * Newest-first announcement list with pull-to-refresh and cursor paging.
@@ -30,7 +37,7 @@ export const useAnnouncementFeed = (fetcher: AnnouncementFetcher) => {
       if (inFlightRef.current) return;
       inFlightRef.current = true;
       if (mode === "initial") setLoading(true);
-      else setRefreshing(true);
+      else if (mode === "refresh") setRefreshing(true);
 
       try {
         const page = await fetcher({ limit: PAGE_SIZE });
@@ -82,6 +89,18 @@ export const useAnnouncementFeed = (fetcher: AnnouncementFetcher) => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void load("initial");
   }, [load]);
+
+  // The server sends only what this account's feed may show, and a "deleted"
+  // when an announcement is withdrawn, ends early or moves to another audience.
+  useRealtimeEvents("announcement", (change) => {
+    if (change.action === "resync") return void load("silent");
+    setAnnouncements((current) =>
+      change.action === "deleted"
+        ? removeItem(current, change.id, announcementId)
+        : upsertItem(current, change.record, { getId: announcementId, sort: newestFirst })
+    );
+  });
+  useResyncSignal(() => void load("silent"));
 
   return {
     announcements,

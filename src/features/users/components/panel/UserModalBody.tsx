@@ -8,6 +8,8 @@ import UserInformationCard from "../details/UserInformationCard";
 import UserPermissionsCard from "../details/UserPermissionsCard";
 import UserPlatformAccessCard from "../details/UserPlatformAccessCard";
 import UserProfileHero from "../details/UserProfileHero";
+import DetailCard from "../details/DetailCard";
+import MasterLinkRows from "../details/masterLink/MasterLinkRows";
 
 type Props = {
   user: AdminUser | null;
@@ -39,6 +41,11 @@ export const UserModalBody = ({ user, loading, error, onRetry, compact }: Props)
             <View className="min-w-0 flex-1 gap-5">
               <UserPermissionsCard user={user} />
               <UserPlatformAccessCard user={user} />
+              {user.role === "resident" ? (
+                <DetailCard icon="link" title="Master List Link">
+                  <MasterLinkRows user={user} />
+                </DetailCard>
+              ) : null}
             </View>
           </View>
         </View>

@@ -98,7 +98,7 @@ const SupportSubmittedState = ({
             backgroundColor: palette.accent,
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "700", color: "#FFFFFF" }}>
+          <Text style={{ fontSize: 14, fontWeight: "700", color: palette.onAccent }}>
             View Support Request
           </Text>
         </Pressable>

@@ -1,6 +1,7 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { QUEUE_RADIUS, useQueuePalette } from "@/components/appointmentQueue/queueTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const ErrorBanner = ({ message }: { message: string }) => {
   const palette = useQueuePalette();
@@ -11,12 +12,12 @@ export const ErrorBanner = ({ message }: { message: string }) => {
       style={{
         borderRadius: QUEUE_RADIUS.control,
         borderWidth: 1,
-        borderColor: palette.isDark ? "rgba(220,38,38,0.32)" : "#FECACA",
-        backgroundColor: palette.isDark ? "rgba(220,38,38,0.14)" : "#FEF2F2",
+        borderColor: palette.isDark ? withAlpha(PALETTE.red[600], 0.32) : PALETTE.red[200],
+        backgroundColor: palette.isDark ? withAlpha(PALETTE.red[600], 0.14) : PALETTE.red[50],
       }}
     >
-      <Feather name="alert-circle" size={15} color="#DC2626" style={{ marginTop: 1 }} />
-      <Text className="min-w-0 flex-1 text-[12.5px] font-medium leading-[17px]" style={{ color: "#DC2626" }}>
+      <Feather name="alert-circle" size={15} color={PALETTE.red[600]} style={{ marginTop: 1 }} />
+      <Text className="min-w-0 flex-1 text-[12.5px] font-medium leading-[17px]" style={{ color: PALETTE.red[600] }}>
         {message}
       </Text>
     </View>
@@ -95,7 +96,7 @@ export const FooterButtons = ({
           opacity: busy || disabled ? 0.6 : 1,
         }}
       >
-        {busy ? <ActivityIndicator size="small" color="#FFFFFF" /> : null}
+        {busy ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
         <Text className="text-[14px] font-semibold text-white">{nextLabel}</Text>
       </Pressable>
     </View>

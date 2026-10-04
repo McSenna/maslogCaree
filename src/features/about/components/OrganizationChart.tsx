@@ -6,6 +6,7 @@ import BhwGrid from "./BhwGrid";
 import ConnectorLine from "./ConnectorLine";
 import LeaderCard from "./LeaderCard";
 import MedicalCross from "./MedicalCross";
+import { PALETTE } from "@/theme/palette";
 
 type OrganizationChartProps = {
   members: OrganizationMember[];
@@ -76,10 +77,10 @@ const OrganizationChart = ({ members, isTablet }: OrganizationChartProps) => {
             backgroundColor: HC.teal,
           }}
         >
-          <MedicalCross size={10} color="#fff" />
+          <MedicalCross size={10} color={PALETTE.white} />
           <Text
             style={{
-              color: "#fff",
+              color: PALETTE.white,
               fontWeight: "800",
               fontSize: isTablet ? 9.5 : 8,
               letterSpacing: 0.8,

@@ -1,24 +1,24 @@
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const PROFILE_COLORS = {
   primary: PALETTE.blue[600],
-  primarySoft: "#EFF6FF",
-  primaryBorder: "#BFDBFE",
-  green: "#10B981",
-  greenDeep: "#059669",
-  greenSoft: "#ECFDF5",
-  background: "#F8FAFC",
-  surface: "#FFFFFF",
-  heading: "#0F172A",
-  navy: "#12275C",
-  body: "#334155",
+  primarySoft: PALETTE.blue[50],
+  primaryBorder: PALETTE.blue[200],
+  green: PALETTE.success[500],
+  greenDeep: PALETTE.success[600],
+  greenSoft: PALETTE.success[50],
+  background: PALETTE.slate[50],
+  surface: PALETTE.white,
+  heading: PALETTE.slate[800],
+  navy: PALETTE.slate[800],
+  body: PALETTE.slate[700],
   muted: PALETTE.slate[600],
   subtle: PALETTE.slate[500],
-  border: "#E2E8F0",
-  divider: "#EEF2F7",
-  danger: "#EF4444",
-  dangerSoft: "#FEF2F2",
-  dangerBorder: "#FECACA",
+  border: PALETTE.slate[200],
+  divider: PALETTE.slate[100],
+  danger: PALETTE.red[600],
+  dangerSoft: PALETTE.red[50],
+  dangerBorder: PALETTE.red[200],
 } as const;
 
 export const PROFILE_RADIUS = {
@@ -42,15 +42,15 @@ export const PROFILE_TYPE = {
 
 export const PROFILE_SHADOW = {
   card: {
-    boxShadow: "0px 1px 3px rgba(15, 23, 42, 0.05)",
+    boxShadow: `0px 1px 3px ${withAlpha(PALETTE.ink, 0.05)}`,
     elevation: 1,
   },
   raised: {
-    boxShadow: "0px 8px 24px rgba(15, 23, 42, 0.08)",
+    boxShadow: `0px 8px 24px ${withAlpha(PALETTE.ink, 0.08)}`,
     elevation: 6,
   },
   modal: {
-    boxShadow: "0px 24px 64px rgba(15, 23, 42, 0.22)",
+    boxShadow: `0px 24px 64px ${withAlpha(PALETTE.ink, 0.22)}`,
     elevation: 24,
   },
 } as const;

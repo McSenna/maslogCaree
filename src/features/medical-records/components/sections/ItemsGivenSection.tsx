@@ -4,8 +4,9 @@ import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { DispensedItem } from "@/services/medicalRecords";
 
 import { DetailSection } from "./DetailSection";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
-const ITEM_TINT = "#6366F1";
+const ITEM_TINT = PALETTE.blue[600];
 
 export const ItemsGivenSection = ({
   palette,
@@ -58,8 +59,8 @@ export const ItemsGivenSection = ({
                 paddingVertical: 4,
                 borderRadius: 6,
                 backgroundColor: palette.isDark
-                  ? "rgba(99,102,241,0.18)"
-                  : "rgba(99,102,241,0.10)",
+                  ? withAlpha(PALETTE.blue[600], 0.18)
+                  : withAlpha(PALETTE.blue[600], 0.10),
               }}
             >
               <Text style={{ fontSize: 13, fontWeight: "700", color: ITEM_TINT }}>

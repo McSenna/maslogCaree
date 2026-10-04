@@ -5,6 +5,8 @@ import { getDashboardPath } from "@/config/roleRoutes";
 import { ERROR_CODES, PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
+import { toastError } from "@/utils/errorToast/toastError";
+import { toast } from "@/components/feedback/toast/toastStore";
 import { LOGIN_MESSAGES, checkIdentifier, checkPassword } from "./loginIdentifier";
 
 export type LoginStatus = "idle" | "submitting" | "success";
@@ -87,6 +89,8 @@ export const useWebLogin = () => {
         setShowPlatformNotice(true);
         return null;
       }
+      // As on the phone sign-in: the alert above the fields explains, the toast marks the failed attempt.
+      toast.error("Couldn't log in");
       setAlert(
         result.code === ERROR_CODES.INVALID_CREDENTIALS
           ? LOGIN_MESSAGES.credentialsMismatch
@@ -98,6 +102,7 @@ export const useWebLogin = () => {
       );
     } catch (error: unknown) {
       setStatus("idle");
+      toastError("Couldn't log in", error, { inline: true });
       setAlert(getApiErrorMessage(error, "We couldn't reach MaslogCare. Check your connection, then try again."));
     } finally {
       inFlight.current = false;

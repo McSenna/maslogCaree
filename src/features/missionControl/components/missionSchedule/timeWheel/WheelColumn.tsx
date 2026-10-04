@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { MISSION_RADIUS, useMissionSchedulePalette } from "../missionScheduleTheme";
+import { PALETTE } from "@/theme/palette";
 
 const ROW_HEIGHT = 44;
 const VISIBLE_ROWS = 4;
@@ -74,7 +75,7 @@ const WheelColumn = <T extends string | number,>({
               >
                 <Text
                   className={`text-[16px] tabular-nums ${isSelected ? "font-bold" : "font-medium"}`}
-                  style={{ color: isSelected ? "#FFFFFF" : palette.body }}
+                  style={{ color: isSelected ? PALETTE.white : palette.body }}
                 >
                   {render(option)}
                 </Text>

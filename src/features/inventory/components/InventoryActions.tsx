@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import { can, type InventoryItem, type InventoryPermissions } from "@/features/inventory/services/inventoryService";
 import { RADIUS, useInventoryPalette } from "./inventoryTheme";
+import { PALETTE } from "@/theme/palette";
 
 export type InventoryActionHandlers = {
   onAddStock: () => void;
@@ -45,11 +46,11 @@ const ActionButton = ({ action, palette }: { action: ActionSpec; palette: Return
         opacity: disabled ? 0.45 : 1,
       }}
     >
-      <Feather name={action.icon} size={15} color={primary ? "#FFFFFF" : palette.body} />
+      <Feather name={action.icon} size={15} color={primary ? PALETTE.white : palette.body} />
       <Text
         className="text-[13px] font-semibold"
         numberOfLines={1}
-        style={{ color: primary ? "#FFFFFF" : palette.body }}
+        style={{ color: primary ? PALETTE.white : palette.body }}
       >
         {action.label}
       </Text>

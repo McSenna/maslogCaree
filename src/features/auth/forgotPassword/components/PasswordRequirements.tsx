@@ -2,10 +2,11 @@ import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { PASSWORD_RULES, passwordStrength } from "../passwordRules";
 import { RECOVERY_COLORS as C } from "../recoveryTheme";
+import { PALETTE } from "@/theme/palette";
 
 const STRENGTH_META = {
   weak: { label: "Weak", color: C.error, fill: 1 },
-  medium: { label: "Medium", color: "#D97706", fill: 2 },
+  medium: { label: "Medium", color: PALETTE.amber[600], fill: 2 },
   strong: { label: "Strong", color: C.success, fill: 3 },
 } as const;
 

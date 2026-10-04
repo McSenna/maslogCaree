@@ -14,7 +14,7 @@ const NameButton = ({ name, onPress, phone }: NameButtonProps) => (
     {({ hovered, pressed }) => (
       <Text
         numberOfLines={2}
-        className={`font-semibold ${phone ? "text-15" : "text-14"} ${hovered || pressed ? "text-brand underline" : "text-ink"}`}
+        className={`font-semibold ${phone ? "text-15" : "text-[13.5px]"} ${hovered || pressed ? "text-brand underline" : "text-ink"}`}
       >
         {name}
       </Text>

@@ -61,7 +61,7 @@ const Chip = <T extends string>({
                 ? palette.subtle
                 : palette.cardBorder,
             backgroundColor: selected
-              ? palette.tones.blue.cardBg
+              ? palette.tones.primary.cardBg
               : palette.cardBg,
             outlineWidth: focused ? 2 : 0,
             outlineStyle: "solid",

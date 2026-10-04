@@ -8,6 +8,7 @@ type CalendarHeaderProps = {
   year: number;
   monthIndex: number;
   canGoForward: boolean;
+  canGoBack: boolean;
   onPrevious: () => void;
   onNext: () => void;
   onOpenYears: () => void;
@@ -52,13 +53,14 @@ const CalendarHeader = ({
   year,
   monthIndex,
   canGoForward,
+  canGoBack,
   onPrevious,
   onNext,
   onOpenYears,
   yearsOpen,
 }: CalendarHeaderProps) => (
   <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-    <NavButton icon="chevron-left" label="Previous month" onPress={onPrevious} />
+    <NavButton icon="chevron-left" label="Previous month" disabled={!canGoBack} onPress={onPrevious} />
 
     <Pressable
       accessibilityRole="button"

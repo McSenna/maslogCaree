@@ -5,8 +5,10 @@ import { useTheme } from "@/contexts/ThemeContext";
 
 import type { UserRequestDetail } from "../../services/userRequestsService";
 import { formatFileSize } from "./IdDocumentViewer";
+import { choosableCandidates } from "./masterList/linkChoice";
 import VerificationDecisionOverlays from "./verification/VerificationDecisionOverlays";
 import IdentityDocumentColumn from "./verification/modal/IdentityDocumentColumn";
+import MasterListSection from "./verification/modal/MasterListSection";
 import ResidentInfoColumn from "./verification/modal/ResidentInfoColumn";
 import VerificationModalFooter from "./verification/modal/VerificationModalFooter";
 import {
@@ -15,6 +17,7 @@ import {
   VerificationModalLoading,
 } from "./verification/modal/VerificationModalChrome";
 import { useVerificationDecision } from "./verification/useVerificationDecision";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type ResidentVerificationModalProps = {
   visible: boolean;
@@ -56,7 +59,7 @@ const ResidentVerificationModal = ({
       <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
         <View
           className="flex-1 items-center justify-center p-4 md:p-6"
-          style={{ backgroundColor: "rgba(15, 23, 42, 0.7)" }}
+          style={{ backgroundColor: withAlpha(PALETTE.slate[800], 0.7) }}
         >
           <Pressable
             accessibilityRole="button"
@@ -68,10 +71,10 @@ const ResidentVerificationModal = ({
           <View
             accessibilityViewIsModal
             className={[
-              "w-full max-w-[960px] rounded-2xl border overflow-hidden flex flex-col",
+              "w-full max-w-[960px] rounded-lg border overflow-hidden flex flex-col",
               isDark ? "border-slate-700 bg-slate-900" : "border-slate-200 bg-white",
             ].join(" ")}
-            style={{ maxHeight: "92%", boxShadow: "0px 24px 48px rgba(0,0,0,0.28)" }}
+            style={{ maxHeight: "92%", boxShadow: `0px 24px 48px ${withAlpha(PALETTE.ink, 0.28)}` }}
           >
             <VerificationModalHeader onClose={onClose} />
 
@@ -95,6 +98,9 @@ const ResidentVerificationModal = ({
                     onToggleIdNumber={decision.toggleIdNumber}
                   />
                 </View>
+                <View className="mt-6">
+                  <MasterListSection request={request} />
+                </View>
               </ScrollView>
             )}
 
@@ -115,6 +121,7 @@ const ResidentVerificationModal = ({
         residentName={resident?.fullname}
         approving={approving}
         rejecting={rejecting}
+        hasLinkChoices={choosableCandidates(request?.masterList, isPending).length > 0}
         approveMessage={`This will approve the registration, set the account status to Approved, and immediately allow ${
           resident?.fullname || "the resident"
         } to log in to MaslogCare.`}

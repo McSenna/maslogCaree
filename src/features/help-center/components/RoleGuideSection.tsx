@@ -37,10 +37,10 @@ const RoleGuideSection = ({ guide }: RoleGuideSectionProps) => {
               borderRadius: 12,
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: palette.tones.purple.iconBg,
+              backgroundColor: palette.tones.primary.iconBg,
             }}
           >
-            <Feather name={guide.icon} size={17} color={palette.tones.purple.icon} />
+            <Feather name={guide.icon} size={17} color={palette.tones.primary.icon} />
           </View>
           <Text style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: "700", color: palette.heading }}>
             {guide.title}

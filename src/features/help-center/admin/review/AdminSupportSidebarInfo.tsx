@@ -9,6 +9,7 @@ import AdminTicketStatusBadge from "../AdminTicketStatusBadge";
 import { SUPPORT_STATUS_LABELS, SUPPORT_STATUS_ORDER } from "../../constants/support.constants";
 import { formatTicketDateTime, supportCategoryLabel } from "../../utils/support.utils";
 import type { SupportStatus, SupportTicket } from "../../types/support.types";
+import { PALETTE } from "@/theme/palette";
 
 type AdminSupportSidebarInfoProps = {
   ticket: SupportTicket;
@@ -107,7 +108,7 @@ const AdminSupportSidebarInfo = ({ ticket, busy, onStatusChange }: AdminSupportS
                   opacity: busy && !active ? 0.5 : 1,
                 })}
               >
-                <Text style={{ fontSize: 11.5, fontWeight: active ? "700" : "500", color: active ? "#FFFFFF" : palette.body }}>
+                <Text style={{ fontSize: 11.5, fontWeight: active ? "700" : "500", color: active ? PALETTE.white : palette.body }}>
                   {SUPPORT_STATUS_LABELS[status]}
                 </Text>
               </Pressable>

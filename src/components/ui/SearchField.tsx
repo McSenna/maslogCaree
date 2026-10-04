@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, TextInput, View, type TextInputKeyPressEventData, type NativeSyntheticEvent } from "react-native";
 import { CONTROL_HEIGHT, RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
@@ -10,6 +10,9 @@ type SearchFieldProps = {
   placeholder: string;
   accessibilityLabel: string;
   style?: { flex?: number; width?: number | `${number}%`; minWidth?: number };
+  /** A results list is attached below: square bottom corners and a steady focus border. */
+  open?: boolean;
+  onKeyPress?: (event: NativeSyntheticEvent<TextInputKeyPressEventData>) => void;
 };
 
 const SearchField = ({
@@ -18,6 +21,8 @@ const SearchField = ({
   placeholder,
   accessibilityLabel,
   style,
+  open = false,
+  onKeyPress,
 }: SearchFieldProps) => {
   const palette = useAdminSurfacePalette();
   const [focused, setFocused] = useState(false);
@@ -28,8 +33,10 @@ const SearchField = ({
       style={{
         height: CONTROL_HEIGHT,
         borderRadius: RADIUS.control,
+        borderBottomLeftRadius: open ? 0 : RADIUS.control,
+        borderBottomRightRadius: open ? 0 : RADIUS.control,
         backgroundColor: palette.cardBg,
-        borderColor: focused ? palette.primary : palette.cardBorder,
+        borderColor: focused || open ? palette.primary : palette.cardBorder,
         ...style,
       }}
     >
@@ -39,6 +46,7 @@ const SearchField = ({
         style={{ color: palette.body, outlineStyle: "none" } as never}
         value={value}
         onChangeText={onChangeText}
+        onKeyPress={onKeyPress}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         placeholder={placeholder}

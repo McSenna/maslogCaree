@@ -6,6 +6,7 @@ import { AnimatedPressable } from "../motion/landingMotion";
 import { useInteractiveLift } from "../motion/useInteractiveLift";
 import { USE_NATIVE_DRIVER } from "@/theme/motion";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type HeroActionButtonProps = {
   label: string;
@@ -91,13 +92,13 @@ const styles = StyleSheet.create({
   primary: {
     backgroundColor: LANDING_COLORS.primaryBlue,
     ...Platform.select({
-      web: { boxShadow: "0px 8px 20px rgba(21, 101, 216, 0.22)" },
+      web: { boxShadow: `0px 4px 12px ${withAlpha(PALETTE.ink, 0.12)}` },
       default: { elevation: 3 },
     }),
   },
   primaryHovered: {
     ...Platform.select({
-      web: { boxShadow: "0px 14px 28px rgba(21, 101, 216, 0.30)" },
+      web: { boxShadow: `0px 8px 20px ${withAlpha(PALETTE.ink, 0.16)}` },
     }),
   },
   secondary: {
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
   secondaryHovered: {
     borderColor: LANDING_COLORS.primaryBlue,
     ...Platform.select({
-      web: { boxShadow: "0px 10px 22px rgba(8, 21, 47, 0.10)" },
+      web: { boxShadow: `0px 10px 22px ${withAlpha(PALETTE.ink, 0.1)}` },
     }),
   },
   label: {

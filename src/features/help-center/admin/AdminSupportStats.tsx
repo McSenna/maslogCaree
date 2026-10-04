@@ -1,15 +1,19 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
+import InteractiveCard from "@/components/cards/InteractiveCard";
 import { CARD_SHADOW, RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { SupportStatus } from "../types/support.types";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
+
+type StatusFilter = SupportStatus | "all";
 
 type AdminSupportStatsProps = {
   counts: Partial<Record<SupportStatus, number>>;
-  total: number;
+  activeStatus: StatusFilter;
+  onSelectStatus: (status: StatusFilter) => void;
 };
 
 type StatCardConfig = {
@@ -22,7 +26,13 @@ type StatCardConfig = {
   iconColor: string;
 };
 
-const AdminSupportStats = ({ counts, total }: AdminSupportStatsProps) => {
+// Each card's slot in the wrapping row (the card itself fills it).
+const SLOT = { flexGrow: 1, flexShrink: 1, flexBasis: 160, minWidth: 155 } as const;
+
+const AdminSupportStats = ({ counts, activeStatus, onSelectStatus }: AdminSupportStatsProps) => {
+  // The status counts ignore the status filter, so their sum stays the total
+  // while a status card is selected (the list total would shrink to that status).
+  const total = Object.values(counts).reduce((sum, count) => sum + (count ?? 0), 0);
   const palette = useAdminSurfacePalette();
   const isDark = palette.isDark;
 
@@ -33,8 +43,8 @@ const AdminSupportStats = ({ counts, total }: AdminSupportStatsProps) => {
       count: total,
       context: "All submissions",
       icon: "inbox",
-      iconBg: isDark ? "rgba(99, 102, 241, 0.16)" : "#EEF2FF",
-      iconColor: isDark ? "#818CF8" : "#4F46E5",
+      iconBg: isDark ? withAlpha(PALETTE.blue[600], 0.16) : PALETTE.blue[50],
+      iconColor: isDark ? PALETTE.blue[400] : PALETTE.blue[700],
     },
     {
       key: "open",
@@ -42,8 +52,8 @@ const AdminSupportStats = ({ counts, total }: AdminSupportStatsProps) => {
       count: counts.open ?? 0,
       context: "Awaiting review",
       icon: "alert-circle",
-      iconBg: isDark ? "rgba(2, 132, 199, 0.16)" : "#E0F2FE",
-      iconColor: isDark ? "#38BDF8" : PALETTE.blue[600],
+      iconBg: isDark ? withAlpha(PALETTE.blue[500], 0.16) : PALETTE.blue[100],
+      iconColor: isDark ? PALETTE.blue[300] : PALETTE.blue[600],
     },
     {
       key: "in_review",
@@ -51,8 +61,8 @@ const AdminSupportStats = ({ counts, total }: AdminSupportStatsProps) => {
       count: counts.in_review ?? 0,
       context: "Under investigation",
       icon: "clock",
-      iconBg: isDark ? "rgba(217, 119, 6, 0.16)" : "#FEF3C7",
-      iconColor: isDark ? "#FBBF24" : "#D97706",
+      iconBg: isDark ? withAlpha(PALETTE.amber[500], 0.16) : PALETTE.amber[100],
+      iconColor: isDark ? PALETTE.amber[300] : PALETTE.amber[600],
     },
     {
       key: "awaiting_user",
@@ -60,8 +70,8 @@ const AdminSupportStats = ({ counts, total }: AdminSupportStatsProps) => {
       count: counts.awaiting_user ?? 0,
       context: "Pending resident",
       icon: "message-circle",
-      iconBg: isDark ? "rgba(225, 29, 72, 0.16)" : "#FFE4E6",
-      iconColor: isDark ? "#FB7185" : "#E11D48",
+      iconBg: isDark ? withAlpha(PALETTE.red[600], 0.16) : PALETTE.red[100],
+      iconColor: isDark ? PALETTE.red[300] : PALETTE.red[600],
     },
     {
       key: "resolved",
@@ -69,8 +79,8 @@ const AdminSupportStats = ({ counts, total }: AdminSupportStatsProps) => {
       count: counts.resolved ?? 0,
       context: "Solutions provided",
       icon: "check-circle",
-      iconBg: isDark ? "rgba(5, 150, 105, 0.16)" : "#D1FAE5",
-      iconColor: isDark ? "#34D399" : "#059669",
+      iconBg: isDark ? withAlpha(PALETTE.success[600], 0.16) : PALETTE.success[100],
+      iconColor: isDark ? PALETTE.success[300] : PALETTE.success[600],
     },
     {
       key: "closed",
@@ -78,67 +88,73 @@ const AdminSupportStats = ({ counts, total }: AdminSupportStatsProps) => {
       count: counts.closed ?? 0,
       context: "Completed & archived",
       icon: "archive",
-      iconBg: isDark ? "rgba(100, 116, 139, 0.16)" : "#F1F5F9",
-      iconColor: isDark ? "#94A3B8" : "#64748B",
+      iconBg: isDark ? withAlpha(PALETTE.slate[500], 0.16) : PALETTE.slate[100],
+      iconColor: isDark ? PALETTE.slate[400] : PALETTE.slate[500],
     },
   ];
 
   return (
     <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 12, width: "100%" }}>
       {items.map((item) => (
-        <View
+        <InteractiveCard
           key={item.key}
-          style={{
-            flexGrow: 1,
-            flexShrink: 1,
-            flexBasis: 160,
-            minWidth: 155,
-            padding: 14,
-            borderRadius: RADIUS.card,
-            backgroundColor: palette.cardBg,
-            borderWidth: 1,
-            borderColor: palette.cardBorder,
-            gap: 10,
-            ...CARD_SHADOW,
-          }}
+          onPress={() => onSelectStatus(item.key === "total" ? "all" : (item.key as SupportStatus))}
+          accessibilityLabel={`${item.label}: ${item.count}. ${item.context}`}
+          accessibilityHint={item.key === "total" ? "Shows every request" : `Shows ${item.label.toLowerCase()} requests`}
+          selected={activeStatus === (item.key === "total" ? "all" : item.key)}
+          radius={RADIUS.card}
+          containerStyle={SLOT}
         >
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <Text
-              numberOfLines={1}
-              style={{ fontSize: 12, fontWeight: "600", color: palette.muted }}
-            >
-              {item.label}
-            </Text>
-            <View
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: 8,
-                backgroundColor: item.iconBg,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Feather name={item.icon} size={14} color={item.iconColor} />
+          <View
+            style={{
+              flex: 1,
+              padding: 14,
+              borderRadius: RADIUS.card,
+              backgroundColor: palette.cardBg,
+              borderWidth: 1,
+              borderColor: palette.cardBorder,
+              gap: 10,
+              ...CARD_SHADOW,
+            }}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+              <Text
+                numberOfLines={1}
+                style={{ fontSize: 12, fontWeight: "600", color: palette.muted }}
+              >
+                {item.label}
+              </Text>
+              <View
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  backgroundColor: item.iconBg,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Feather name={item.icon} size={14} color={item.iconColor} />
+              </View>
+            </View>
+
+            <View style={{ gap: 2 }}>
+              <Text
+                style={{
+                  fontSize: 22,
+                  fontWeight: "700",
+                  color: palette.heading,
+                  fontVariant: ["tabular-nums"],
+                }}
+              >
+                {item.count}
+              </Text>
+              <Text numberOfLines={1} style={{ fontSize: 11, color: palette.subtle }}>
+                {item.context}
+              </Text>
             </View>
           </View>
-
-          <View style={{ gap: 2 }}>
-            <Text
-              style={{
-                fontSize: 22,
-                fontWeight: "700",
-                color: palette.heading,
-                fontVariant: ["tabular-nums"],
-              }}
-            >
-              {item.count}
-            </Text>
-            <Text numberOfLines={1} style={{ fontSize: 11, color: palette.subtle }}>
-              {item.context}
-            </Text>
-          </View>
-        </View>
+        </InteractiveCard>
       ))}
     </View>
   );

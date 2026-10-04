@@ -12,7 +12,7 @@ const statusAfter = (user: User, action: StatusAction): UserStatus => {
 };
 
 /**
- * The masterlist keeps every account, so the row stays and its status
+ * "All accounts" keeps every account, so the row stays and its status
  * changes. Every other tab only holds one side, so the row leaves the list.
  */
 export const applyStatusChanges = (
@@ -22,7 +22,7 @@ export const applyStatusChanges = (
 ): User[] => {
   if (changes.length === 0) return [...users];
 
-  if (tab === "masterlist") {
+  if (tab === "accounts") {
     return users.map((user) => {
       const change = changes.find((candidate) => candidate.ids.includes(user.id));
       return change ? { ...user, status: statusAfter(user, change.action) } : user;

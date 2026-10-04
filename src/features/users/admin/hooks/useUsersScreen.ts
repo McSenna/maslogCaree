@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { toast } from "@/components/feedback";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,19 +16,23 @@ import { PAGE_SIZE, useSignupRequests, useUserSummary, useUsers } from "./useUse
 import { invalidateUsers } from "./usersVersion";
 
 export type ReviewTarget = { id: string; reject: boolean } | null;
-/** The open row menu. `anchor` is the dots button's window position (wide popover); phones use a sheet. */
-export type RowMenu = { userId: string; anchor: MenuAnchor | null };
+/** The open row menu and the dots button it opened from. */
+export type RowMenu = { userId: string; anchor: MenuAnchor };
 
 const isRequestTab = (tab: UserTab) => tab === "requests" || tab === "rejected";
 
 /** Everything the wide and phone layouts share; only the presentation differs. */
-export const useUsersScreen = ({ initialTab, isPhone }: { initialTab: UserTab; isPhone: boolean }) => {
-  const filters = useUserFilterState(initialTab);
+export const useUsersScreen = ({ isPhone }: { isPhone: boolean }) => {
+  // The count from the visible list's last load lets the filters move a page past the end back onto the last page.
+  const [listTotal, setListTotal] = useState<number | null>(null);
+  const filters = useUserFilterState({ appendPages: isPhone, total: listTotal });
   const { tab, query, role, status, sort, page, setPage } = filters;
   const requestTab = isRequestTab(tab);
+  // The Masterlist tab shows official records from its own feature; no account list loads behind it.
+  const masterTab = tab === "masterlist";
 
   const summary = useUserSummary();
-  const users = useUsers({ tab, query, role, status, sort, page, pageSize: PAGE_SIZE, append: isPhone, enabled: !requestTab });
+  const users = useUsers({ tab, query, role, status, sort, page, pageSize: PAGE_SIZE, append: isPhone, enabled: !requestTab && !masterTab });
   const requests = useSignupRequests({
     status: tab === "rejected" ? "rejected" : "pending",
     query,
@@ -85,6 +89,12 @@ export const useUsersScreen = ({ initialTab, isPhone }: { initialTab: UserTab; i
     undo.request({ ids: targets.map((user) => user.id), names: targets.map((user) => user.fullName), action });
   };
 
+  // "Added this month": every account, newest first.
+  const showNewest = () => {
+    setTab("accounts");
+    filters.setSort("joined_desc");
+  };
+
   const openReview = (id: string, reject: boolean) => {
     setReviewTarget({ id, reject });
     void review.openReview(id);
@@ -96,8 +106,17 @@ export const useUsersScreen = ({ initialTab, isPhone }: { initialTab: UserTab; i
   };
 
   const list = requestTab ? requests : users;
+  const listSettled = !masterTab && !list.isFetching;
+  const listCount = list.total;
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mirrors the server's count once a load settles
+    setListTotal(listSettled ? listCount : null);
+  }, [listSettled, listCount]);
+  // A page past the end (a stale link, or the last page's rows deleted) reads as loading, never as an empty list.
+  const pastEnd = !isPhone && listSettled && list.total > 0 && page > Math.ceil(list.total / PAGE_SIZE);
+
   const view = resolveView({
-    isLoading: list.isLoading,
+    isLoading: list.isLoading || pastEnd,
     error: list.error,
     shown: requestTab ? requests.items.length : rows.length,
     filtered: filters.hasFilters,
@@ -119,7 +138,9 @@ export const useUsersScreen = ({ initialTab, isPhone }: { initialTab: UserTab; i
   return {
     filters,
     setTab,
+    showNewest,
     requestTab,
+    masterTab,
     summary,
     users,
     rows,

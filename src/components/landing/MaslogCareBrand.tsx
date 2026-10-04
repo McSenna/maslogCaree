@@ -2,6 +2,7 @@ import React from "react";
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import MaslogCareLogo from "./MaslogCareLogo";
+import { PALETTE } from "@/theme/palette";
 
 const FONT_FAMILY = Platform.select({
   ios: "System",
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 24,
     lineHeight: 33,
-    color: "#5B6B85",
+    color: PALETTE.slate[600],
     fontWeight: "400",
     letterSpacing: -0.2,
     fontFamily: FONT_FAMILY,

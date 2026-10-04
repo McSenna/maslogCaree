@@ -5,7 +5,7 @@ import { Pressable, Text, View } from "react-native";
 import UserAvatar from "@/components/ui/UserAvatar";
 import type { CurrentUser } from "@/contexts/AuthContext";
 import { getDashboardPath, getProfilePath } from "@/config/roleRoutes";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type Props = {
   isMobile: boolean;
@@ -13,7 +13,7 @@ type Props = {
   onPressLogin: () => void;
 };
 
-const PILL_TEXT = "#0C1F6E";
+const PILL_TEXT = PALETTE.blue[900];
 
 const pillStyle = (isMobile: boolean) => ({ pressed }: { pressed: boolean }) => ({
   flexDirection: "row" as const,
@@ -22,7 +22,7 @@ const pillStyle = (isMobile: boolean) => ({ pressed }: { pressed: boolean }) => 
   borderRadius: 8,
   paddingHorizontal: isMobile ? 14 : 18,
   paddingVertical: isMobile ? 10 : 11,
-  backgroundColor: "#FFFFFF",
+  backgroundColor: PALETTE.white,
   transform: [{ scale: pressed ? 0.97 : 1 }],
   opacity: pressed ? 0.9 : 1,
 });
@@ -33,7 +33,7 @@ const PillIcon = ({ name }: { name: "layout" | "user" }) => (
       width: 28,
       height: 28,
       borderRadius: 6,
-      backgroundColor: "#EFF6FF",
+      backgroundColor: PALETTE.blue[50],
       alignItems: "center",
       justifyContent: "center",
     }}
@@ -59,11 +59,11 @@ const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
               width: 40,
               height: 40,
               borderRadius: 20,
-              backgroundColor: "rgba(255,255,255,0.2)",
+              backgroundColor: withAlpha(PALETTE.white, 0.2),
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 2,
-              borderColor: "rgba(255,255,255,0.4)",
+              borderColor: withAlpha(PALETTE.white, 0.4),
               transform: [{ scale: pressed ? 0.96 : 1 }],
               opacity: pressed ? 0.9 : 1,
             })}

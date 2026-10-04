@@ -13,6 +13,7 @@ import { buildSheetSurfaceStyle } from "./bottomSheet/sheetSurfaceStyle";
 import { useSheetAnimation } from "./bottomSheet/useSheetAnimation";
 import { useSheetPanResponder } from "./bottomSheet/useSheetPanResponder";
 import { useResponsive } from "@/hooks/useResponsive";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const MIN_BOTTOM_GAP = 12;
 const DESKTOP_EDGE = 16;
@@ -50,7 +51,7 @@ const BottomSheet = ({
   accessibilityLabel,
   surface,
   handleColor,
-  scrim = "rgba(15,37,87,0.35)",
+  scrim = withAlpha(PALETTE.ink, 0.35),
   maxHeightRatio = 0.92,
   desktopWidth = 640,
   applyBottomInset = true,

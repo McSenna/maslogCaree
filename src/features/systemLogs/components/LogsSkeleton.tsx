@@ -65,7 +65,7 @@ export const MobileLogCardSkeleton = ({ count = 5 }: { count?: number }) => {
       {Array.from({ length: count }).map((_, i) => (
         <View
           key={i}
-          className="flex-row items-center gap-3 rounded-2xl border p-3.5"
+          className="flex-row items-center gap-3 rounded-lg border p-3.5"
           style={{ backgroundColor: palette.cardBg, borderColor: palette.cardBorder }}
         >
           <Skeleton className="h-9 w-9 rounded-xl" />

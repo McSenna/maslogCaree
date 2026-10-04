@@ -5,13 +5,13 @@ import {
   updateMissionSchedule,
   type MissionScheduleRecord,
 } from "@/services/appointments";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 import { isEndAfterStart, toIsoDateKey } from "../../utils/dateTime";
 import { hasMissionOnDate, missionCategorySelection } from "../../utils/missionCategories";
 import type { MissionCatalogue } from "../useMissionCatalogue";
 import type { MissionForm } from "../useMissionForm";
 import { toast } from "@/components/feedback/toast/toastStore";
+import { toastError } from "@/utils/errorToast/toastError";
 
 type Input = {
   catalogue: MissionCatalogue;
@@ -63,7 +63,7 @@ export const useMissionSaveActions = ({
       toast.success("Mission schedule created", "You can now assign patients from the queue.");
       return true;
     } catch (error: unknown) {
-      toast.error("Unable to create schedule", getApiErrorMessage(error, "The mission schedule could not be created."));
+      toastError("Unable to create schedule", error, { fallback: "The mission schedule could not be created." });
       return false;
     } finally {
       setSaving(false);
@@ -121,7 +121,7 @@ export const useMissionSaveActions = ({
       await loadMissionDetail(editMissionId);
       toast.success("Mission schedule updated");
     } catch (error: unknown) {
-      toast.error("Unable to update schedule", getApiErrorMessage(error, "The mission schedule could not be updated."));
+      toastError("Unable to update schedule", error, { fallback: "The mission schedule could not be updated." });
     } finally {
       setSaving(false);
     }

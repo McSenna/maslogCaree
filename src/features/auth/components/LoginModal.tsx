@@ -17,6 +17,7 @@ import { TYPE } from "@/theme/typography";
 
 import PlatformAccessModal from "@/features/auth/components/PlatformAccessModal";
 import ForgotPasswordFlow from "@/features/auth/forgotPassword/ForgotPasswordFlow";
+import { PASSWORD_MAX_LENGTH } from "@/features/auth/forgotPassword/passwordRules";
 
 import { useLoginForm } from "../hooks/useLoginForm";
 
@@ -85,6 +86,7 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
               onChangeText={form.setPassword}
               placeholder="Enter your password"
               autoComplete="current-password"
+              maxLength={PASSWORD_MAX_LENGTH}
               secureToggle
               returnKeyType="go"
               onSubmitEditing={submit}

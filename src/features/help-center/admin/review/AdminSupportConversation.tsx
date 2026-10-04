@@ -6,7 +6,7 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import { formatTicketDateTime } from "../../utils/support.utils";
 import type { SupportMessage } from "../../types/support.types";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AdminSupportConversationProps = {
   messages: SupportMessage[];
@@ -53,14 +53,14 @@ const AdminSupportConversation = ({ messages }: AdminSupportConversationProps) =
                   borderRadius: RADIUS.panel,
                   backgroundColor: isStaff
                     ? palette.isDark
-                      ? "rgba(2, 132, 199, 0.08)"
-                      : "#F0F9FF"
+                      ? withAlpha(PALETTE.blue[500], 0.08)
+                      : PALETTE.slate[50]
                     : palette.cardBg,
                   borderWidth: 1,
                   borderColor: isStaff
                     ? palette.isDark
-                      ? "rgba(56, 189, 248, 0.25)"
-                      : "#BAE6FD"
+                      ? withAlpha(PALETTE.blue[400], 0.25)
+                      : PALETTE.blue[200]
                     : palette.cardBorder,
                   gap: 8,
                 }}
@@ -74,22 +74,18 @@ const AdminSupportConversation = ({ messages }: AdminSupportConversationProps) =
                         borderRadius: RADIUS.pill,
                         backgroundColor: isStaff
                           ? palette.isDark
-                            ? "rgba(2, 132, 199, 0.25)"
-                            : "#E0F2FE"
+                            ? withAlpha(PALETTE.blue[500], 0.25)
+                            : PALETTE.blue[100]
                           : palette.isDark
-                            ? "rgba(148, 163, 184, 0.2)"
-                            : "#F1F5F9",
+                            ? withAlpha(PALETTE.slate[400], 0.2)
+                            : PALETTE.slate[100],
                       }}
                     >
                       <Text
                         style={{
                           fontSize: 11,
                           fontWeight: "700",
-                          color: isStaff
-                            ? palette.isDark
-                              ? "#38BDF8"
-                              : PALETTE.blue[600]
-                            : palette.muted,
+                          color: isStaff ? palette.primary : palette.muted,
                         }}
                       >
                         {isStaff ? "MaslogCare Support" : message.authorRole || "Requester"}

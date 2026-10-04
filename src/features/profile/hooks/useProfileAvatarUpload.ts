@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { toast } from "@/components/feedback/toast/toastStore";
 import { useProfilePhoto } from "@/features/auth/hooks/useProfilePhoto";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { getCachedAccessToken } from "@/utils/storage";
 import type { AuthContextValue } from "@/contexts/AuthContext";
 import { updateMyProfile } from "../services/profileService";
+import { toastError } from "@/utils/errorToast/toastError";
 
 type Options = {
   applyAuthUser: AuthContextValue["applyAuthUser"];
@@ -29,10 +29,7 @@ export const useProfileAvatarUpload = ({ applyAuthUser }: Options) => {
         toast.success("Profile photo updated");
       } catch (error: unknown) {
         if (!cancelled) {
-          toast.error(
-            "Photo not updated",
-            getApiErrorMessage(error, "Unable to update your photo right now. Please try again.")
-          );
+          toastError("Photo not updated", error, { fallback: "Unable to update your photo right now. Please try again." });
         }
       } finally {
         if (!cancelled) {

@@ -6,7 +6,7 @@ export const MEDICAL_CATEGORY: HelpCategory = {
   description:
     "Understand the health and medical information available through your MaslogCare account.",
   icon: "activity",
-  tone: "pink",
+  tone: "care",
   articles: [
     {
       id: "medical-details",

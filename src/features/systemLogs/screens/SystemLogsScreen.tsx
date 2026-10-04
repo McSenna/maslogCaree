@@ -4,6 +4,7 @@ import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import LogDetailsBottomSheet from "../components/LogDetailsBottomSheet";
 import LogSummaryCards from "../components/LogSummaryCards";
+import OutcomeFilterChip from "../components/toolbar/OutcomeFilterChip";
 import { clearActivitySearch, peekActivitySearch } from "../activitySearchHandoff";
 import { useSystemLogsPalette } from "../components/systemLogsTheme";
 import { useLogExport } from "../hooks/useLogExport";
@@ -16,6 +17,7 @@ import LogFiltersToolbar from "./LogFiltersToolbar";
 import { buildFallback, buildMobileContent } from "./LogsListContent";
 import MobileLogsView from "./MobileLogsView";
 import { useResponsive } from "@/hooks/useResponsive";
+import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 const SystemLogsScreen = () => {
   const palette = useSystemLogsPalette();
@@ -28,10 +30,20 @@ const SystemLogsScreen = () => {
 
   const [tableAreaWidth, setTableAreaWidth] = useState(0);
 
-  const filters = useLogFilters(initialSearch);
-  const { logs, loading, refreshing, error, total, totalPages, fetchLogs, refreshLogs } =
+  // The count from the last load lets the filters move a page past the end back onto the last page.
+  const [listTotal, setListTotal] = useState<number | null>(null);
+  const filters = useLogFilters(initialSearch, listTotal);
+  const { logs, loading: fetching, refreshing, error, total, totalPages, fetchLogs, refreshLogs } =
     useSystemLogs(filters.params);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mirrors the server's count once a load settles
+    if (!fetching) setListTotal(total);
+  }, [fetching, total]);
+  // A page past the end reads as loading until it moves to the new last page, never as "no logs".
+  const loading = fetching || (total > 0 && filters.page > totalPages);
   const { stats } = useSystemLogStats();
+  // A new page starts at its first row.
+  const scrollRef = useScrollTopOnChange<ScrollView>(filters.page);
 
   const selection = useLogSelection(
     logs,
@@ -41,6 +53,7 @@ const SystemLogsScreen = () => {
       filters.params.role,
       filters.params.logType,
       filters.params.severity,
+      filters.params.outcome,
       filters.dateRange.fromDay,
       filters.dateRange.toDay,
     ])
@@ -68,6 +81,7 @@ const SystemLogsScreen = () => {
       <RoleScreenBackdrop color={palette.pageBg} insets={insets} />
 
       <ScrollView
+        ref={scrollRef}
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -85,7 +99,12 @@ const SystemLogsScreen = () => {
         }
       >
         <View className="w-full gap-5">
-          <LogSummaryCards stats={stats} isDesktop={isDesktop} />
+          <LogSummaryCards
+            stats={stats}
+            isDesktop={isDesktop}
+            activeCard={filters.activeCard}
+            onSelectCard={filters.showCard}
+          />
 
           <LogFiltersToolbar
             filters={filters}
@@ -93,6 +112,8 @@ const SystemLogsScreen = () => {
             onExport={() => void exportLogs()}
             exporting={exporting}
           />
+
+          {filters.outcome === "success" ? <OutcomeFilterChip onClear={filters.clearOutcome} /> : null}
 
           {isDesktop ? (
             <DesktopLogsView

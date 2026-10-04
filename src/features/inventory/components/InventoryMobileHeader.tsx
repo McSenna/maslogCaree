@@ -2,16 +2,20 @@ import type { ReactNode } from "react";
 import { Text, View } from "react-native";
 import type { InventorySummary } from "../services/inventoryService";
 import InventoryMetricCards from "./InventoryMetricCards";
-import { useInventoryPalette } from "./inventoryTheme";
+import { useInventoryPalette, type InventoryMetricKey } from "./inventoryTheme";
 
 type InventoryMobileHeaderProps = {
   summary: InventorySummary;
   toolbar: ReactNode;
+  activeCard: InventoryMetricKey | null;
+  onSelectCard: (key: InventoryMetricKey) => void;
 };
 
 const InventoryMobileHeader = ({
   summary,
   toolbar,
+  activeCard,
+  onSelectCard,
 }: InventoryMobileHeaderProps) => {
   const palette = useInventoryPalette();
 
@@ -30,7 +34,7 @@ const InventoryMobileHeader = ({
         </Text>
       </View>
 
-      <InventoryMetricCards summary={summary} isWide={false} />
+      <InventoryMetricCards summary={summary} isWide={false} activeCard={activeCard} onSelectCard={onSelectCard} />
       {toolbar}
     </View>
   );

@@ -1,6 +1,7 @@
 import { Platform, StyleSheet, Text, View } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
 import { LANDING_CONTENT } from "@/config/landingContent";
+import { PALETTE } from "@/theme/palette";
 
 const FONT_FAMILY = Platform.select({
   ios: "System",
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
     color: LANDING_COLORS.primaryBlue,
   },
   description: {
-    color: "#475569",
+    color: PALETTE.slate[700],
     fontWeight: "400",
     letterSpacing: -0.1,
     fontFamily: FONT_FAMILY,

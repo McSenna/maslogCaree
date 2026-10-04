@@ -17,6 +17,7 @@ import NotificationPanelFooter from "./panel/NotificationPanelFooter";
 import NotificationPanelHeader from "./panel/NotificationPanelHeader";
 import { resolvePanelPlacement } from "./panel/panelPlacement";
 import { usePanelAnimation } from "./panel/usePanelAnimation";
+import { PALETTE } from "@/theme/palette";
 
 const LIST_CONTENT_STYLE = { paddingBottom: 4 } as const;
 
@@ -102,7 +103,7 @@ const NotificationPanel = ({ visible, onClose, bellPosition }: NotificationPanel
             borderWidth: 1,
             borderColor: palette.border,
             backgroundColor: palette.surface,
-            ...createShadow({ color: "#0F172A", offsetY: 16, radius: 40, opacity: 0.16, elevation: 20 }),
+            ...createShadow({ color: PALETTE.slate[800], offsetY: 16, radius: 40, opacity: 0.16, elevation: 20 }),
           }}
         >
           <NotificationPanelHeader

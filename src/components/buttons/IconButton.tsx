@@ -7,10 +7,11 @@ import FadeIn from "@/components/animations/FadeIn";
 import { TIMING, webTransition } from "@/theme/motion";
 import { RADII } from "@/theme/radius";
 import { webStyle } from "@/theme/webStyle";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const ICON_BUTTON_WEB = webStyle({ cursor: "pointer", transition: webTransition("background-color", "border-color") });
 
-const INVERSE_SOFT = "rgba(255,255,255,0.18)";
+const INVERSE_SOFT = withAlpha(PALETTE.white, 0.18);
 
 type IconButtonVariant = "ghost" | "outline" | "soft" | "solid";
 
@@ -51,7 +52,7 @@ const IconButton = ({
       : variant === "soft" || active ? softBackground
         : "transparent";
   const border = variant === "outline" ? (active ? accent : colors.border) : "transparent";
-  const foreground = inverse ? "#FFFFFF" : variant === "solid" ? colors.onPrimary : active ? accent : colors.muted;
+  const foreground = inverse ? PALETTE.white : variant === "solid" ? colors.onPrimary : active ? accent : colors.muted;
 
   return (
     <Animated.View style={[{ position: "relative" }, scaleStyle, style]}>
@@ -94,10 +95,10 @@ const IconButton = ({
               paddingHorizontal: 8,
               paddingVertical: 4,
               borderRadius: RADII.small,
-              backgroundColor: colors.scheme === "dark" ? "#E2E8F0" : "#0F172A",
+              backgroundColor: colors.scheme === "dark" ? PALETTE.slate[200] : PALETTE.slate[800],
             }}
           >
-            <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: "500", color: colors.scheme === "dark" ? "#0F172A" : "#FFFFFF" }}>
+            <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: "500", color: colors.scheme === "dark" ? PALETTE.slate[800] : PALETTE.white }}>
               {label}
             </Text>
           </View>

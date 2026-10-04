@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { APPOINTMENT_COLORS, APPOINTMENT_METRICS } from "./appointmentTheme";
+import { PALETTE } from "@/theme/palette";
 
 type AppointmentAlertProps = {
   message: string;
@@ -47,7 +48,7 @@ const AppointmentAlert = ({
         style={{
           fontSize: 13,
           lineHeight: isDanger ? 18 : 19,
-          color: isDanger ? "#991B1B" : APPOINTMENT_COLORS.bodyText,
+          color: isDanger ? PALETTE.red[700] : APPOINTMENT_COLORS.bodyText,
         }}
       >
         {message}

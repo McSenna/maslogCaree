@@ -7,13 +7,14 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import { useDialogEnter } from "@/hooks/useDialogEnter";
 import { useModalFrame } from "@/hooks/useModalFrame";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const DETAILS_MODAL_RADIUS = 20;
 
-const BACKDROP_COLOR = "rgba(15,23,42,0.35)";
+const BACKDROP_COLOR = withAlpha(PALETTE.slate[800], 0.35);
 const BACKDROP_BLUR = Platform.OS === "web" ? ({ backdropFilter: "blur(3px)" } as object) : null;
 const SURFACE_SHADOW = createShadow({
-  color: "#0F2557",
+  color: PALETTE.ink,
   offsetY: 18,
   radius: 40,
   opacity: 0.22,

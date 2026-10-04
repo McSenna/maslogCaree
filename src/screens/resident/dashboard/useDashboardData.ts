@@ -5,6 +5,10 @@ import {
   type ResidentDashboardData,
 } from "@/services/residentDashboardService";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { useRealtimeRefetch } from "@/hooks/realtime/useRealtimeRefetch";
+
+// Everything the dashboard's counts and "next appointment" are computed from.
+const DASHBOARD_SOURCES = ["myAppointment", "myMedicalRecord", "announcement", "notification"] as const;
 
 export const useDashboardData = () => {
   const [data, setData] = useState<ResidentDashboardData | null>(null);
@@ -49,6 +53,8 @@ export const useDashboardData = () => {
       void load(everLoadedRef.current ? "quiet" : "full");
     }, [load])
   );
+
+  useRealtimeRefetch(DASHBOARD_SOURCES, () => load("quiet"));
 
   return { data, loading, refreshing, error, loadedAt, load };
 };

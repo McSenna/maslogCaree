@@ -1,4 +1,10 @@
-export type MetricTone = "blue" | "green" | "pink" | "purple" | "amber";
+/**
+ * Metric and category accents, named by meaning so a colour is never picked for
+ * looks: primary (Healthcare Blue) for core counts, care (Healthcare Green) for
+ * healthcare and positive measures, accent (Warm Orange) for what needs a look,
+ * danger for failures, neutral for everything else.
+ */
+export type MetricTone = "primary" | "care" | "accent" | "danger" | "neutral";
 
 export type TrendDirection = "up" | "down";
 
@@ -23,6 +29,9 @@ export type StatusTone = {
 };
 
 export type StatusToneName = "success" | "warning" | "danger" | "info" | "progress" | "neutral";
+
+/** Accounts by role. Chart hues, validated as a set (see design/adminDashboard/lightPalette.ts). */
+export type RoleColorKey = "admin" | "doctor" | "midwife" | "bhw" | "resident";
 
 export type AdminDashboardPalette = {
   pageBg: string;
@@ -55,4 +64,5 @@ export type AdminDashboardPalette = {
   trends: Record<TrendDirection, TrendTone>;
   /** Meaning-bearing colours (done, needs attention, failed); never used as decoration. */
   statusTones: Record<StatusToneName, StatusTone>;
+  roleColors: Record<RoleColorKey, string>;
 };

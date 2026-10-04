@@ -6,7 +6,7 @@ export const NOTIFICATIONS_CATEGORY: HelpCategory = {
   description:
     "Learn about appointment reminders, account updates, approvals, and other MaslogCare notifications.",
   icon: "bell",
-  tone: "purple",
+  tone: "accent",
   articles: [
     {
       id: "appointment-approval-notice",

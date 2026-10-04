@@ -8,6 +8,7 @@ import InventoryMetricCards from "./InventoryMetricCards";
 import InventoryTableCard from "./InventoryTableCard";
 import InventoryToolbar from "./InventoryToolbar";
 import { useInventoryPalette } from "./inventoryTheme";
+import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 type InventoryDesktopLayoutProps = {
   controller: InventoryScreenController;
@@ -21,6 +22,8 @@ const InventoryDesktopLayout = ({
   const palette = useInventoryPalette();
   const { query, data, selection, mutations, detailsActions, sideBySide } = controller;
   const { filters } = query;
+  // A new page starts at its first row.
+  const scrollRef = useScrollTopOnChange<ScrollView>(query.page);
 
   const tableCard = (
     <InventoryTableCard
@@ -54,6 +57,7 @@ const InventoryDesktopLayout = ({
 
   return (
     <ScrollView
+      ref={scrollRef}
       className="flex-1"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={controller.contentPadding}
@@ -67,7 +71,12 @@ const InventoryDesktopLayout = ({
       }
     >
       <View className="w-full gap-5">
-        <InventoryMetricCards summary={data.summary} isWide={controller.fourMetrics} />
+        <InventoryMetricCards
+          summary={data.summary}
+          isWide={controller.fourMetrics}
+          activeCard={query.activeCard}
+          onSelectCard={query.showCard}
+        />
 
         <InventoryToolbar
           search={query.searchInput}

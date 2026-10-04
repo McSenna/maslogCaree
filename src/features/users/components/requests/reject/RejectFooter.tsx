@@ -1,5 +1,6 @@
 import { ActivityIndicator, Pressable, Text } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { PALETTE } from "@/theme/palette";
 
 const RejectFooter = ({
   loading,
@@ -31,9 +32,9 @@ const RejectFooter = ({
       style={{ opacity: loading ? 0.75 : 1 }}
     >
       {loading ? (
-        <ActivityIndicator size="small" color="#fff" />
+        <ActivityIndicator size="small" color={PALETTE.white} />
       ) : (
-        <Feather name="x-circle" size={14} color="#fff" />
+        <Feather name="x-circle" size={14} color={PALETTE.white} />
       )}
       <Text className="text-xs font-bold text-white">{loading ? "Rejecting..." : "Reject Request"}</Text>
     </Pressable>

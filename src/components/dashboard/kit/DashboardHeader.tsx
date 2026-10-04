@@ -23,36 +23,10 @@ type DashboardHeaderProps = {
   subtitle: string;
   primaryAction?: DashboardAction;
   secondaryActions?: DashboardAction[];
-  /** "Updated 4 min ago"; shown beside the refresh button. */
+  /** "Updated 4 min ago"; shown beside the actions on wide screens. */
   updatedLabel?: string;
-  onRefresh?: () => void;
-  refreshing?: boolean;
   compact: boolean;
 };
-
-const RefreshButton = ({
-  palette,
-  onRefresh,
-  refreshing,
-  updatedLabel,
-}: {
-  palette: AdminDashboardPalette;
-  onRefresh: () => void;
-  refreshing: boolean;
-  updatedLabel?: string;
-}) => (
-  <DashboardButton
-    palette={palette}
-    variant="secondary"
-    icon="refresh-cw"
-    label="Refresh"
-    iconOnly
-    size="md"
-    onPress={onRefresh}
-    loading={refreshing}
-    accessibilityLabel={updatedLabel ? `Refresh dashboard. ${updatedLabel}` : "Refresh dashboard"}
-  />
-);
 
 /**
  * The top of every role dashboard: who it is for, what today looks like, and the one or two things
@@ -65,8 +39,6 @@ const DashboardHeader = ({
   primaryAction,
   secondaryActions = [],
   updatedLabel,
-  onRefresh,
-  refreshing = false,
   compact,
 }: DashboardHeaderProps) => {
   const heading = (
@@ -91,7 +63,7 @@ const DashboardHeader = ({
     return (
       <View className="gap-3">
         {heading}
-        {primaryAction || onRefresh ? (
+        {primaryAction || phoneSecondary.length > 0 ? (
           <View className="flex-row items-center gap-2">
             {primaryAction ? (
               <View className="min-w-0 flex-1">
@@ -122,14 +94,6 @@ const DashboardHeader = ({
                 accessibilityHint={action.accessibilityHint}
               />
             ))}
-            {onRefresh ? (
-              <RefreshButton
-                palette={palette}
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-                updatedLabel={updatedLabel}
-              />
-            ) : null}
           </View>
         ) : null}
       </View>
@@ -145,14 +109,6 @@ const DashboardHeader = ({
           <Text className="text-[12.5px] font-medium" style={{ color: palette.subtle }}>
             {updatedLabel}
           </Text>
-        ) : null}
-        {onRefresh ? (
-          <RefreshButton
-            palette={palette}
-            onRefresh={onRefresh}
-            refreshing={refreshing}
-            updatedLabel={updatedLabel}
-          />
         ) : null}
         {secondaryActions.map((action) => (
           <DashboardButton

@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
+import { PALETTE } from "@/theme/palette";
 
 export const DetailsLoading = ({ palette }: { palette: ResidentDialogPalette }) => (
   <View
@@ -55,7 +56,7 @@ export const DetailsError = ({
           backgroundColor: palette.accent,
         }}
       >
-        <Text style={{ color: "#FFFFFF", fontSize: 13, fontWeight: "600" }}>Try Again</Text>
+        <Text style={{ color: PALETTE.white, fontSize: 13, fontWeight: "600" }}>Try Again</Text>
       </Pressable>
     ) : null}
   </View>

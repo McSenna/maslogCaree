@@ -4,6 +4,7 @@ import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleThem
 import { createShadow } from "@/design/shadow";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 import { EASING, TIMING } from "@/theme/motion";
+import { PALETTE } from "@/theme/palette";
 
 type ServiceToggleProps = {
   value: boolean;
@@ -60,7 +61,7 @@ const ServiceToggle = ({ value, onChange, label, disabled = false }: ServiceTogg
             width: KNOB,
             height: KNOB,
             borderRadius: KNOB / 2,
-            backgroundColor: "#FFFFFF",
+            backgroundColor: PALETTE.white,
             transform: [
               {
                 translateX: progress.interpolate({
@@ -70,7 +71,7 @@ const ServiceToggle = ({ value, onChange, label, disabled = false }: ServiceTogg
               },
             ],
             ...createShadow({
-              color: "#0F172A",
+              color: PALETTE.slate[800],
               offsetY: 1,
               radius: 3,
               opacity: 0.18,

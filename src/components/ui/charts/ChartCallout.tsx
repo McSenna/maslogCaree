@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
 export type CalloutContent = { title: string; meta: string };
 
@@ -44,7 +45,7 @@ const ChartCallout = ({
           borderWidth: border === "transparent" ? 0 : 1,
           borderColor: border,
           ...createShadow({
-            color: "#0F172A",
+            color: PALETTE.slate[800],
             offsetY: 4,
             radius: 10,
             opacity: 0.18,
@@ -52,13 +53,13 @@ const ChartCallout = ({
           }),
         }}
       >
-        <Text numberOfLines={1} className="text-[12.5px] font-bold" style={{ color: "#FFFFFF" }}>
+        <Text numberOfLines={1} className="text-[12.5px] font-bold" style={{ color: PALETTE.white }}>
           {content.title}
         </Text>
         <Text
           numberOfLines={1}
           className="mt-0.5 text-[11.5px] font-medium"
-          style={{ color: "#CBD5E1" }}
+          style={{ color: PALETTE.slate[300] }}
         >
           {content.meta}
         </Text>

@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import type { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import { buildPageList } from "./buildPageList";
+import { PALETTE } from "@/theme/palette";
 
 const DesktopPagination = ({
   page,
@@ -65,7 +66,7 @@ const DesktopPagination = ({
             >
               <Text
                 className="text-[13px] font-semibold"
-                style={{ color: p === page ? "#FFFFFF" : palette.body }}
+                style={{ color: p === page ? PALETTE.white : palette.body }}
               >
                 {p}
               </Text>

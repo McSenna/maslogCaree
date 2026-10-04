@@ -5,7 +5,7 @@ import type { QueuePalette } from "@/components/appointmentQueue/queueTheme";
 import type { AppointmentRecord } from "@/services/appointments";
 
 import { canCancelAppointment, canRescheduleAppointment } from "../../appointmentPresenter";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type Props = {
   appointment: AppointmentRecord;
@@ -69,8 +69,8 @@ export const AppointmentSheetActions = ({
           label="Reschedule"
           icon="calendar"
           color={PALETTE.blue[600]}
-          background={palette.isDark ? "rgba(2, 132, 199, 0.2)" : "#F0F9FF"}
-          border={palette.isDark ? "rgba(2, 132, 199, 0.4)" : "#BAE6FD"}
+          background={palette.isDark ? withAlpha(PALETTE.blue[500], 0.2) : PALETTE.slate[50]}
+          border={palette.isDark ? withAlpha(PALETTE.blue[500], 0.4) : PALETTE.blue[200]}
           onPress={() => onReschedule(appointment)}
         />
       ) : null}
@@ -79,9 +79,9 @@ export const AppointmentSheetActions = ({
         <ActionButton
           label="Cancel Appointment"
           icon="x-circle"
-          color="#EF4444"
-          background={palette.isDark ? "rgba(239, 68, 68, 0.15)" : "#FEF2F2"}
-          border={palette.isDark ? "rgba(239, 68, 68, 0.3)" : "#FECACA"}
+          color={PALETTE.red[500]}
+          background={palette.isDark ? withAlpha(PALETTE.red[500], 0.15) : PALETTE.red[50]}
+          border={palette.isDark ? withAlpha(PALETTE.red[500], 0.3) : PALETTE.red[200]}
           onPress={() => onCancel(appointment)}
         />
       ) : null}

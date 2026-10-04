@@ -6,6 +6,7 @@ import {
   PROFILE_SHADOW,
 } from "../config/profileTheme";
 import ProfileOverlay from "./ProfileOverlay";
+import { PALETTE } from "@/theme/palette";
 
 export type ProfileNotice = {
   title: string;
@@ -81,7 +82,7 @@ const ProfileNoticeModal = ({ notice, onClose }: ProfileNoticeModalProps) => (
             backgroundColor: PROFILE_COLORS.primary,
           }}
         >
-          <Text style={{ fontSize: 15, fontWeight: "700", color: "#FFFFFF" }}>
+          <Text style={{ fontSize: 15, fontWeight: "700", color: PALETTE.white }}>
             Got It
           </Text>
         </Pressable>

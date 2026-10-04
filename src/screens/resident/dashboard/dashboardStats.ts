@@ -11,7 +11,7 @@ export const buildStats = (data: ResidentDashboardData | null): StatItem[] => {
       value: s?.upcomingAppointments ?? 0,
       caption: "Booked or requested",
       icon: "calendar-outline",
-      tone: "blue",
+      tone: "primary",
     },
     {
       id: "completed",
@@ -20,7 +20,7 @@ export const buildStats = (data: ResidentDashboardData | null): StatItem[] => {
       value: s?.completedAppointments ?? 0,
       caption: "Visits so far",
       icon: "checkmark",
-      tone: "green",
+      tone: "care",
     },
     {
       id: "records",
@@ -29,7 +29,7 @@ export const buildStats = (data: ResidentDashboardData | null): StatItem[] => {
       value: s?.medicalRecords ?? 0,
       caption: "Ready to view",
       icon: "document-text-outline",
-      tone: "purple",
+      tone: "neutral",
     },
     {
       id: "announcements",
@@ -38,7 +38,7 @@ export const buildStats = (data: ResidentDashboardData | null): StatItem[] => {
       value: s?.unreadAnnouncements ?? 0,
       caption: "Not read yet",
       icon: "notifications-outline",
-      tone: "orange",
+      tone: "accent",
     },
   ];
 };

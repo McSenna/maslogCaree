@@ -80,6 +80,12 @@ describe("send and resend failures", () => {
     assert.equal(describeSendFailure("EMAIL_EXISTS", { isResend: false }), OTP_COPY.emailTaken);
   });
 
+  it("asks the user to check the address when the mail server refuses it", () => {
+    const expected = "We couldn't deliver a code to this address. Check it for typos or use a different email.";
+    assert.equal(describeSendFailure("EMAIL_RECIPIENT_INVALID", { isResend: false }), expected);
+    assert.equal(describeSendFailure("EMAIL_RECIPIENT_INVALID", { isResend: true }), expected);
+  });
+
   it("falls back to a generic message for mail-service errors", () => {
     assert.equal(describeSendFailure("EMAIL_AUTH_FAILED", { isResend: true }), OTP_COPY.resendGeneric);
   });

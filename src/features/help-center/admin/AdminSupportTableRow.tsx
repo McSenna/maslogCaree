@@ -10,6 +10,7 @@ import AdminTicketStatusBadge from "./AdminTicketStatusBadge";
 import { SUPPORT_TABLE_COLUMNS } from "./adminSupportTableColumns";
 import { formatTicketDate, supportCategoryLabel } from "../utils/support.utils";
 import type { SupportTicketSummary } from "../types/support.types";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AdminSupportTableRowProps = {
   ticket: SupportTicketSummary;
@@ -50,12 +51,12 @@ const AdminSupportTableRow = ({ ticket, isLast, onReview }: AdminSupportTableRow
             paddingHorizontal: 8,
             paddingVertical: 3,
             borderRadius: RADIUS.control,
-            backgroundColor: palette.isDark ? "rgba(99, 102, 241, 0.12)" : "#F1F5F9",
+            backgroundColor: palette.isDark ? withAlpha(PALETTE.blue[600], 0.12) : PALETTE.slate[100],
             borderWidth: 1,
-            borderColor: palette.isDark ? "rgba(99, 102, 241, 0.25)" : "#E2E8F0",
+            borderColor: palette.isDark ? withAlpha(PALETTE.blue[600], 0.25) : PALETTE.slate[200],
           }}
         >
-          <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: "700", color: palette.isDark ? "#A5B4FC" : "#334155", fontVariant: ["tabular-nums"] }}>
+          <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: "700", color: palette.isDark ? PALETTE.blue[300] : PALETTE.slate[700], fontVariant: ["tabular-nums"] }}>
             {ticket.ticketNumber}
           </Text>
         </View>
@@ -121,8 +122,8 @@ const AdminSupportTableRow = ({ ticket, isLast, onReview }: AdminSupportTableRow
         >
           {({ hovered }) => (
             <>
-              <Feather name="eye" size={13} color={hovered ? "#FFFFFF" : palette.heading} />
-              <Text style={{ fontSize: 12, fontWeight: "600", color: hovered ? "#FFFFFF" : palette.heading }}>
+              <Feather name="eye" size={13} color={hovered ? PALETTE.white : palette.heading} />
+              <Text style={{ fontSize: 12, fontWeight: "600", color: hovered ? PALETTE.white : palette.heading }}>
                 Review
               </Text>
             </>

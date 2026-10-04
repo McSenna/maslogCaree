@@ -14,7 +14,7 @@ import {
   medicalRecordIdOf,
   residentStatusLabel,
 } from "../appointmentPresenter";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type AppointmentCardProps = {
   appointment: AppointmentRecord;
@@ -104,7 +104,7 @@ const AppointmentCard = ({
                 borderRadius: 8,
                 backgroundColor: palette.primarySoft,
                 borderWidth: 1,
-                borderColor: palette.isDark ? "rgba(90, 150, 242, 0.4)" : PALETTE.blue[200],
+                borderColor: palette.isDark ? withAlpha(PALETTE.blue[400], 0.4) : PALETTE.blue[200],
               }}
             >
               <MaterialCommunityIcons
@@ -136,7 +136,7 @@ const AppointmentCard = ({
                 borderRadius: 8,
                 backgroundColor: palette.primarySoft,
                 borderWidth: 1,
-                borderColor: palette.isDark ? "rgba(90, 150, 242, 0.4)" : PALETTE.blue[200],
+                borderColor: palette.isDark ? withAlpha(PALETTE.blue[400], 0.4) : PALETTE.blue[200],
               }}
             >
               <Feather name="calendar" size={13} color={palette.primary} />
@@ -161,13 +161,13 @@ const AppointmentCard = ({
                 paddingHorizontal: 10,
                 paddingVertical: 6,
                 borderRadius: 8,
-                backgroundColor: palette.isDark ? "rgba(239, 68, 68, 0.12)" : "#FEF2F2",
+                backgroundColor: palette.isDark ? withAlpha(PALETTE.red[500], 0.12) : PALETTE.red[50],
                 borderWidth: 1,
-                borderColor: palette.isDark ? "rgba(239, 68, 68, 0.3)" : "#FECACA",
+                borderColor: palette.isDark ? withAlpha(PALETTE.red[500], 0.3) : PALETTE.red[200],
               }}
             >
-              <Feather name="x-circle" size={13} color="#EF4444" />
-              <Text style={{ fontSize: 12, fontWeight: "600", color: "#EF4444" }}>
+              <Feather name="x-circle" size={13} color={PALETTE.red[600]} />
+              <Text style={{ fontSize: 12, fontWeight: "600", color: PALETTE.red[700] }}>
                 Cancel
               </Text>
             </Pressable>

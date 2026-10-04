@@ -1,4 +1,5 @@
 import type { ClientPlatform } from "@/config/platformAccess";
+import { reportError } from "@/utils/errorReporting";
 import { clearStoredUser } from "@/utils/storage";
 
 export const getTokenPlatform = (token: string): ClientPlatform | null => {
@@ -12,7 +13,7 @@ export const logout = (): boolean => {
     clearStoredUser();
     return true;
   } catch (error) {
-    console.warn("Failed to clear stored session", error);
+    reportError("Failed to clear stored session", error);
     return false;
   }
 };

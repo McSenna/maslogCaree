@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { toastBackgroundError } from "@/utils/errorToast/toastError";
+import { useRealtimePagedList } from "@/hooks/realtime/useRealtimePagedList";
+import { useLatestRef } from "@/hooks/useLatestRef";
+import { usePersistedPagination } from "@/hooks/usePersistedPagination";
+import type { ListSchema } from "@/lib/listState/listStateCodec";
+import { removeItem, replaceKnown } from "@/lib/realtime/collectionReducer";
 import {
   EMPTY_RESIDENT_PAGE,
   getResidents,
@@ -10,13 +16,19 @@ import { RESIDENT_PAGE_SIZE } from "../components/residentsLayout";
 
 const SEARCH_DEBOUNCE_MS = 350;
 
-export const useResidents = () => {
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [status, setStatusValue] = useState<ResidentStatusFilter>("all");
-  const [sort, setSortValue] = useState<ResidentSortKey>("created_desc");
-  const [page, setPage] = useState(1);
+const STATUSES: readonly ResidentStatusFilter[] = ["all", "active", "inactive", "pending", "suspended", "restricted"];
+const SORTS: readonly ResidentSortKey[] = ["created_desc", "created_asc", "name_asc", "name_desc"];
 
+/** What the residents table keeps in its URL; the search box is kept apart (it can hold a name). */
+const RESIDENT_LIST_SCHEMA: ListSchema<{ status: ResidentStatusFilter; sort: ResidentSortKey }> = {
+  fields: {
+    status: { kind: "enum", values: STATUSES, fallback: "all" },
+    sort: { kind: "enum", values: SORTS, fallback: "created_desc" },
+  },
+  limits: [RESIDENT_PAGE_SIZE],
+};
+
+export const useResidents = () => {
   const [data, setData] = useState<ResidentPage>(EMPTY_RESIDENT_PAGE);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -24,25 +36,33 @@ export const useResidents = () => {
   const [error, setError] = useState<string | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearch(searchInput.trim());
-      setPage(1);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
+  // Page, status and sort live in the URL (and on phones, the last view), so a refresh lands on the same page.
+  const list = usePersistedPagination({
+    key: "residents",
+    schema: RESIDENT_LIST_SCHEMA,
+    total: hasLoaded ? data.total : null,
+    searchDebounceMs: SEARCH_DEBOUNCE_MS,
+  });
+  const { page, setPage, search, setFilters, replaceSearch } = list;
+  // Read inside the fetch effect without re-running it each time the page count changes.
+  const setPageRef = useLatestRef(setPage);
+  const { status, sort } = list.filters;
 
   const isRefreshRef = useRef(false);
+  // Set for a realtime reload: same page, no busy state, and a failure keeps the table.
+  const isQuietRef = useRef(false);
 
   useEffect(() => {
     const controller = new AbortController();
     let ignored = false;
 
     const isRefresh = isRefreshRef.current;
+    const isQuiet = isQuietRef.current;
     isRefreshRef.current = false;
+    isQuietRef.current = false;
 
     if (isRefresh) setRefreshing(true);
-    else setBusy(true);
+    else if (!isQuiet) setBusy(true);
 
     (async () => {
       try {
@@ -53,9 +73,11 @@ export const useResidents = () => {
         if (ignored) return;
         setData(result);
         setError(null);
-        if (result.page !== page) setPage(result.page);
+        if (result.page !== page) setPageRef.current(result.page);
       } catch (fetchError: unknown) {
         if (ignored) return;
+        // A failed quiet reload keeps the table on screen and says it may be behind.
+        if (isQuiet) return toastBackgroundError("Residents list not updated", fetchError);
         setError(getApiErrorMessage(fetchError, "Unable to load residents. Please try again."));
       } finally {
         if (!ignored) {
@@ -70,12 +92,7 @@ export const useResidents = () => {
       ignored = true;
       controller.abort();
     };
-  }, [search, status, sort, page, reloadToken]);
-
-  const resetToFirstPage = useCallback(<T,>(apply: (value: T) => void) => (value: T) => {
-    apply(value);
-    setPage(1);
-  }, []);
+  }, [search, status, sort, page, reloadToken, setPageRef]);
 
   const reload = useCallback(() => setReloadToken((token) => token + 1), []);
 
@@ -84,13 +101,40 @@ export const useResidents = () => {
     reload();
   }, [reload]);
 
+  // A new registration or a status change shows on its row at once; the quiet
+  // reload then fixes the summary cards, filters and order.
+  useRealtimePagedList("resident", {
+    patch: (change) =>
+      setData((current) => ({
+        ...current,
+        residents:
+          change.action === "deleted"
+            ? removeItem(current.residents, change.id, (resident) => resident._id)
+            : replaceKnown(current.residents, [change.record], (resident) => resident._id),
+      })),
+    reload: () => {
+      isQuietRef.current = true;
+      reload();
+    },
+  });
+
+  // A summary card counts every resident, so it clears the search as well.
+  const showStatus = useCallback(
+    (next: ResidentStatusFilter) => {
+      replaceSearch("");
+      setFilters({ status: next });
+    },
+    [replaceSearch, setFilters]
+  );
+
   return {
-    searchInput,
-    onSearchChange: setSearchInput,
+    showStatus,
+    searchInput: list.searchInput,
+    onSearchChange: list.setSearchInput,
     status,
-    onStatusChange: resetToFirstPage(setStatusValue),
+    onStatusChange: (next: ResidentStatusFilter) => setFilters({ status: next }),
     sort,
-    onSortChange: resetToFirstPage(setSortValue),
+    onSortChange: (next: ResidentSortKey) => setFilters({ sort: next }),
 
     page,
     setPage,

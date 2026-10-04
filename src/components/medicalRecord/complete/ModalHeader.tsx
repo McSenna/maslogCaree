@@ -10,6 +10,7 @@ const ModalHeader = ({
   dismissible,
   onRequestClose,
   palette,
+  closeLabel = "Close without completing",
 }: {
   title: string;
   subtitle?: string;
@@ -17,6 +18,7 @@ const ModalHeader = ({
   dismissible: boolean;
   onRequestClose: () => void;
   palette: QueuePalette;
+  closeLabel?: string;
 }) => (
   <View
     className="flex-row items-start justify-between gap-3 px-5 py-4"
@@ -43,7 +45,7 @@ const ModalHeader = ({
       onPress={() => dismissible && onRequestClose()}
       disabled={!dismissible}
       accessibilityRole="button"
-      accessibilityLabel="Close without completing"
+      accessibilityLabel={closeLabel}
       hitSlop={12}
       className="h-9 w-9 items-center justify-center rounded-full"
       style={{ backgroundColor: palette.skeleton, opacity: dismissible ? 1 : 0.5 }}

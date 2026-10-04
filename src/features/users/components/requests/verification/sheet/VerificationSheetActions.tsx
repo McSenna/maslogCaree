@@ -3,8 +3,9 @@ import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { DETAIL_RADIUS, useUserDetailsPalette } from "../../../details/detailsTheme";
+import { PALETTE } from "@/theme/palette";
 
-const APPROVE_GREEN = "#16A34A";
+const APPROVE_GREEN = PALETTE.success[600];
 
 type Props = {
   residentName?: string;
@@ -49,9 +50,9 @@ const VerificationSheetActions = ({
         }}
       >
         {approving ? (
-          <ActivityIndicator size="small" color="#FFFFFF" />
+          <ActivityIndicator size="small" color={PALETTE.white} />
         ) : (
-          <Feather name="check-circle" size={16} color="#FFFFFF" />
+          <Feather name="check-circle" size={16} color={PALETTE.white} />
         )}
         <Text className="text-[14.5px] font-bold text-white">
           {approving ? "Approving…" : "Approve Resident"}

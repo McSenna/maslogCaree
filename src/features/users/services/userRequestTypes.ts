@@ -23,6 +23,55 @@ export interface UserRequestResident {
   registrationDate?: string;
 }
 
+export type VerificationMethod = "master_list" | "admin_review";
+
+export type MasterListOutcome =
+  | "matched"
+  | "no_match"
+  | "partial_match"
+  | "conflict"
+  | "multiple_matches"
+  | "already_linked"
+  | "insufficient_data"
+  | "unavailable";
+
+export type MasterListReason =
+  | "dob_differs"
+  | "name_spelling_differs"
+  | "middle_name_missing"
+  | "middle_name_differs"
+  | "suffix_differs"
+  | "sex_differs"
+  | "address_missing"
+  | "address_differs";
+
+/** An official master list record as the admin sees it; `missing` means it was removed. */
+export interface MasterResidentRecord {
+  masterResidentId: string;
+  missing: boolean;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
+  suffix?: string;
+  dateOfBirth?: string;
+  sex?: string;
+  civilStatus?: string;
+  barangay?: string;
+  address?: string;
+  isActive?: boolean;
+}
+
+/** Admin-only result of the master list check made at sign-up. */
+export interface MasterListReview {
+  checked: boolean;
+  outcome: MasterListOutcome | null;
+  reasons: MasterListReason[];
+  checkedAt: string | null;
+  candidates: MasterResidentRecord[];
+  linkedRecord: MasterResidentRecord | null;
+  verificationMethod: VerificationMethod;
+}
+
 export interface UserRequestSummary {
   _id: string;
   userId: string | null;
@@ -37,6 +86,8 @@ export interface UserRequestSummary {
   rejectionRemarks: string;
   verifiedBy: string | null;
   verifiedAt: string | null;
+  verificationMethod?: VerificationMethod;
+  masterListOutcome?: MasterListOutcome | null;
   registeredAt: string;
 }
 
@@ -57,9 +108,12 @@ export interface UserRequestDetail {
     rejectionRemarks: string;
     verifiedBy: string | null;
     verifiedAt: string | null;
+    verificationMethod?: VerificationMethod;
     submittedAt: string;
     documentUrl: string;
   };
+  /** Absent when talking to a server that predates the master list check. */
+  masterList?: MasterListReview;
 }
 
 export interface UserRequestsCounts {

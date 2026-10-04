@@ -5,6 +5,8 @@ import { Pressable, Text, View } from "react-native";
 import { RADIUS } from "@/design/adminSurfaces";
 import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 
+import { toastError } from "@/utils/errorToast/toastError";
+
 import SupportAttachmentRow from "./SupportAttachmentRow";
 import SupportFieldShell from "./SupportFieldShell";
 import { SUPPORT_LIMITS } from "../constants/support.constants";
@@ -36,8 +38,9 @@ const SupportAttachmentPicker = ({
     try {
       const file = await pickSupportAttachment();
       if (file) onAdd(file);
-    } catch {
+    } catch (error: unknown) {
       setPickError("Could not open the file picker. Please try again.");
+      toastError("Attachment not added", error, { inline: true });
     }
   };
 

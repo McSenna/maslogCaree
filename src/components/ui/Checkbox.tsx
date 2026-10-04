@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, View } from "react-native";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { spaceKeyActivates } from "@/utils/spaceKeyActivates";
 
 type CheckboxProps = {
   checked: boolean;
@@ -21,6 +22,7 @@ const Checkbox = ({
   return (
     <Pressable
       onPress={() => onChange(!checked)}
+      {...spaceKeyActivates(() => onChange(!checked))}
       accessibilityRole="checkbox"
       accessibilityLabel={accessibilityLabel}
       accessibilityState={{ checked: indeterminate ? "mixed" : checked }}

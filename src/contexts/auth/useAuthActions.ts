@@ -4,9 +4,10 @@ import api from "@/services/api";
 import { CLIENT_PLATFORM, isPlatformAllowed } from "@/config/platformAccess";
 import { loginWithEmail, registerResident, type AuthUser, type RegisterPayload } from "@/services/auth";
 import { ERROR_CODES } from "@/utils/errorCodes";
-import { getApiErrorMessage, normalizeApiError } from "@/utils/apiErrorHandler";
+import { normalizeApiError } from "@/utils/apiErrorHandler";
+import { reportError } from "@/utils/errorReporting";
 import { clearStoredUser, setStoredUser } from "@/utils/storage";
-import { forceLogout } from "@/services/authEvents";
+import { beginSignOut, forceLogout } from "@/services/authEvents";
 import { releasePushToken } from "@/features/notifications/services/pushTokenRegistry";
 
 import type { CurrentUser } from "./authTypes";
@@ -77,16 +78,15 @@ export const useAuthActions = ({ setUser }: Options) => {
   }, []);
 
   const logout = useCallback(() => {
+    beginSignOut();
     void (async () => {
       await releasePushToken();
 
       try {
         await api.post("/logout");
       } catch (error) {
-        console.warn(
-          "Logout audit request failed; clearing local session anyway.",
-          getApiErrorMessage(error)
-        );
+        // The audit call is best effort; the local session is cleared either way.
+        reportError("Logout audit request failed", error);
       }
 
       setUser(null);

@@ -11,10 +11,12 @@ import {
   type AppointmentStatus,
 } from "@/components/appointmentQueue/queueTheme";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { REFRESH_FAILED, toastError } from "@/utils/errorToast/toastError";
 import { sortQueueBySlot } from "@/utils/queueOrder";
-import { toast } from "@/components/feedback/toast/toastStore";
+import { useRealtimeRefetch } from "@/hooks/realtime/useRealtimeRefetch";
 
-const REFRESH_FAILED = "Showing the last loaded data. Try again in a moment.";
+// The server orders the queue by triage priority and slot, so changes reload it rather than patch it.
+const QUEUE_SOURCES = ["appointment", "missionSchedule"] as const;
 
 type QueueScope = {
   categoryKey?: string;
@@ -72,7 +74,7 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
       } catch (error: unknown) {
         const message = getApiErrorMessage(error, "The appointment list could not be loaded.");
         if (refreshing) {
-          toast.error("Unable to refresh appointments", REFRESH_FAILED);
+          toastError("Unable to refresh appointments", error, { reason: REFRESH_FAILED });
         } else {
           setStatusList([]);
           setListError(message);
@@ -96,7 +98,7 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
       queueLoaded.current = true;
     } catch (error: unknown) {
       if (refreshing) {
-        toast.error("Unable to refresh the queue", REFRESH_FAILED);
+        toastError("Unable to refresh the queue", error, { reason: REFRESH_FAILED });
       } else {
         setQueue([]);
         setQueueError(getApiErrorMessage(error, "The queue could not be loaded."));
@@ -124,6 +126,8 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch synchronizing with the API
     void loadStatusList(activeStatus);
   }, [activeStatus, loadStatusList]);
+
+  useRealtimeRefetch(QUEUE_SOURCES, refreshAll);
 
   return {
     overview,

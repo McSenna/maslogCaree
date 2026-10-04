@@ -1,5 +1,6 @@
 import { RADIUS } from "../inventoryTheme";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
 type SurfaceInput = {
   isMobile: boolean;
@@ -22,7 +23,7 @@ export const inventoryModalSurface = ({
         borderTopRightRadius: 24,
         backgroundColor: cardBg,
         ...createShadow({
-          color: "#0F2557",
+          color: PALETTE.ink,
           offsetY: -6,
           radius: 24,
           opacity: 0.2,
@@ -36,7 +37,7 @@ export const inventoryModalSurface = ({
         backgroundColor: cardBg,
         borderColor: cardBorder,
         ...createShadow({
-          color: "#0F2557",
+          color: PALETTE.ink,
           offsetY: 12,
           radius: 28,
           opacity: 0.18,

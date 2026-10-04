@@ -15,24 +15,26 @@ export type DashboardThemeClasses = {
   skeleton: string;
 };
 
+// Tailwind's slate scale is the palette's neutral ramp (tailwind.config.js), so
+// these classes are the same colours the token-based screens use: Soft Gray
+// page, white 16px cards, Dark Navy headings, muted text that passes AA on the page.
 const dark: DashboardThemeClasses = {
   scrollBg: "bg-slate-950",
-  card: "rounded-3xl border border-slate-700/60 bg-slate-900/80 shadow-lg shadow-black/40",
+  card: "rounded-lg border border-slate-700 bg-slate-900",
   textPrimary: "text-slate-50",
   textSecondary: "text-slate-300",
-  // slate-400: slate-500 is only 4.2:1 on the dark page, below AA for body text.
   textMuted: "text-slate-400",
-  textAccent: "text-sky-400",
+  textAccent: "text-blue-300",
   skeleton: "bg-slate-700/60",
 };
 
 const light: DashboardThemeClasses = {
-  scrollBg: "bg-white",
-  card: "rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5",
-  textPrimary: "text-slate-900",
+  scrollBg: "bg-background",
+  card: "rounded-lg border border-slate-200 bg-white",
+  textPrimary: "text-slate-800",
   textSecondary: "text-slate-700",
-  textMuted: "text-slate-500",
-  textAccent: "text-sky-700",
+  textMuted: "text-slate-600",
+  textAccent: "text-blue-700",
   skeleton: "bg-slate-200",
 };
 

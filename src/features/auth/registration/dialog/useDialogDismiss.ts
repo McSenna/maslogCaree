@@ -12,6 +12,9 @@ type Options = {
   isSubmitting: boolean;
   isSucceeded: boolean;
   hasUnsavedInput: () => boolean;
+  /** The discard prompt; defaults to the registration wording. */
+  discardTitle?: string;
+  discardMessage?: string;
 };
 
 export const useDialogDismiss = ({
@@ -19,6 +22,8 @@ export const useDialogDismiss = ({
   isSubmitting,
   isSucceeded,
   hasUnsavedInput,
+  discardTitle = "Discard registration?",
+  discardMessage = "The details you have entered will not be saved.",
 }: Options) => {
   const requestClose = () => {
     if (isSubmitting) return;
@@ -26,7 +31,7 @@ export const useDialogDismiss = ({
       onClose();
       return;
     }
-    showAlert("Discard registration?", "The details you have entered will not be saved.", [
+    showAlert(discardTitle, discardMessage, [
       { text: "Keep editing", style: "cancel" },
       { text: "Discard", style: "destructive", onPress: onClose },
     ]);

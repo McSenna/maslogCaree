@@ -8,6 +8,7 @@ import {
 import { formatDateTime } from "@/utils/dateFormatter";
 
 import { RADIUS, useInventoryPalette } from "../inventoryTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const HistoryEntry = ({
   entry,
@@ -23,8 +24,8 @@ const HistoryEntry = ({
   const stamp = formatDateTime(entry.createdAt);
 
   const tone = increasing
-    ? { text: palette.isDark ? "#86EFAC" : "#15803D", bg: palette.isDark ? "rgba(34,197,94,0.16)" : "#DCFCE7" }
-    : { text: palette.isDark ? "#FDA4AF" : "#BE123C", bg: palette.isDark ? "rgba(244,63,94,0.16)" : "#FFE4E6" };
+    ? { text: palette.isDark ? PALETTE.success[200] : PALETTE.success[600], bg: palette.isDark ? withAlpha(PALETTE.success[500], 0.16) : PALETTE.success[50] }
+    : { text: palette.isDark ? PALETTE.red[300] : PALETTE.red[700], bg: palette.isDark ? withAlpha(PALETTE.red[500], 0.16) : PALETTE.red[100] };
 
   return (
     <View

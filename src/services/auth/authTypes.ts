@@ -76,11 +76,14 @@ export interface RegisterPayload {
   emailVerificationToken: string;
 }
 
+/** "approved" only when barangay policy verifies a sign-up on its own. */
+export type RegistrationStatus = "pending" | "approved";
+
 export interface RegisterResponse {
   success: true;
   message: string;
   email: string;
-  status?: string;
+  status?: RegistrationStatus;
 }
 
 export interface VerifyOtpResponse {

@@ -7,6 +7,7 @@ import type { AdminDashboardPalette } from "./adminDashboard/paletteTypes";
 export type {
   AdminDashboardPalette,
   MetricTone,
+  RoleColorKey,
   StatusTone,
   StatusToneName,
   ToneStyle,

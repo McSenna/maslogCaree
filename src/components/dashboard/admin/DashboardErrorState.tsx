@@ -30,7 +30,7 @@ const DashboardErrorState = ({
   return (
     <View
       accessibilityRole="alert"
-      className={`rounded-2xl border ${isBanner ? "flex-row items-center gap-3 p-3.5" : "items-center gap-3 p-8"}`}
+      className={`rounded-lg border ${isBanner ? "flex-row items-center gap-3 p-3.5" : "items-center gap-3 p-8"}`}
       style={{ backgroundColor: palette.cardBg, borderColor: palette.cardBorder }}
     >
       <View

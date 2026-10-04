@@ -3,7 +3,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AdminSupportHeaderProps = {
   total: number;
@@ -37,16 +37,16 @@ const AdminSupportHeader = ({ total, refreshing, onRefresh }: AdminSupportHeader
               paddingHorizontal: 8,
               paddingVertical: 3,
               borderRadius: RADIUS.pill,
-              backgroundColor: palette.isDark ? "rgba(2, 132, 199, 0.18)" : "#E0F2FE",
+              backgroundColor: palette.isDark ? withAlpha(PALETTE.blue[500], 0.18) : PALETTE.blue[100],
               borderWidth: 1,
-              borderColor: palette.isDark ? "rgba(56, 189, 248, 0.3)" : "#BAE6FD",
+              borderColor: palette.isDark ? withAlpha(PALETTE.blue[400], 0.3) : PALETTE.blue[200],
             }}
           >
             <Text
               style={{
                 fontSize: 12,
                 fontWeight: "600",
-                color: palette.isDark ? "#38BDF8" : PALETTE.blue[600],
+                color: palette.isDark ? PALETTE.blue[300] : PALETTE.blue[600],
               }}
             >
               {total} {total === 1 ? "Ticket" : "Tickets"}

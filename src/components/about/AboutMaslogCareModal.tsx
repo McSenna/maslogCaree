@@ -10,6 +10,7 @@ import AboutMaslogCareContent from "./AboutMaslogCareContent";
 import AboutFooter from "./AboutFooter";
 import AboutHeader from "./AboutHeader";
 import { CONTENT_GUTTER, ABOUT_RADIUS } from "./aboutTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AboutMaslogCareModalProps = {
   visible: boolean;
@@ -37,7 +38,7 @@ const AboutMaslogCareModal = ({ visible, onClose }: AboutMaslogCareModalProps) =
           alignItems: "center",
           justifyContent: "center",
           padding: 16,
-          backgroundColor: "rgba(8, 21, 47, 0.45)",
+          backgroundColor: withAlpha(PALETTE.ink, 0.45),
         }}
       >
         <Pressable
@@ -59,7 +60,7 @@ const AboutMaslogCareModal = ({ visible, onClose }: AboutMaslogCareModalProps) =
             backgroundColor: LANDING_COLORS.white,
             overflow: "hidden",
             ...Platform.select({
-              web: { boxShadow: "0px 26px 70px rgba(8, 21, 47, 0.28)" } as object,
+              web: { boxShadow: `0px 26px 70px ${withAlpha(PALETTE.ink, 0.28)}` } as object,
               default: { elevation: 16 },
             }),
           }}

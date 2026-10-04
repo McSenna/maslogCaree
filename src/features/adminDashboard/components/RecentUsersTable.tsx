@@ -7,12 +7,15 @@ import UserAvatar from "@/components/ui/UserAvatar";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { DashboardUser } from "@/services/adminDashboardService";
 
-type RoleGroup = "all" | "residents" | "staff";
+import { newestFirst, type AccountGroup } from "../utils/newestAccounts";
 
-const VISIBLE_ROWS = 6;
+type RoleGroup = AccountGroup;
 
-const inGroup = (user: DashboardUser, group: RoleGroup) =>
-  group === "all" || (group === "residents" ? user.role === "resident" : user.role !== "resident");
+const EMPTY_MESSAGES: Record<RoleGroup, string> = {
+  all: "No accounts yet.",
+  residents: "No resident accounts yet.",
+  staff: "No staff accounts yet.",
+};
 
 const joinedLabel = (iso: string): string => {
   const date = new Date(iso);
@@ -51,32 +54,26 @@ const UserCell = ({
 const RecentUsersTable = ({
   palette,
   isDark,
-  users,
+  newest,
+  totals,
   compact,
   onViewAll,
   fill = false,
 }: {
   palette: AdminDashboardPalette;
   isDark: boolean;
-  users: DashboardUser[];
+  /** Each filter's newest accounts, as the server sent them. */
+  newest: Record<RoleGroup, DashboardUser[]>;
+  /** Every account in each group, for the filter counts. */
+  totals: Record<RoleGroup, number>;
   compact: boolean;
   onViewAll: () => void;
   fill?: boolean;
 }) => {
   const [group, setGroup] = useState<RoleGroup>("all");
 
-  const counts = useMemo(
-    () => ({
-      all: users.length,
-      residents: users.filter((user) => inGroup(user, "residents")).length,
-      staff: users.filter((user) => inGroup(user, "staff")).length,
-    }),
-    [users]
-  );
-  const rows = useMemo(
-    () => users.filter((user) => inGroup(user, group)).slice(0, VISIBLE_ROWS),
-    [users, group]
-  );
+  // At most five, newest first, from the selected group's own newest accounts.
+  const rows = useMemo(() => newestFirst(newest[group]), [newest, group]);
 
   const columns: TableColumn<DashboardUser>[] = [
     { key: "user", header: "User", flex: 2.4, render: (user) => <UserCell palette={palette} user={user} /> },
@@ -125,9 +122,9 @@ const RecentUsersTable = ({
       onChange={setGroup}
       fill={compact}
       options={[
-        { value: "all", label: "All", count: counts.all },
-        { value: "residents", label: "Residents", count: counts.residents },
-        { value: "staff", label: "Staff", count: counts.staff },
+        { value: "all", label: "All", count: totals.all },
+        { value: "residents", label: "Residents", count: totals.residents },
+        { value: "staff", label: "Staff", count: totals.staff },
       ]}
     />
   );
@@ -171,7 +168,7 @@ const RecentUsersTable = ({
           </>
         )}
         emptyIcon="users"
-        emptyMessage={group === "all" ? "No accounts yet." : `No ${group} among the newest accounts.`}
+        emptyMessage={EMPTY_MESSAGES[group]}
       />
     </PanelCard>
   );

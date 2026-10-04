@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { QUEUE_RADIUS, useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import QuantityStepper from "./QuantityStepper";
 import type { DispensedLine } from "./useDispensedItems";
+import { PALETTE } from "@/theme/palette";
 
 const DispensedItemRow = ({
   line,
@@ -27,7 +28,7 @@ const DispensedItemRow = ({
       style={{
         borderRadius: QUEUE_RADIUS.control,
         borderWidth: 1,
-        borderColor: exceeds ? "#FCA5A5" : palette.panelBorder,
+        borderColor: exceeds ? PALETTE.red[300] : palette.panelBorder,
         backgroundColor: palette.panelBg,
       }}
     >
@@ -69,7 +70,7 @@ const DispensedItemRow = ({
       />
 
       {exceeds ? (
-        <Text className="text-[12px] font-medium" style={{ color: "#DC2626" }}>
+        <Text className="text-[12px] font-medium" style={{ color: PALETTE.red[600] }}>
           Only {item.currentStock} {item.unit} available.
         </Text>
       ) : null}

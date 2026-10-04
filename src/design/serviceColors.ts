@@ -1,44 +1,60 @@
+import { getAdminDashboardPalette, type MetricTone } from "@/design/adminDashboardTheme";
 import { PALETTE } from "@/theme/palette";
 
 export type ServiceTone = { bg: string; fg: string };
 
+const { blue, green, orange } = PALETTE;
+
+/**
+ * Each service's family: consults and check-ups are primary blue, maternal and
+ * child care is care green, BP checks wear the accent. Badges use the family's
+ * tone; charts use two lightness steps per family, because each role's chart
+ * shows exactly one pair (doctor: check-up and consultation; midwife:
+ * prenatal and immunisation).
+ */
+const SERVICE_TONE: Record<string, MetricTone> = {
+  general_checkup: "primary",
+  consultation: "primary",
+  prenatal: "care",
+  immunization: "care",
+  bp_checking: "accent",
+};
+
+/** Chart series colours (light). */
 export const SERVICE_COLORS: Record<string, string> = {
-  general_checkup: PALETTE.blue[600],
-  prenatal: "#DB2777",
-  immunization: "#059669",
-  consultation: "#7C3AED",
-  bp_checking: "#E11D48",
+  general_checkup: blue[600],
+  consultation: blue[300],
+  prenatal: green[600],
+  immunization: green[300],
+  bp_checking: orange[400],
 };
 
+/** Chart series colours (dark): the same families, readable as marks on the dark card. */
 export const SERVICE_COLORS_DARK: Record<string, string> = {
-  general_checkup: "#93C5FD",
-  prenatal: "#F9A8D4",
-  immunization: "#6EE7B7",
-  consultation: "#C4B5FD",
-  bp_checking: "#FDA4AF",
+  general_checkup: blue[400],
+  consultation: blue[200],
+  prenatal: green[500],
+  immunization: green[200],
+  bp_checking: orange[400],
 };
 
-export const SERVICE_TONES_LIGHT: Record<string, ServiceTone> = {
-  general_checkup: { bg: "#E8F0FE", fg: SERVICE_COLORS.general_checkup },
-  prenatal: { bg: "#FDE8EF", fg: SERVICE_COLORS.prenatal },
-  immunization: { bg: "#E3F6EC", fg: SERVICE_COLORS.immunization },
-  consultation: { bg: "#EFEAFE", fg: SERVICE_COLORS.consultation },
-  bp_checking: { bg: "#FEE9E9", fg: SERVICE_COLORS.bp_checking },
+const toneMap = (theme: "light" | "dark"): Record<string, ServiceTone> => {
+  const { tones } = getAdminDashboardPalette(theme);
+  return Object.fromEntries(
+    Object.entries(SERVICE_TONE).map(([key, tone]) => [key, { bg: tones[tone].iconBg, fg: tones[tone].icon }])
+  );
 };
 
-export const SERVICE_TONES_DARK: Record<string, ServiceTone> = {
-  general_checkup: { bg: "rgba(37,99,235,0.18)", fg: SERVICE_COLORS_DARK.general_checkup },
-  prenatal: { bg: "rgba(219,39,119,0.18)", fg: SERVICE_COLORS_DARK.prenatal },
-  immunization: { bg: "rgba(5,150,105,0.18)", fg: SERVICE_COLORS_DARK.immunization },
-  consultation: { bg: "rgba(124,58,237,0.18)", fg: SERVICE_COLORS_DARK.consultation },
-  bp_checking: { bg: "rgba(225,29,72,0.18)", fg: SERVICE_COLORS_DARK.bp_checking },
+export const SERVICE_TONES_LIGHT = toneMap("light");
+export const SERVICE_TONES_DARK = toneMap("dark");
+
+const neutral = (theme: "light" | "dark"): ServiceTone => {
+  const { tones } = getAdminDashboardPalette(theme);
+  return { bg: tones.neutral.iconBg, fg: tones.neutral.icon };
 };
 
-export const NEUTRAL_SERVICE_TONE_LIGHT: ServiceTone = { bg: "#EEF2F7", fg: "#64748B" };
-export const NEUTRAL_SERVICE_TONE_DARK: ServiceTone = {
-  bg: "rgba(148,163,184,0.16)",
-  fg: "#94A3B8",
-};
+export const NEUTRAL_SERVICE_TONE_LIGHT = neutral("light");
+export const NEUTRAL_SERVICE_TONE_DARK = neutral("dark");
 
 export const serviceColor = (key: string, isDark: boolean, fallback: string): string => {
   const map = isDark ? SERVICE_COLORS_DARK : SERVICE_COLORS;

@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-import { ROLE_COLORS, type AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { roleColorOf, type AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { calculatePercentage } from "@/features/adminDashboard/utils/dashboardAnalytics";
 import type { RoleDistributionEntry } from "@/services/adminDashboardService";
 
@@ -27,7 +27,7 @@ const DonutLegend = ({
       {distribution.map((entry) => {
         const percent = calculatePercentage(entry.count, total);
         const isDimmed = activeRole !== "all" && entry.role !== activeRole;
-        const color = ROLE_COLORS[entry.role] ?? palette.primary;
+        const color = roleColorOf(palette, entry.role);
 
         return (
           <View

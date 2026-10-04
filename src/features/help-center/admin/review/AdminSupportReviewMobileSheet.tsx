@@ -11,6 +11,7 @@ import AdminSupportResponseForm from "./AdminSupportResponseForm";
 import AdminSupportSidebarInfo from "./AdminSupportSidebarInfo";
 import AdminTicketStatusBadge from "../AdminTicketStatusBadge";
 import type { SupportStatus, SupportTicket } from "../../types/support.types";
+import { PALETTE } from "@/theme/palette";
 
 type AdminSupportReviewMobileSheetProps = {
   visible: boolean;
@@ -39,7 +40,7 @@ const AdminSupportReviewMobileSheet = ({
     return () => clearTimeout(timer);
   }, [ticket.messages.length]);
 
-  const cardBg = palette.isDark ? palette.cardBg : "#FFFFFF";
+  const cardBg = palette.isDark ? palette.cardBg : PALETTE.white;
 
   const renderHeader = (requestClose: () => void) => (
     <View
@@ -101,7 +102,7 @@ const AdminSupportReviewMobileSheet = ({
       footer={renderFooter}
       accessibilityLabel={`Review support ticket ${ticket.ticketNumber}`}
       surface={cardBg}
-      handleColor={palette.isDark ? "#475569" : "#CBD5E1"}
+      handleColor={palette.isDark ? PALETTE.slate[700] : PALETTE.slate[300]}
       maxHeightRatio={0.94}
     >
       <ScrollView

@@ -5,6 +5,7 @@ import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import { TYPE } from "@/theme/typography";
 
 import { formatSlotTime } from "./rescheduleFormat";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   palette: ResidentDialogPalette;
@@ -61,7 +62,7 @@ export const RescheduleTimeGrid = ({ palette, slots, selected, onSelect }: Props
                       style={{
                         fontSize: 13,
                         fontWeight: isSelected ? "700" : "500",
-                        color: isSelected ? "#FFFFFF" : palette.body,
+                        color: isSelected ? PALETTE.white : palette.body,
                       }}
                     >
                       {label}

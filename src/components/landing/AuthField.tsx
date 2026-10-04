@@ -2,6 +2,7 @@ import { Platform, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AuthInput from "./AuthInput";
 import { AUTH_INPUT_COLORS } from "./authInput/authInputStyles";
+import { PALETTE } from "@/theme/palette";
 
 const FONT_FAMILY = Platform.select({
   ios: "System",
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   helper: {
     fontSize: 12,
     lineHeight: 16,
-    color: "#64748B",
+    color: PALETTE.slate[500],
     fontFamily: FONT_FAMILY,
     marginBottom: 6,
   },

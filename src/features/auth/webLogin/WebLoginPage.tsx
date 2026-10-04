@@ -17,6 +17,7 @@ import {
 } from "./LoginIcons";
 import WebLoginCard from "./WebLoginCard";
 import s from "./webLogin.module.css";
+import { PALETTE } from "@/theme/palette";
 
 type WebLoginPageProps = {
   onOpenRegister: () => void;
@@ -65,15 +66,15 @@ const Waves = () => (
   // The viewBox crops the mockup's 1448 x 1086 artboard to the waves, so CSS sizes them on their own.
   <svg className={s.waves} viewBox="0 928 760 158" preserveAspectRatio="none" aria-hidden="true" focusable="false">
     <path
-      fill="#C9DBFB"
+      fill={PALETTE.blue[200]}
       d="M0 944C40 938 70 932 100 933C150 935 190 955 230 968C255 977 270 986 290 989C320 993 345 975 380 966C410 959 440 960 470 968C510 979 545 990 570 1002C588 1012 596 1040 600 1086H0Z"
     />
     <path
-      fill="#8FB5F8"
+      fill={PALETTE.blue[300]}
       d="M0 948C30 942 60 936 92 935C130 934 160 950 190 966C220 983 240 998 270 1003C310 1008 350 1000 400 997C450 994 500 1000 540 1004C580 1008 610 1020 640 1040C680 1066 715 1080 760 1086H0Z"
     />
     <path
-      fill="#5B93F5"
+      fill={PALETTE.blue[400]}
       d="M0 996C40 986 90 970 140 966C170 964 190 968 210 978C240 993 270 1006 300 1016C330 1026 360 1032 400 1040C450 1050 495 1070 540 1086H0Z"
     />
   </svg>
@@ -82,9 +83,9 @@ const Waves = () => (
 // Phones only: two soft waves that settle the hazed hall into the page color above the card.
 const Mist = () => (
   <svg className={s.mist} viewBox="0 0 390 110" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <path fill="#f2f6fe" opacity="0.8" d="M240 110C280 70 335 40 390 34V110Z" />
-    <path fill="#f2f6fe" d="M120 110C140 80 170 60 205 52C235 45 260 41 282 42C320 44 360 62 390 76V110Z" />
-    <path fill="#f2f6fe" d="M0 6C8 1 16 0 24 0C46 1 70 16 100 38C122 54 140 66 160 76C178 86 196 98 214 110H0Z" />
+    <path fill={PALETTE.slate[100]} opacity="0.8" d="M240 110C280 70 335 40 390 34V110Z" />
+    <path fill={PALETTE.slate[100]} d="M120 110C140 80 170 60 205 52C235 45 260 41 282 42C320 44 360 62 390 76V110Z" />
+    <path fill={PALETTE.slate[100]} d="M0 6C8 1 16 0 24 0C46 1 70 16 100 38C122 54 140 66 160 76C178 86 196 98 214 110H0Z" />
   </svg>
 );
 

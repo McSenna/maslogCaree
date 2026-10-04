@@ -8,6 +8,7 @@ import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 import { PROFILE_COLORS as C, PROFILE_RADIUS, PROFILE_SHADOW } from "../config/profileTheme";
 import { ChangePasswordForm } from "./ChangePasswordForm";
 import { useChangePassword } from "./useChangePassword";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type ChangePasswordModalProps = {
   visible: boolean;
@@ -51,7 +52,7 @@ export const ChangePasswordModal = ({
           alignItems: "center",
           justifyContent: "center",
           padding: 16,
-          backgroundColor: "rgba(15, 23, 42, 0.45)",
+          backgroundColor: withAlpha(PALETTE.slate[800], 0.45),
         }}
       >
         <Pressable

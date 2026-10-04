@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { PALETTE } from "@/theme/palette";
 
 type SupportRequestsHeaderProps = {
   onContactSupport: () => void;
@@ -31,8 +32,8 @@ const SupportRequestsHeader = ({ onContactSupport }: SupportRequestsHeaderProps)
           backgroundColor: palette.primary,
         }}
       >
-        <Feather name="plus" size={16} color="#FFFFFF" />
-        <Text style={{ fontSize: 14, fontWeight: "700", color: "#FFFFFF" }}>
+        <Feather name="plus" size={16} color={PALETTE.white} />
+        <Text style={{ fontSize: 14, fontWeight: "700", color: PALETTE.white }}>
           New Support Request
         </Text>
       </Pressable>

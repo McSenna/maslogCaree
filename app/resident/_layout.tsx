@@ -8,11 +8,13 @@ import {
   residentBottomNavItems,
 } from "@/config/roleNavConfig";
 
+import { PALETTE } from "@/theme/palette";
+
 const ResidentLayout = () => {
   const { resolvedTheme } = useTheme();
   const reducedMotion = useReducedMotion();
 
-  const screenBackground = resolvedTheme === "dark" ? "#020617" : "#FFFFFF";
+  const screenBackground = resolvedTheme === "dark" ? PALETTE.slate[950] : PALETTE.white;
 
   return (
     <RoleLayout

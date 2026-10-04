@@ -15,7 +15,7 @@ export type NotificationVisual = {
   soft: string;
 };
 
-type ToneKey = "success" | "warning" | "info" | "danger" | "teal";
+type ToneKey = "success" | "warning" | "info" | "danger" | "care";
 
 const TONE_ICON: Record<NotificationTone, FeatherIcon> = {
   success: "check-circle",
@@ -36,12 +36,12 @@ const EXACT_VISUAL: Record<string, VisualSpec> = {
   appointment_cancelled: { category: "appointment", icon: "x-circle", tone: "danger" },
   appointment_rescheduled: { category: "appointment", icon: "clock", tone: "warning" },
   appointment_reminder: { category: "appointment", icon: "calendar", tone: "info" },
-  appointment_completed: { category: "medical", icon: "activity", tone: "teal" },
+  appointment_completed: { category: "medical", icon: "activity", tone: "care" },
   resident_verification: { category: "account", icon: "user-plus", tone: "info" },
   resident_approved: { category: "account", icon: "user-check", tone: "success" },
   resident_rejected: { category: "account", icon: "user-x", tone: "danger" },
-  medical_record_available: { category: "medical", icon: "file-text", tone: "teal" },
-  medical_record_updated: { category: "medical", icon: "file-text", tone: "teal" },
+  medical_record_available: { category: "medical", icon: "file-text", tone: "care" },
+  medical_record_updated: { category: "medical", icon: "file-text", tone: "care" },
   announcement: { category: "announcement", icon: "volume-2", tone: "info" },
 };
 
@@ -110,7 +110,7 @@ export const resolveNotificationVisual = (
     return { category: "appointment", icon: "check-circle", ...paint(palette, "success") };
   }
   if (titleLower.includes("completed")) {
-    return { category: "medical", icon: "activity", ...paint(palette, "teal") };
+    return { category: "medical", icon: "activity", ...paint(palette, "care") };
   }
   if (titleLower.includes("cancelled") || titleLower.includes("declined")) {
     return { category: "appointment", icon: "x-circle", ...paint(palette, "danger") };
@@ -119,7 +119,7 @@ export const resolveNotificationVisual = (
     return { category: "appointment", icon: "clock", ...paint(palette, "warning") };
   }
   if (titleLower.includes("record")) {
-    return { category: "medical", icon: "file-text", ...paint(palette, "teal") };
+    return { category: "medical", icon: "file-text", ...paint(palette, "care") };
   }
   if (titleLower.includes("announcement")) {
     return { category: "announcement", icon: "volume-2", ...paint(palette, "info") };

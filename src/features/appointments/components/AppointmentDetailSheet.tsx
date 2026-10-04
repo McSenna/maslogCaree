@@ -24,6 +24,7 @@ import {
   ResidentNotesSection,
 } from "./detailSheet/AppointmentSheetSections";
 import MedicalRecordLink from "./detailSheet/MedicalRecordLink";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const AppointmentDetailSheet = ({
   visible,
@@ -84,7 +85,7 @@ const AppointmentDetailSheet = ({
       accessibilityLabel={`${service} appointment details`}
       surface={palette.panelBg}
       handleColor={palette.divider}
-      scrim={palette.isDark ? "rgba(2,6,23,0.6)" : "rgba(15,37,87,0.35)"}
+      scrim={palette.isDark ? withAlpha(PALETTE.slate[950], 0.6) : withAlpha(PALETTE.ink, 0.35)}
     >
       <ScrollView
         className="flex-1"

@@ -35,7 +35,7 @@ const SelectOptionRow = ({ option, isSelected, isLast, onSelect }: Props) => {
           style={{
             fontSize: 15,
             fontWeight: isSelected ? "700" : "500",
-            color: isSelected ? APPOINTMENT_COLORS.primary : APPOINTMENT_COLORS.bodyText,
+            color: isSelected ? APPOINTMENT_COLORS.primaryBright : APPOINTMENT_COLORS.bodyText,
           }}
         >
           {option.label}

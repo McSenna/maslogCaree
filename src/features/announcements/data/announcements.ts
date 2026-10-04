@@ -18,8 +18,8 @@ export const ANNOUNCEMENTS: Announcement[] = [
     description:
       "Barangay Maslog Health Center will conduct a free medical checkup for all residents.",
     icon: "activity",
-    color: "#10B981",
-    bg: "#ECFDF5",
+    color: PALETTE.success[500],
+    bg: PALETTE.success[50],
     tag: "Medical",
   },
   {
@@ -28,7 +28,7 @@ export const ANNOUNCEMENTS: Announcement[] = [
     description: "Free vaccination for children ages 0–5 at the Barangay Health Center.",
     icon: "shield",
     color: PALETTE.blue[600],
-    bg: "#EFF6FF",
+    bg: PALETTE.blue[50],
     tag: "Vaccination",
   },
   {
@@ -36,8 +36,8 @@ export const ANNOUNCEMENTS: Announcement[] = [
     date: "April 2, 2026",
     description: "Join our seminar about proper nutrition and healthy lifestyle habits.",
     icon: "book-open",
-    color: "#F59E0B",
-    bg: "#FFFBEB",
+    color: PALETTE.amber[500],
+    bg: PALETTE.amber[50],
     tag: "Seminar",
   },
   {
@@ -45,8 +45,8 @@ export const ANNOUNCEMENTS: Announcement[] = [
     date: "April 10, 2026",
     description: "Free blood pressure and diabetes screening for all residents.",
     icon: "heart",
-    color: "#EF4444",
-    bg: "#FFF1F2",
+    color: PALETTE.red[500],
+    bg: PALETTE.red[50],
     tag: "Screening",
   },
 ];

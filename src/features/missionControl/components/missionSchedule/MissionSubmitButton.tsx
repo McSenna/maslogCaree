@@ -1,6 +1,7 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleTheme";
+import { PALETTE } from "@/theme/palette";
 
 type MissionSubmitButtonProps = {
   label: string;
@@ -35,9 +36,9 @@ const MissionSubmitButton = ({
         opacity: blocked ? 0.55 : 1,
       }}
     >
-      {saving ? <ActivityIndicator size="small" color="#FFFFFF" /> : null}
+      {saving ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
       <Text className="text-[15px] font-bold text-white">{saving ? loadingLabel : label}</Text>
-      {saving ? null : <Feather name="arrow-right" size={17} color="#FFFFFF" />}
+      {saving ? null : <Feather name="arrow-right" size={17} color={PALETTE.white} />}
     </Pressable>
   );
 };

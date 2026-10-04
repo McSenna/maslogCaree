@@ -1,57 +1,23 @@
-import { useCallback, useRef, useState } from "react";
-import { useFocusEffect } from "expo-router";
+import { useCallback } from "react";
+
+import { useRealtimeCollection } from "@/hooks/realtime/useRealtimeCollection";
 import { fetchMyAppointments, type AppointmentRecord } from "@/services/appointments";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
-const POLL_MS = 90_000;
+// The order GET /appointments/me returns: newest booking first.
+const newestFirst = (a: AppointmentRecord, b: AppointmentRecord) =>
+  new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime();
 
+/**
+ * The signed-in resident's appointments, kept current over the realtime
+ * connection (staff confirming, rescheduling or completing a visit shows up at
+ * once) instead of the 90-second poll this used to run.
+ */
 export const useResidentAppointments = () => {
-  const [appointments, setAppointments] = useState<AppointmentRecord[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const fetchAppointments = useCallback(() => fetchMyAppointments(), []);
+  const { items, loading, error, refresh, revalidate } = useRealtimeCollection("myAppointment", fetchAppointments, {
+    sort: newestFirst,
+    errorMessage: "Unable to load your appointments.",
+  });
 
-  const everLoaded = useRef(false);
-  const mounted = useRef(true);
-  const inFlight = useRef(false);
-
-  const load = useCallback(async (showSpinner: boolean) => {
-    if (inFlight.current && !showSpinner) return;
-
-    inFlight.current = true;
-    if (showSpinner) setLoading(true);
-
-    try {
-      const rows = await fetchMyAppointments();
-      if (!mounted.current) return;
-      setAppointments(rows);
-      setError(null);
-      everLoaded.current = true;
-    } catch (e: unknown) {
-      if (!mounted.current) return;
-      setError(getApiErrorMessage(e, "Unable to load your appointments."));
-      if (showSpinner) setAppointments([]);
-    } finally {
-      inFlight.current = false;
-      if (mounted.current && showSpinner) setLoading(false);
-    }
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      mounted.current = true;
-      void load(!everLoaded.current);
-
-      const id = setInterval(() => void load(false), POLL_MS);
-
-      return () => {
-        mounted.current = false;
-        clearInterval(id);
-      };
-    }, [load])
-  );
-
-  const refresh = useCallback(() => load(true), [load]);
-  const revalidate = useCallback(() => load(false), [load]);
-
-  return { appointments, loading, error, refresh, revalidate };
+  return { appointments: items, loading, error, refresh, revalidate };
 };

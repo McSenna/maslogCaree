@@ -23,7 +23,7 @@ export const mergeNotifications = (
   return Array.from(byId.values()).sort((a, b) => timeOf(b) - timeOf(a));
 };
 
-/** Cheap structural comparison that keeps polling from re-rendering the list. */
+/** Cheap structural comparison that keeps a quiet reload from re-rendering the list. */
 export const sameNotifications = (a: NotificationItem[], b: NotificationItem[]): boolean =>
   a.length === b.length &&
   a.every((item, index) => {

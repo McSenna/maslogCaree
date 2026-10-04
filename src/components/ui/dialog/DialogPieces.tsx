@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
+import { PALETTE } from "@/theme/palette";
 
 export const DialogStatus = ({
   palette,
@@ -57,7 +58,7 @@ export const DialogError = ({
         backgroundColor: palette.accent,
       }}
     >
-      <Text style={{ color: "#FFFFFF", fontSize: 13, fontWeight: "600" }}>{actionLabel}</Text>
+      <Text style={{ color: PALETTE.white, fontSize: 13, fontWeight: "600" }}>{actionLabel}</Text>
     </Pressable>
   </View>
 );
@@ -172,15 +173,15 @@ export const DialogActions = ({
         }}
       >
         {busy ? (
-          <ActivityIndicator size="small" color="#FFFFFF" />
+          <ActivityIndicator size="small" color={PALETTE.white} />
         ) : icon ? (
-          <Feather name={icon} size={16} color={primaryDisabled ? palette.muted : "#FFFFFF"} />
+          <Feather name={icon} size={16} color={primaryDisabled ? palette.muted : PALETTE.white} />
         ) : null}
         <Text
           style={{
             fontSize: 14,
             fontWeight: "700",
-            color: primaryDisabled && !busy ? palette.muted : "#FFFFFF",
+            color: primaryDisabled && !busy ? palette.muted : PALETTE.white,
           }}
         >
           {primaryLabel}

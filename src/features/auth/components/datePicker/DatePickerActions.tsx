@@ -1,18 +1,21 @@
 import { Pressable, Text, View } from "react-native";
 
 import { REG_COLORS } from "../../registration/registrationTheme";
+import { PALETTE } from "@/theme/palette";
 
 type DatePickerActionsProps = {
   onCancel: () => void;
   onConfirm: () => void;
   canConfirm: boolean;
   height: number;
+  confirmLabel?: string;
 };
 
 const DatePickerActions = ({
   onCancel,
   onConfirm,
   canConfirm,
+  confirmLabel = "Confirm date of birth",
   height,
 }: DatePickerActionsProps) => (
   <View style={{ flexDirection: "row", gap: 12 }}>
@@ -36,7 +39,7 @@ const DatePickerActions = ({
 
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel="Confirm date of birth"
+      accessibilityLabel={confirmLabel}
       accessibilityState={{ disabled: !canConfirm }}
       onPress={onConfirm}
       disabled={!canConfirm}
@@ -50,7 +53,7 @@ const DatePickerActions = ({
         opacity: canConfirm ? 1 : 0.5,
       }}
     >
-      <Text style={{ fontSize: 15, fontWeight: "700", color: "#FFFFFF" }}>Confirm</Text>
+      <Text style={{ fontSize: 15, fontWeight: "700", color: PALETTE.white }}>Confirm</Text>
     </Pressable>
   </View>
 );

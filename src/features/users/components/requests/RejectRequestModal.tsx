@@ -9,6 +9,7 @@ import RejectBody from "./reject/RejectBody";
 import RejectFooter from "./reject/RejectFooter";
 import RejectHeader from "./reject/RejectHeader";
 import { useRejectDraft } from "./reject/useRejectDraft";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type RejectRequestModalProps = {
   visible: boolean;
@@ -62,8 +63,8 @@ const RejectRequestModal = ({
         visible={visible}
         onClose={handleCancel}
         accessibilityLabel="Reject registration"
-        surface={isDark ? "#0F172A" : "#FFFFFF"}
-        handleColor={isDark ? "#475569" : "#CBD5E1"}
+        surface={isDark ? PALETTE.slate[800] : PALETTE.white}
+        handleColor={isDark ? PALETTE.slate[700] : PALETTE.slate[300]}
         header={(requestClose) => (
           <View className="px-5">
             <RejectHeader
@@ -101,7 +102,7 @@ const RejectRequestModal = ({
     >
       <View
         className="flex-1 items-center justify-center px-4"
-        style={{ backgroundColor: "rgba(15, 23, 42, 0.65)" }}
+        style={{ backgroundColor: withAlpha(PALETTE.slate[800], 0.65) }}
       >
         <Pressable
           accessibilityRole="button"
@@ -113,10 +114,10 @@ const RejectRequestModal = ({
         <View
           accessibilityViewIsModal
           className={[
-            "w-full max-w-[500px] overflow-hidden rounded-2xl border p-5",
+            "w-full max-w-[500px] overflow-hidden rounded-lg border p-5",
             isDark ? "border-slate-700 bg-slate-900" : "border-slate-200 bg-white",
           ].join(" ")}
-          style={{ maxHeight: "85%", boxShadow: "0px 16px 36px rgba(0,0,0,0.25)" }}
+          style={{ maxHeight: "85%", boxShadow: `0px 16px 36px ${withAlpha(PALETTE.ink, 0.25)}` }}
         >
           <RejectHeader
             residentName={residentName}

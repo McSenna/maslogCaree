@@ -1,4 +1,5 @@
 import type { MedicalRecord } from "@/services/medicalRecords";
+import { isEncodedRecord } from "@/services/medicalRecordTypes";
 import { PROVIDER_ROLE_LABELS, SERVICE_TYPES, getServiceLabel } from "@/config/appointmentServices";
 
 export const serviceLabelOf = (record: MedicalRecord): string => {
@@ -6,16 +7,17 @@ export const serviceLabelOf = (record: MedicalRecord): string => {
 };
 
 export const providerNameOf = (record: MedicalRecord): string => {
-  return typeof record.provider === "object" && record.provider
-    ? (record.provider.fullname ?? "")
-    : "";
+  if (typeof record.provider === "object" && record.provider?.fullname) return record.provider.fullname;
+  return record.providerName ?? "";
 };
 
 export const providerRoleLabelOf = (record: MedicalRecord): string => {
+  // A paper record names its own provider; guessing the role from the service would be wrong.
+  const serviceRole = isEncodedRecord(record) ? "" : SERVICE_TYPES.find((s) => s.id === record.serviceType)?.queueRole;
   const stored =
     record.providerRole ||
     (typeof record.provider === "object" ? record.provider?.role : "") ||
-    SERVICE_TYPES.find((s) => s.id === record.serviceType)?.queueRole ||
+    serviceRole ||
     "";
 
   const key = String(stored).trim().toLowerCase();

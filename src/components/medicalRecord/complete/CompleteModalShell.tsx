@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import Modal from "@/components/ui/AppModal";
 
@@ -11,6 +11,7 @@ import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 
 import ModalHeader from "./ModalHeader";
 import { useResponsive } from "@/hooks/useResponsive";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export { SectionCard } from "./SectionCard";
 
@@ -29,6 +30,8 @@ const CompleteModalShell = ({
   footer,
   children,
   onLayoutWidth,
+  closeLabel = "Close without completing",
+  scrollToTopKey,
 }: {
   visible: boolean;
   onRequestClose: () => void;
@@ -39,7 +42,15 @@ const CompleteModalShell = ({
   footer?: ReactNode;
   children: ReactNode;
   onLayoutWidth?: (width: number) => void;
+  closeLabel?: string;
+  /** Changing this scrolls the body back to the top, for a form that starts over. */
+  scrollToTopKey?: number;
 }) => {
+  const scrollRef = useRef<ScrollView>(null);
+  useEffect(() => {
+    if (scrollToTopKey) scrollRef.current?.scrollTo({ y: 0, animated: false });
+  }, [scrollToTopKey]);
+
   const palette = useQueuePalette();
   const { isMobile } = useResponsive();
   const isSheet = isMobile;
@@ -63,13 +74,13 @@ const CompleteModalShell = ({
       <SheetViewport
         layout={layout}
         style={{
-          backgroundColor: "rgba(15,37,87,0.35)",
+          backgroundColor: withAlpha(PALETTE.ink, 0.35),
           paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
         }}
       >
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Close without completing"
+          accessibilityLabel={closeLabel}
           onPress={() => dismissible && onRequestClose()}
           style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
         />
@@ -100,9 +111,11 @@ const CompleteModalShell = ({
             dismissible={dismissible}
             onRequestClose={onRequestClose}
             palette={palette}
+            closeLabel={closeLabel}
           />
 
           <ScrollView
+            ref={scrollRef}
             style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"

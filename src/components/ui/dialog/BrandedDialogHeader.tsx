@@ -7,8 +7,9 @@ import { useThemeColors } from "@/hooks/useThemeColors";
 import { RADII } from "@/theme/radius";
 import { SPACING } from "@/theme/spacing";
 import { TYPE } from "@/theme/typography";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
-const ON_PRIMARY_MUTED = "rgba(255,255,255,0.8)";
+const ON_PRIMARY_MUTED = withAlpha(PALETTE.white, 0.8);
 
 type BrandedDialogHeaderProps = {
   icon: keyof typeof Feather.glyphMap;
@@ -31,14 +32,14 @@ const BrandedDialogHeader = ({ icon, eyebrow, title, description, closeLabel, on
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: SPACING.md }}>
-        <View style={{ borderRadius: RADII.medium, backgroundColor: "rgba(255,255,255,0.16)", padding: SPACING.sm }}>
-          <Feather name={icon} size={20} color="#FFFFFF" />
+        <View style={{ borderRadius: RADII.medium, backgroundColor: withAlpha(PALETTE.white, 0.16), padding: SPACING.sm }}>
+          <Feather name={icon} size={20} color={PALETTE.white} />
         </View>
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={[TYPE.caption, { color: ON_PRIMARY_MUTED, letterSpacing: 1.2, textTransform: "uppercase" }]}>
             {eyebrow}
           </Text>
-          <Text accessibilityRole="header" style={[TYPE.headline, { color: "#FFFFFF" }]}>
+          <Text accessibilityRole="header" style={[TYPE.headline, { color: PALETTE.white }]}>
             {title}
           </Text>
         </View>

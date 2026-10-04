@@ -1,5 +1,6 @@
 import type { Feather } from "@expo/vector-icons";
 import { Platform, type ViewStyle } from "react-native";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type ProfileAnchor = {
   x: number;
@@ -30,11 +31,11 @@ export const menuShadow = (isDark: boolean): ViewStyle =>
   Platform.select<ViewStyle>({
     web: {
       boxShadow: isDark
-        ? "0px 12px 28px rgba(2,6,23,0.55)"
-        : "0px 12px 28px rgba(15,37,87,0.12)",
+        ? `0px 12px 28px ${withAlpha(PALETTE.ink, 0.55)}`
+        : `0px 12px 28px ${withAlpha(PALETTE.ink, 0.12)}`,
     },
     default: {
-      shadowColor: "#0F2557",
+      shadowColor: PALETTE.ink,
       shadowOpacity: isDark ? 0.4 : 0.12,
       shadowRadius: 18,
       shadowOffset: { width: 0, height: 10 },

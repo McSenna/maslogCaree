@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { PALETTE } from "@/theme/palette";
+import { getAdminDashboardPalette, type AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type NotificationPalette = {
   background: string;
@@ -23,64 +24,42 @@ export type NotificationPalette = {
   warningSoft: string;
   danger: string;
   dangerSoft: string;
-  teal: string;
-  tealSoft: string;
+  care: string;
+  careSoft: string;
   scrim: string;
 };
 
-/** Light values come straight from the shared MaslogCare profile palette. */
-export const LIGHT_NOTIFICATION_PALETTE: NotificationPalette = {
-  background: "#F8FAFC",
-  surface: "#FFFFFF",
-  unreadSurface: "rgba(37,99,235,0.035)",
-  unreadDot: PALETTE.blue[600],
-  pressed: "rgba(15,23,42,0.04)",
-  border: "#E2E8F0",
-  divider: "#F1F5F9",
-  heading: "#0F2557",
-  body: "#334155",
-  muted: PALETTE.slate[600],
-  subtle: PALETTE.slate[500],
-  primary: PALETTE.blue[600],
-  primarySoft: "#EBF3FF",
-  onPrimary: "#FFFFFF",
-  success: "#16A34A",
-  successSoft: "#DCFCE7",
-  warning: "#D97706",
-  warningSoft: "#FEF3C7",
-  danger: "#DC2626",
-  dangerSoft: "#FEE2E2",
-  teal: "#0D9488",
-  tealSoft: "#CCFBF1",
-  scrim: "rgba(15,23,42,0.18)",
-};
+// Built from the shared palette so notifications use the same text, surface
+// and status roles as every other page. Status colours are the tone
+// foregrounds and tints; "care" (Healthcare Green) marks medical updates.
+const fromPalette = (base: AdminDashboardPalette, isDark: boolean): NotificationPalette => ({
+  background: base.pageBg,
+  surface: base.cardBg,
+  unreadSurface: withAlpha(PALETTE.blue[600], isDark ? 0.1 : 0.04),
+  unreadDot: base.primary,
+  pressed: base.hoverBg,
+  border: base.cardBorder,
+  divider: base.divider,
+  heading: base.heading,
+  body: base.body,
+  muted: base.muted,
+  subtle: base.subtle,
+  primary: base.primary,
+  primarySoft: base.tones.primary.iconBg,
+  onPrimary: base.onPrimary,
+  success: base.statusTones.success.fg,
+  successSoft: base.statusTones.success.bg,
+  warning: base.statusTones.warning.fg,
+  warningSoft: base.statusTones.warning.bg,
+  danger: base.statusTones.danger.fg,
+  dangerSoft: base.statusTones.danger.bg,
+  care: base.tones.care.icon,
+  careSoft: base.tones.care.iconBg,
+  scrim: isDark ? withAlpha(PALETTE.night.page, 0.6) : withAlpha(PALETTE.ink, 0.28),
+});
 
-/** Dark values mirror the shared dashboard dark palette. */
-export const DARK_NOTIFICATION_PALETTE: NotificationPalette = {
-  background: "#020617",
-  surface: "#0F172A",
-  unreadSurface: "rgba(96,165,250,0.08)",
-  unreadDot: "#60A5FA",
-  pressed: "#1E293B",
-  border: "#1E293B",
-  divider: "#1E293B",
-  heading: "#F8FAFC",
-  body: "#CBD5E1",
-  muted: PALETTE.slate[400],
-  subtle: "#7D8CA3",
-  primary: "#60A5FA",
-  primarySoft: "rgba(96,165,250,0.16)",
-  onPrimary: "#0B1120",
-  success: "#34D399",
-  successSoft: "rgba(52,211,153,0.16)",
-  warning: "#FBBF24",
-  warningSoft: "rgba(251,191,36,0.16)",
-  danger: "#FB7185",
-  dangerSoft: "rgba(251,113,133,0.16)",
-  teal: "#22D3EE",
-  tealSoft: "rgba(34,211,238,0.16)",
-  scrim: "rgba(2,6,23,0.45)",
-};
+export const LIGHT_NOTIFICATION_PALETTE = fromPalette(getAdminDashboardPalette("light"), false);
+export const DARK_NOTIFICATION_PALETTE = fromPalette(getAdminDashboardPalette("dark"), true);
 
 export const getNotificationPalette = (isDark: boolean): NotificationPalette =>
   isDark ? DARK_NOTIFICATION_PALETTE : LIGHT_NOTIFICATION_PALETTE;

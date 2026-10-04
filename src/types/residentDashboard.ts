@@ -1,10 +1,11 @@
 import type { Ionicons } from "@expo/vector-icons";
+import type { MetricTone } from "@/design/adminDashboard/paletteTypes";
 
 export type IoniconName = keyof typeof Ionicons.glyphMap;
 
 export type AppointmentStatus = "pending" | "confirmed" | "rescheduled" | "declined";
 
-export type AccentTone = "blue" | "green" | "purple" | "orange" | "pink";
+export type AccentTone = MetricTone;
 
 export interface StatItem {
   id: string;

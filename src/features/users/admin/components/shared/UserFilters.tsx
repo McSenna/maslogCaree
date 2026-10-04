@@ -22,6 +22,7 @@ const SORT_OPTIONS: SelectOption<UserSort>[] = [
   { value: "last_login_desc", label: "Last login, newest" },
   { value: "last_login_asc", label: "Last login, oldest" },
   { value: "name_asc", label: "Name, A to Z" },
+  { value: "joined_desc", label: "Joined, newest" },
 ];
 
 // Fixed widths fit "Last login, newest" without truncating; shares wrap on narrow rows.

@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
+import { PALETTE } from "@/theme/palette";
 
 const PlatformAccessBody = ({
   title,
@@ -58,13 +59,13 @@ const PlatformAccessBody = ({
           marginTop: 18,
           borderRadius: 14,
           borderWidth: 1,
-          borderColor: "#DDEBFF",
-          backgroundColor: "#F4F9FF",
+          borderColor: PALETTE.blue[100],
+          backgroundColor: PALETTE.slate[50],
           paddingHorizontal: 14,
           paddingVertical: 12,
         }}
       >
-        <Text className="text-center" style={{ fontSize: 12.5, lineHeight: 18.5, color: "#3B5375" }}>
+        <Text className="text-center" style={{ fontSize: 12.5, lineHeight: 18.5, color: PALETTE.slate[700] }}>
           {supporting}
         </Text>
       </View>

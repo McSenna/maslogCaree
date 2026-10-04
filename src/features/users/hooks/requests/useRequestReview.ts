@@ -1,7 +1,9 @@
 import { useCallback, useState } from "react";
 
 import { toast } from "@/components/feedback/toast/toastStore";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { useRealtimeItem } from "@/hooks/realtime/useRealtimeItem";
+
+import type { LinkChoice } from "../../components/requests/masterList/linkChoice";
 
 import {
   approveUserRequest,
@@ -9,6 +11,7 @@ import {
   rejectUserRequest,
   type UserRequestDetail,
 } from "../../services/userRequestsService";
+import { toastError } from "@/utils/errorToast/toastError";
 
 type Options = {
   refresh: () => Promise<void>;
@@ -16,51 +19,41 @@ type Options = {
 
 export const useRequestReview = ({ refresh }: Options) => {
   const [reviewRequestId, setReviewRequestId] = useState<string | null>(null);
-  const [selectedDetail, setSelectedDetail] = useState<UserRequestDetail | null>(null);
-  const [detailLoading, setDetailLoading] = useState(false);
-  const [detailError, setDetailError] = useState<string | null>(null);
+  // If another admin decides this request while it is open, the review reloads
+  // and shows the decision instead of offering a second one.
+  const review = useRealtimeItem<"userRequest", UserRequestDetail>("userRequest", reviewRequestId, getUserRequestById, {
+    errorMessage: "Failed to load verification details.",
+  });
 
   const [approving, setApproving] = useState(false);
+  // Reset with every request so one person's link choice never carries to the next.
+  const [linkChoice, setLinkChoice] = useState<LinkChoice>(undefined);
   const [rejecting, setRejecting] = useState(false);
 
-  const openReview = useCallback(async (requestId: string) => {
+  const openReview = useCallback((requestId: string) => {
     setReviewRequestId(requestId);
-    setSelectedDetail(null);
-    setDetailLoading(true);
-    setDetailError(null);
-    try {
-      const detail = await getUserRequestById(requestId);
-      setSelectedDetail(detail);
-    } catch (err) {
-      setDetailError(getApiErrorMessage(err, "Failed to load verification details."));
-    } finally {
-      setDetailLoading(false);
-    }
+    setLinkChoice(undefined);
   }, []);
 
   const closeReview = useCallback(() => {
     setReviewRequestId(null);
-    setSelectedDetail(null);
-    setDetailError(null);
+    setLinkChoice(undefined);
   }, []);
 
   const handleApprove = useCallback(async () => {
     if (!reviewRequestId || approving) return;
     setApproving(true);
     try {
-      const res = await approveUserRequest(reviewRequestId);
+      const res = await approveUserRequest(reviewRequestId, linkChoice);
       toast.success("Registration approved", res.message || undefined);
       closeReview();
       await refresh();
     } catch (err) {
-      toast.error(
-        "Registration not approved",
-        getApiErrorMessage(err, "Failed to approve resident registration.")
-      );
+      toastError("Registration not approved", err, { fallback: "Failed to approve resident registration." });
     } finally {
       setApproving(false);
     }
-  }, [reviewRequestId, approving, closeReview, refresh]);
+  }, [reviewRequestId, approving, linkChoice, closeReview, refresh]);
 
   const handleReject = useCallback(
     async (reason: string, remarks: string = "") => {
@@ -72,10 +65,7 @@ export const useRequestReview = ({ refresh }: Options) => {
         closeReview();
         await refresh();
       } catch (err) {
-        toast.error(
-          "Registration not rejected",
-          getApiErrorMessage(err, "Failed to reject resident registration.")
-        );
+        toastError("Registration not rejected", err, { fallback: "Failed to reject resident registration." });
       } finally {
         setRejecting(false);
       }
@@ -85,14 +75,16 @@ export const useRequestReview = ({ refresh }: Options) => {
 
   return {
     reviewRequestId,
-    selectedDetail,
-    detailLoading,
-    detailError,
+    selectedDetail: review.item,
+    detailLoading: review.loading,
+    detailError: review.deleted ? "This registration request is no longer available." : review.error,
     openReview,
     closeReview,
     approving,
     rejecting,
     handleApprove,
     handleReject,
+    linkChoice,
+    setLinkChoice,
   };
 };

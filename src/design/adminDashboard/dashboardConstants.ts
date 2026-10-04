@@ -1,43 +1,41 @@
 import { createShadow } from "@/design/shadow";
+import { dark } from "./darkPalette";
+import { light } from "./lightPalette";
+import type { AdminDashboardPalette, MetricTone, RoleColorKey } from "./paletteTypes";
 import { ROLE_CONTENT_MAX_WIDTH } from "@/theme/breakpoints";
 import { PALETTE } from "@/theme/palette";
-export const ROLE_COLORS: Record<string, string> = {
-  admin: PALETTE.blue[600],
-  doctor: "#22C55E",
-  midwife: "#EC4899",
-  bhw: "#F59E0B",
-  resident: "#8B5CF6",
-};
 
 /**
- * Text colours for role badges. `ROLE_COLORS` are chart hues and are too light
- * to read as 10–11px text on their tints (amber was 1.9:1); these are the same
- * hues darkened (light theme) or lightened (dark theme) to pass AA.
+ * Which tone each role wears on badges, everywhere (dashboard, users, profile).
+ * Clinical staff share care green, health workers wear the accent, residents
+ * the primary blue, admins stay neutral.
  */
-export const ROLE_TEXT_COLORS: Record<"light" | "dark", Record<string, string>> = {
-  light: {
-    admin: "#1152B4",
-    doctor: "#15803D",
-    midwife: "#BE185D",
-    bhw: "#92400E",
-    resident: "#6D28D9",
-  },
-  dark: {
-    admin: "#8CB8F8",
-    doctor: "#86EFAC",
-    midwife: "#F9A8D4",
-    bhw: "#FCD34D",
-    resident: "#C4B5FD",
-  },
+export const ROLE_TONE: Record<RoleColorKey, MetricTone> = {
+  admin: "neutral",
+  doctor: "care",
+  midwife: "care",
+  bhw: "accent",
+  resident: "primary",
 };
 
-export const ROLE_BADGE_TINTS: Record<string, string> = {
-  admin: "#E5F0FF",
-  doctor: "#E3FBEC",
-  midwife: "#FDE9F3",
-  bhw: "#FDF1DC",
-  resident: "#F0EBFE",
+const roleMap = <T,>(pick: (role: RoleColorKey) => T) =>
+  Object.fromEntries((Object.keys(ROLE_TONE) as RoleColorKey[]).map((role) => [role, pick(role)])) as Record<string, T>;
+
+/** Text colours for role badges: the tone's label step (AA on its tint in both themes). */
+export const ROLE_TEXT_COLORS: Record<"light" | "dark", Record<string, string>> = {
+  light: roleMap((role) => light.tones[ROLE_TONE[role]].label),
+  dark: roleMap((role) => dark.tones[ROLE_TONE[role]].label),
 };
+
+export const ROLE_BADGE_TINTS: Record<string, string> = roleMap((role) => light.tones[ROLE_TONE[role]].iconBg);
+
+const ROLE_COLOR_KEYS: readonly string[] = ["admin", "doctor", "midwife", "bhw", "resident"];
+
+const isRoleColorKey = (role: string): role is RoleColorKey => ROLE_COLOR_KEYS.includes(role);
+
+/** The chart hue for a role in this theme, or the primary colour for an unknown role. */
+export const roleColorOf = (palette: AdminDashboardPalette, role: string): string =>
+  isRoleColorKey(role) ? palette.roleColors[role] : palette.primary;
 
 export const ROLE_LABELS: Record<string, string> = {
   admin: "Admin",
@@ -61,7 +59,7 @@ export const DASHBOARD_MAX_WIDTH = ROLE_CONTENT_MAX_WIDTH;
 export const DASHBOARD_WIDE_LAYOUT_MIN_WIDTH = 1280;
 
 export const DASHBOARD_CARD_SHADOW = createShadow({
-  color: "#0F172A",
+  color: PALETTE.slate[800],
   opacity: 0.04,
   radius: 12,
   offsetY: 2,

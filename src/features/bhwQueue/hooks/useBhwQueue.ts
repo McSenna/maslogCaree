@@ -6,6 +6,7 @@ import {
   fetchConsultationCategories,
   type ConsultationCategory,
 } from "@/services/appointments";
+import { reportError } from "@/utils/errorReporting";
 
 const FALLBACK_SERVICE_LABEL = "BP Checking";
 
@@ -17,7 +18,9 @@ export const useBhwQueue = () => {
   const loadCategories = useCallback(async () => {
     try {
       setCategories(await fetchConsultationCategories());
-    } catch {
+    } catch (error: unknown) {
+      // The fallback label still names the service, so this stays off screen.
+      reportError("BHW service categories not loaded", error);
       setCategories([]);
     }
   }, []);

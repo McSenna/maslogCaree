@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { View } from "react-native";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NotificationsProvider } from "@/contexts/NotificationsContext";
+import { SocketProvider } from "@/contexts/SocketContext";
 import { ThemeProvider, useTheme } from "@/contexts/ThemeContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
@@ -16,12 +17,13 @@ import { useAppInitialization } from "@/hooks/useAppInitialization";
 import { screenTransition, useReducedMotion } from "@/theme/motion";
 
 import { usePushNotifications } from "@/features/notifications";
+import { PALETTE } from "@/theme/palette";
 
 enableScreens(true);
 
 const ThemedStack = () => {
   const { resolvedTheme } = useTheme();
-  const bg = resolvedTheme === "dark" ? "#020617" : "#FFFFFF";
+  const bg = resolvedTheme === "dark" ? PALETTE.slate[950] : PALETTE.white;
   const reducedMotion = useReducedMotion();
 
   return (
@@ -58,9 +60,11 @@ const RootLayout = () => {
       <SafeAreaProvider>
         <ThemeProvider>
           <AuthProvider>
-            <NotificationsProvider>
-              <AppShell />
-            </NotificationsProvider>
+            <SocketProvider>
+              <NotificationsProvider>
+                <AppShell />
+              </NotificationsProvider>
+            </SocketProvider>
           </AuthProvider>
         </ThemeProvider>
       </SafeAreaProvider>

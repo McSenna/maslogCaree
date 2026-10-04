@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { PALETTE } from "@/theme/palette";
 
+/** The shared surface palette every role's pages read (one palette since 2026-10-02). */
 export const useAdminSurfacePalette = () => {
   const { resolvedTheme } = useTheme();
 
@@ -11,9 +13,9 @@ export const useAdminSurfacePalette = () => {
 
     return {
       ...base,
-      subtleSurface: isDark ? "#111C33" : "#F8FBFF",
+      subtleSurface: isDark ? PALETTE.night.raised : PALETTE.slate[50],
+      controlBorder: isDark ? PALETTE.night.control : PALETTE.controlLine,
       rowSelected: base.bannerBg,
-      controlBorder: isDark ? "#334155" : "#CBD5E1",
       isDark,
     };
   }, [resolvedTheme]);

@@ -3,6 +3,7 @@ import type { NavItem } from "@/components/navigation/SidebarNavigation";
 export const adminNavItems: NavItem[] = [
   { label: "Dashboard", href: "/admin/dashboard", icon: "layout" },
   { label: "User Management", href: "/admin/users", icon: "users" },
+  { label: "Medical Records", href: "/admin/medical-records", icon: "file-text" },
   { label: "Inventory", href: "/admin/inventory", icon: "box" },
   { label: "Announcements", href: "/admin/announcements", icon: "volume-2" },
   { label: "System Logs", href: "/admin/system-logs", icon: "shield" },
@@ -12,12 +13,14 @@ export const adminNavItems: NavItem[] = [
 export const doctorNavItems: NavItem[] = [
   { label: "Dashboard", href: "/doctor/dashboard", icon: "layout" },
   { label: "Appointments & Queue", href: "/doctor/mission", icon: "calendar" },
+  { label: "Medical Records", href: "/doctor/medical-records", icon: "file-text" },
   { label: "Inventory", href: "/doctor/inventory", icon: "box" },
 ];
 
 export const midwifeNavItems: NavItem[] = [
   { label: "Dashboard", href: "/midwife/dashboard", icon: "layout" },
   { label: "Appointments & Queue", href: "/midwife/mission", icon: "calendar" },
+  { label: "Medical Records", href: "/midwife/medical-records", icon: "file-text" },
   { label: "Inventory", href: "/midwife/inventory", icon: "box" },
 ];
 
@@ -25,6 +28,7 @@ export const bhwNavItems: NavItem[] = [
   { label: "Dashboard", href: "/bhw/dashboard", icon: "layout" },
   { label: "Appointments & Queue", href: "/bhw/mission", icon: "calendar" },
   { label: "Residents", href: "/bhw/residents", icon: "users" },
+  { label: "Medical Records", href: "/bhw/medical-records", icon: "file-text" },
   { label: "Inventory", href: "/bhw/inventory", icon: "box" },
 ];
 
@@ -48,6 +52,7 @@ export const adminBottomNavItems: NavItem[] = [
 export const doctorBottomNavItems: NavItem[] = [
   { label: "Dashboard", shortLabel: "Home", href: "/doctor/dashboard", icon: "layout" },
   { label: "Queue", href: "/doctor/mission", icon: "calendar" },
+  { label: "Medical Records", shortLabel: "Records", href: "/doctor/medical-records", icon: "file-text" },
   { label: "Inventory", href: "/doctor/inventory", icon: "box" },
   { label: "Notifications", shortLabel: "Alerts", href: "/doctor/notifications", icon: "bell" },
   { label: "Profile", href: "/doctor/profile", icon: "user" },
@@ -56,6 +61,7 @@ export const doctorBottomNavItems: NavItem[] = [
 export const midwifeBottomNavItems: NavItem[] = [
   { label: "Dashboard", shortLabel: "Home", href: "/midwife/dashboard", icon: "layout" },
   { label: "Queue", href: "/midwife/mission", icon: "calendar" },
+  { label: "Medical Records", shortLabel: "Records", href: "/midwife/medical-records", icon: "file-text" },
   { label: "Inventory", href: "/midwife/inventory", icon: "box" },
   { label: "Notifications", shortLabel: "Alerts", href: "/midwife/notifications", icon: "bell" },
   { label: "Profile", href: "/midwife/profile", icon: "user" },

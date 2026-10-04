@@ -5,6 +5,10 @@ import {
   type StaffDashboardData,
 } from "@/services/staffDashboardService";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { useRealtimeRefetch } from "@/hooks/realtime/useRealtimeRefetch";
+
+// Everything the staff dashboard's cards and lists are computed from.
+const DASHBOARD_SOURCES = ["appointment", "medicalRecord", "missionSchedule", "inventoryItem"] as const;
 
 export interface UseStaffDashboardReturn {
   data: StaffDashboardData | null;
@@ -21,7 +25,7 @@ export const useStaffDashboard = (): UseStaffDashboardReturn => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const inFlightRef = useRef<Promise<void> | null>(null);
+  const latestLoadRef = useRef(0);
   const mountedRef = useRef(true);
 
   useEffect(() => {
@@ -31,30 +35,23 @@ export const useStaffDashboard = (): UseStaffDashboardReturn => {
     };
   }, []);
 
-  const load = useCallback(async (mode: "initial" | "refresh") => {
-    if (inFlightRef.current) return;
+  const load = useCallback(async (mode: "initial" | "refresh" | "silent") => {
+    // The newest load wins. Skipping a load while another ran lost changes:
+    // the running request could have read the data before the change that asked.
+    const loadId = ++latestLoadRef.current;
+    const isLatest = () => mountedRef.current && loadId === latestLoadRef.current;
 
     if (mode === "refresh") setRefreshing(true);
-    else setLoading(true);
+    if (mode === "initial") setLoading(true);
     setError(null);
 
-    const request = (async () => {
-      try {
-        const next = await fetchStaffDashboard();
-        if (mountedRef.current) setData(next);
-      } catch (e: unknown) {
-        if (mountedRef.current) {
-          setError(getApiErrorMessage(e, "Unable to load dashboard information."));
-        }
-      }
-    })();
-
-    inFlightRef.current = request;
     try {
-      await request;
+      const next = await fetchStaffDashboard();
+      if (isLatest()) setData(next);
+    } catch (e: unknown) {
+      if (isLatest()) setError(getApiErrorMessage(e, "Unable to load dashboard information."));
     } finally {
-      inFlightRef.current = null;
-      if (mountedRef.current) {
+      if (isLatest()) {
         setLoading(false);
         setRefreshing(false);
       }
@@ -73,6 +70,9 @@ export const useStaffDashboard = (): UseStaffDashboardReturn => {
       });
     }, [load])
   );
+
+  // Realtime changes reload quietly: no spinner while someone reads the numbers.
+  useRealtimeRefetch(DASHBOARD_SOURCES, () => load("silent"));
 
   return { data, loading, refreshing, error, reload, refresh };
 };

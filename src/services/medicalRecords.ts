@@ -89,3 +89,32 @@ export const fetchMyMedicalRecords = async (): Promise<MedicalRecord[]> => {
   );
   return data.medicalRecords ?? [];
 };
+
+export type MyRecordsCursor = { completedAt: string; id: string };
+
+export type MyRecordsQuery = {
+  service: string;
+  range: string;
+  query: string;
+  before?: MyRecordsCursor | null;
+};
+
+export type MyRecordsPage = {
+  records: MedicalRecord[];
+  total: number | null;
+  nextCursor: MyRecordsCursor | null;
+};
+
+// Paged history for the records screen. A POST, so the search text never sits in a URL.
+export const searchMyMedicalRecords = async (query: MyRecordsQuery): Promise<MyRecordsPage> => {
+  const { data } = await api.post<{
+    medicalRecords?: MedicalRecord[];
+    total?: number | null;
+    nextCursor?: MyRecordsCursor | null;
+  }>("/medical-records/me/search", query);
+  return {
+    records: data.medicalRecords ?? [],
+    total: data.total ?? null,
+    nextCursor: data.nextCursor ?? null,
+  };
+};

@@ -10,11 +10,13 @@ import type { useDateOfBirthDraft } from "./useDateOfBirthDraft";
 type DateOfBirthBottomSheetProps = {
   visible: boolean;
   draft: ReturnType<typeof useDateOfBirthDraft>;
+  title: string;
+  confirmLabel: string;
   onCancel: () => void;
   onConfirm: () => void;
 };
 
-const SheetHeader = () => (
+const SheetHeader = ({ title }: { title: string }) => (
   <View
     style={{
       paddingHorizontal: 20,
@@ -28,7 +30,7 @@ const SheetHeader = () => (
       accessibilityRole="header"
       style={{ fontSize: 16.5, fontWeight: "800", color: REG_COLORS.text }}
     >
-      Select Date of Birth
+      {title}
     </Text>
   </View>
 );
@@ -36,6 +38,8 @@ const SheetHeader = () => (
 const DateOfBirthBottomSheet = ({
   visible,
   draft,
+  title,
+  confirmLabel,
   onCancel,
   onConfirm,
 }: DateOfBirthBottomSheetProps) => {
@@ -50,10 +54,10 @@ const DateOfBirthBottomSheet = ({
     <BottomSheet
       visible={visible}
       onClose={onCancel}
-      accessibilityLabel="Select date of birth"
+      accessibilityLabel={title}
       surface={REG_COLORS.surface}
       handleColor={REG_COLORS.border}
-      header={() => <SheetHeader />}
+      header={() => <SheetHeader title={title} />}
     >
       <ScrollView
         style={SHEET_SCROLL_STYLE}
@@ -71,6 +75,7 @@ const DateOfBirthBottomSheet = ({
           onCancel={onCancel}
           onConfirm={onConfirm}
           canConfirm={Boolean(draft.selected)}
+              confirmLabel={confirmLabel}
           height={48}
         />
       </ScrollView>

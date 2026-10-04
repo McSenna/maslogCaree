@@ -52,7 +52,7 @@ const RoleLayout = ({
   const isDark = resolvedTheme === "dark";
   const headerPalette = getHeaderPalette(isDark);
 
-  const pageSurface = getAdminDashboardPalette(isDark ? "dark" : "light").pageBg;
+  const pageSurface = getAdminDashboardPalette(resolvedTheme).pageBg;
 
   const safeBg = headerPalette.background;
 

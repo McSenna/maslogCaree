@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Platform, Pressable, Text } from "react-native";
 import { APPOINTMENT_COLORS, APPOINTMENT_METRICS } from "./appointmentTheme";
+import { PALETTE } from "@/theme/palette";
 
 type BookingActionButtonProps = {
   label: string;
@@ -53,7 +54,7 @@ const BookingActionButton = ({
         style={{
           fontSize: 15.5,
           fontWeight: "700",
-          color: isPrimary ? "#FFFFFF" : APPOINTMENT_COLORS.primary,
+          color: isPrimary ? PALETTE.white : APPOINTMENT_COLORS.primaryBright,
         }}
       >
         {label}

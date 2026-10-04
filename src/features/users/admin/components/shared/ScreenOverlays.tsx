@@ -1,3 +1,4 @@
+import { LinkChoiceProvider } from "../../../components/requests/masterList/LinkChoiceContext";
 import ResidentVerificationModal from "../../../components/requests/ResidentVerificationModal";
 import ResidentVerificationSheet from "../../../components/requests/ResidentVerificationSheet";
 import UserDetails from "../../../components/UserDetails";
@@ -58,14 +59,16 @@ const ScreenOverlays = ({ screen, phone }: ScreenOverlaysProps) => {
         onViewActivity={details.viewActivity}
       />
 
-      {phone ? (
-        <ResidentVerificationSheet
-          {...verification}
-          onRetry={() => (reviewTarget ? screen.openReview(reviewTarget.id, reviewTarget.reject) : undefined)}
-        />
-      ) : (
-        <ResidentVerificationModal {...verification} />
-      )}
+      <LinkChoiceProvider value={{ choice: review.linkChoice, setChoice: review.setLinkChoice }}>
+        {phone ? (
+          <ResidentVerificationSheet
+            {...verification}
+            onRetry={() => (reviewTarget ? screen.openReview(reviewTarget.id, reviewTarget.reject) : undefined)}
+          />
+        ) : (
+          <ResidentVerificationModal {...verification} />
+        )}
+      </LinkChoiceProvider>
     </>
   );
 };

@@ -24,7 +24,7 @@ export const PageSubtitle = ({ children, className = "" }: TypographyProps) => {
 
   return (
     <Text
-      className={`mt-1 text-sm font-medium md:text-base ${classes.textAccent} ${className}`}
+      className={`mt-1 text-sm md:text-base ${classes.textMuted} ${className}`}
     >
       {children}
     </Text>

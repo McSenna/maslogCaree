@@ -8,6 +8,7 @@ import {
   type LoginResponse,
   type RegisterPayload,
   type RegisterResponse,
+  type RegistrationStatus,
   type ResendOtpResponse,
   type VerifyOtpResponse,
 } from "./authTypes";
@@ -22,7 +23,7 @@ const postJson = async <T>(
 
 export const registerResident = async (
   payload: RegisterPayload
-): Promise<{ message: string; email: string; status?: string }> => {
+): Promise<{ message: string; email: string; status: RegistrationStatus }> => {
   const data = await postJson<RegisterResponse>("/register", {
     firstName: payload.firstName.trim(),
     middleName: payload.middleName?.trim() || "",
@@ -49,7 +50,9 @@ export const registerResident = async (
     emailVerificationToken: payload.emailVerificationToken,
   });
 
-  return { message: data.message, email: data.email, status: data.status };
+  // Anything but an explicit approval is shown as pending review.
+  const status: RegistrationStatus = data.status === "approved" ? "approved" : "pending";
+  return { message: data.message, email: data.email, status };
 };
 
 export const resendOtp = async (

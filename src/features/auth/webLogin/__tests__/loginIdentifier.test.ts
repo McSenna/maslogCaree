@@ -34,8 +34,13 @@ describe("checkIdentifier", () => {
 });
 
 describe("checkPassword", () => {
-  it("only requires a value", () => {
+  it("requires a value", () => {
     assert.equal(checkPassword(""), LOGIN_MESSAGES.passwordRequired);
     assert.equal(checkPassword(" "), null);
+  });
+
+  it("accepts up to 16 characters of letters, numbers, and symbols", () => {
+    assert.equal(checkPassword("Abc123!@Abc123!@"), null);
+    assert.equal(checkPassword("Abc123!@Abc123!@x"), LOGIN_MESSAGES.passwordTooLong);
   });
 });

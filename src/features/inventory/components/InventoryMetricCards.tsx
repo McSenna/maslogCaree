@@ -1,13 +1,32 @@
 import { View } from "react-native";
+import InteractiveCard from "@/components/cards/InteractiveCard";
 import type { InventorySummary } from "@/features/inventory/services/inventoryService";
-import InventoryMetricCard from "./InventoryMetricCard";
+import { CARD_HINTS } from "./inventoryCardFilters";
+import InventoryMetricCard, { type InventoryMetricCardProps } from "./InventoryMetricCard";
+import { RADIUS, type InventoryMetricKey } from "./inventoryTheme";
 
 type InventoryMetricCardsProps = {
   summary: InventorySummary;
   isWide: boolean;
+  activeCard: InventoryMetricKey | null;
+  onSelectCard: (key: InventoryMetricKey) => void;
 };
 
-const InventoryMetricCards = ({ summary, isWide }: InventoryMetricCardsProps) => {
+const InventoryMetricCards = ({ summary, isWide, activeCard, onSelectCard }: InventoryMetricCardsProps) => {
+  // Each card filters the list below to what it counts.
+  const renderCard = (card: InventoryMetricCardProps, compact: boolean) => (
+    <InteractiveCard
+      key={card.metric}
+      onPress={() => onSelectCard(card.metric)}
+      accessibilityLabel={`${card.label}: ${card.value}. ${card.description}`}
+      accessibilityHint={CARD_HINTS[card.metric]}
+      selected={activeCard === card.metric}
+      radius={RADIUS.card}
+    >
+      <InventoryMetricCard {...card} compact={compact} />
+    </InteractiveCard>
+  );
+
   const cards = [
     {
       metric: "total" as const,
@@ -42,9 +61,7 @@ const InventoryMetricCards = ({ summary, isWide }: InventoryMetricCardsProps) =>
   if (isWide) {
     return (
       <View className="w-full flex-row gap-4">
-        {cards.map((card) => (
-          <InventoryMetricCard key={card.metric} {...card} />
-        ))}
+        {cards.map((card) => renderCard(card, false))}
       </View>
     );
   }
@@ -52,14 +69,10 @@ const InventoryMetricCards = ({ summary, isWide }: InventoryMetricCardsProps) =>
   return (
     <View className="w-full gap-3">
       <View className="flex-row gap-3">
-        {cards.slice(0, 2).map((card) => (
-          <InventoryMetricCard key={card.metric} {...card} compact />
-        ))}
+        {cards.slice(0, 2).map((card) => renderCard(card, true))}
       </View>
       <View className="flex-row gap-3">
-        {cards.slice(2).map((card) => (
-          <InventoryMetricCard key={card.metric} {...card} compact />
-        ))}
+        {cards.slice(2).map((card) => renderCard(card, true))}
       </View>
     </View>
   );

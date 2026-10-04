@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { PALETTE } from "@/theme/palette";
 
 type HelpEmptyStateProps = {
   onContactSupport: () => void;
@@ -46,7 +47,7 @@ const HelpEmptyState = ({ onContactSupport }: HelpEmptyStateProps) => {
           backgroundColor: palette.primary,
         }}
       >
-        <Text style={{ fontSize: 14, fontWeight: "700", color: "#FFFFFF" }}>Contact Support</Text>
+        <Text style={{ fontSize: 14, fontWeight: "700", color: PALETTE.white }}>Contact Support</Text>
       </Pressable>
     </View>
   );

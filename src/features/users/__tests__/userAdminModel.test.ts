@@ -84,7 +84,7 @@ describe("summary", () => {
 
   it("feeds every tab badge", () => {
     assert.deepEqual(
-      [TAB_COUNT.requests(summary), TAB_COUNT.rejected(summary), TAB_COUNT.deactivated(summary), TAB_COUNT.masterlist(summary)],
+      [TAB_COUNT.requests(summary), TAB_COUNT.rejected(summary), TAB_COUNT.deactivated(summary), TAB_COUNT.accounts?.(summary)],
       [7, 9, 2, 10]
     );
   });
@@ -134,13 +134,13 @@ describe("applyStatusChanges", () => {
   const resident = toUser(apiUser({ _id: "u2", role: "resident", status: "deactivated" }));
   assert.ok(doctor && resident);
 
-  it("hides changed rows outside the masterlist", () => {
+  it("hides changed rows outside all accounts", () => {
     const rows = applyStatusChanges([doctor, resident], [{ ids: ["u1"], action: "deactivate" }], "active");
     assert.deepEqual(rows.map((user) => user.id), ["u2"]);
   });
 
-  it("changes the status in place on the masterlist", () => {
-    const rows = applyStatusChanges([doctor, resident], [{ ids: ["u2"], action: "reactivate" }], "masterlist");
+  it("changes the status in place on all accounts", () => {
+    const rows = applyStatusChanges([doctor, resident], [{ ids: ["u2"], action: "reactivate" }], "accounts");
     assert.equal(rows[1].status, "approved");
     assert.equal(rows[0].status, "active");
   });

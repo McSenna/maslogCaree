@@ -31,10 +31,10 @@ import { useResidentDashboard } from "./useResidentDashboard";
 const palette = getAdminDashboardPalette("light");
 
 const STAT_VISUALS: Record<string, { icon: keyof typeof Feather.glyphMap; tone: MetricTone; label: string }> = {
-  upcoming: { icon: "calendar", tone: "blue", label: "Upcoming visits" },
-  completed: { icon: "check-circle", tone: "green", label: "Completed visits" },
-  records: { icon: "file-text", tone: "purple", label: "Health records" },
-  announcements: { icon: "bell", tone: "amber", label: "New announcements" },
+  upcoming: { icon: "calendar", tone: "primary", label: "Upcoming visits" },
+  completed: { icon: "check-circle", tone: "care", label: "Completed visits" },
+  records: { icon: "file-text", tone: "neutral", label: "Health records" },
+  announcements: { icon: "bell", tone: "accent", label: "New announcements" },
 };
 
 const SKELETON_ROWS = [
@@ -101,19 +101,31 @@ const ResidentDashboard = () => {
     });
   }
 
+  // Each card opens the screen that lists what it counts.
+  const openRecords = () => router.push("/resident/medical-records");
+  const STAT_TARGETS: Record<string, { onPress: () => void; hint: string }> = {
+    upcoming: { onPress: handlers.onViewAllAppointments, hint: "Opens your appointments" },
+    completed: { onPress: openRecords, hint: "Opens the records of your visits" },
+    records: { onPress: openRecords, hint: "Opens your medical records" },
+    announcements: { onPress: handlers.onViewAllAnnouncements, hint: "Opens announcements" },
+  };
+
   const metric = (stat: StatItem) => {
     const visual = STAT_VISUALS[stat.id];
+    const target = STAT_TARGETS[stat.id];
     return (
       <MetricCard
         key={stat.id}
         palette={palette}
-        tone={visual?.tone ?? "blue"}
+        tone={visual?.tone ?? "primary"}
         icon={visual?.icon ?? "circle"}
         label={visual?.label ?? stat.label}
         value={stat.value}
         description={stat.caption}
         compact={isMobile}
         dense={layout.denseMetrics}
+        onPress={target?.onPress}
+        accessibilityHint={target?.hint}
       />
     );
   };
@@ -171,8 +183,6 @@ const ResidentDashboard = () => {
         primaryAction={primaryAction}
         secondaryActions={secondaryActions}
         updatedLabel={model.loadedAt ? updatedLabel(model.loadedAt, now) : undefined}
-        onRefresh={model.loadedAt ? model.refresh : undefined}
-        refreshing={model.refreshing}
       />
 
       {model.loading ? (

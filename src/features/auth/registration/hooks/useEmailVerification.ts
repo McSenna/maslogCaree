@@ -15,6 +15,7 @@ import {
   type VerifyFailureKind,
 } from "../components/email/verificationCopy";
 import { OTP_LENGTH } from "../emailVerificationConfig";
+import { toastError } from "@/utils/errorToast/toastError";
 
 export type EmailVerificationStatus = "idle" | "codeSent" | "verified";
 
@@ -132,7 +133,7 @@ export const useEmailVerification = (email: string) => {
 
       if (isResend) setFeedback({ tone: "error", message });
       else setError(message);
-      toast.error("Code not sent");
+      toastError("Code not sent", requestError, { inline: true });
     } finally {
       if (generation === generationRef.current) {
         sendingRef.current = false;

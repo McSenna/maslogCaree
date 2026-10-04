@@ -5,6 +5,7 @@ import Modal from "@/components/ui/AppModal";
 import { RADIUS } from "@/design/adminSurfaces";
 import { createShadow } from "@/design/shadow";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { PALETTE } from "@/theme/palette";
 
 export type SelectOption<T extends string> = { value: T; label: string };
 
@@ -95,7 +96,7 @@ const SelectMenu = <T extends string,>({
               backgroundColor: palette.menuBg,
               borderColor: palette.menuBorder,
               ...createShadow({
-                color: "#0F172A",
+                color: PALETTE.slate[800],
                 opacity: 0.12,
                 radius: 16,
                 offsetY: 2,

@@ -34,4 +34,10 @@ describe("getStatusMeta", () => {
     assert.equal(getStatusLabel(undefined), "Unknown");
     assert.equal(getStatusLabel(""), "Unknown");
   });
+
+  it("gives every status a distinct icon, so meaning never rests on colour alone", () => {
+    const statuses = ["pending", "confirmed", "rescheduled", "processing", "completed", "declined", "cancelled"];
+    const icons = statuses.map((status) => getStatusMeta(status).icon);
+    assert.equal(new Set(icons).size, statuses.length);
+  });
 });

@@ -72,7 +72,7 @@ const SupportReplyBox = ({ sending, placeholder, onSend }: SupportReplyBoxProps)
           backgroundColor: canSend ? palette.accent : palette.disabled,
         }}
       >
-        <Text style={{ fontSize: 14, fontWeight: "700", color: canSend ? "#FFFFFF" : palette.muted }}>
+        <Text style={{ fontSize: 14, fontWeight: "700", color: canSend ? palette.onAccent : palette.muted }}>
           {sending ? "Sending..." : "Send Reply"}
         </Text>
       </Pressable>

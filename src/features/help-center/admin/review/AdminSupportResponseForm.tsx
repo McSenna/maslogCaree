@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-nativ
 
 import { RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { PALETTE } from "@/theme/palette";
 
 type AdminSupportResponseFormProps = {
   sending: boolean;
@@ -110,20 +111,20 @@ const AdminSupportResponseForm = ({ sending, onSend }: AdminSupportResponseFormP
               paddingHorizontal: 14,
               paddingVertical: 7,
               borderRadius: RADIUS.control,
-              backgroundColor: canSubmit ? palette.primary : palette.isDark ? "#334155" : "#E2E8F0",
+              backgroundColor: canSubmit ? palette.primary : palette.isDark ? PALETTE.slate[700] : PALETTE.slate[200],
               opacity: pressed ? 0.8 : 1,
             })}
           >
             {sending ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
+              <ActivityIndicator size="small" color={PALETTE.white} />
             ) : (
-              <Feather name="send" size={13} color={canSubmit ? "#FFFFFF" : palette.muted} />
+              <Feather name="send" size={13} color={canSubmit ? PALETTE.white : palette.muted} />
             )}
             <Text
               style={{
                 fontSize: 12.5,
                 fontWeight: "600",
-                color: canSubmit ? "#FFFFFF" : palette.muted,
+                color: canSubmit ? PALETTE.white : palette.muted,
               }}
             >
               {sending ? "Sending..." : "Send Response"}

@@ -33,6 +33,8 @@ export const OTP_COPY = {
   sendNetwork: "We couldn't send the code. Check your connection and try again.",
   sendGeneric: "We couldn't send the code. Please try again in a moment.",
   invalidEmail: "Enter a valid email address.",
+  recipientRejected:
+    "We couldn't deliver a code to this address. Check it for typos or use a different email.",
   verified: "Email verified. You can continue with your registration.",
 } as const;
 
@@ -78,6 +80,7 @@ export const describeSendFailure = (
   if (code && RATE_LIMIT_CODES.has(code)) return OTP_COPY.rateLimited;
   if (code === "EMAIL_EXISTS") return OTP_COPY.emailTaken;
   if (code === "INVALID_FORMAT" || code === "MISSING_FIELDS") return OTP_COPY.invalidEmail;
+  if (code === "EMAIL_RECIPIENT_INVALID") return OTP_COPY.recipientRejected;
 
   const network = Boolean(code && NETWORK_CODES.has(code));
   if (isResend) return network ? OTP_COPY.resendNetwork : OTP_COPY.resendGeneric;

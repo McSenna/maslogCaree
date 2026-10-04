@@ -27,6 +27,7 @@ const DatePickerPanel = ({ draft, cellSize }: DatePickerPanelProps) => {
         year={draft.year}
         monthIndex={draft.monthIndex}
         canGoForward={draft.canGoForward}
+        canGoBack={draft.canGoBack}
         onPrevious={draft.goToPreviousMonth}
         onNext={draft.goToNextMonth}
         onOpenYears={() => setYearsOpen((open) => !open)}
@@ -34,7 +35,7 @@ const DatePickerPanel = ({ draft, cellSize }: DatePickerPanelProps) => {
       />
 
       {yearsOpen ? (
-        <YearPicker year={draft.year} onSelect={handleSelectYear} height={cellSize * 6} />
+        <YearPicker year={draft.year} onSelect={handleSelectYear} height={cellSize * 6} years={draft.years} />
       ) : (
         <CalendarGrid
           year={draft.year}
@@ -42,6 +43,7 @@ const DatePickerPanel = ({ draft, cellSize }: DatePickerPanelProps) => {
           selected={draft.selected}
           onSelect={draft.setSelected}
           cellSize={cellSize}
+          bounds={draft.bounds}
         />
       )}
 

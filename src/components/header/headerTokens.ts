@@ -1,5 +1,5 @@
 import { Platform } from "react-native";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type HeaderPalette = {
   background: string;
@@ -18,42 +18,44 @@ export type HeaderPalette = {
   danger: string;
 };
 
+const { blue, slate, red, night } = PALETTE;
+
 export const HEADER_COLORS: Record<"light" | "dark", HeaderPalette> = {
   light: {
-    background: "#FFFFFF",
-    border: "#E8EEF5",
-    divider: "#E5EAF2",
-    brand: PALETTE.blue[600],
-    title: "#0F2557",
-    muted: "#64748B",
-    icon: "#0F2557",
-    avatarRing: "#E5EAF2",
-    avatarFallbackBg: "#E7F1FF",
-    avatarFallbackIcon: PALETTE.blue[600],
-    menuBg: "#FFFFFF",
-    menuBorder: "#E5EAF2",
-    menuHover: "#F1F6FD",
-    danger: "#E11D48",
+    background: PALETTE.white,
+    border: slate[200],
+    divider: slate[200],
+    brand: blue[600],
+    title: PALETTE.ink,
+    muted: slate[500],
+    icon: slate[600],
+    avatarRing: slate[200],
+    avatarFallbackBg: blue[50],
+    avatarFallbackIcon: blue[600],
+    menuBg: PALETTE.white,
+    menuBorder: slate[200],
+    menuHover: blue[50],
+    danger: red[600],
   },
   dark: {
-    background: "#0F172A",
-    border: "rgba(148,163,184,0.18)",
-    divider: "rgba(148,163,184,0.28)",
-    brand: "#60A5FA",
-    title: "#E2E8F0",
-    muted: "#94A3B8",
-    icon: "#E2E8F0",
-    avatarRing: "rgba(148,163,184,0.35)",
-    avatarFallbackBg: "#1E293B",
-    avatarFallbackIcon: "#93C5FD",
-    menuBg: "#111C33",
-    menuBorder: "rgba(148,163,184,0.22)",
-    menuHover: "rgba(148,163,184,0.12)",
-    danger: "#FB7185",
+    background: night.surface,
+    border: night.line,
+    divider: night.line,
+    brand: blue[400],
+    title: night.heading,
+    muted: night.muted,
+    icon: night.body,
+    avatarRing: night.lineStrong,
+    avatarFallbackBg: night.raised,
+    avatarFallbackIcon: blue[300],
+    menuBg: night.raised,
+    menuBorder: night.lineStrong,
+    menuHover: withAlpha(blue[600], 0.16),
+    danger: red[300],
   },
 };
 
-export const NOTIFICATION_DOT = "#EF3340";
+export const NOTIFICATION_DOT = red[500];
 
 export const HEADER_HEIGHT = {
   mobile: 60,
@@ -69,5 +71,4 @@ export const HEADER_FONT = Platform.select({
   default: "sans-serif",
 });
 
-export const getHeaderPalette = (isDark: boolean): HeaderPalette =>
-  isDark ? HEADER_COLORS.dark : HEADER_COLORS.light;
+export const getHeaderPalette = (isDark: boolean): HeaderPalette => HEADER_COLORS[isDark ? "dark" : "light"];

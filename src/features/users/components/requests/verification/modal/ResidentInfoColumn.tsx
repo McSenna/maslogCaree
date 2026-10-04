@@ -35,7 +35,7 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
       <View className="flex-row items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
         <View className="flex-row items-center gap-2">
           <Feather name="user" size={15} color={PALETTE.blue[600]} />
-          <Text className="text-[14px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">
+          <Text className="text-[14px] font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
             Resident Information
           </Text>
         </View>
@@ -63,7 +63,7 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
           <Text className={`text-[12px] ${classes.textMuted}`} numberOfLines={1}>
             {resident?.email}
           </Text>
-          <Text className="text-[11px] font-medium text-blue-600 dark:text-blue-400 mt-0.5">
+          <Text className="text-[11px] font-medium text-blue-700 dark:text-blue-300 mt-0.5">
             Role: Resident
           </Text>
         </View>

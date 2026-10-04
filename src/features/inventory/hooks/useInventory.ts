@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useFocusEffect } from "expo-router/react-navigation";
 import {
   NO_PERMISSIONS,
   fetchInventoryItems,
@@ -11,8 +10,10 @@ import {
   type InventorySummary,
   type InventorySupplier,
 } from "@/features/inventory/services/inventoryService";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
-import { useLatestRef } from "@/hooks/useLatestRef";
+import { getApiErrorMessage, isOfflineError } from "@/utils/apiErrorHandler";
+import { reportError } from "@/utils/errorReporting";
+import { toastBackgroundError, toastError } from "@/utils/errorToast/toastError";
+import { useRealtimePagedList } from "@/hooks/realtime/useRealtimePagedList";
 
 const EMPTY_SUMMARY: InventorySummary = {
   total: { value: 0, growth: null },
@@ -54,11 +55,11 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
   const requestIdRef = useRef(0);
 
   const load = useCallback(
-    async (mode: "initial" | "refresh") => {
+    async (mode: "initial" | "refresh" | "silent") => {
       const requestId = ++requestIdRef.current;
       if (mode === "refresh") setRefreshing(true);
-      else setLoading(true);
-      setError(null);
+      if (mode === "initial") setLoading(true);
+      if (mode !== "silent") setError(null);
 
       try {
         const [list, summaryResult] = await Promise.all([
@@ -74,7 +75,9 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
         setPermissions(list.permissions);
         setSummary(summaryResult);
       } catch (e: unknown) {
+        // A failed quiet reload keeps the table on screen and says it may be behind; the next change or reconnect retries.
         if (requestId !== requestIdRef.current) return;
+        if (mode === "silent") return toastBackgroundError("Inventory not updated", e);
         setError(getApiErrorMessage(e, "Unable to load inventory. Please try again."));
       } finally {
         if (requestId === requestIdRef.current) {
@@ -97,8 +100,13 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
       try {
         const result = await fetchSuppliers();
         if (!cancelled) setSuppliers(result);
-      } catch {
-        if (!cancelled) setSuppliers([]);
+      } catch (error: unknown) {
+        if (cancelled) return;
+        setSuppliers([]);
+        // A dropped connection already shows on the page itself.
+        if (isOfflineError(error)) return reportError("Inventory suppliers not loaded", error);
+        // Without the list the supplier field only offers "No supplier recorded", so say why.
+        toastError("Supplier list not loaded", error, { fallback: "Suppliers cannot be chosen right now. Reopen inventory to try again." });
       }
     })();
     return () => {
@@ -109,22 +117,20 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
   const reload = useCallback(() => load("initial"), [load]);
   const refresh = useCallback(() => load("refresh"), [load]);
 
-  const loadRef = useLatestRef(load);
-  const hasFocused = useRef(false);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!hasFocused.current) {
-        hasFocused.current = true;
-        return;
-      }
-      void loadRef.current("refresh");
-    }, [loadRef])
-  );
-
   const applyItemUpdate = useCallback((updated: InventoryItem) => {
     setItems((prev) => prev.map((item) => (item._id === updated._id ? { ...item, ...updated } : item)));
   }, []);
+
+  // Stock moving on another device shows on the row at once; a quiet reload of
+  // this page then fixes the summary cards, filters and sort. This replaces the
+  // reload that used to run on every return to the screen.
+  useRealtimePagedList("inventoryItem", {
+    patch: (change) => {
+      if (change.action === "deleted") setItems((prev) => prev.filter((item) => item._id !== change.id));
+      else applyItemUpdate(change.record);
+    },
+    reload: () => void load("silent"),
+  });
 
   return {
     items,

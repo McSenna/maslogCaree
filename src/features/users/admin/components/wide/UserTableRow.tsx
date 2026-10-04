@@ -23,7 +23,7 @@ type UserTableRowProps = {
   menuOpen: boolean;
   onToggle: (id: string) => void;
   onOpenProfile: (id: string) => void;
-  onOpenMenu: (id: string, anchor: MenuAnchor | null) => void;
+  onOpenMenu: (id: string, anchor: MenuAnchor) => void;
 };
 
 /** The second line under the name: the email, plus whatever columns this width folds in. */
@@ -59,9 +59,9 @@ const UserTableRow = ({ user, mode, first, selected, menuOpen, onToggle, onOpenP
         <View className={`${COLUMN.role} items-start`}>
           <DashboardRoleBadge role={roleToApi(user.role)} palette={palette} isDark={palette.isDark} />
         </View>
-        {mode === "full" ? <Text className={`${COLUMN.access} text-[13px] font-medium text-body`}>{ACCESS_LABELS[user.access]}</Text> : null}
+        {mode === "full" ? <Text className={`${COLUMN.access} text-[13px] text-body`}>{ACCESS_LABELS[user.access]}</Text> : null}
         {mode === "tablet" ? null : (
-          <Text numberOfLines={2} className={`${COLUMN.location} text-[13px] font-normal leading-[18px] text-body`}>
+          <Text numberOfLines={2} className={`${COLUMN.location} text-[13px] leading-[18px] text-body`}>
             {user.location || "Not recorded"}
           </Text>
         )}
@@ -69,11 +69,11 @@ const UserTableRow = ({ user, mode, first, selected, menuOpen, onToggle, onOpenP
           <UserStatusPill status={user.status} />
         </View>
         <View className={COLUMN.lastLogin}>
-          <Text className={`text-[13px] font-medium ${login.time ? "text-ink" : "text-text2"}`}>{login.date}</Text>
-          {login.time ? <Text className="text-[12px] font-normal text-text2">{login.time}</Text> : null}
+          <Text className={`text-[13px] ${login.time ? "text-body" : "text-text2"}`}>{login.date}</Text>
+          {login.time ? <Text className="text-[12px] text-text2">{login.time}</Text> : null}
         </View>
         <View className={COLUMN.actions}>
-          <RowMenuButton name={user.fullName} open={menuOpen} popover onOpen={(anchor) => onOpenMenu(user.id, anchor)} />
+          <RowMenuButton name={user.fullName} open={menuOpen} onOpen={(anchor) => onOpenMenu(user.id, anchor)} />
         </View>
       </Pressable>
     </CardSide>

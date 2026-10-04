@@ -4,6 +4,7 @@ import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 import type { AppointmentRecord } from "@/services/appointments";
 import { completeAppointment, type CompletionForm } from "@/services/medicalRecords";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { toastError } from "@/utils/errorToast/toastError";
 
 import { toMedicalRecordInput, type useMedicalRecordForm } from "../../MedicalRecordForm";
 import type { useDispensedItems } from "../../dispensing/useDispensedItems";
@@ -79,6 +80,7 @@ export const useCompletionFlow = ({
           ? fieldErrors.join(" ")
           : getApiErrorMessage(e, "The appointment could not be completed.")
       );
+      toastError("Appointment not completed", e, { inline: true });
       setErrors((prev) => ({ ...prev }));
     } finally {
       setSaving(false);

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { fetchRescheduleOptions, rescheduleAppointment } from "@/services/appointmentActionsApi";
 import type { AppointmentRecord, RescheduleOptionsResponse } from "@/types/appointments.types";
 import { getApiErrorMessage, isConflictError } from "@/utils/apiErrorHandler";
+import { toastError } from "@/utils/errorToast/toastError";
 import { getServiceLabel } from "@/config/appointmentServices";
 import { isServiceDay, serviceDayNote } from "@/utils/serviceDays";
 
@@ -98,6 +99,7 @@ export const useRescheduleAppointment = (
       onSuccess(await rescheduleAppointment(appointmentId, rescheduleBodyOf(options, scheduleId, chosenSlot)));
     } catch (e: unknown) {
       if (!active.current) return;
+      toastError("Appointment not rescheduled", e, { inline: true });
       if (isConflictError(e)) {
         setSlotStart(null);
         setStep("select");

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { usePersistedPagination } from "@/hooks/usePersistedPagination";
 import {
   buildDateRange,
   DEFAULT_DATE_PRESET,
@@ -6,28 +7,35 @@ import {
   type DatePreset,
 } from "../components/LogToolbar";
 import { endOfLocalDay, startOfLocalDay } from "@/utils/dateFormatter";
-import { PAGE_SIZE, SEARCH_DEBOUNCE_MS } from "../constants/logsLayout";
+import { SEARCH_DEBOUNCE_MS } from "../constants/logsLayout";
+import {
+  activeLogCard,
+  LOG_CARD_FILTERS,
+  monthToDateRange,
+  type LogCardKey,
+  type LogOutcome,
+} from "../components/toolbar/logCardFilters";
+import { LOG_LIST_SCHEMA } from "./logListSchema";
 
 const asParam = (value: string): string | undefined => (value === "all" ? undefined : value);
 
-export const useLogFilters = (initialSearch: string) => {
-  const [searchInput, setSearchInput] = useState(initialSearch);
-  const [search, setSearch] = useState(initialSearch);
-  const [datePreset, setDatePreset] = useState<DatePreset>(DEFAULT_DATE_PRESET);
-  const [customFrom, setCustomFrom] = useState("");
-  const [customTo, setCustomTo] = useState("");
-  const [role, setRole] = useState("all");
-  const [logType, setLogType] = useState("all");
-  const [severity, setSeverity] = useState("all");
-  const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearch(searchInput.trim());
-      setPage(1);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
+/**
+ * Search, date range, filters and page for the system log table, kept in the
+ * URL (and on phones, the last view) so a refresh lands on the same page.
+ * `total` is the entry count of the last load, null before the first.
+ */
+export const useLogFilters = (initialSearch: string, total: number | null) => {
+  const list = usePersistedPagination({
+    key: "system-logs",
+    schema: LOG_LIST_SCHEMA,
+    total,
+    searchDebounceMs: SEARCH_DEBOUNCE_MS,
+    initialSearch,
+  });
+  const { filters, page, limit, search, setFilters, replaceSearch } = list;
+  const { customFrom, customTo, role, logType, severity } = filters;
+  const datePreset = filters.datePreset as DatePreset;
+  const outcome = filters.outcome as LogOutcome;
 
   const dateRange = useMemo(
     () => buildDateRange(datePreset, customFrom, customTo),
@@ -47,25 +55,19 @@ export const useLogFilters = (initialSearch: string) => {
     [dateRange]
   );
 
-  const setAndResetPage =
-    <T,>(apply: (value: T) => void) =>
-    (value: T) => {
-      apply(value);
-      setPage(1);
-    };
-
   const params = useMemo(
     () => ({
       page,
-      limit: PAGE_SIZE,
+      limit,
       search: search || undefined,
       role: asParam(role),
       logType: asParam(logType),
       severity: asParam(severity),
+      outcome: outcome === "all" ? undefined : outcome,
       sort: "desc" as const,
       ...dateParams,
     }),
-    [page, search, role, logType, severity, dateParams]
+    [page, limit, search, role, logType, severity, outcome, dateParams]
   );
 
   const exportParams = useMemo(
@@ -74,31 +76,59 @@ export const useLogFilters = (initialSearch: string) => {
       role: asParam(role),
       logType: asParam(logType),
       severity: asParam(severity),
+      outcome: outcome === "all" ? undefined : outcome,
       sort: "desc" as const,
       ...dateParams,
     }),
-    [search, role, logType, severity, dateParams]
+    [search, role, logType, severity, outcome, dateParams]
   );
 
+  // A summary card replaces every filter with the ones it counts by.
+  const showCard = useCallback(
+    (key: LogCardKey) => {
+      const card = LOG_CARD_FILTERS[key];
+      const range = card.monthToDate ? monthToDateRange() : { from: customFrom, to: customTo };
+      replaceSearch("");
+      setFilters({
+        role: "all",
+        logType: "all",
+        severity: card.severity,
+        outcome: card.outcome,
+        datePreset: card.datePreset,
+        customFrom: range.from,
+        customTo: range.to,
+      });
+    },
+    [customFrom, customTo, replaceSearch, setFilters]
+  );
+
+  const setFilter = (field: "datePreset" | "customFrom" | "customTo" | "role" | "logType" | "severity") => (value: string) =>
+    setFilters({ [field]: value });
+
   return {
-    searchInput,
-    setSearchInput,
+    searchInput: list.searchInput,
+    setSearchInput: list.setSearchInput,
     datePreset,
-    setDatePreset: setAndResetPage(setDatePreset),
+    setDatePreset: setFilter("datePreset") as (value: DatePreset) => void,
     dateRangeLabel,
     dateRange,
     customFrom,
-    setCustomFrom: setAndResetPage(setCustomFrom),
+    setCustomFrom: setFilter("customFrom"),
     customTo,
-    setCustomTo: setAndResetPage(setCustomTo),
+    setCustomTo: setFilter("customTo"),
     role,
-    setRole: setAndResetPage(setRole),
+    setRole: setFilter("role"),
     logType,
-    setLogType: setAndResetPage(setLogType),
+    setLogType: setFilter("logType"),
     severity,
-    setSeverity: setAndResetPage(setSeverity),
+    setSeverity: setFilter("severity"),
+    outcome,
+    clearOutcome: () => setFilters({ outcome: "all" }),
+    showCard,
+    activeCard: activeLogCard({ search, role, logType, severity, outcome, datePreset, customFrom, customTo }),
     page,
-    setPage,
+    setPage: list.setPage,
+    isClamping: list.isClamping,
     params,
     exportParams,
     hasActiveFilters:
@@ -106,6 +136,7 @@ export const useLogFilters = (initialSearch: string) => {
       role !== "all" ||
       logType !== "all" ||
       severity !== "all" ||
+      outcome !== "all" ||
       datePreset !== DEFAULT_DATE_PRESET,
   };
 };

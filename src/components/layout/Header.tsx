@@ -9,7 +9,7 @@ import HeaderActions from "./header/HeaderActions";
 import HeaderBrand from "./header/HeaderBrand";
 import HeaderNav from "./header/HeaderNav";
 import { useResponsive } from "@/hooks/useResponsive";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type HeaderProps = {
   isMobile: boolean;
@@ -36,8 +36,8 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
           zIndex: 50,
           backgroundColor: HEADER_SURFACE,
           borderBottomWidth: 1,
-          borderBottomColor: "rgba(12,31,110,0.35)",
-          boxShadow: "0px 4px 12px rgba(12,31,110,0.2)",
+          borderBottomColor: withAlpha(PALETTE.blue[900], 0.35),
+          boxShadow: `0px 4px 12px ${withAlpha(PALETTE.ink, 0.2)}`,
           elevation: 8,
           paddingTop: topInset,
         }}

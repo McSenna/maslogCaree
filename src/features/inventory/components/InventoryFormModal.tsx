@@ -13,6 +13,7 @@ import InventoryModalFooter from "./formModal/InventoryModalFooter";
 import InventoryModalHeader from "./formModal/InventoryModalHeader";
 import { inventoryModalSurface } from "./formModal/inventoryModalSurface";
 import { useResponsive } from "@/hooks/useResponsive";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const DESKTOP_EDGE = 16;
 
@@ -63,7 +64,7 @@ const InventoryFormModal = ({
       <SheetViewport
         layout={layout}
         style={{
-          backgroundColor: "rgba(15,37,87,0.35)",
+          backgroundColor: withAlpha(PALETTE.ink, 0.35),
           paddingHorizontal: isMobile ? 0 : DESKTOP_EDGE,
         }}
       >

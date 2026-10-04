@@ -11,11 +11,12 @@ import { CardBottom } from "@/components/dashboard/kit/TableCard";
 import PhoneListHeader from "./PhoneListHeader";
 import PhoneRequestRow from "./PhoneRequestRow";
 import PhoneUserRow from "./PhoneUserRow";
+import MasterListPhoneList from "../masterList/MasterListPhoneList";
 import SelectionBar from "./SelectionBar";
 
-type PhoneUsersViewProps = { screen: UsersScreenState; width: number; onExport: () => void; onAddUser: () => void };
+type PhoneUsersViewProps = { screen: UsersScreenState; width: number; onExport: () => void };
 
-const PhoneUsersView = ({ screen, width, onExport, onAddUser }: PhoneUsersViewProps) => {
+const PhoneUsersView = ({ screen, width, onExport }: PhoneUsersViewProps) => {
   const palette = useAdminSurfacePalette();
   const { view, filters, selection, menu, requestTab, undo, openMenu, openReview } = screen;
   const selecting = selection.count > 0;
@@ -25,7 +26,7 @@ const PhoneUsersView = ({ screen, width, onExport, onAddUser }: PhoneUsersViewPr
   const firstUserId = screen.rows[0]?.id;
   const firstRequestId = screen.requests.items[0]?.id;
 
-  const onOpenMenu = useCallback((userId: string, anchor: MenuAnchor | null) => openMenu({ userId, anchor }), [openMenu]);
+  const onOpenMenu = useCallback((userId: string, anchor: MenuAnchor) => openMenu({ userId, anchor }), [openMenu]);
   const renderUser: ListRenderItem<User> = useCallback(
     ({ item }) => (
       <PhoneUserRow
@@ -46,6 +47,8 @@ const PhoneUsersView = ({ screen, width, onExport, onAddUser }: PhoneUsersViewPr
     [firstRequestId, openReview]
   );
 
+  if (screen.masterTab) return <MasterListPhoneList screen={screen} width={width} />;
+
   const footer = (
     <View className="mx-4">
       <CardBottom>
@@ -62,7 +65,7 @@ const PhoneUsersView = ({ screen, width, onExport, onAddUser }: PhoneUsersViewPr
   );
 
   const shared = {
-    ListHeaderComponent: <PhoneListHeader screen={screen} width={width} onExport={onExport} onAddUser={onAddUser} />,
+    ListHeaderComponent: <PhoneListHeader screen={screen} width={width} onExport={onExport} />,
     ListFooterComponent: footer,
     onEndReached: screen.loadMore,
     onEndReachedThreshold: 0.4,

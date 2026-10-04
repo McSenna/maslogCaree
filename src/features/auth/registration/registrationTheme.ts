@@ -1,30 +1,30 @@
 import { LANDING_COLORS } from "@/config/landingAssets";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const REG_COLORS = {
   primary: LANDING_COLORS.primaryBlue,
-  primarySoft: "#EAF2FE",
-  primaryRing: "rgba(21, 101, 216, 0.16)",
+  primarySoft: PALETTE.blue[50],
+  primaryRing: withAlpha(PALETTE.blue[600], 0.16),
   secondary: LANDING_COLORS.green,
-  secondarySoft: PALETTE.teal[50],
+  secondarySoft: PALETTE.green[50],
   success: PALETTE.green[600],
   // `success` is 3.3:1 on white: fine for icons and borders, too light for small text.
-  successText: "#15803D",
-  error: "#DC2626",
-  errorSoft: "#FEF2F2",
-  errorRing: "rgba(220, 38, 38, 0.14)",
-  text: "#0F172A",
+  successText: PALETTE.success[600],
+  error: PALETTE.red[600],
+  errorSoft: PALETTE.red[50],
+  errorRing: withAlpha(PALETTE.red[600], 0.14),
+  text: PALETTE.slate[800],
   heading: LANDING_COLORS.navy,
-  muted: "#5A6B85",
-  subtle: "#64748B",
+  muted: PALETTE.slate[600],
+  subtle: PALETTE.slate[500],
   border: LANDING_COLORS.border,
-  borderStrong: "#C6D4E7",
+  borderStrong: PALETTE.slate[300],
   // 3:1 against white, for controls whose border is their only outline (OTP boxes).
-  controlBorder: "#8494AE",
-  surface: "#FFFFFF",
-  surfaceMuted: "#F6F9FD",
-  disabled: "#F1F5F9",
-  overlay: "rgba(8, 21, 47, 0.48)",
+  controlBorder: PALETTE.controlLine,
+  surface: PALETTE.white,
+  surfaceMuted: PALETTE.slate[50],
+  disabled: PALETTE.slate[100],
+  overlay: withAlpha(PALETTE.ink, 0.48),
 } as const;
 
 export const REG_RADIUS = {

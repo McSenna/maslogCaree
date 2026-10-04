@@ -10,6 +10,7 @@ import {
 import LogDetailRows from "./LogDetailRows";
 import StatusBadge from "./StatusBadge";
 import { useSystemLogsPalette } from "./systemLogsTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type LogDetailsBottomSheetProps = {
   visible: boolean;
@@ -27,7 +28,7 @@ const LogDetailsBottomSheet = ({ visible, log, onClose }: LogDetailsBottomSheetP
       accessibilityLabel="Log details"
       surface={palette.cardBg}
       handleColor={palette.cardBorder}
-      scrim="rgba(0,0,0,0.45)"
+      scrim={withAlpha(PALETTE.ink, 0.45)}
       maxHeightRatio={0.85}
       header={(requestClose) =>
         log ? (

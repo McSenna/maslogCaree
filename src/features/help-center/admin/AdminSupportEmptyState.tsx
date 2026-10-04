@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AdminSupportEmptyStateProps = {
   hasFilters: boolean;
@@ -27,7 +28,7 @@ const AdminSupportEmptyState = ({ hasFilters, onClearFilters }: AdminSupportEmpt
           width: 52,
           height: 52,
           borderRadius: 26,
-          backgroundColor: palette.isDark ? "rgba(99, 102, 241, 0.12)" : "#F1F5F9",
+          backgroundColor: palette.isDark ? withAlpha(PALETTE.blue[600], 0.12) : PALETTE.slate[100],
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -78,7 +79,7 @@ const AdminSupportEmptyState = ({ hasFilters, onClearFilters }: AdminSupportEmpt
               style={{
                 fontSize: 13,
                 fontWeight: "600",
-                color: hovered ? "#FFFFFF" : palette.heading,
+                color: hovered ? PALETTE.white : palette.heading,
               }}
             >
               Reset Filters

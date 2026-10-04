@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import { useTheme } from "@/contexts/ThemeContext";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   isPending: boolean;
@@ -43,7 +44,7 @@ const VerificationModalFooter = ({
               className="h-11 px-4 flex-row items-center gap-2 rounded-xl border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/30"
               style={{ opacity: busy ? 0.6 : 1 }}
             >
-              <Feather name="x-circle" size={15} color="#DC2626" />
+              <Feather name="x-circle" size={15} color={PALETTE.red[600]} />
               <Text className="text-sm font-bold text-red-600 dark:text-red-400">
                 Reject Request
               </Text>
@@ -57,9 +58,9 @@ const VerificationModalFooter = ({
               style={{ opacity: busy ? 0.75 : 1 }}
             >
               {approving ? (
-                <ActivityIndicator size="small" color="#fff" />
+                <ActivityIndicator size="small" color={PALETTE.white} />
               ) : (
-                <Feather name="check-circle" size={15} color="#fff" />
+                <Feather name="check-circle" size={15} color={PALETTE.white} />
               )}
               <Text className="text-sm font-bold text-white">
                 {approving ? "Approving..." : "Approve Resident"}

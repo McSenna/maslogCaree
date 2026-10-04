@@ -54,6 +54,8 @@ export type AppointmentRecord = {
   ageTier?: number;
   prioritySortKey?: number;
   createdAt?: string;
+  /** Set by the server on every write; realtime updates use it to drop stale or repeated events. */
+  updatedAt?: string;
   resident?: {
     _id?: string;
     fullname?: string;

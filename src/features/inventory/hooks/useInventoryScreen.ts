@@ -15,7 +15,9 @@ export const useInventoryScreen = () => {
   const [tableAreaWidth, setTableAreaWidth] = useState(0);
   const [filterSheet, setFilterSheet] = useState<"filters" | "sort" | null>(null);
 
-  const query = useInventoryQuery();
+  // The count from the last load lets the query move a page past the end back onto the last page.
+  const [listTotal, setListTotal] = useState<number | null>(null);
+  const query = useInventoryQuery(listTotal);
   const data = useInventory(query.query);
   const selection = useInventorySelection(data.items);
 
@@ -26,11 +28,11 @@ export const useInventoryScreen = () => {
     reload: data.reload,
   });
 
-  const { clampPage } = query;
-  const { totalPages } = data;
+  const { loading, total } = data;
   useEffect(() => {
-    clampPage(totalPages);
-  }, [totalPages, clampPage]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mirrors the server's count once a load settles
+    if (!loading) setListTotal(total);
+  }, [loading, total]);
 
   const { openModal } = mutations;
   const detailsActions = useMemo(
@@ -48,11 +50,15 @@ export const useInventoryScreen = () => {
     if (next > 0 && next !== contentWidth) setContentWidth(next);
   };
 
+  // A page past the end (a stale link, or the last page's rows deleted) reads as loading until it
+  // moves to the new last page, never as an empty inventory.
+  const pastEnd = !data.loading && data.total > 0 && query.page > data.totalPages;
+
   return {
     user,
     insets,
     query,
-    data,
+    data: pastEnd ? { ...data, loading: true } : data,
     selection,
     mutations,
     detailsActions,

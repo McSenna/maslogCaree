@@ -68,9 +68,9 @@ const ResidentRecords = () => {
           {loading ? (
             <View className="gap-3">
               <StatCardSkeleton />
-              <Skeleton className="h-24 w-full rounded-2xl" />
-              <Skeleton className="h-24 w-full rounded-2xl" />
-              <Skeleton className="h-24 w-full rounded-2xl" />
+              <Skeleton className="h-24 w-full rounded-lg" />
+              <Skeleton className="h-24 w-full rounded-lg" />
+              <Skeleton className="h-24 w-full rounded-lg" />
             </View>
           ) : error && sorted.length === 0 ? (
             <ErrorState title="Unable to load your records" message={error} onRetry={() => void refresh()} />
@@ -84,9 +84,9 @@ const ResidentRecords = () => {
           ) : (
             <View className="gap-5">
               <View className="flex-row gap-3">
-                <StatCard label="Total" value={stats.total} icon="calendar" tone="blue" />
-                <StatCard label="Pending" value={stats.pending} icon="clock" tone="amber" />
-                <StatCard label="Completed" value={stats.completed} icon="check-circle" tone="teal" />
+                <StatCard label="Total" value={stats.total} icon="calendar" tone="primary" />
+                <StatCard label="Pending" value={stats.pending} icon="clock" tone="accent" />
+                <StatCard label="Completed" value={stats.completed} icon="check-circle" tone="care" />
               </View>
 
               <View className="gap-3">

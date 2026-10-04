@@ -9,5 +9,5 @@ export const mapAnnouncements = (notifications: NotificationItem[]): Announcemen
     date: formatNotificationTime(n),
     detail: n.body,
     icon: n.isRead ? "document-text-outline" : "megaphone-outline",
-    tone: n.isRead ? "purple" : "blue",
+    tone: n.isRead ? "neutral" : "primary",
   }));

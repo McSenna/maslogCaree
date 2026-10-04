@@ -6,19 +6,28 @@ import {
   DashboardSkeleton,
   greetingLine,
   longDate,
-  updatedLabel,
   useMinuteClock,
   type DashboardAction,
 } from "@/components/dashboard/kit";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
-import { handOffActivitySearch } from "@/features/systemLogs/activitySearchHandoff";
 import { useAdminDashboard } from "@/hooks/useAdminDashboard";
 import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
+import { useRealtimeRefetch } from "@/hooks/realtime/useRealtimeRefetch";
 import type { AdminDashboardData } from "@/services/adminDashboardService";
 import DashboardBody, { type AdminNavigation } from "../components/DashboardBody";
 import { useAdminDashboardLayout } from "../hooks/useAdminDashboardLayout";
+
+// Everything the cards, attention strip and recent tables are computed from.
+const DASHBOARD_SOURCES = [
+  "user",
+  "userRequest",
+  "appointment",
+  "adminSupportTicket",
+  "inventoryItem",
+  "systemLog",
+] as const;
 
 const SKELETON_ROWS = [
   { weights: [1.6, 1], height: 340 },
@@ -42,7 +51,10 @@ const AdminDashboardScreen = () => {
   const now = useMinuteClock();
 
   const layout = useAdminDashboardLayout();
-  const { data, loading, refreshing, error, reload, refresh } = useAdminDashboard();
+  const { data, loading, refreshing, error, reload, refresh, poll } = useAdminDashboard();
+  // Live: a quiet reload whenever something the dashboard counts changes,
+  // instead of the 30-second poll it used to run.
+  useRealtimeRefetch(DASHBOARD_SOURCES, poll, { enabled: Boolean(data) });
 
   const go = useMemo<AdminNavigation>(
     () => ({
@@ -50,12 +62,7 @@ const AdminDashboardScreen = () => {
       toRegistrations: () => router.push("/admin/users?section=requests" as never),
       toSupport: () => router.push("/admin/support"),
       toInventory: () => router.push("/admin/inventory"),
-      toSystemLogs: () => router.push("/admin/system-logs"),
-      toActivity: (activity) => {
-        // The name filters the logs in memory; it must not land in the URL.
-        handOffActivitySearch(activity.actorName);
-        router.push("/admin/system-logs");
-      },
+      toUserList: (list) => router.push(`/admin/users?${list}` as never),
     }),
     [router]
   );
@@ -99,9 +106,6 @@ const AdminDashboardScreen = () => {
         subtitle={`${longDate(now)} · ${statusLine(data)}`}
         primaryAction={primaryAction}
         secondaryActions={secondaryActions}
-        updatedLabel={data ? updatedLabel(data.generatedAt, now) : undefined}
-        onRefresh={data ? refresh : undefined}
-        refreshing={refreshing}
       />
 
       {error && data ? (

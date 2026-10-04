@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import Animated, { FadeIn, SlideInUp } from "react-native-reanimated";
 import { useResponsive } from "@/hooks/useResponsive";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type ServiceCardItem = {
   icon: keyof typeof Feather.glyphMap;
@@ -15,15 +16,6 @@ export type ServiceCardItem = {
 };
 
 type ServiceCardProps = ServiceCardItem;
-
-const hexToRgba = (hex: string, alpha: number) => {
-  const normalized = hex.replace("#", "").trim();
-  if (normalized.length !== 6) return `rgba(0,0,0,${alpha})`;
-  const r = parseInt(normalized.slice(0, 2), 16);
-  const g = parseInt(normalized.slice(2, 4), 16);
-  const b = parseInt(normalized.slice(4, 6), 16);
-  return `rgba(${r},${g},${b},${alpha})`;
-};
 
 const ServiceCard = ({
   icon,
@@ -53,13 +45,13 @@ const ServiceCard = ({
         })}
       >
         <Animated.View
-          className="rounded-2xl p-4"
+          className="rounded-lg p-4"
           entering={SlideInUp.duration(500).delay(150)}
           style={{
             backgroundColor: bg,
             borderWidth: 1,
             borderColor: border,
-            boxShadow: `0px 2px 8px ${hexToRgba(shadow, 0.06)}`,
+            boxShadow: `0px 2px 8px ${withAlpha(shadow, 0.06)}`,
             elevation: 3,
           }}
         >
@@ -82,7 +74,7 @@ const ServiceCard = ({
           className="leading-relaxed"
           style={{
             fontSize: isTablet ? 12 : 11,
-            color: "#6B7280",
+            color: PALETTE.slate[500],
             lineHeight: isTablet ? 17 : 15,
           }}
           numberOfLines={2}

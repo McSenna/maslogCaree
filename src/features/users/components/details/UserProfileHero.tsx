@@ -8,6 +8,7 @@ import RoleBadge from "../RoleBadge";
 import UserStatusBadge from "../UserStatusBadge";
 import { DETAIL_RADIUS, HERO_TAGLINE, useUserDetailsPalette } from "./detailsTheme";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
 const HeroDecor = ({ tint, soft }: { tint: string; soft: string }) => {
   return (
@@ -65,7 +66,7 @@ const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
                 borderWidth: 4,
                 borderColor: palette.avatarRing,
                 ...createShadow({
-                  color: "#0F2557",
+                  color: PALETTE.ink,
                   offsetY: 6,
                   radius: 14,
                   opacity: 0.16,

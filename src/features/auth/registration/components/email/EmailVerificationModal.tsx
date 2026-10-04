@@ -19,6 +19,7 @@ import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 import type { useEmailVerification } from "../../hooks/useEmailVerification";
 import { REG_COLORS, REG_METRICS, REG_RADIUS } from "../../registrationTheme";
 import VerificationCodeBlock from "./VerificationCodeBlock";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type EmailVerificationModalProps = {
   visible: boolean;
@@ -125,7 +126,7 @@ const EmailVerificationModal = ({ visible, email, verification }: EmailVerificat
             borderWidth: isSheet ? 0 : 1,
             borderColor: REG_COLORS.border,
             overflow: "hidden",
-            boxShadow: "0px 18px 48px rgba(8, 21, 47, 0.22)",
+            boxShadow: `0px 18px 48px ${withAlpha(PALETTE.ink, 0.22)}`,
           }}
         >
           <Pressable

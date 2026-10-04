@@ -4,6 +4,7 @@ import type { DetailEntry } from "@/components/medicalRecord/history/recordDetai
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 
 import { DetailSection } from "./DetailSection";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   palette: ResidentDialogPalette;
@@ -14,7 +15,7 @@ export const VitalSignsGrid = ({ palette, entries }: Props) => {
   if (!entries.length) return null;
 
   return (
-    <DetailSection palette={palette} title="Vital Signs" icon="activity" iconColor="#E11D48">
+    <DetailSection palette={palette} title="Vital Signs" icon="activity" iconColor={PALETTE.red[600]}>
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 10 }}>
         {entries.map((vital) => (
           <View

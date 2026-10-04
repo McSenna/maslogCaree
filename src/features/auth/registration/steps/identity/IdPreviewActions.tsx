@@ -2,6 +2,7 @@ import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { REG_COLORS } from "../../registrationTheme";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   onReplace: () => void;
@@ -18,8 +19,8 @@ const IdPreviewActions = ({ onReplace, onRemove }: Props) => {
         paddingHorizontal: 14,
         paddingVertical: 10,
         borderTopWidth: 1,
-        borderTopColor: "#E2E8F0",
-        backgroundColor: "#FFFFFF",
+        borderTopColor: PALETTE.slate[200],
+        backgroundColor: PALETTE.white,
       }}
     >
       <Pressable
@@ -40,8 +41,8 @@ const IdPreviewActions = ({ onReplace, onRemove }: Props) => {
         accessibilityLabel="Remove document"
         style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
       >
-        <Feather name="trash-2" size={13} color="#EF4444" />
-        <Text style={{ fontSize: 12.5, fontWeight: "600", color: "#EF4444" }}>Remove</Text>
+        <Feather name="trash-2" size={13} color={PALETTE.red[600]} />
+        <Text style={{ fontSize: 12.5, fontWeight: "600", color: PALETTE.red[700] }}>Remove</Text>
       </Pressable>
     </View>
   );

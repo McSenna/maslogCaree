@@ -1,21 +1,28 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 
 import { DEFAULT_BIRTH_YEAR } from "../../constants/registrationFields";
 import { toIsoBirthDate } from "../../utils/dateOfBirth";
-import {
-  clampToPast,
-  isFutureMonth,
-  parseIsoDate,
-  startOfToday,
-} from "./calendarMonth";
+import { clampMonth, isOutside, monthInRange, pastOnly, yearOptions, type DateBounds } from "./calendarBounds";
+import { clampDay, parseIsoDate } from "./calendarMonth";
 
 export type CalendarStart = { year: number; monthIndex: number };
 
 const ADULT_START: CalendarStart = { year: DEFAULT_BIRTH_YEAR, monthIndex: 0 };
 
-/** `opensAt` is the month shown while nothing is picked: an adult's default year, or this month for a child. */
-export const useDateOfBirthDraft = (value: string, visible: boolean, opensAt: CalendarStart = ADULT_START) => {
+/**
+ * `opensAt` is the month shown while nothing is picked: an adult's default
+ * year, or this month for a child. `bounds` limits the days on offer; it
+ * defaults to today and earlier, as a birth date needs.
+ */
+export const useDateOfBirthDraft = (
+  value: string,
+  visible: boolean,
+  opensAt: CalendarStart = ADULT_START,
+  bounds: DateBounds = pastOnly()
+) => {
+  const { min, max } = bounds;
+  const stableBounds = useMemo(() => ({ min, max }), [min, max]);
   const initial = parseIsoDate(value);
   const [year, setYear] = useState(initial?.year ?? opensAt.year);
   const [monthIndex, setMonthIndex] = useState(initial?.monthIndex ?? opensAt.monthIndex);
@@ -31,56 +38,49 @@ export const useDateOfBirthDraft = (value: string, visible: boolean, opensAt: Ca
     setSelected(parsed ? value : "");
   });
 
-  const goToPreviousMonth = useCallback(() => {
-    setMonthIndex((current) => {
-      if (current > 0) return current - 1;
-      setYear((currentYear) => currentYear - 1);
-      return 11;
-    });
-  }, []);
-
-  const goToNextMonth = useCallback(() => {
-    setMonthIndex((current) => {
-      const nextMonth = current === 11 ? 0 : current + 1;
-      const nextYear = current === 11 ? year + 1 : year;
-      if (isFutureMonth(nextYear, nextMonth)) return current;
-      if (current === 11) setYear(nextYear);
-      return nextMonth;
-    });
-  }, [year]);
+  const shift = useCallback(
+    (step: 1 | -1) => {
+      const next = monthIndex + step;
+      const nextYear = next < 0 ? year - 1 : next > 11 ? year + 1 : year;
+      const nextMonth = (next + 12) % 12;
+      if (!monthInRange(nextYear, nextMonth, stableBounds)) return;
+      setYear(nextYear);
+      setMonthIndex(nextMonth);
+    },
+    [monthIndex, year, stableBounds]
+  );
 
   const selectYear = useCallback(
     (nextYear: number) => {
-      const today = startOfToday();
-      const safeMonth =
-        nextYear === today.getFullYear() ? Math.min(monthIndex, today.getMonth()) : monthIndex;
-
+      const safeMonth = clampMonth(nextYear, monthIndex, stableBounds);
       setYear(nextYear);
       setMonthIndex(safeMonth);
       setSelected((current) => {
         const parsed = parseIsoDate(current);
         if (!parsed) return current;
-        const day = clampToPast(nextYear, safeMonth, parsed.day);
-        const iso = toIsoBirthDate(nextYear, safeMonth, day);
-        return new Date(nextYear, safeMonth, day) > today ? "" : iso;
+        const iso = toIsoBirthDate(nextYear, safeMonth, clampDay(nextYear, safeMonth, parsed.day));
+        return isOutside(iso, stableBounds) ? "" : iso;
       });
     },
-    [monthIndex]
+    [monthIndex, stableBounds]
   );
 
-  const canGoForward = !isFutureMonth(
-    monthIndex === 11 ? year + 1 : year,
-    monthIndex === 11 ? 0 : monthIndex + 1
-  );
+  const canGo = (step: 1 | -1) => {
+    const next = monthIndex + step;
+    return monthInRange(next < 0 ? year - 1 : next > 11 ? year + 1 : year, (next + 12) % 12, stableBounds);
+  };
 
   return {
     year,
     monthIndex,
     selected,
     setSelected,
-    goToPreviousMonth,
-    goToNextMonth,
+    goToPreviousMonth: () => shift(-1),
+    goToNextMonth: () => shift(1),
     selectYear,
-    canGoForward,
+    canGoForward: canGo(1),
+    canGoBack: canGo(-1),
+    bounds: stableBounds,
+    years: yearOptions(stableBounds),
   };
 };

@@ -14,12 +14,12 @@ import { SUPPORT_TABLE_MIN_WIDTH } from "../admin/adminSupportTableColumns";
 import SupportTicketList from "../support/SupportTicketList";
 import { useAdminSupportTickets } from "../hooks/useAdminSupportTickets";
 import { useResponsive } from "@/hooks/useResponsive";
+import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 const AdminSupportScreen = () => {
   const { isDesktopWeb } = useResponsive();
   const palette = useAdminSurfacePalette();
   const insets = useRoleScreenInsets();
-  const support = useAdminSupportTickets();
   const [openTicketId, setOpenTicketId] = useState<string | null>(null);
   const [contentWidth, setContentWidth] = useState<number | null>(null);
 
@@ -28,12 +28,17 @@ const AdminSupportScreen = () => {
   // when it fits) is used until the table has room.
   const isDesktop =
     isDesktopWeb && (contentWidth === null || contentWidth >= SUPPORT_TABLE_MIN_WIDTH);
+  // The card list adds pages as the user scrolls; only the table restores a page.
+  const support = useAdminSupportTickets({ appendPages: !isDesktop });
+  // A new table page starts at its first row; the card list adds pages, so it never jumps.
+  const scrollRef = useScrollTopOnChange<ScrollView>(isDesktop ? support.page : 0);
 
   return (
     <View style={{ flex: 1, backgroundColor: palette.pageBg, width: "100%" }}>
       <RoleScreenBackdrop color={palette.pageBg} insets={insets} />
 
       <ScrollView
+        ref={scrollRef}
         onLayout={(event) => {
           const next = Math.round(event.nativeEvent.layout.width - insets.gutter * 2);
           setContentWidth((current) => (current === next ? current : next));
@@ -53,7 +58,11 @@ const AdminSupportScreen = () => {
           onRefresh={support.refresh}
         />
 
-        <AdminSupportStats counts={support.statusCounts} total={support.total} />
+        <AdminSupportStats
+          counts={support.statusCounts}
+          activeStatus={support.query.status ?? "all"}
+          onSelectStatus={(status) => support.updateQuery({ status })}
+        />
 
         <AdminSupportToolbar
           query={support.query}

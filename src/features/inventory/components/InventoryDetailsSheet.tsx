@@ -21,6 +21,7 @@ import InventoryItemSummary from "./InventoryItemSummary";
 import { buildDetailFields } from "./inventoryDetailFields";
 import { useInventoryPalette } from "./inventoryTheme";
 import { createShadow } from "@/design/shadow";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type InventoryDetailsSheetProps = {
   visible: boolean;
@@ -57,7 +58,7 @@ const InventoryDetailsSheet = ({
       onRequestClose={backDismissesKeyboardFirst(layout, onClose)}
       statusBarTranslucent
     >
-      <SheetViewport layout={layout} style={{ backgroundColor: "rgba(15,37,87,0.35)" }}>
+      <SheetViewport layout={layout} style={{ backgroundColor: withAlpha(PALETTE.ink, 0.35) }}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Close inventory item details"
@@ -73,7 +74,7 @@ const InventoryDetailsSheet = ({
             borderTopRightRadius: 20,
             backgroundColor: palette.cardBg,
             ...createShadow({
-              color: "#0F2557",
+              color: PALETTE.ink,
               offsetY: -6,
               radius: 24,
               opacity: 0.2,

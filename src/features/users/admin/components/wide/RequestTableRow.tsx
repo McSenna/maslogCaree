@@ -38,13 +38,13 @@ const RequestTableRow = ({ request, mode, first, onReview }: RequestTableRowProp
           <DashboardRoleBadge role={roleToApi(request.role)} palette={palette} isDark={palette.isDark} />
         </View>
         {showLocation ? (
-          <Text numberOfLines={2} className={`${COLUMN.location} text-[13px] font-normal leading-[18px] text-body`}>
+          <Text numberOfLines={2} className={`${COLUMN.location} text-[13px] leading-[18px] text-body`}>
             {request.location || "Not recorded"}
           </Text>
         ) : null}
         <View className={COLUMN.submitted}>
-          <Text className="text-[13px] font-medium text-ink">{formatDate(request.submittedAt)}</Text>
-          <Text className="text-[12px] font-normal text-text2">{formatTime(request.submittedAt)}</Text>
+          <Text className="text-[13px] text-body">{formatDate(request.submittedAt)}</Text>
+          <Text className="text-[12px] text-text2">{formatTime(request.submittedAt)}</Text>
         </View>
         {request.status === "pending" ? (
           <View className={`${COLUMN.decide} flex-row justify-end gap-2`}>

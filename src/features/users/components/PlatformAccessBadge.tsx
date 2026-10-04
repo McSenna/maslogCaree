@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import { describePlatformAccess } from "@/config/platformAccess";
 import type { AdminUser } from "@/features/users/services/userService";
 import { RADIUS, useUsersPalette } from "./usersTheme";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type PlatformAccessBadgeProps = {
   user: Pick<AdminUser, "role" | "platformAccess">;
@@ -16,8 +16,8 @@ const PlatformAccessBadge = ({ user, size = "md" }: PlatformAccessBadgeProps) =>
   const isSm = size === "sm";
 
   const tone = palette.isDark
-    ? { text: "#93C5FD", bg: "rgba(37,99,235,0.16)" }
-    : { text: PALETTE.blue[700], bg: "#EFF6FF" };
+    ? { text: PALETTE.blue[300], bg: withAlpha(PALETTE.blue[600], 0.16) }
+    : { text: PALETTE.blue[700], bg: PALETTE.blue[50] };
 
   return (
     <View

@@ -1,10 +1,15 @@
 import { useMemo } from "react";
 import type { Feather } from "@expo/vector-icons";
 import { useTheme } from "@/contexts/ThemeContext";
-import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
+import {
+  getAdminDashboardPalette,
+  type AdminDashboardPalette,
+  type MetricTone,
+  type StatusToneName,
+} from "@/design/adminDashboardTheme";
 import type { AppointmentRecord } from "@/services/appointments";
-import { getStatusLabel } from "@/components/status/appointmentStatusModel";
-import { PALETTE } from "@/theme/palette";
+import { getStatusLabel, getStatusMeta } from "@/components/status/appointmentStatusModel";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const TWO_COLUMN_WIDTH = 1100;
 // Window width: below this the sidebar leaves the full-width table too narrow for its seven columns.
@@ -33,7 +38,7 @@ export const STATUS_LABELS = Object.fromEntries(
   ALL_STATUSES.map((status) => [status, getStatusLabel(status, "staff")])
 ) as Record<AppointmentStatus, string>;
 
-export type StatTone = "blue" | "green" | "purple" | "amber";
+export type StatTone = MetricTone;
 
 export type StatCardSpec = {
   key: string;
@@ -44,11 +49,19 @@ export type StatCardSpec = {
 };
 
 export const STAT_CARDS: StatCardSpec[] = [
-  { key: "today", label: "Today's Appointments", tone: "blue", icon: "calendar", caption: "booked for today" },
-  { key: "pending", label: "Pending Requests", tone: "amber", icon: "clock", caption: "awaiting a slot" },
-  { key: "upcoming", label: "Upcoming", tone: "green", icon: "trending-up", caption: "scheduled ahead" },
-  { key: "declined", label: "Declined", tone: "purple", icon: "x-circle", caption: "not scheduled" },
+  { key: "today", label: "Today's Appointments", tone: "primary", icon: "calendar", caption: "booked for today" },
+  { key: "pending", label: "Pending Requests", tone: "accent", icon: "clock", caption: "awaiting a slot" },
+  { key: "upcoming", label: "Upcoming", tone: "care", icon: "trending-up", caption: "scheduled ahead" },
+  { key: "declined", label: "Declined", tone: "danger", icon: "x-circle", caption: "not scheduled" },
 ];
+
+// Each status reads its tone from the one status model, so badges, rows and
+// sheets can never disagree about what colour "pending" is.
+const statusStyle = (palette: AdminDashboardPalette, status: AppointmentStatus) => {
+  const meta = getStatusMeta(status);
+  const tone = palette.statusTones[meta.tone as StatusToneName];
+  return { bg: tone.bg, fg: tone.fg, dot: meta.dot };
+};
 
 export const useQueuePalette = () => {
   const { resolvedTheme } = useTheme();
@@ -60,7 +73,7 @@ export const useQueuePalette = () => {
     return {
       isDark,
       pageBg: base.pageBg,
-      rowHover: isDark ? "#0B1220" : PALETTE.blue[50],
+      rowHover: base.hoverBg,
       panelBg: base.cardBg,
       panelBorder: base.cardBorder,
       divider: base.divider,
@@ -69,23 +82,14 @@ export const useQueuePalette = () => {
       muted: base.muted,
       subtle: base.subtle,
       primary: base.primary,
-      primarySoft: isDark ? "rgba(21,101,216,0.18)" : PALETTE.blue[50],
-      tones: {
-        blue: { bg: isDark ? "rgba(21,101,216,0.18)" : PALETTE.blue[50], fg: isDark ? PALETTE.blue[300] : PALETTE.blue[600] },
-        green: { bg: isDark ? "rgba(19,147,132,0.16)" : PALETTE.teal[50], fg: isDark ? PALETTE.teal[300] : PALETTE.teal[600] },
-        purple: { bg: isDark ? "rgba(139,92,246,0.16)" : "#F1ECFF", fg: isDark ? "#C4B5FD" : "#8B5CF6" },
-        amber: { bg: isDark ? "rgba(245,158,11,0.14)" : "#FFF4E0", fg: isDark ? "#FCD34D" : "#F59E0B" },
-      } as Record<StatTone, { bg: string; fg: string }>,
-      statuses: {
-        pending: { bg: isDark ? "rgba(245,158,11,0.16)" : "#FFF4E0", fg: isDark ? "#FCD34D" : "#B45309", dot: "#F59E0B" },
-        confirmed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },
-        rescheduled: { bg: isDark ? "rgba(37,99,235,0.16)" : "#EAF2FF", fg: isDark ? "#93C5FD" : PALETTE.blue[700], dot: PALETTE.blue[600] },
-        declined: { bg: isDark ? "rgba(239,68,68,0.14)" : "#FEF1F1", fg: isDark ? "#FCA5A5" : "#B91C1C", dot: "#EF4444" },
-        processing: { bg: isDark ? "rgba(139,92,246,0.16)" : "#F1ECFF", fg: isDark ? "#C4B5FD" : "#6D28D9", dot: "#8B5CF6" },
-        completed: { bg: isDark ? "rgba(16,185,129,0.14)" : "#E7F8F0", fg: isDark ? "#6EE7B7" : "#047857", dot: "#10B981" },
-        cancelled: { bg: isDark ? "rgba(100,116,139,0.18)" : "#F1F5F9", fg: isDark ? "#CBD5E1" : "#475569", dot: "#64748B" },
-      } satisfies Record<AppointmentStatus, { bg: string; fg: string; dot: string }>,
-      skeleton: isDark ? "#1E293B" : "#EDF2F9",
+      primarySoft: isDark ? withAlpha(PALETTE.blue[600], 0.18) : PALETTE.blue[50],
+      tones: Object.fromEntries(
+        Object.entries(base.tones).map(([tone, style]) => [tone, { bg: style.iconBg, fg: style.icon }])
+      ) as Record<StatTone, { bg: string; fg: string }>,
+      statuses: Object.fromEntries(
+        ALL_STATUSES.map((status) => [status, statusStyle(base, status)])
+      ) as Record<AppointmentStatus, { bg: string; fg: string; dot: string }>,
+      skeleton: base.skeleton,
     };
   }, [resolvedTheme]);
 };

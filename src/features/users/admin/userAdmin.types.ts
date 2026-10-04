@@ -41,14 +41,15 @@ export interface UserSummary {
   rejectedRequests: number;
 }
 
-export type UserTab = "active" | "requests" | "rejected" | "deactivated" | "masterlist";
-export type UserSort = "last_login_desc" | "last_login_asc" | "name_asc";
+/** "accounts" lists every user account; "masterlist" is the separate Barangay Master List of official records. */
+export type UserTab = "active" | "requests" | "rejected" | "deactivated" | "accounts" | "masterlist";
+export type UserSort = "last_login_desc" | "last_login_asc" | "name_asc" | "joined_desc";
 export type RoleFilter = Role | "all";
 export type StatusFilter = UserStatus | "all";
 export type StatusAction = "deactivate" | "reactivate";
 
-/** Window position for a menu opened under a control. */
-export type MenuAnchor = { x: number; y: number; width: number };
+/** The window rect of the button a menu opened from, and how to hand focus back to it on dismiss. */
+export type MenuAnchor = { x: number; y: number; width: number; height: number; returnFocus: () => void };
 
 export interface UserListParams {
   tab: UserTab;

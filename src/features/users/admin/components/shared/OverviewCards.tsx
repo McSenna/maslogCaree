@@ -12,6 +12,10 @@ type OverviewCardsProps = {
   summary: UserSummary | null;
   tab: UserTab;
   onSelectTab: (tab: UserTab) => void;
+  /** "Added this month": all accounts, newest first. */
+  onShowNewest: () => void;
+  /** True while that newest-first view is what the list shows. */
+  newestSelected: boolean;
   /** Four in a row when there is room, otherwise two by two (as on the dashboard). */
   columns: 2 | 4;
   /** Phone sizes: smaller type and padding. */
@@ -22,19 +26,25 @@ type OverviewCardsProps = {
 type CardSpec = Omit<MetricCardProps, "palette" | "compact" | "dense">;
 
 // Same tones and icons as the dashboard's account cards, so the numbers read as the same family.
-const buildCards = (summary: UserSummary, tab: UserTab, onSelectTab: (tab: UserTab) => void): CardSpec[] => [
+const buildCards = (
+  summary: UserSummary,
+  tab: UserTab,
+  onSelectTab: (tab: UserTab) => void,
+  onShowNewest: () => void,
+  newestSelected: boolean
+): CardSpec[] => [
   {
-    tone: "blue",
+    tone: "primary",
     icon: "users",
     label: "Total users",
     value: summary.total,
     description: `${summary.staff} staff, ${summary.residents} residents`,
-    onPress: () => onSelectTab("masterlist"),
+    onPress: () => onSelectTab("accounts"),
     accessibilityHint: "Shows every account",
-    selected: tab === "masterlist",
+    selected: tab === "accounts" && !newestSelected,
   },
   {
-    tone: "green",
+    tone: "care",
     icon: "user-check",
     label: "Active",
     value: summary.active,
@@ -43,9 +53,18 @@ const buildCards = (summary: UserSummary, tab: UserTab, onSelectTab: (tab: UserT
     accessibilityHint: "Shows active users",
     selected: tab === "active",
   },
-  { tone: "purple", icon: "user-plus", label: "Added this month", value: summary.addedThisMonth, description: monthStartNote() },
   {
-    tone: "pink",
+    tone: "accent",
+    icon: "user-plus",
+    label: "Added this month",
+    value: summary.addedThisMonth,
+    description: monthStartNote(),
+    onPress: onShowNewest,
+    accessibilityHint: "Shows every account, newest first",
+    selected: newestSelected,
+  },
+  {
+    tone: "neutral",
     icon: "user-x",
     label: "Deactivated",
     value: summary.deactivated,
@@ -56,7 +75,16 @@ const buildCards = (summary: UserSummary, tab: UserTab, onSelectTab: (tab: UserT
   },
 ];
 
-const OverviewCards = ({ summary, tab, onSelectTab, columns, compact = false, dense = false }: OverviewCardsProps) => {
+const OverviewCards = ({
+  summary,
+  tab,
+  onSelectTab,
+  onShowNewest,
+  newestSelected,
+  columns,
+  compact = false,
+  dense = false,
+}: OverviewCardsProps) => {
   const palette = useAdminSurfacePalette();
   const gap = compact ? 12 : 16;
 
@@ -72,7 +100,7 @@ const OverviewCards = ({ summary, tab, onSelectTab, columns, compact = false, de
 
   return (
     <MetricRow columns={columns} gap={gap}>
-      {buildCards(summary, tab, onSelectTab).map((card) => (
+      {buildCards(summary, tab, onSelectTab, onShowNewest, newestSelected).map((card) => (
         <MetricCard key={card.label} palette={palette} compact={compact} dense={dense} {...card} />
       ))}
     </MetricRow>

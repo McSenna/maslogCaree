@@ -1,4 +1,5 @@
 import type { Feather } from "@expo/vector-icons";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type LeaderTier = "top" | "mid";
 
@@ -17,6 +18,6 @@ export type LeaderTierProps = Omit<LeaderCardProps, "tier"> & {
 };
 
 export const CARD_SHADOW = {
-  boxShadow: "0px 4px 12px rgba(144,202,249,0.6)",
+  boxShadow: `0px 4px 12px ${withAlpha(PALETTE.ink, 0.08)}`,
   elevation: 6,
 } as const;

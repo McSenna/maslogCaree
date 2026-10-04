@@ -10,10 +10,11 @@ import { useMobileLandingLayout } from "@/hooks/useMobileLandingLayout";
 
 import { styles } from "./landingStyles";
 import type { RegistrationProps } from "./landingModalProps";
+import { PALETTE } from "@/theme/palette";
 
 type Props = RegistrationProps;
 
-const LANDING_SURFACE = "#F2F7FD";
+const LANDING_SURFACE = PALETTE.slate[100];
 
 const MobileLanding = ({
   onOpenRegister,

@@ -7,6 +7,7 @@ import { ERROR_CODES, PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
 import { LOGIN_MESSAGES, checkIdentifier, checkPassword } from "../webLogin/loginIdentifier";
+import { toastError } from "@/utils/errorToast/toastError";
 
 export type LoginField = "email" | "password";
 
@@ -81,7 +82,7 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
             )
       );
     } catch (error: unknown) {
-      toast.error("Couldn't log in");
+      toastError("Couldn't log in", error, { inline: true });
       setFormError({
         title: "Login failed",
         message: getApiErrorMessage(error, "An unexpected error occurred. Please try again."),

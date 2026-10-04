@@ -10,6 +10,8 @@ import InventoryMobileToolbar from "./InventoryMobileToolbar";
 import InventorySkeleton from "./InventorySkeleton";
 import { SORT_OPTIONS } from "./inventoryFilters";
 import { RADIUS, useInventoryPalette } from "./inventoryTheme";
+import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
+import type { InventoryItem } from "@/features/inventory/services/inventoryService";
 
 type InventoryMobileLayoutProps = {
   controller: InventoryScreenController;
@@ -22,6 +24,9 @@ const InventoryMobileLayout = ({
 }: InventoryMobileLayoutProps) => {
   const palette = useInventoryPalette();
   const { query, data, selection, mutations, dense } = controller;
+  // A new page starts at its first row (web scrolls a ScrollView, phones a FlatList).
+  const scrollRef = useScrollTopOnChange<ScrollView>(query.page);
+  const listRef = useScrollTopOnChange<FlatList<InventoryItem>>(query.page);
 
   const refreshControl = (
     <RefreshControl
@@ -35,6 +40,8 @@ const InventoryMobileLayout = ({
   const header = (
     <InventoryMobileHeader
       summary={data.summary}
+      activeCard={query.activeCard}
+      onSelectCard={query.showCard}
       toolbar={
         <InventoryMobileToolbar
           search={query.searchInput}
@@ -88,6 +95,7 @@ const InventoryMobileLayout = ({
   if (Platform.OS === "web") {
     return (
       <ScrollView
+        ref={scrollRef}
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={listContentStyle}
@@ -115,6 +123,7 @@ const InventoryMobileLayout = ({
 
   return (
     <FlatList
+      ref={listRef}
       className="flex-1"
       data={data.loading || data.error ? [] : data.items}
       keyExtractor={(item) => item._id}

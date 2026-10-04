@@ -11,11 +11,13 @@ type TableFooterProps = {
   pageSize: number;
   shown: number;
   total: number;
+  /** What the rows are, for the range line: "users" or "requests". */
+  noun: string;
   onPage: (page: number) => void;
 };
 
 /** Closes the table card: the range shown and the shared page buttons. */
-const TableFooter = ({ page, pageSize, shown, total, onPage }: TableFooterProps) => {
+const TableFooter = ({ page, pageSize, shown, total, noun, onPage }: TableFooterProps) => {
   const palette = useAdminSurfacePalette();
   return (
     <CardBottom>
@@ -24,7 +26,7 @@ const TableFooter = ({ page, pageSize, shown, total, onPage }: TableFooterProps)
           palette={palette}
           page={page}
           totalPages={pageCount(total, pageSize)}
-          summary={rangeLine(page, pageSize, shown, total)}
+          summary={rangeLine(page, pageSize, shown, total, noun)}
           onPageChange={onPage}
         />
       </View>

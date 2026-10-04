@@ -4,6 +4,7 @@ import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { APPOINTMENT_COLORS, APPOINTMENT_METRICS } from "../appointmentTheme";
 import type { SelectOption } from "./selectFieldTypes";
 import { webStyle } from "@/theme/webStyle";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   label: string;
@@ -53,7 +54,7 @@ const SelectTrigger = ({
         borderRadius: APPOINTMENT_METRICS.radiusField,
         borderWidth: hasError || open ? 1.5 : 1,
         borderColor,
-        backgroundColor: isDisabled ? "#F7F9FC" : APPOINTMENT_COLORS.white,
+        backgroundColor: isDisabled ? PALETTE.slate[50] : APPOINTMENT_COLORS.white,
         opacity: isDisabled ? 0.75 : 1,
         ...webStyle({ cursor: isDisabled ? "default" : "pointer" }),
       }}

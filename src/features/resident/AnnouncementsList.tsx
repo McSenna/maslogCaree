@@ -30,9 +30,9 @@ const AnnouncementItem = ({
   first: boolean;
 }) => {
   const { hovered, pressed, focused, handlers } = useInteractionState();
-  // Unread items are drawn in the primary tone (the mapper marks them "blue"); read ones recede.
-  const unread = announcement.tone === "blue";
-  const tone = unread ? palette.tones.blue : palette.tones.purple;
+  // Unread items are drawn in the primary tone (the mapper marks them "primary"); read ones recede.
+  const unread = announcement.tone === "primary";
+  const tone = unread ? palette.tones.primary : palette.tones.neutral;
   const meta = announcement.detail ? `${announcement.date}. ${announcement.detail}` : announcement.date;
 
   return (

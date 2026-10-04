@@ -4,6 +4,7 @@ import { useUsersPalette } from "@/features/users/components/usersTheme";
 import type { BhwResidentsController } from "../hooks/useBhwResidentsScreen";
 import ResidentSummaryCards from "./ResidentSummaryCards";
 import ResidentsTableCard from "./ResidentsTableCard";
+import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 type ResidentsDesktopLayoutProps = {
   controller: BhwResidentsController;
@@ -17,9 +18,12 @@ const ResidentsDesktopLayout = ({
   emptyState,
 }: ResidentsDesktopLayoutProps) => {
   const palette = useUsersPalette();
+  // A new page starts at its first row.
+  const scrollRef = useScrollTopOnChange<ScrollView>(controller.residents.page);
 
   return (
     <ScrollView
+      ref={scrollRef}
       className="flex-1"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={controller.contentPadding}
@@ -35,6 +39,8 @@ const ResidentsDesktopLayout = ({
       <View className="w-full gap-5">
         <ResidentSummaryCards
           summary={controller.residents.summary}
+          activeStatus={controller.residents.status}
+          onSelectStatus={controller.residents.showStatus}
           isWide={controller.wideSummary}
         />
         <ResidentsTableCard

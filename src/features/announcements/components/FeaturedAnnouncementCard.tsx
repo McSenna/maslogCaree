@@ -1,9 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import { RADII } from "@/theme/radius";
-import { hexToRgba } from "@/utils/color";
 import type { Announcement } from "../data/announcements";
 import AnnouncementTag from "./AnnouncementTag";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type FeaturedAnnouncementCardProps = {
   announcement: Announcement;
@@ -23,7 +23,7 @@ const FeaturedAnnouncementCard = ({
       style={{
         borderRadius: 20,
         overflow: "hidden",
-        boxShadow: `0px 6px 16px ${hexToRgba(color, 0.18)}`,
+        boxShadow: `0px 6px 16px ${withAlpha(color, 0.18)}`,
         elevation: 6,
       }}
     >
@@ -31,7 +31,7 @@ const FeaturedAnnouncementCard = ({
 
       <View className="bg-white px-5 py-5">
         <View className="flex-row items-start gap-3 mb-4">
-          <View className="rounded-2xl p-3" style={{ backgroundColor: bg }}>
+          <View className="rounded-lg p-3" style={{ backgroundColor: bg }}>
             <Feather name={icon} size={isTablet ? 24 : 20} color={color} />
           </View>
 
@@ -71,8 +71,8 @@ const FeaturedAnnouncementCard = ({
 
         <View className="flex-row items-center justify-between">
           <View className="flex-row items-center gap-1.5">
-            <View className="rounded-lg p-1.5" style={{ backgroundColor: "#F8FAFC" }}>
-              <Feather name="calendar" size={12} color="#94A3B8" />
+            <View className="rounded-lg p-1.5" style={{ backgroundColor: PALETTE.slate[50] }}>
+              <Feather name="calendar" size={12} color={PALETTE.slate[500]} />
             </View>
             <Text
               className="font-semibold text-slate-500"
@@ -96,8 +96,8 @@ const FeaturedAnnouncementCard = ({
                 paddingHorizontal: 14,
                 borderRadius: RADII.small,
                 borderWidth: 1,
-                borderColor: hexToRgba(color, hovered ? 0.5 : 0.25),
-                backgroundColor: hexToRgba(color, pressed ? 0.16 : 0.07),
+                borderColor: withAlpha(color, hovered ? 0.5 : 0.25),
+                backgroundColor: withAlpha(color, pressed ? 0.16 : 0.07),
               },
             ]}
           >

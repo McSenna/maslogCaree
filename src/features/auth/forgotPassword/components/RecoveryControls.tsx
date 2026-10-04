@@ -28,7 +28,7 @@ export const PrimaryButton = ({
       className="h-12 w-full flex-row items-center justify-center gap-2"
       style={{ borderRadius: R.control, backgroundColor: C.primary, opacity: inactive ? 0.5 : 1 }}
     >
-      {loading ? <ActivityIndicator size="small" color="#FFFFFF" /> : null}
+      {loading ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
       <Text className="text-[15px] font-semibold text-white">
         {loading ? (loadingLabel ?? label) : label}
       </Text>

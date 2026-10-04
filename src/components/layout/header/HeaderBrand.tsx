@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 
 import MaslogCareLogo from "@/components/landing/MaslogCareLogo";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type Props = { isMobile: boolean; logoSize: number };
 
@@ -16,10 +17,10 @@ const HeaderBrand = ({ isMobile, logoSize }: Props) => {
           alignItems: "center",
           justifyContent: "center",
           overflow: "hidden",
-          boxShadow: "0px 3px 8px rgba(0,0,0,0.18)",
+          boxShadow: `0px 3px 8px ${withAlpha(PALETTE.ink, 0.18)}`,
           elevation: 6,
           borderWidth: 2,
-          borderColor: "rgba(255,255,255,0.3)",
+          borderColor: withAlpha(PALETTE.white, 0.3),
         }}
       >
         <MaslogCareLogo size={Math.round(logoSize * 0.82)} />
@@ -28,7 +29,7 @@ const HeaderBrand = ({ isMobile, logoSize }: Props) => {
       <View>
         <Text
           style={{
-            color: "#FFFFFF",
+            color: PALETTE.white,
             fontWeight: "600",
             fontSize: isMobile ? 15 : 18,
             letterSpacing: 0.3,
@@ -39,7 +40,7 @@ const HeaderBrand = ({ isMobile, logoSize }: Props) => {
         </Text>
         <Text
           style={{
-            color: "rgba(255,255,255,0.50)",
+            color: withAlpha(PALETTE.white, 0.50),
             fontSize: 9,
             fontWeight: "600",
             letterSpacing: 1.8,

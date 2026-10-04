@@ -12,7 +12,7 @@ import {
 } from "@/features/adminDashboard/utils/dashboardAnalytics";
 import type { TrendPoint } from "@/services/adminDashboardService";
 import AnalyticsSummary, { type SummaryDelta } from "./analytics/AnalyticsSummary";
-import HighlightStat from "./analytics/HighlightStat";
+import InlineStat from "./analytics/InlineStat";
 import EmptyPanelState from "./EmptyPanelState";
 import PanelCard from "./PanelCard";
 
@@ -98,12 +98,10 @@ const ActivityTrendPanel = ({
         accessibilityLabel={`${events(comparison.currentTotal)} ${RANGE_NOUN[range]}`}
         delta={periodDelta(comparison.trend, RANGE_COMPARISON[range])}
         aside={
-          <HighlightStat
+          <InlineStat
             palette={palette}
-            tone="amber"
-            icon="fire"
             label="Busiest day"
-            value={busiest ? expandWeekday(busiest.label) : "Not set"}
+            value={busiest ? expandWeekday(busiest.label) : "None yet"}
             meta={busiest ? events(busiest.count) : "No activity yet"}
           />
         }

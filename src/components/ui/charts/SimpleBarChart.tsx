@@ -15,6 +15,7 @@ import {
 } from "./barChart/BarChartOverlays";
 import { resolveBarLayout } from "./barChart/barChartLayout";
 import type { SimpleBarChartProps } from "./barChart/barChartTypes";
+import { PALETTE } from "@/theme/palette";
 
 export type { SimpleBarDatum } from "./barChart/barChartTypes";
 
@@ -24,8 +25,8 @@ const SimpleBarChart = ({
   radius = 6,
   showLabels = true,
   showValues = false,
-  accentColor = "#378ADD",
-  dimColor = "#B5D4F4",
+  accentColor = PALETTE.blue[600],
+  dimColor = PALETTE.slate[300],
   showGrid = true,
   showYAxis = true,
   gridDashed = false,
@@ -111,7 +112,7 @@ const SimpleBarChart = ({
             <BarChartValues
               {...overlayProps}
               axisMax={axisMax}
-              valueColor={chartPalette.isDark ? "#E2E8F0" : "#1E293B"}
+              valueColor={chartPalette.isDark ? PALETTE.slate[200] : PALETTE.slate[800]}
             />
           )}
           {showLabels && <BarChartLabels {...overlayProps} />}

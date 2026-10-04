@@ -26,7 +26,7 @@ const MobileLogCard = ({
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${formatSystemLogActionLabel(log)}, ${log.userName}, ${formatSystemLogDate(log.createdAt)}, status ${log.status}`}
-      className="flex-row items-start gap-3 rounded-2xl border p-3.5"
+      className="flex-row items-start gap-3 rounded-lg border p-3.5"
       style={{
         backgroundColor: isSelected ? palette.rowSelected : palette.cardBg,
         borderColor: isSelected ? palette.bannerBorder : palette.cardBorder,

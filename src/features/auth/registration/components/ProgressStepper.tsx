@@ -4,6 +4,8 @@ import { REGISTRATION_STEPS } from "../registrationOptions";
 import { REG_COLORS } from "../registrationTheme";
 
 type ProgressStepperProps = {
+  /** Defaults to the registration steps; other dialogs pass their own. */
+  steps?: readonly { key: string; label: string }[];
   currentIndex: number;
   completed: boolean[];
   onStepPress?: (index: number) => void;
@@ -13,6 +15,7 @@ type ProgressStepperProps = {
 const DOT = 26;
 
 const ProgressStepper = ({
+  steps = REGISTRATION_STEPS,
   currentIndex,
   completed,
   onStepPress,
@@ -21,11 +24,9 @@ const ProgressStepper = ({
   <View
     style={{ flexDirection: "row", width: "100%" }}
     accessibilityRole="progressbar"
-    accessibilityLabel={`Step ${currentIndex + 1} of ${REGISTRATION_STEPS.length}: ${
-      REGISTRATION_STEPS[currentIndex].label
-    }`}
+    accessibilityLabel={`Step ${currentIndex + 1} of ${steps.length}: ${steps[currentIndex].label}`}
   >
-    {REGISTRATION_STEPS.map((step, index) => {
+    {steps.map((step, index) => {
       const isDone = completed[index];
       const isCurrent = index === currentIndex;
       const reachable = isDone && Boolean(onStepPress);
@@ -91,7 +92,7 @@ const ProgressStepper = ({
                 flex: 1,
                 height: 2,
                 backgroundColor:
-                  index === REGISTRATION_STEPS.length - 1
+                  index === steps.length - 1
                     ? "transparent"
                     : isDone
                       ? REG_COLORS.primary

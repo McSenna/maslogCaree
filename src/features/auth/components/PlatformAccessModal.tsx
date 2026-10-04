@@ -5,6 +5,7 @@ import { LANDING_COLORS } from "@/config/landingAssets";
 import { MOBILE_ONLY_NOTICE } from "@/config/platformAccess";
 import PlatformAccessAction from "./platformAccess/PlatformAccessAction";
 import PlatformAccessBody from "./platformAccess/PlatformAccessBody";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type PlatformAccessModalProps = {
   visible: boolean;
@@ -38,7 +39,7 @@ const PlatformAccessModal = ({
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose} accessibilityViewIsModal>
       <View
         className="flex-1 items-center justify-center px-5"
-        style={{ backgroundColor: "rgba(8, 21, 47, 0.45)" }}
+        style={{ backgroundColor: withAlpha(PALETTE.ink, 0.45) }}
       >
         <Pressable
           accessibilityRole="button"
@@ -56,16 +57,16 @@ const PlatformAccessModal = ({
             maxWidth: 420,
             borderRadius: 22,
             borderWidth: 1,
-            borderColor: "#DCE8FA",
+            borderColor: PALETTE.blue[100],
             backgroundColor: LANDING_COLORS.white,
             paddingHorizontal: isNarrow ? 22 : 28,
             paddingTop: 28,
             paddingBottom: 22,
             ...Platform.select({
-              web: { boxShadow: "0px 18px 48px rgba(8, 21, 47, 0.16)" },
+              web: { boxShadow: `0px 18px 48px ${withAlpha(PALETTE.ink, 0.16)}` },
               default: {
                 elevation: 8,
-                shadowColor: "#08152F",
+                shadowColor: PALETTE.ink,
                 shadowOffset: { width: 0, height: 10 },
                 shadowOpacity: 0.16,
                 shadowRadius: 28,

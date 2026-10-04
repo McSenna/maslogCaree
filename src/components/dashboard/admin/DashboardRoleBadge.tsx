@@ -1,9 +1,9 @@
 import { Text, View } from "react-native";
 import {
   ROLE_BADGE_TINTS,
-  ROLE_COLORS,
   ROLE_LABELS,
   ROLE_TEXT_COLORS,
+  roleColorOf,
 } from "@/design/adminDashboardTheme";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 
@@ -14,7 +14,7 @@ type DashboardRoleBadgeProps = {
 };
 
 const DashboardRoleBadge = ({ role, palette, isDark }: DashboardRoleBadgeProps) => {
-  const color = ROLE_COLORS[role] ?? palette.primary;
+  const color = roleColorOf(palette, role);
   const textColor = ROLE_TEXT_COLORS[isDark ? "dark" : "light"][role] ?? palette.primary;
   const label = ROLE_LABELS[role] ?? role;
   const background = isDark ? `${color}26` : ROLE_BADGE_TINTS[role] ?? palette.divider;

@@ -1,4 +1,4 @@
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 import { RADII } from "@/theme/radius";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
@@ -29,15 +29,15 @@ const AnnouncementsHero = ({
             className="p-3"
             style={{
               borderRadius: RADII.medium,
-              backgroundColor: "rgba(255,255,255,0.16)",
+              backgroundColor: withAlpha(PALETTE.white, 0.16),
             }}
           >
-            <Feather name="bell" size={isTablet ? 26 : 22} color="#fff" />
+            <Feather name="bell" size={isTablet ? 26 : 22} color={PALETTE.white} />
           </View>
           <View style={{ flexShrink: 1 }}>
             <Text
               className="font-bold uppercase"
-              style={{ color: "rgba(255,255,255,0.85)", fontSize: 12, letterSpacing: 1.2 }}
+              style={{ color: withAlpha(PALETTE.white, 0.85), fontSize: 12, letterSpacing: 1.2 }}
             >
               Barangay Maslog
             </Text>
@@ -53,7 +53,7 @@ const AnnouncementsHero = ({
 
         <Text
           style={{
-            color: "rgba(255,255,255,0.92)",
+            color: withAlpha(PALETTE.white, 0.92),
             fontSize: isTablet ? 16 : 15,
             lineHeight: isTablet ? 24 : 22,
             maxWidth: isTablet ? 520 : undefined,
@@ -63,8 +63,8 @@ const AnnouncementsHero = ({
         </Text>
 
         <View className="flex-row items-center gap-2">
-          <Feather name="calendar" size={15} color="rgba(255,255,255,0.9)" />
-          <Text className="font-bold" style={{ color: "rgba(255,255,255,0.9)", fontSize: 14 }}>
+          <Feather name="calendar" size={15} color={withAlpha(PALETTE.white, 0.9)} />
+          <Text className="font-bold" style={{ color: withAlpha(PALETTE.white, 0.9), fontSize: 14 }}>
             {eventLabel}
           </Text>
         </View>

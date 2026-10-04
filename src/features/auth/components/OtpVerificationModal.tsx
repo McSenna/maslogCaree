@@ -21,6 +21,7 @@ import { SPACING } from "@/theme/spacing";
 import OtpModalActions from "./otp/OtpModalActions";
 import OtpSpamHint from "./otp/OtpSpamHint";
 import { OTP_LENGTH, useOtpVerification } from "./otp/useOtpVerification";
+import { PALETTE } from "@/theme/palette";
 
 const CARD_EDGE = SPACING.lg;
 
@@ -72,7 +73,7 @@ const OtpVerificationModal = ({ visible, email, onClose, onVerified }: OtpVerifi
             description={
               <>
                 We sent a {OTP_LENGTH}-digit code to{" "}
-                <Text style={{ fontWeight: "700", color: "#FFFFFF" }}>{maskEmail(email)}</Text>.
+                <Text style={{ fontWeight: "700", color: PALETTE.white }}>{maskEmail(email)}</Text>.
               </>
             }
           />

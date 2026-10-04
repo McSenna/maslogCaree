@@ -21,7 +21,7 @@ export const fieldSurface = ({ focused, invalid, disabled }: FieldVisualState) =
       : REG_COLORS.surface,
   boxShadow: focused
     ? `0px 0px 0px 3px ${invalid ? REG_COLORS.errorRing : REG_COLORS.primaryRing}`
-    : "0px 0px 0px 0px rgba(0,0,0,0)",
+    : "0px 0px 0px 0px transparent",
 });
 
 export const fieldTextColor = (disabled?: boolean) =>

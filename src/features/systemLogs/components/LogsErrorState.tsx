@@ -14,7 +14,7 @@ const LogsErrorState = ({ message, onRetry, bare = false }: LogsErrorStateProps)
 
   return (
     <View
-      className={`items-center gap-3 p-10 ${bare ? "" : "rounded-2xl border"}`}
+      className={`items-center gap-3 p-10 ${bare ? "" : "rounded-lg border"}`}
       style={bare ? undefined : { backgroundColor: palette.cardBg, borderColor: palette.cardBorder }}
     >
       <View

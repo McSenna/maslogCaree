@@ -44,7 +44,7 @@ const SupportTicketList = ({
     return (
       <View style={{ gap: SPACING.md }} accessibilityLabel="Loading support requests">
         {[0, 1, 2].map((key) => (
-          <Skeleton key={key} className="h-24 w-full rounded-2xl" />
+          <Skeleton key={key} className="h-24 w-full rounded-lg" />
         ))}
       </View>
     );

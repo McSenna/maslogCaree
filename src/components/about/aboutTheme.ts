@@ -1,10 +1,12 @@
-import { LANDING_COLORS } from "@/config/landingAssets";
 import type { LearnMoreTone } from "@/config/learnMoreContent";
+import { PALETTE } from "@/theme/palette";
+
+const { blue, green, orange } = PALETTE;
 
 export const TONE_PALETTE: Record<LearnMoreTone, { bg: string; fg: string; border: string }> = {
-  blue: { bg: LANDING_COLORS.softBlue, fg: LANDING_COLORS.primaryBlue, border: "#C9DEFF" },
-  green: { bg: LANDING_COLORS.softGreen, fg: LANDING_COLORS.green, border: "#BFE7CD" },
-  orange: { bg: LANDING_COLORS.softOrange, fg: LANDING_COLORS.orange, border: "#FADFB0" },
+  primary: { bg: blue[50], fg: blue[700], border: blue[200] },
+  care: { bg: green[50], fg: green[700], border: green[200] },
+  accent: { bg: orange[50], fg: orange[700], border: orange[200] },
 };
 
 export const ABOUT_RADIUS = {

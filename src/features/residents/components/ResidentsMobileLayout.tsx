@@ -6,6 +6,8 @@ import type { BhwResidentsController } from "../hooks/useBhwResidentsScreen";
 import ResidentCard from "./ResidentCard";
 import ResidentSummaryCards from "./ResidentSummaryCards";
 import ResidentsSkeletonList from "./ResidentsSkeletonList";
+import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
+import type { ResidentRecord } from "../services/residentService";
 
 type ResidentsMobileLayoutProps = {
   controller: BhwResidentsController;
@@ -20,6 +22,9 @@ const ResidentsMobileLayout = ({
 }: ResidentsMobileLayoutProps) => {
   const palette = useUsersPalette();
   const { residents, dense } = controller;
+  // A new page starts at its first row (web scrolls a ScrollView, phones a FlatList).
+  const scrollRef = useScrollTopOnChange<ScrollView>(residents.page);
+  const listRef = useScrollTopOnChange<FlatList<ResidentRecord>>(residents.page);
 
   const refreshControl = (
     <RefreshControl
@@ -32,7 +37,12 @@ const ResidentsMobileLayout = ({
 
   const header = (
     <View className="w-full gap-4 pb-3">
-      <ResidentSummaryCards summary={residents.summary} isWide={false} />
+      <ResidentSummaryCards
+        summary={residents.summary}
+        isWide={false}
+        activeStatus={residents.status}
+        onSelectStatus={residents.showStatus}
+      />
       {toolbar}
     </View>
   );
@@ -73,6 +83,7 @@ const ResidentsMobileLayout = ({
   if (Platform.OS === "web") {
     return (
       <ScrollView
+        ref={scrollRef}
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={listContentStyle}
@@ -100,6 +111,7 @@ const ResidentsMobileLayout = ({
 
   return (
     <FlatList
+      ref={listRef}
       className="flex-1"
       style={{ opacity: listOpacity }}
       data={residents.error ? [] : residents.residents}

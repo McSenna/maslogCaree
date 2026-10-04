@@ -8,6 +8,7 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import CustomDateRangeInputs from "./toolbar/CustomDateRangeInputs";
 import LogFilterSelects from "./toolbar/LogFilterSelects";
 import type { DatePreset } from "./toolbar/logDateRange";
+import { PALETTE } from "@/theme/palette";
 
 export {
   DATE_PRESETS,
@@ -103,9 +104,9 @@ const LogToolbar = ({
               }}
             >
               {exporting ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
+                <ActivityIndicator size="small" color={PALETTE.white} />
               ) : (
-                <Feather name="download" size={17} color="#FFFFFF" />
+                <Feather name="download" size={17} color={PALETTE.white} />
               )}
               <Text className="text-[14px] font-semibold text-white">Export Logs</Text>
             </Pressable>

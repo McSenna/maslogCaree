@@ -1,5 +1,6 @@
 import Svg, { Circle, Ellipse, Path } from "react-native-svg";
 import { View } from "react-native";
+import { PALETTE } from "@/theme/palette";
 
 type ProfileHeroDecorProps = {
   width: number;
@@ -23,12 +24,12 @@ const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
     <Svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
       <Path
         d={`M${width * 0.32} ${height} L${width * 0.55} ${height * 0.42} L${width * 0.72} ${height} Z`}
-        fill="#BFD9F5"
+        fill={PALETTE.slate[300]}
         opacity={0.35}
       />
       <Path
         d={`M${width * 0.58} ${height} L${width * 0.8} ${height * 0.52} L${width} ${height} Z`}
-        fill="#A9CCF0"
+        fill={PALETTE.slate[300]}
         opacity={0.3}
       />
 
@@ -38,13 +39,13 @@ const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
             c ${width * 0.025} -${height * 0.06} ${width * 0.075} -${height * 0.03} ${width * 0.075} ${height * 0.03}
             c 0 ${height * 0.08} -${width * 0.075} ${height * 0.14} -${width * 0.075} ${height * 0.14}
             s -${width * 0.075} -${height * 0.06} -${width * 0.075} -${height * 0.14} Z`}
-        fill="#CFE3F8"
+        fill={PALETTE.blue[200]}
         opacity={0.5}
       />
 
       <Path
         d={`M${width * 0.42} ${height * 0.86} C ${width * 0.46} ${height * 0.6} ${width * 0.5} ${height * 0.44} ${width * 0.54} ${height * 0.3}`}
-        stroke="#86C79A"
+        stroke={PALETTE.success[300]}
         strokeWidth={1.6}
         strokeLinecap="round"
         fill="none"
@@ -55,7 +56,7 @@ const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
         cy={height * 0.58}
         rx={width * 0.045}
         ry={height * 0.1}
-        fill="#A7DDB6"
+        fill={PALETTE.success[200]}
         opacity={0.55}
         transform={`rotate(-38 ${width * 0.47} ${height * 0.58})`}
       />
@@ -64,7 +65,7 @@ const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
         cy={height * 0.44}
         rx={width * 0.04}
         ry={height * 0.09}
-        fill="#8FD3A4"
+        fill={PALETTE.success[300]}
         opacity={0.5}
         transform={`rotate(28 ${width * 0.53} ${height * 0.44})`}
       />
@@ -73,12 +74,12 @@ const ProfileHeroDecor = ({ width, height }: ProfileHeroDecorProps) => (
         cy={height * 0.72}
         rx={width * 0.038}
         ry={height * 0.085}
-        fill="#B7E5C4"
+        fill={PALETTE.success[200]}
         opacity={0.5}
         transform={`rotate(22 ${width * 0.5} ${height * 0.72})`}
       />
 
-      <Circle cx={width * 0.24} cy={height * 0.18} r={height * 0.05} fill="#DCEBFB" opacity={0.7} />
+      <Circle cx={width * 0.24} cy={height * 0.18} r={height * 0.05} fill={PALETTE.blue[100]} opacity={0.7} />
     </Svg>
   </View>
 );

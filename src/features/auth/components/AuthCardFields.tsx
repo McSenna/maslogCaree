@@ -2,6 +2,7 @@ import type { RefObject } from "react";
 import { View, type TextInput } from "react-native";
 import InlineAlert from "@/components/feedback/InlineAlert";
 import AuthField from "@/components/landing/AuthField";
+import { PASSWORD_MAX_LENGTH } from "../forgotPassword/passwordRules";
 import type { useLoginForm } from "../hooks/useLoginForm";
 import type { AuthCardMetrics } from "./authCardMetricPresets";
 import { authCardStyles as styles } from "./authCardStyles";
@@ -53,6 +54,7 @@ const AuthCardFields = ({ form, metrics, emailRef, passwordRef, onSubmit }: Auth
         secureTextEntry
         autoComplete="current-password"
         textContentType="password"
+        maxLength={PASSWORD_MAX_LENGTH}
         returnKeyType="go"
         onSubmitEditing={onSubmit}
         error={form.passwordError}

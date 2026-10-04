@@ -2,8 +2,9 @@ import { Feather } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import PanelCard from "@/components/dashboard/admin/PanelCard";
+import { STATUS_LABELS } from "@/components/appointmentQueue/queueTheme";
+import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { DataTable, SegmentedControl, type TableColumn } from "@/components/dashboard/kit";
-import { STATUS_LABELS, useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { StaffAppointment } from "@/services/staffDashboardService";
 import { byQueueTab, queueTabCounts, type QueueTab } from "../model/staffDashboardModel";
@@ -18,19 +19,6 @@ const slotTime = (iso: string | null): string => {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-};
-
-const QueueStatus = ({ status }: { status: StaffAppointment["status"] }) => {
-  const queuePalette = useQueuePalette();
-  const tone = queuePalette.statuses[status] ?? queuePalette.statuses.pending;
-  return (
-    <View className="flex-row items-center rounded-full px-2.5" style={{ height: 24, gap: 6, backgroundColor: tone.bg }}>
-      <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: tone.dot }} />
-      <Text className="text-[12px] font-semibold" numberOfLines={1} style={{ color: tone.fg }}>
-        {STATUS_LABELS[status]}
-      </Text>
-    </View>
-  );
 };
 
 const Position = ({ palette, value }: { palette: AdminDashboardPalette; value: number }) => (
@@ -113,7 +101,17 @@ const QueueTable = ({
         </Text>
       ),
     },
-    { key: "status", header: "Status", width: 128, align: "right", render: (row) => <QueueStatus status={row.status} /> },
+    {
+      key: "status",
+      header: "Status",
+      width: 128,
+      align: "right",
+      render: (row) => (
+        <View className="items-end">
+          <AppointmentStatusBadge status={row.status} />
+        </View>
+      ),
+    },
   ];
 
   const tabs = (
@@ -178,7 +176,7 @@ const QueueTable = ({
                 </Text>
               </View>
             </View>
-            <QueueStatus status={row.status} />
+            <AppointmentStatusBadge status={row.status} />
           </View>
         )}
         emptyIcon="coffee"

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { Feather } from "@expo/vector-icons";
 import type { AdminUser } from "@/features/users/services/userService";
 import { useUsersPalette } from "../usersTheme";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const useUserDetailsPalette = () => {
   const palette = useUsersPalette();
@@ -12,23 +12,23 @@ export const useUserDetailsPalette = () => {
 
     return {
       ...palette,
-      headerWell: isDark ? "rgba(37,99,235,0.18)" : "#EAF2FF",
-      headerIcon: isDark ? "#93C5FD" : PALETTE.blue[600],
-      heroTop: isDark ? "#0B2038" : "#EAF4FE",
-      heroBorder: isDark ? "#1E3A5F" : "#DCEBFB",
-      avatarRing: isDark ? "#132B45" : "#FFFFFF",
-      infoWell: isDark ? "rgba(37,99,235,0.16)" : "#EFF6FF",
-      infoIcon: isDark ? "#93C5FD" : PALETTE.blue[600],
-      permissionBg: isDark ? "rgba(15, 118, 110,0.10)" : "#F2FBF5",
-      permissionBorder: isDark ? "rgba(15, 118, 110,0.28)" : "#DCF3E4",
-      enabled: isDark ? "#4ADE80" : "#16A34A",
-      disabled: isDark ? "#64748B" : "#94A3B8",
-      dangerText: isDark ? "#FCA5A5" : "#DC2626",
-      dangerBg: isDark ? "rgba(239,68,68,0.10)" : "#FEF2F2",
-      dangerBorder: isDark ? "rgba(239,68,68,0.32)" : "#FCDCDC",
-      neutralText: isDark ? "#BFDBFE" : "#1E40AF",
-      neutralBg: isDark ? "rgba(148,163,184,0.10)" : "#F7FAFF",
-      neutralBorder: isDark ? "#1E293B" : "#E3EAF5",
+      headerWell: isDark ? withAlpha(PALETTE.blue[600], 0.18) : PALETTE.blue[50],
+      headerIcon: isDark ? PALETTE.blue[300] : PALETTE.blue[600],
+      heroTop: isDark ? PALETTE.slate[900] : PALETTE.blue[50],
+      heroBorder: isDark ? PALETTE.slate[700] : PALETTE.blue[100],
+      avatarRing: isDark ? PALETTE.slate[800] : PALETTE.white,
+      infoWell: isDark ? withAlpha(PALETTE.blue[600], 0.16) : PALETTE.blue[50],
+      infoIcon: isDark ? PALETTE.blue[300] : PALETTE.blue[600],
+      permissionBg: isDark ? withAlpha(PALETTE.blue[600], 0.10) : PALETTE.slate[50],
+      permissionBorder: isDark ? withAlpha(PALETTE.blue[600], 0.28) : PALETTE.success[100],
+      enabled: isDark ? PALETTE.success[300] : PALETTE.success[600],
+      disabled: isDark ? PALETTE.slate[500] : PALETTE.slate[400],
+      dangerText: isDark ? PALETTE.red[300] : PALETTE.red[600],
+      dangerBg: isDark ? withAlpha(PALETTE.red[500], 0.10) : PALETTE.red[50],
+      dangerBorder: isDark ? withAlpha(PALETTE.red[500], 0.32) : PALETTE.red[100],
+      neutralText: isDark ? PALETTE.blue[200] : PALETTE.blue[800],
+      neutralBg: isDark ? withAlpha(PALETTE.slate[400], 0.10) : PALETTE.slate[50],
+      neutralBorder: isDark ? PALETTE.slate[800] : PALETTE.blue[100],
       isDark,
     };
   }, [palette]);

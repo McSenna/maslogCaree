@@ -1,7 +1,8 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
 import DashboardHeader from "@/components/dashboard/kit/DashboardHeader";
 import { CardTop } from "@/components/dashboard/kit/TableCard";
+import { HeadingCell, TableHeadings } from "@/components/dashboard/kit/TableHeadings";
 import SearchField from "@/components/ui/SearchField";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
@@ -23,22 +24,15 @@ export const ANNOUNCEMENTS_SUBTITLE = "Notices shown to patients and health staf
 const SEARCH_WIDTH = { width: 280 };
 const SEARCH_FILL = { flex: 1, minWidth: 220 };
 
-const HeaderCell = ({ label, className = "" }: { label: string; className?: string }) => (
-  <Text numberOfLines={1} className={`text-[12px] font-semibold text-text2 ${className}`}>
-    {label}
-  </Text>
-);
-
-/** The dashboard table's tinted heading band. */
 const ColumnHeadings = ({ mode }: { mode: TableMode }) => (
-  <View className="min-h-9 flex-row items-center gap-3 rounded-control bg-head px-3 py-2">
-    <HeaderCell label="Title" className="min-w-0 flex-1" />
-    <HeaderCell label="Audience" className={COLUMN.audience} />
-    <HeaderCell label="Status" className={COLUMN.status} />
-    {mode === "full" ? <HeaderCell label="Posted" className={COLUMN.posted} /> : null}
-    {mode === "full" ? <HeaderCell label="Expires" className={COLUMN.expires} /> : null}
-    <HeaderCell label="Actions" className={`${COLUMN.actions} text-right`} />
-  </View>
+  <TableHeadings>
+    <HeadingCell label="Title" className={COLUMN.title} />
+    <HeadingCell label="Audience" className={COLUMN.audience} />
+    <HeadingCell label="Status" className={COLUMN.status} />
+    {mode === "full" ? <HeadingCell label="Posted" className={COLUMN.posted} /> : null}
+    {mode === "full" ? <HeadingCell label="Expires" className={COLUMN.expires} /> : null}
+    <HeadingCell label="Actions" className={`${COLUMN.actions} text-right`} />
+  </TableHeadings>
 );
 
 /** The dashboard's page header and toolbar, then the top of the table card. */

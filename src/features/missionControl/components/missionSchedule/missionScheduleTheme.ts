@@ -7,8 +7,9 @@ import {
   SERVICE_TONES_DARK,
   SERVICE_TONES_LIGHT,
 } from "@/design/serviceColors";
+import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { createShadow } from "@/design/shadow";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const MISSION_RADIUS = {
   sheet: 26,
@@ -44,27 +45,29 @@ export const useMissionSchedulePalette = () => {
     const tones = isDark ? ICON_TONES_DARK : ICON_TONES_LIGHT;
     const neutral = isDark ? NEUTRAL_TONE_DARK : NEUTRAL_TONE_LIGHT;
 
+    const base = getAdminDashboardPalette(resolvedTheme);
+
     return {
       isDark,
-      surface: isDark ? "#0F172A" : "#FFFFFF",
-      subtle: isDark ? "#131F35" : "#F8FAFC",
-      border: isDark ? "#22304A" : "#E7EDF5",
-      divider: isDark ? "#1C2941" : "#EEF3FA",
-      heading: isDark ? "#F8FAFC" : "#0F172A",
-      body: isDark ? "#CBD5E1" : "#334155",
-      muted: isDark ? PALETTE.slate[400] : PALETTE.slate[600],
-      faint: isDark ? "#7D8CA3" : PALETTE.slate[500],
-      primary: isDark ? PALETTE.blue[400] : PALETTE.blue[600],
-      primarySoft: isDark ? "rgba(21,101,216,0.18)" : PALETTE.blue[50],
-      on: isDark ? "#10B981" : "#16A34A",
-      off: isDark ? "#334155" : "#D6DEE9",
-      danger: isDark ? "#FCA5A5" : "#DC2626",
-      dangerSoft: isDark ? "rgba(220,38,38,0.14)" : "#FEF2F2",
-      dangerBorder: isDark ? "rgba(220,38,38,0.32)" : "#FECACA",
-      backdrop: "rgba(15,23,42,0.45)",
+      surface: base.cardBg,
+      subtle: isDark ? PALETTE.night.raised : PALETTE.slate[50],
+      border: base.cardBorder,
+      divider: base.divider,
+      heading: base.heading,
+      body: base.body,
+      muted: base.muted,
+      faint: base.subtle,
+      primary: base.primary,
+      primarySoft: base.tones.primary.iconBg,
+      on: base.statusTones.success.fg,
+      off: isDark ? PALETTE.night.lineStrong : PALETTE.slate[300],
+      danger: base.statusTones.danger.fg,
+      dangerSoft: base.statusTones.danger.bg,
+      dangerBorder: base.statusTones.danger.border,
+      backdrop: isDark ? withAlpha(PALETTE.night.page, 0.6) : withAlpha(PALETTE.ink, 0.4),
       shadow: {
         ...createShadow({
-          color: "#0F172A",
+          color: PALETTE.ink,
           offsetY: 20,
           radius: 30,
           opacity: isDark ? 0.5 : 0.12,
@@ -74,7 +77,7 @@ export const useMissionSchedulePalette = () => {
       toneFor: (categoryKey: string): IconTone => tones[categoryKey] ?? neutral,
       neutralTone: neutral,
     };
-  }, [isDark]);
+  }, [isDark, resolvedTheme]);
 };
 
 export type MissionSchedulePalette = ReturnType<typeof useMissionSchedulePalette>;

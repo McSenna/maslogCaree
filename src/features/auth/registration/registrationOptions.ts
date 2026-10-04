@@ -11,7 +11,7 @@ export const REGISTRATION_STEPS = [
 export type StepKey = (typeof REGISTRATION_STEPS)[number]["key"];
 
 export const STEP_SUBTITLES: Record<StepKey, string> = {
-  personal: "Tell us who you are, so the health centre can find your record.",
+  personal: "Enter your name as it appears on your government ID, so the health centre can find your record.",
   identity: "Provide a valid government ID for Barangay Administrator verification.",
   address: "Where you live in the barangay, for home visits and outreach.",
   account: "Choose a password to secure your MaslogCare account.",

@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { PROFILE_COLORS, PROFILE_RADIUS } from "../config/profileTheme";
+import { PALETTE } from "@/theme/palette";
 
 const HealthNoteStrip = () => (
   <View
@@ -12,7 +13,7 @@ const HealthNoteStrip = () => (
       borderRadius: PROFILE_RADIUS.control,
       backgroundColor: PROFILE_COLORS.greenSoft,
       borderWidth: 1,
-      borderColor: "#BBF7D0",
+      borderColor: PALETTE.success[100],
     }}
   >
     <View
@@ -25,14 +26,14 @@ const HealthNoteStrip = () => (
         backgroundColor: PROFILE_COLORS.greenDeep,
       }}
     >
-      <Feather name="shield" size={18} color="#FFFFFF" />
+      <Feather name="shield" size={18} color={PALETTE.white} />
     </View>
 
     <View style={{ flex: 1, minWidth: 0 }}>
-      <Text style={{ fontSize: 14.5, fontWeight: "700", color: "#065F46" }}>
+      <Text style={{ fontSize: 14.5, fontWeight: "700", color: PALETTE.success[700] }}>
         Your health matters.
       </Text>
-      <Text style={{ marginTop: 2, fontSize: 12.5, color: "#047857" }}>
+      <Text style={{ marginTop: 2, fontSize: 12.5, color: PALETTE.success[700] }}>
         Keep your information updated for a smoother healthcare experience.
       </Text>
     </View>

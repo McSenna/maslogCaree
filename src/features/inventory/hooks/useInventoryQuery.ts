@@ -1,54 +1,60 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
+import { usePersistedPagination } from "@/hooks/usePersistedPagination";
 import { DEFAULT_FILTERS, type InventoryFilterState } from "../components/InventoryFilterSheet";
-import { PAGE_SIZE, SEARCH_DEBOUNCE_MS } from "../constants/inventoryLayout";
+import { SEARCH_DEBOUNCE_MS } from "../constants/inventoryLayout";
+import { activeInventoryCard, CARD_FILTERS } from "../components/inventoryCardFilters";
+import type { InventoryMetricKey } from "../components/inventoryTheme";
+import { INVENTORY_LIST_SCHEMA } from "./inventoryListSchema";
 
-export const useInventoryQuery = () => {
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState<InventoryFilterState>(DEFAULT_FILTERS);
-  const [page, setPage] = useState(1);
-
+/**
+ * Search, filters, sort and page for the inventory table, kept in the URL (and
+ * on phones, the last view) so a refresh or a reopened app lands on the same
+ * page. `total` is the item count of the last load, null before the first.
+ */
+export const useInventoryQuery = (total: number | null) => {
+  const list = usePersistedPagination({
+    key: "inventory",
+    schema: INVENTORY_LIST_SCHEMA,
+    total,
+    searchDebounceMs: SEARCH_DEBOUNCE_MS,
+  });
+  const { filters, page, limit, search, setFilters, replaceSearch } = list;
   const { category, stockStatus, expiryStatus, sort } = filters;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setSearch(searchInput.trim());
-      setPage(1);
-    }, SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-  }, [searchInput]);
-
-  const applyFilters = useCallback((next: InventoryFilterState) => {
-    setFilters(next);
-    setPage(1);
-  }, []);
+  const applyFilters = useCallback((next: InventoryFilterState) => setFilters(next), [setFilters]);
 
   const clearFilters = useCallback(() => {
-    setSearchInput("");
-    setSearch("");
-    setFilters((previous) => ({ ...DEFAULT_FILTERS, sort: previous.sort }));
-    setPage(1);
-  }, []);
+    replaceSearch("");
+    setFilters({ category: DEFAULT_FILTERS.category, stockStatus: DEFAULT_FILTERS.stockStatus, expiryStatus: DEFAULT_FILTERS.expiryStatus });
+  }, [replaceSearch, setFilters]);
 
-  const clampPage = useCallback((totalPages: number) => {
-    setPage((current) => Math.min(current, Math.max(1, totalPages)));
-  }, []);
+  // A summary card shows its own slice: search and category are cleared so the
+  // list matches the card's count.
+  const showCard = useCallback(
+    (key: InventoryMetricKey) => {
+      replaceSearch("");
+      setFilters({ category: "all", ...CARD_FILTERS[key] });
+    },
+    [replaceSearch, setFilters]
+  );
 
   const query = useMemo(
-    () => ({ page, limit: PAGE_SIZE, search, category, stockStatus, expiryStatus, sort }),
-    [page, search, category, stockStatus, expiryStatus, sort]
+    () => ({ page, limit, search, category, stockStatus, expiryStatus, sort }),
+    [page, limit, search, category, stockStatus, expiryStatus, sort]
   );
 
   return {
     query,
-    searchInput,
-    setSearchInput,
+    searchInput: list.searchInput,
+    setSearchInput: list.setSearchInput,
     filters,
     applyFilters,
     clearFilters,
+    showCard,
+    activeCard: activeInventoryCard(filters, search),
     page,
-    setPage,
-    clampPage,
+    setPage: list.setPage,
+    isClamping: list.isClamping,
     hasActiveFilters:
       search.length > 0 ||
       category !== "all" ||

@@ -5,11 +5,13 @@ import { formatDateTime } from "@/utils/dateFormatter";
 
 import { useUserDetailsPalette } from "../details/detailsTheme";
 import type { UserRequestDetail } from "../../services/userRequestsService";
+import { choosableCandidates } from "./masterList/linkChoice";
 import VerificationDecisionOverlays from "./verification/VerificationDecisionOverlays";
 import VerificationSheetActions from "./verification/sheet/VerificationSheetActions";
 import VerificationSheetBody from "./verification/sheet/VerificationSheetBody";
 import VerificationSheetHeader from "./verification/sheet/VerificationSheetHeader";
 import { useVerificationDecision } from "./verification/useVerificationDecision";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const TITLE_ID = "resident-verification-sheet-title";
 
@@ -67,7 +69,7 @@ const ResidentVerificationSheet = ({
         accessibilityLabel="Identity verification"
         surface={palette.cardBg}
         handleColor={palette.divider}
-        scrim="rgba(15,23,42,0.35)"
+        scrim={withAlpha(PALETTE.slate[800], 0.35)}
         maxHeightRatio={0.94}
         // VerificationSheetActions pads itself past the home indicator.
         applyBottomInset={!showActions}
@@ -102,6 +104,7 @@ const ResidentVerificationSheet = ({
         residentName={resident?.fullname}
         approving={approving}
         rejecting={rejecting}
+        hasLinkChoices={choosableCandidates(request?.masterList, isPending).length > 0}
       />
     </>
   );

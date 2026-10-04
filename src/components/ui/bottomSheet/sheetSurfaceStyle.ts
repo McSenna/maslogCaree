@@ -1,12 +1,13 @@
 import { Platform, type ViewStyle } from "react-native";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const SHEET_RADIUS = 24;
 
 const ELEVATION: ViewStyle =
   Platform.OS === "web"
-    ? ({ boxShadow: "0 -8px 40px rgba(15,37,87,0.14)" } as ViewStyle)
+    ? ({ boxShadow: `0 -8px 40px ${withAlpha(PALETTE.ink, 0.14)}` } as ViewStyle)
     : {
-        shadowColor: "#0F2557",
+        shadowColor: PALETTE.ink,
         shadowOpacity: 0.16,
         shadowRadius: 24,
         shadowOffset: { width: 0, height: -6 },

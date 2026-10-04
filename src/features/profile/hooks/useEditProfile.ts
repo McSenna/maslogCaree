@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/components/feedback/toast/toastStore";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { getCachedAccessToken } from "@/utils/storage";
 import {
   PROFILE_EDIT_SECTION_COPY,
@@ -11,6 +10,7 @@ import { updateMyProfile } from "../services/profileService";
 import { buildEditProfileValues } from "../utils/editProfileValues";
 import { useEditProfileForm } from "./useEditProfileForm";
 import { useProfileAvatarUpload } from "./useProfileAvatarUpload";
+import { toastError } from "@/utils/errorToast/toastError";
 
 const SAVE_ERROR = "Unable to update your profile right now. Please try again.";
 
@@ -78,7 +78,7 @@ export const useEditProfile = () => {
       toast.success(PROFILE_EDIT_SECTION_COPY[section].success);
       stopEditing();
     } catch (error: unknown) {
-      toast.error("Changes not saved", getApiErrorMessage(error, SAVE_ERROR));
+      toastError("Changes not saved", error, { fallback: SAVE_ERROR });
     } finally {
       inFlight.current = false;
       setSaving(false);

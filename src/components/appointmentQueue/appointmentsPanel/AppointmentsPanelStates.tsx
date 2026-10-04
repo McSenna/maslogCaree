@@ -7,6 +7,8 @@ import {
   type QueuePalette,
 } from "../queueTheme";
 
+import { PALETTE } from "@/theme/palette";
+
 export const AppointmentsError = ({
   error,
   onRetry,
@@ -18,7 +20,7 @@ export const AppointmentsError = ({
 }) => {
   return (
     <View className="items-center gap-2.5 px-6 py-12">
-      <Feather name="alert-circle" size={22} color="#EF4444" />
+      <Feather name="alert-circle" size={22} color={PALETTE.red[500]} />
       <Text className="text-[14px] font-semibold" style={{ color: palette.heading }}>
         Unable to load appointments.
       </Text>

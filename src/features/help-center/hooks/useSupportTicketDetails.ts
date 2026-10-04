@@ -1,75 +1,44 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
+import { useRealtimeItem } from "@/hooks/realtime/useRealtimeItem";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import { fetchMySupportTicket, replyToSupportTicket } from "../services/supportService";
-import type { SupportMessage, SupportTicket } from "../types/support.types";
+import type { SupportTicket } from "../types/support.types";
 
-type LoadedTicket = { id: string; ticket: SupportTicket };
+const asTicket = (ticket: SupportTicket) => ticket;
 
+/** One of the user's own tickets. Staff replies and status changes appear while it is open. */
 export const useSupportTicketDetails = (ticketId: string | null) => {
-  const [loaded, setLoaded] = useState<LoadedTicket | null>(null);
-  const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!ticketId) return;
-
-    let active = true;
-
-    void (async () => {
-      setLoading(true);
-      try {
-        const result = await fetchMySupportTicket(ticketId);
-        if (active) {
-          setLoaded({ id: ticketId, ticket: result });
-          setError(null);
-        }
-      } catch (caught: unknown) {
-        if (active) setError(getApiErrorMessage(caught));
-      } finally {
-        if (active) setLoading(false);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [ticketId]);
-
-  const appendMessage = useCallback((message: SupportMessage) => {
-    setLoaded((current) =>
-      current
-        ? { ...current, ticket: { ...current.ticket, messages: [...current.ticket.messages, message] } }
-        : current
-    );
-  }, []);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const { item, loading, error, mutate } = useRealtimeItem("supportTicket", ticketId, fetchMySupportTicket, {
+    toItem: asTicket,
+  });
 
   const sendReply = useCallback(
     async (body: string) => {
       if (!ticketId || sending) return false;
 
       setSending(true);
-      setError(null);
+      setSendError(null);
 
       try {
-        appendMessage(await replyToSupportTicket(ticketId, body));
+        const message = await replyToSupportTicket(ticketId, body);
+        mutate((ticket) =>
+          ticket.messages.some((existing) => existing.id === message.id)
+            ? ticket
+            : { ...ticket, messages: [...ticket.messages, message] }
+        );
         return true;
       } catch (caught: unknown) {
-        setError(getApiErrorMessage(caught));
+        setSendError(getApiErrorMessage(caught));
         return false;
       } finally {
         setSending(false);
       }
     },
-    [ticketId, sending, appendMessage]
+    [ticketId, sending, mutate]
   );
 
-  return {
-    ticket: loaded?.id === ticketId ? loaded.ticket : null,
-    loading,
-    sending,
-    error,
-    sendReply,
-  };
+  return { ticket: item, loading, sending, error: sendError ?? error, sendReply };
 };

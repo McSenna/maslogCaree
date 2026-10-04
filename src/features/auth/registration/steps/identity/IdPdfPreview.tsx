@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { REG_COLORS } from "../../registrationTheme";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   fileName?: string;
@@ -16,7 +17,7 @@ const IdPdfPreview = ({ fileName, formattedFileSize }: Props) => {
         alignItems: "center",
         padding: 16,
         gap: 14,
-        backgroundColor: "#F8FAFC",
+        backgroundColor: PALETTE.slate[50],
       }}
     >
       <View
@@ -24,12 +25,12 @@ const IdPdfPreview = ({ fileName, formattedFileSize }: Props) => {
           width: 48,
           height: 48,
           borderRadius: 10,
-          backgroundColor: "#FEE2E2",
+          backgroundColor: PALETTE.red[100],
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Feather name="file-text" size={24} color="#DC2626" />
+        <Feather name="file-text" size={24} color={PALETTE.red[600]} />
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text
@@ -42,8 +43,8 @@ const IdPdfPreview = ({ fileName, formattedFileSize }: Props) => {
           PDF Document {formattedFileSize ? `• ${formattedFileSize}` : ""}
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 }}>
-          <Feather name="check" size={13} color="#16A34A" />
-          <Text style={{ fontSize: 11.5, color: "#16A34A", fontWeight: "600" }}>
+          <Feather name="check" size={13} color={PALETTE.success[600]} />
+          <Text style={{ fontSize: 11.5, color: PALETTE.success[600], fontWeight: "600" }}>
             Valid PDF attached
           </Text>
         </View>

@@ -11,6 +11,7 @@ import UserDetailsError from "../UserDetailsError";
 import { PlatformAccessRows } from "../UserPlatformAccessCard";
 import UserProfileSummary from "../UserProfileSummary";
 import UserSheetSkeleton from "../UserSheetSkeleton";
+import MasterLinkRows from "../masterLink/MasterLinkRows";
 import { ROLE_PERMISSIONS, useUserDetailsPalette } from "../detailsTheme";
 import { InfoRows, buildAccountRows, buildPersonalRows } from "../userDetailRows";
 
@@ -60,6 +61,12 @@ const UserSheetBody = ({ user, loading, error, onRetry }: Props) => {
               </Text>
             ) : null}
           </SheetSection>
+
+          {user.role === "resident" ? (
+            <SheetSection title="Master List Link">
+              <MasterLinkRows user={user} />
+            </SheetSection>
+          ) : null}
 
           <SheetSection title="Account Information" quiet>
             <InfoRows rows={buildAccountRows(user)} compact />

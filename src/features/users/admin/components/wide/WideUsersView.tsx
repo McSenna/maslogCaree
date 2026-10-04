@@ -13,27 +13,31 @@ import { CardBottom } from "@/components/dashboard/kit/TableCard";
 import TableFooter from "./TableFooter";
 import { tableModeFor } from "./tableColumns";
 import UserTableRow from "./UserTableRow";
+import MasterListWideList from "../masterList/MasterListWideList";
 import WideHeader from "./WideHeader";
+import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 type WideUsersViewProps = {
   screen: UsersScreenState;
   width: number;
   insets: RoleScreenInsets;
   onExport: () => void;
-  onAddUser: () => void;
 };
 
-const WideUsersView = ({ screen, width, insets, onExport, onAddUser }: WideUsersViewProps) => {
+const WideUsersView = ({ screen, width, insets, onExport }: WideUsersViewProps) => {
   const { view, filters, selection, menu, requestTab, undo } = screen;
   const contentWidth = width - insets.gutter * 2;
   const mode = tableModeFor(contentWidth);
   const { toggle, isSelected } = selection;
   const { openReview, openMenu, details } = screen;
+  // A new page starts at its first row; the tab decides which of the two lists is mounted.
+  const usersRef = useScrollTopOnChange<FlatList<User>>(filters.page);
+  const requestsRef = useScrollTopOnChange<FlatList<SignupRequest>>(filters.page);
   const openProfile = details.openDetails;
   const firstUserId = screen.rows[0]?.id;
   const firstRequestId = screen.requests.items[0]?.id;
 
-  const onOpenMenu = useCallback((userId: string, anchor: MenuAnchor | null) => openMenu({ userId, anchor }), [openMenu]);
+  const onOpenMenu = useCallback((userId: string, anchor: MenuAnchor) => openMenu({ userId, anchor }), [openMenu]);
 
   const renderUser: ListRenderItem<User> = useCallback(
     ({ item }) => (
@@ -56,6 +60,8 @@ const WideUsersView = ({ screen, width, insets, onExport, onAddUser }: WideUsers
     [mode, firstRequestId, openReview]
   );
 
+  if (screen.masterTab) return <MasterListWideList screen={screen} width={width} insets={insets} />;
+
   const shown = requestTab ? screen.requests.items.length : screen.rows.length;
   const padding = {
     paddingHorizontal: insets.gutter,
@@ -63,7 +69,7 @@ const WideUsersView = ({ screen, width, insets, onExport, onAddUser }: WideUsers
     paddingBottom: insets.paddingBottom + (undo.toast ? 72 : 0),
   };
   const shared = {
-    ListHeaderComponent: <WideHeader screen={screen} mode={mode} width={contentWidth} onExport={onExport} onAddUser={onAddUser} />,
+    ListHeaderComponent: <WideHeader screen={screen} mode={mode} width={contentWidth} onExport={onExport} />,
     ListEmptyComponent:
       view === "list" ? null : (
         <CardBottom>
@@ -71,7 +77,9 @@ const WideUsersView = ({ screen, width, insets, onExport, onAddUser }: WideUsers
         </CardBottom>
       ),
     ListFooterComponent:
-      view === "list" ? <TableFooter page={filters.page} pageSize={PAGE_SIZE} shown={shown} total={screen.total} onPage={filters.setPage} /> : null,
+      view === "list" ? (
+        <TableFooter page={filters.page} pageSize={PAGE_SIZE} shown={shown} total={screen.total} noun={requestTab ? "requests" : "users"} onPage={filters.setPage} />
+      ) : null,
     contentContainerStyle: padding,
     showsVerticalScrollIndicator: false,
     keyboardShouldPersistTaps: "handled" as const,
@@ -80,9 +88,10 @@ const WideUsersView = ({ screen, width, insets, onExport, onAddUser }: WideUsers
   return (
     <View className="flex-1">
       {requestTab ? (
-        <FlatList data={view === "list" ? screen.requests.items : []} keyExtractor={(item) => item.id} renderItem={renderRequest} extraData={mode} {...shared} />
+        <FlatList ref={requestsRef} data={view === "list" ? screen.requests.items : []} keyExtractor={(item) => item.id} renderItem={renderRequest} extraData={mode} {...shared} />
       ) : (
         <FlatList
+          ref={usersRef}
           data={view === "list" ? screen.rows : []}
           keyExtractor={(item) => item.id}
           renderItem={renderUser}

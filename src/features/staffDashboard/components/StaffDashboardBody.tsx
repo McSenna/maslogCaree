@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { MetricCard } from "@/components/dashboard/admin";
-import PressableShell from "@/components/cards/PressableShell";
 import {
   AttentionStrip,
   MetricRow,
@@ -137,26 +136,22 @@ const StaffDashboardBody = ({
   const metrics = config.metrics.map((spec) => {
     const value = spec.value(data);
     const description = spec.description(data);
+    // The card's own button: the console hover and focus states, and Enter works on web.
     return (
-      <PressableShell
+      <MetricCard
         key={spec.key}
+        palette={palette}
+        tone={spec.tone}
+        icon={spec.icon}
+        label={spec.label}
+        description={description}
+        value={value}
+        progress={spec.progress?.(data)}
+        compact={isMobile}
+        dense={layout.denseMetrics}
         onPress={go.toQueue}
-        accessibilityLabel={`${spec.label}: ${value}. ${description}`}
         accessibilityHint="Opens the appointment queue"
-        showChevron={false}
-      >
-        <MetricCard
-          palette={palette}
-          tone={spec.tone}
-          icon={spec.icon}
-          label={spec.label}
-          description={description}
-          value={value}
-          progress={spec.progress?.(data)}
-          compact={isMobile}
-          dense={layout.denseMetrics}
-        />
-      </PressableShell>
+      />
     );
   });
 

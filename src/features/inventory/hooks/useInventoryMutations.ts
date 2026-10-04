@@ -11,6 +11,7 @@ import {
   type StockInPayload,
   type StockOutPayload,
 } from "../services/inventoryService";
+import { toastError } from "@/utils/errorToast/toastError";
 
 export type ActiveModal =
   | "none"
@@ -69,7 +70,7 @@ export const useInventoryMutations = ({
         setPendingRelease(null);
         // The reason stays in the open form, next to what needs changing.
         setFormError(getApiErrorMessage(error, "That did not go through. Please try again."));
-        toast.error(failureTitle);
+        toastError(failureTitle, error, { inline: true });
       } finally {
         setSubmitting(false);
       }

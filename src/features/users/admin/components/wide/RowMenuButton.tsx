@@ -9,33 +9,32 @@ import type { MenuAnchor } from "../../userAdmin.types";
 type RowMenuButtonProps = {
   name: string;
   open: boolean;
-  /** Wide layouts pass the button's window position for the dropdown; phones open a sheet. */
-  onOpen: (anchor: MenuAnchor | null) => void;
-  popover: boolean;
+  onOpen: (anchor: MenuAnchor) => void;
 };
 
-/** The row's "more" button. Measures itself so the menu can open right under it. */
-const RowMenuButton = ({ name, open, onOpen, popover }: RowMenuButtonProps) => {
+/**
+ * The row's "more" button, on every layout. Measures itself so the menu opens
+ * beside it, and hands over a way to take focus back when the menu is dismissed.
+ * Pressed and open states are the light row tint, never a dark underlay.
+ */
+const RowMenuButton = ({ name, open, onOpen }: RowMenuButtonProps) => {
   const palette = useAdminSurfacePalette();
   const ref = useRef<View>(null);
 
-  const press = () => {
-    const node = ref.current;
-    if (!popover || !node) {
-      onOpen(null);
-      return;
-    }
-    node.measureInWindow((x, y, width, height) => onOpen({ x, y: y + height + 4, width }));
-  };
+  const press = () =>
+    ref.current?.measureInWindow((x, y, width, height) =>
+      onOpen({ x, y, width, height, returnFocus: () => ref.current?.focus() })
+    );
 
   return (
     <Pressable
       ref={ref}
       onPress={press}
       accessibilityRole="button"
-      accessibilityLabel={`Actions for ${name}`}
+      accessibilityLabel={`More actions for ${name}`}
       accessibilityState={{ expanded: open }}
       aria-expanded={open}
+      aria-haspopup="menu"
       className={`h-11 w-11 items-center justify-center rounded-control web:cursor-pointer ${open ? "bg-rowopen" : "hover:bg-rowopen active:bg-rowopen"}`}
     >
       <Feather name="more-horizontal" size={18} color={palette.body} />

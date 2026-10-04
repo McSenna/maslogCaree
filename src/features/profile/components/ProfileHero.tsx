@@ -6,6 +6,7 @@ import type { ProfileData } from "../utils/profileData";
 import ProfilePhoto from "./ProfilePhoto";
 import CompactHero from "./hero/CompactHero";
 import WideHero from "./hero/WideHero";
+import { PALETTE } from "@/theme/palette";
 
 type ProfileHeroProps = {
   profile: ProfileData;
@@ -46,9 +47,9 @@ const ProfileHero = ({
 
   const surface = {
     borderRadius: PROFILE_RADIUS.hero,
-    backgroundColor: "#F1F7FE",
+    backgroundColor: PALETTE.slate[100],
     borderWidth: 1,
-    borderColor: "#DCEAFB",
+    borderColor: PALETTE.blue[100],
     overflow: "hidden",
   } as const;
 

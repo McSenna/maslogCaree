@@ -1,6 +1,6 @@
 import type { SelectOption } from "@/components/ui/SelectMenu";
 
-export type ResidentStatusFilter = "all" | "active" | "inactive" | "pending" | "suspended";
+export type ResidentStatusFilter = "all" | "active" | "inactive" | "pending" | "suspended" | "restricted";
 
 export type ResidentSortKey = "created_desc" | "created_asc" | "name_asc" | "name_desc";
 
@@ -10,6 +10,7 @@ export const RESIDENT_STATUS_OPTIONS: readonly SelectOption<ResidentStatusFilter
   { value: "inactive", label: "Inactive" },
   { value: "pending", label: "Pending" },
   { value: "suspended", label: "Suspended" },
+  { value: "restricted", label: "Inactive or Suspended" },
 ];
 
 export const RESIDENT_SORT_OPTIONS: readonly SelectOption<ResidentSortKey>[] = [

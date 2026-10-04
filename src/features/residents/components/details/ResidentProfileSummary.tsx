@@ -4,6 +4,7 @@ import UserStatusBadge from "@/features/users/components/UserStatusBadge";
 import { useUserDetailsPalette } from "@/features/users/components/details/detailsTheme";
 import type { ResidentRecord } from "../../services/residentService";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
 const ResidentProfileSummary = ({ resident }: { resident: ResidentRecord }) => {
   const palette = useUserDetailsPalette();
@@ -16,7 +17,7 @@ const ResidentProfileSummary = ({ resident }: { resident: ResidentRecord }) => {
           borderWidth: 3,
           borderColor: palette.avatarRing,
           ...createShadow({
-            color: "#0F2557",
+            color: PALETTE.ink,
             offsetY: 4,
             radius: 10,
             opacity: 0.14,

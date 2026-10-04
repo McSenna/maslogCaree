@@ -1,5 +1,6 @@
 import { Image, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type Props = {
   uri: string;
@@ -8,7 +9,7 @@ type Props = {
 };
 
 const overlayChip = {
-  backgroundColor: "rgba(15,23,42,0.75)",
+  backgroundColor: withAlpha(PALETTE.slate[800], 0.75),
   paddingHorizontal: 8,
   paddingVertical: 4,
   borderRadius: 6,
@@ -20,7 +21,7 @@ const IdImagePreview = ({ uri, formattedFileSize, onZoom }: Props) => {
       <View
         style={{
           height: 180,
-          backgroundColor: "#0F172A",
+          backgroundColor: PALETTE.slate[800],
           alignItems: "center",
           justifyContent: "center",
           overflow: "hidden",
@@ -46,7 +47,7 @@ const IdImagePreview = ({ uri, formattedFileSize, onZoom }: Props) => {
         }}
       >
         <View style={overlayChip}>
-          <Text style={{ color: "#FFFFFF", fontSize: 11, fontWeight: "600" }}>
+          <Text style={{ color: PALETTE.white, fontSize: 11, fontWeight: "600" }}>
             ID Preview {formattedFileSize ? `(${formattedFileSize})` : ""}
           </Text>
         </View>
@@ -57,8 +58,8 @@ const IdImagePreview = ({ uri, formattedFileSize, onZoom }: Props) => {
           accessibilityLabel="Zoom image"
           style={{ ...overlayChip, flexDirection: "row", alignItems: "center", gap: 4 }}
         >
-          <Feather name="maximize-2" size={12} color="#FFFFFF" />
-          <Text style={{ color: "#FFFFFF", fontSize: 11, fontWeight: "600" }}>Zoom</Text>
+          <Feather name="maximize-2" size={12} color={PALETTE.white} />
+          <Text style={{ color: PALETTE.white, fontSize: 11, fontWeight: "600" }}>Zoom</Text>
         </Pressable>
       </View>
     </View>

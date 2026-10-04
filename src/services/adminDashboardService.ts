@@ -62,6 +62,9 @@ export interface AdminDashboardData {
   registrationTrend: TrendPoint[];
   activityTrend: TrendPoint[];
   recentUsers: DashboardUser[];
+  /** The newest residents, and the newest everyone else, for the card's Residents and Staff filters. */
+  recentResidents: DashboardUser[];
+  recentStaff: DashboardUser[];
   recentActivities: DashboardActivity[];
   generatedAt: string;
 }
@@ -106,6 +109,9 @@ export const fetchAdminDashboard = async (
     registrationTrend: data.registrationTrend ?? [],
     activityTrend: data.activityTrend ?? [],
     recentUsers: data.recentUsers ?? [],
+    // An older server sends only the overall list; its residents and staff are the best available.
+    recentResidents: data.recentResidents ?? (data.recentUsers ?? []).filter((user) => user.role === "resident"),
+    recentStaff: data.recentStaff ?? (data.recentUsers ?? []).filter((user) => user.role !== "resident"),
     recentActivities: data.recentActivities ?? [],
     generatedAt: data.generatedAt ?? new Date().toISOString(),
   };

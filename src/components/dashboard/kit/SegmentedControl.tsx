@@ -4,6 +4,7 @@ import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { useInteractionState } from "@/hooks/useInteractionState";
 import { webTransition } from "@/theme/motion";
 import { webStyle } from "@/theme/webStyle";
+import { PALETTE } from "@/theme/palette";
 
 export type SegmentOption<T extends string> = {
   value: T;
@@ -26,7 +27,7 @@ type SegmentedControlProps<T extends string> = {
 const HEIGHT = 34;
 const MIN_TARGET = 44;
 
-const SELECTED_SHADOW = createShadow({ color: "#0F172A", opacity: 0.08, radius: 3, offsetY: 1, elevation: 1 });
+const SELECTED_SHADOW = createShadow({ color: PALETTE.slate[800], opacity: 0.08, radius: 3, offsetY: 1, elevation: 1 });
 const SEGMENT_WEB = webStyle({ cursor: "pointer", transition: webTransition("background-color", "color", "box-shadow") });
 
 const Segment = <T extends string,>({

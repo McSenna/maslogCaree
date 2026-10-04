@@ -12,16 +12,16 @@ export const landingAssets: {
 
 export const LANDING_COLORS = {
   primaryBlue: PALETTE.blue[600],
-  navy: "#08152F",
-  // Teal rather than green: white text on it passes AA (5.5:1), and it keeps the
-  // landing palette to the product's blue and teal.
-  green: PALETTE.teal[700],
-  mutedText: "#52617A",
-  border: "#DDE5F0",
-  pageBg: "#F8FAFC",
-  softBlue: "#E7F1FF",
-  softGreen: PALETTE.teal[100],
-  softOrange: "#FFF0D7",
-  orange: "#F59E0B",
-  white: "#FFFFFF",
+  navy: PALETTE.ink,
+  // The icon- and fill-safe step of Healthcare Green: white text on it is 4.6:1.
+  green: PALETTE.green[600],
+  mutedText: PALETTE.slate[600],
+  border: PALETTE.slate[200],
+  pageBg: PALETTE.canvas,
+  softBlue: PALETTE.blue[50],
+  softGreen: PALETTE.green[50],
+  softOrange: PALETTE.orange[50],
+  // Warm Orange's icon-safe step; the anchor itself is too light for a glyph on white.
+  orange: PALETTE.orange[600],
+  white: PALETTE.white,
 } as const;

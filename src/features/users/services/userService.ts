@@ -32,6 +32,8 @@ export interface AdminUser {
   role: "admin" | "doctor" | "midwife" | "bhw" | "resident";
   lastLogin?: string | null;
   platformAccess?: PlatformAccessSummary;
+  /** Resident accounts only: the Barangay Master List record this account holds. */
+  masterResidentId?: string;
   createdAt: string;
   updatedAt: string;
 }

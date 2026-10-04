@@ -1,8 +1,36 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
+import InteractiveCard from "@/components/cards/InteractiveCard";
 import ResponsiveGrid from "@/components/layout/ResponsiveGrid";
 import type { QueueOverview } from "@/services/appointments";
-import { QUEUE_RADIUS, STAT_CARDS, useQueuePalette, type QueuePalette } from "./queueTheme";
+import {
+  QUEUE_RADIUS,
+  STAT_CARDS,
+  useQueuePalette,
+  type AppointmentStatus,
+  type QueuePalette,
+} from "./queueTheme";
+
+export type QueueCardKey = "today" | "pending" | "upcoming" | "declined";
+
+/**
+ * The appointments-list tab each card opens; "today" jumps to the day's
+ * schedule instead. Upcoming opens Confirmed, the nearest list (it also holds
+ * today's confirmed visits).
+ */
+export const QUEUE_CARD_STATUS: Record<QueueCardKey, AppointmentStatus | null> = {
+  today: null,
+  pending: "pending",
+  upcoming: "confirmed",
+  declined: "declined",
+};
+
+const CARD_HINTS: Record<QueueCardKey, string> = {
+  today: "Jumps to today's schedule",
+  pending: "Shows pending requests in the appointments list",
+  upcoming: "Shows confirmed appointments in the appointments list",
+  declined: "Shows declined appointments in the appointments list",
+};
 
 const StatCard = ({
   label,
@@ -79,10 +107,15 @@ const QueueStatCards = ({
   overview,
   loading,
   wide,
+  activeStatus,
+  onSelectCard,
 }: {
   overview: QueueOverview | null;
   loading: boolean;
   wide: boolean;
+  /** The appointments list's tab, so the matching card shows as selected. */
+  activeStatus: AppointmentStatus;
+  onSelectCard: (key: QueueCardKey) => void;
 }) => {
   const palette = useQueuePalette();
 
@@ -94,19 +127,31 @@ const QueueStatCards = ({
       gap={14}
       initialColumns={{ mobile: 2, desktop: 4 }}
     >
-      {STAT_CARDS.map((card) => (
-        <StatCard
-          key={card.key}
-          label={card.label}
-          caption={card.caption}
-          icon={card.icon}
-          tone={palette.tones[card.tone]}
-          palette={palette}
-          loading={loading}
-          compact={!wide}
-          value={overview ? (overview.stats[card.key as keyof QueueOverview["stats"]] ?? 0) : 0}
-        />
-      ))}
+      {STAT_CARDS.map((card) => {
+        const key = card.key as QueueCardKey;
+        const value = overview ? (overview.stats[card.key as keyof QueueOverview["stats"]] ?? 0) : 0;
+        return (
+          <InteractiveCard
+            key={card.key}
+            onPress={() => onSelectCard(key)}
+            accessibilityLabel={`${card.label}: ${loading ? "loading" : value} ${card.caption}`}
+            accessibilityHint={CARD_HINTS[key]}
+            selected={QUEUE_CARD_STATUS[key] !== null && QUEUE_CARD_STATUS[key] === activeStatus}
+            radius={QUEUE_RADIUS.panel}
+          >
+            <StatCard
+              label={card.label}
+              caption={card.caption}
+              icon={card.icon}
+              tone={palette.tones[card.tone]}
+              palette={palette}
+              loading={loading}
+              compact={!wide}
+              value={value}
+            />
+          </InteractiveCard>
+        );
+      })}
     </ResponsiveGrid>
   );
 };

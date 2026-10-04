@@ -1,21 +1,21 @@
 import { Pressable, ScrollView, Text } from "react-native";
 
-import { BIRTH_YEARS } from "../../constants/registrationFields";
 import { REG_COLORS } from "../../registration/registrationTheme";
 
 type YearPickerProps = {
   year: number;
   onSelect: (year: number) => void;
   height: number;
+  years: number[];
 };
 
-const YearPicker = ({ year, onSelect, height }: YearPickerProps) => (
+const YearPicker = ({ year, onSelect, height, years }: YearPickerProps) => (
   <ScrollView
     style={{ height }}
     showsVerticalScrollIndicator={false}
     contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", gap: 6, paddingVertical: 4 }}
   >
-    {BIRTH_YEARS.map((option) => {
+    {years.map((option) => {
       const isSelected = option === year;
 
       return (

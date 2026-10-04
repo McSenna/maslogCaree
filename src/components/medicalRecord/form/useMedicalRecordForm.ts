@@ -4,12 +4,13 @@ import type { CompletionForm } from "@/services/medicalRecords";
 import type { FieldValue } from "../MedicalFieldInput";
 import { emptyValues, validateValues, type FormValues } from "./formValues";
 
-export const useMedicalRecordForm = (form: CompletionForm | null) => {
-  const [values, setValues] = useState<FormValues>(() => emptyValues(form));
+// `initial` prefills the form when editing a saved record.
+export const useMedicalRecordForm = (form: CompletionForm | null, initial?: FormValues) => {
+  const [values, setValues] = useState<FormValues>(() => initial ?? emptyValues(form));
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const reset = useCallback((next: CompletionForm | null) => {
-    setValues(emptyValues(next));
+  const reset = useCallback((next: CompletionForm | null, nextValues?: FormValues) => {
+    setValues(nextValues ?? emptyValues(next));
     setErrors({});
   }, []);
 

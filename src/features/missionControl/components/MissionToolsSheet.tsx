@@ -8,6 +8,7 @@ import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBac
 import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
 import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import type { QueuePalette } from "@/components/appointmentQueue/queueTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type MissionToolsSheetProps = {
   visible: boolean;
@@ -41,7 +42,7 @@ const MissionToolsSheet = ({
     >
       <SheetViewport
         layout={layout}
-        style={{ backgroundColor: "rgba(15,37,87,0.35)", paddingHorizontal: isPhone ? 0 : 16 }}
+        style={{ backgroundColor: withAlpha(PALETTE.ink, 0.35), paddingHorizontal: isPhone ? 0 : 16 }}
       >
         <Pressable
           accessibilityRole="button"

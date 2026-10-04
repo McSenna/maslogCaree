@@ -9,6 +9,7 @@ import AdminSupportTableHeader from "./AdminSupportTableHeader";
 import AdminSupportTableRow from "./AdminSupportTableRow";
 import { SUPPORT_TABLE_MIN_WIDTH } from "./adminSupportTableColumns";
 import type { SupportTicketSummary } from "../types/support.types";
+import { PALETTE } from "@/theme/palette";
 
 type AdminSupportTableProps = {
   tickets: SupportTicketSummary[];
@@ -86,7 +87,7 @@ const AdminSupportTable = ({
                   backgroundColor: palette.primary,
                 }}
               >
-                <Text style={{ fontSize: 12.5, fontWeight: "600", color: "#FFFFFF" }}>Retry</Text>
+                <Text style={{ fontSize: 12.5, fontWeight: "600", color: PALETTE.white }}>Retry</Text>
               </Pressable>
             </View>
           ) : tickets.length === 0 ? (

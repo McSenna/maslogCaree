@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { toast } from "@/components/feedback/toast/toastStore";
-import { registerResident } from "@/services/auth";
+import { registerResident, type RegistrationStatus } from "@/services/auth";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
 
 import { EMPTY_REGISTRATION, REGISTRATION_STEPS, type StepKey } from "../registrationOptions";
@@ -13,6 +12,7 @@ import {
 } from "../registrationValidation";
 import { buildRegistrationPayload } from "./buildRegistrationPayload";
 import { SERVER_FIELD_ALIASES, stepOwning } from "./registrationFieldMapping";
+import { toastError } from "@/utils/errorToast/toastError";
 
 type Options = {
   values: RegistrationValues;
@@ -39,6 +39,8 @@ export const useRegistrationSubmit = ({
 }: Options) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
+  // Set by the server only; the client never decides whether someone is verified.
+  const [registeredStatus, setRegisteredStatus] = useState<RegistrationStatus>("pending");
 
   const applyServerFieldErrors = useCallback(
     (fieldErrors: Record<string, string>) => {
@@ -89,6 +91,7 @@ export const useRegistrationSubmit = ({
       const result = await registerResident(
         buildRegistrationPayload(values, profilePhoto, emailVerificationToken)
       );
+      setRegisteredStatus(result.status);
       setRegisteredEmail(result.email);
     } catch (error: unknown) {
       const { message, normalized } = getAuthErrorPresentation(
@@ -100,7 +103,7 @@ export const useRegistrationSubmit = ({
         ? applyServerFieldErrors(normalized.fieldErrors)
         : false;
       if (!placed) setSubmitError(message);
-      toast.error("Registration not submitted");
+      toastError("Registration not submitted", error, { inline: true });
     } finally {
       setIsSubmitting(false);
     }
@@ -116,5 +119,10 @@ export const useRegistrationSubmit = ({
     setSubmitError,
   ]);
 
-  return { isSubmitting, registeredEmail, setRegisteredEmail, submit };
+  const clearRegistration = useCallback(() => {
+    setRegisteredEmail("");
+    setRegisteredStatus("pending");
+  }, []);
+
+  return { isSubmitting, registeredEmail, registeredStatus, clearRegistration, submit };
 };

@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { webStyle } from "@/theme/webStyle";
+import { PALETTE } from "@/theme/palette";
 
 export const styles = StyleSheet.create({
   flex: {
@@ -10,7 +11,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     overflow: "hidden",
-    backgroundColor: "#F2F7FD",
+    backgroundColor: PALETTE.slate[100],
     ...webStyle({
         height: "100dvh",
         minHeight: "100vh",

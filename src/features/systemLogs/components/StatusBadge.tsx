@@ -1,22 +1,16 @@
-import { Text, View } from "react-native";
+import StatusPill from "@/components/status/StatusPill";
 import type { SystemLogStatus } from "@/features/systemLogs/services/systemLogService";
 import { useSystemLogsPalette } from "./systemLogsTheme";
 
 const StatusBadge = ({ status }: { status: SystemLogStatus }) => {
   const palette = useSystemLogsPalette();
   const tone = palette.status[status] ?? palette.status.Success;
-
   return (
-    <View
-      accessibilityRole="text"
-      accessibilityLabel={`Status: ${tone.label}`}
-      className="self-start rounded-full px-2 py-1"
-      style={{ backgroundColor: tone.bg }}
-    >
-      <Text className="text-xs font-semibold" style={{ color: tone.text }}>
-        {tone.label}
-      </Text>
-    </View>
+    <StatusPill
+      label={tone.label}
+      icon={status === "Failed" ? "x-circle" : "check-circle"}
+      tone={{ bg: tone.bg, fg: tone.text }}
+    />
   );
 };
 

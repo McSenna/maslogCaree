@@ -2,7 +2,9 @@ import { Pressable, Text, View } from "react-native";
 
 import { formatBirthDate } from "../../utils/dateOfBirth";
 import { REG_COLORS } from "../../registration/registrationTheme";
+import type { DateBounds } from "./calendarBounds";
 import { WEEKDAY_LABELS, buildCalendarCells } from "./calendarMonth";
+import { PALETTE } from "@/theme/palette";
 
 type CalendarGridProps = {
   year: number;
@@ -10,10 +12,11 @@ type CalendarGridProps = {
   selected: string;
   onSelect: (iso: string) => void;
   cellSize: number;
+  bounds: DateBounds;
 };
 
-const CalendarGrid = ({ year, monthIndex, selected, onSelect, cellSize }: CalendarGridProps) => {
-  const cells = buildCalendarCells(year, monthIndex);
+const CalendarGrid = ({ year, monthIndex, selected, onSelect, cellSize, bounds }: CalendarGridProps) => {
+  const cells = buildCalendarCells(year, monthIndex, bounds);
 
   return (
     <View style={{ gap: 6 }}>
@@ -63,7 +66,7 @@ const CalendarGrid = ({ year, monthIndex, selected, onSelect, cellSize }: Calend
                   style={{
                     fontSize: 14,
                     fontWeight: isSelected ? "800" : "500",
-                    color: isSelected ? "#FFFFFF" : REG_COLORS.text,
+                    color: isSelected ? PALETTE.white : REG_COLORS.text,
                   }}
                 >
                   {cell.day}

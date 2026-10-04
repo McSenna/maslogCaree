@@ -3,6 +3,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { PALETTE } from "@/theme/palette";
 
 type SupportCTAProps = {
   onContactSupport: () => void;
@@ -53,8 +54,8 @@ const SupportCTA = ({ onContactSupport, onViewRequests }: SupportCTAProps) => {
             backgroundColor: palette.primary,
           }}
         >
-          <Feather name="life-buoy" size={16} color="#FFFFFF" />
-          <Text style={{ fontSize: 14, fontWeight: "700", color: "#FFFFFF" }}>Contact Support</Text>
+          <Feather name="life-buoy" size={16} color={PALETTE.white} />
+          <Text style={{ fontSize: 14, fontWeight: "700", color: PALETTE.white }}>Contact Support</Text>
         </Pressable>
 
         <Pressable

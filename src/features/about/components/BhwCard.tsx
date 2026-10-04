@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 import type { OrganizationMember } from "@/types/organization";
 import { BHW_PALETTE, HC } from "../constants/aboutTheme";
 import { initialsOf } from "../utils/organizationChart";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type BhwCardProps = {
   member: OrganizationMember;
@@ -21,10 +22,10 @@ const BhwCard = ({ member, index, isTablet }: BhwCardProps) => {
         borderRadius: 14,
         backgroundColor: HC.white,
         borderWidth: 1,
-        borderColor: "#EEF2F1",
+        borderColor: PALETTE.slate[100],
         borderTopWidth: 3,
         borderTopColor: palette.fg,
-        boxShadow: "0px 4px 12px rgba(144,202,249,0.6)",
+        boxShadow: `0px 4px 12px ${withAlpha(PALETTE.ink, 0.08)}`,
         elevation: 6,
       }}
     >

@@ -2,6 +2,7 @@ import { Text, View } from "react-native";
 
 import { QUEUE_RADIUS, type QueuePalette } from "@/components/appointmentQueue/queueTheme";
 import type { MedicalField } from "@/services/medicalRecords";
+import { PALETTE } from "@/theme/palette";
 
 export type FieldValue = string | number | boolean | null | undefined;
 
@@ -36,8 +37,8 @@ export const buildShellStyle = (
   ({
     borderRadius: QUEUE_RADIUS.control,
     borderWidth: 1,
-    borderColor: error ? "#DC2626" : palette.panelBorder,
-    backgroundColor: palette.isDark ? "#0B1220" : "#FFFFFF",
+    borderColor: error ? PALETTE.red[600] : palette.panelBorder,
+    backgroundColor: palette.isDark ? PALETTE.slate[950] : PALETTE.white,
     opacity: disabled ? 0.6 : 1,
   }) as const;
 
@@ -53,7 +54,7 @@ export const FieldLabel = ({
       {field.label}
     </Text>
     {field.required ? (
-      <Text className="text-[13px] font-semibold" style={{ color: "#DC2626" }}>
+      <Text className="text-[13px] font-semibold" style={{ color: PALETTE.red[600] }}>
         *
       </Text>
     ) : null}
@@ -71,7 +72,7 @@ export const FieldHelper = ({
 }) => {
   if (!helper) return null;
   return (
-    <Text className="mt-1 text-[11.5px]" style={{ color: error ? "#DC2626" : palette.subtle }}>
+    <Text className="mt-1 text-[11.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
       {helper}
     </Text>
   );

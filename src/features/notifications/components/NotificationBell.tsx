@@ -6,6 +6,7 @@ import { useCountBump } from "@/hooks/useCountBump";
 import { useInteractionState } from "@/hooks/useInteractionState";
 import { useNotificationPalette } from "../notification.theme";
 import type { BellPosition } from "../notification.types";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type NotificationBellProps = {
   unreadCount: number;
@@ -20,7 +21,7 @@ type NotificationBellProps = {
 
 const MAX_BADGE = 99;
 const MIN_TARGET = 44;
-const HOVER_WASH = "rgba(148, 163, 184, 0.16)";
+const HOVER_WASH = withAlpha(PALETTE.slate[400], 0.16);
 
 const NotificationBell = ({
   unreadCount,
@@ -40,7 +41,8 @@ const NotificationBell = ({
   const { hovered, focused, scaleStyle, handlers } = useInteractionState({ pressScale: 0.94 });
 
   const handlePress = useCallback(() => {
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    // A device without haptics still opens the panel; the missing buzz is not worth a message.
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
 
     bellRef.current?.measureInWindow((x, y, width, height) => onMeasure({ x, y, width, height }));
     onPress();

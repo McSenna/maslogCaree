@@ -108,12 +108,13 @@ export const toSummary = (raw: ApiUserSummary): UserSummary => ({
   rejectedRequests: raw.rejectedRequests,
 });
 
-export const TAB_COUNT: Record<UserTab, (summary: UserSummary) => number> = {
+// The Masterlist tab counts official records, not accounts, so the account summary has no number for it.
+export const TAB_COUNT: Partial<Record<UserTab, (summary: UserSummary) => number>> = {
   active: (summary) => summary.active,
   requests: (summary) => summary.pendingRequests,
   rejected: (summary) => summary.rejectedRequests,
   deactivated: (summary) => summary.deactivated,
-  masterlist: (summary) => summary.total,
+  accounts: (summary) => summary.total,
 };
 
 export const activeShareNote = (summary: UserSummary): string =>

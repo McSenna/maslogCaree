@@ -2,6 +2,7 @@ import React from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { PALETTE } from "@/theme/palette";
+import { reportError } from "@/utils/errorReporting";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -23,11 +24,9 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     };
   }
 
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("[ErrorBoundary]", this.props.area ?? "app", {
-      message: error.message,
-      componentStack: info.componentStack,
-    });
+  // The fallback screen is the notice, so no toast; React already logs the component stack in development.
+  componentDidCatch(error: Error) {
+    reportError(`Error boundary: ${this.props.area ?? "app"}`, error);
   }
 
   handleRetry = () => {

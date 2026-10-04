@@ -9,15 +9,14 @@ import {
   markNotificationRead,
 } from "@/services/notifications";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { toastBackgroundError, toastError } from "@/utils/errorToast/toastError";
 import { mergeNotifications, sameNotifications } from "./notifications/notificationStore";
-
-type UseNotificationsOptions = { pollIntervalMs?: number };
+import { useNotificationLiveUpdates } from "./notifications/useNotificationLiveUpdates";
 
 const PAGE_SIZE = 20;
 
-export const useNotifications = (options: UseNotificationsOptions = {}) => {
+export const useNotifications = () => {
   const { user } = useAuth();
-  const pollIntervalMs = options.pollIntervalMs ?? 15000;
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -28,8 +27,10 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
   const cursorRef = useRef<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const inFlightRef = useRef(false);
-  /** True once the user paged past the first page, so polling must not rewind the cursor. */
+  /** True once the user paged past the first page, so a quiet reload must not rewind the cursor. */
   const pagedRef = useRef(false);
+  /** True once a page is on screen: the list then stays, so a failure is told by toast, not the error state. */
+  const loadedRef = useRef(false);
 
   const load = useCallback(
     async (announce: boolean) => {
@@ -39,6 +40,7 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
         setHasMore(false);
         cursorRef.current = null;
         pagedRef.current = false;
+        loadedRef.current = false;
         setError(null);
         return;
       }
@@ -59,7 +61,7 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
           setHasMore(page.hasMore);
           cursorRef.current = page.nextCursor;
         } else {
-          // Background poll: fold the first page in without dropping loaded pages.
+          // Quiet reload after a realtime change: fold the first page in without dropping loaded pages.
           setNotifications((prev) => {
             const next = mergeNotifications(page.notifications, prev);
             return sameNotifications(prev, next) ? prev : next;
@@ -73,8 +75,11 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
 
         setUnreadCount(page.unreadCount);
         setError(null);
+        loadedRef.current = true;
       } catch (e: unknown) {
         setError(getApiErrorMessage(e, "Unable to load notifications."));
+        if (!announce) toastBackgroundError("Notifications not updated", e);
+        else if (loadedRef.current) toastError("Notifications not refreshed", e, { fallback: "Unable to load notifications." });
       } finally {
         inFlightRef.current = false;
         if (announce) setLoading(false);
@@ -101,6 +106,7 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
       cursorRef.current = page.nextCursor;
     } catch (e: unknown) {
       setError(getApiErrorMessage(e, "Unable to load more notifications."));
+      toastError("Unable to load more notifications", e);
     } finally {
       inFlightRef.current = false;
       setLoadingMore(false);
@@ -112,11 +118,14 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
     void load(true);
   }, [load]);
 
-  useEffect(() => {
-    if (!user) return;
-    const id = setInterval(() => void load(false), pollIntervalMs);
-    return () => clearInterval(id);
-  }, [user, pollIntervalMs, load]);
+  // Replaces the 15-second poll: alerts arrive over the realtime connection.
+  useNotificationLiveUpdates({
+    enabled: Boolean(user),
+    notifications,
+    setNotifications,
+    setUnreadCount,
+    reload: () => void load(false),
+  });
 
   const markRead = useCallback(async (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)));
@@ -125,9 +134,10 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
     try {
       const { unreadCount: serverCount } = await markNotificationRead(id);
       if (serverCount !== null) setUnreadCount(serverCount);
-    } catch {
+    } catch (e: unknown) {
       setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, isRead: false } : n)));
       setUnreadCount((prev) => prev + 1);
+      toastError("Notification not marked as read", e);
     }
   }, []);
 
@@ -146,7 +156,7 @@ export const useNotifications = (options: UseNotificationsOptions = {}) => {
       setNotifications(snapshot);
       setUnreadCount(snapshot.filter((n) => !n.isRead).length);
       setError(getApiErrorMessage(e, "Unable to mark all notifications as read."));
-      toast.error("Notifications not marked as read");
+      toastError("Notifications not marked as read", e, { fallback: "Unable to mark all notifications as read." });
     }
   }, []);
 

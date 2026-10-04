@@ -133,6 +133,7 @@ const ResidentRegistrationDialog = ({
               {isSucceeded ? (
                 <RegistrationSuccess
                   email={form.registeredEmail}
+                  status={form.registeredStatus}
                   onContinue={form.finish}
                   height={buttonHeight}
                 />

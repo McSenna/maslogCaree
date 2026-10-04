@@ -11,6 +11,7 @@ const TABS: readonly { value: UserTab; label: string }[] = [
   { value: "requests", label: "Requests" },
   { value: "rejected", label: "Rejected" },
   { value: "deactivated", label: "Deactivated" },
+  { value: "accounts", label: "All accounts" },
   { value: "masterlist", label: "Masterlist" },
 ];
 
@@ -18,7 +19,7 @@ type UserTabsProps = {
   value: UserTab;
   summary: UserSummary | null;
   onChange: (value: UserTab) => void;
-  /** Narrow screens scroll the control sideways rather than squeezing five labels. */
+  /** Narrow screens scroll the control sideways rather than squeezing six labels. */
   scroll?: boolean;
 };
 
@@ -30,7 +31,7 @@ const UserTabs = ({ value, summary, onChange, scroll }: UserTabsProps) => {
   const palette = useAdminSurfacePalette();
   const options: SegmentOption<UserTab>[] = TABS.map((tab) => ({
     ...tab,
-    count: summary ? TAB_COUNT[tab.value](summary) : undefined,
+    count: summary ? TAB_COUNT[tab.value]?.(summary) : undefined,
   }));
   const control = <SegmentedControl palette={palette} label="User lists" value={value} options={options} onChange={onChange} />;
 

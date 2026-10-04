@@ -1,20 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
 import { fetchSystemLogStats, type SystemLogStatsResponse } from "@/features/systemLogs/services/systemLogService";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { useRealtimeRefetch } from "@/hooks/realtime/useRealtimeRefetch";
 
 export const useSystemLogStats = () => {
   const [stats, setStats] = useState<SystemLogStatsResponse["stats"] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  const load = useCallback(async (quiet = false) => {
+    if (!quiet) {
+      setLoading(true);
+      setError(null);
+    }
     try {
       const response = await fetchSystemLogStats();
       setStats(response.stats);
     } catch (err: unknown) {
-      setError(getApiErrorMessage(err, "Unable to load log summary."));
+      if (!quiet) setError(getApiErrorMessage(err, "Unable to load log summary."));
     } finally {
       setLoading(false);
     }
@@ -25,5 +28,8 @@ export const useSystemLogStats = () => {
     void load();
   }, [load]);
 
-  return { stats, loading, error, reload: load };
+  // The counts follow new entries without flashing the cards.
+  useRealtimeRefetch(["systemLog"], () => load(true), { intervalMs: 1000 });
+
+  return { stats, loading, error, reload: () => load() };
 };

@@ -1,6 +1,6 @@
 import type { Ionicons } from "@expo/vector-icons";
 
-export type LearnMoreTone = "blue" | "green" | "orange";
+export type LearnMoreTone = "primary" | "care" | "accent";
 
 export type LearnMoreFeature = {
   key: string;
@@ -33,14 +33,14 @@ export const LEARN_MORE_FEATURES: LearnMoreFeature[] = [
     title: "Book a visit",
     description:
       "Choose a service, then pick an open date and time. Your appointment is confirmed right away.",
-    tone: "blue",
+    tone: "primary",
   },
   {
     key: "services",
     icon: "medkit-outline",
     title: "Barangay health services",
     description: "The services you can book in the app:",
-    tone: "green",
+    tone: "care",
     services: [
       "General checkup",
       "Consultation",
@@ -55,7 +55,7 @@ export const LEARN_MORE_FEATURES: LearnMoreFeature[] = [
     title: "Schedule updates",
     description:
       "Your confirmed date and time, any changes, and barangay health announcements appear in the app.",
-    tone: "orange",
+    tone: "accent",
   },
 ];
 

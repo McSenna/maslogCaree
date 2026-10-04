@@ -33,7 +33,7 @@ const PanelCard = ({
 }: PanelCardProps) => {
   return (
     <View
-      className="rounded-2xl border p-4"
+      className="rounded-lg border p-4"
       style={{
         flex: fill ? 1 : undefined,
         backgroundColor: palette.cardBg,
@@ -52,9 +52,9 @@ const PanelCard = ({
           {icon ? (
             <View
               className="h-9 w-9 shrink-0 items-center justify-center rounded-xl"
-              style={{ backgroundColor: palette.tones.blue.iconBg }}
+              style={{ backgroundColor: palette.bannerBg }}
             >
-              <Feather name={icon} size={17} color={palette.tones.blue.icon} />
+              <Feather name={icon} size={17} color={palette.primary} />
             </View>
           ) : null}
           <View className="min-w-0 flex-1">

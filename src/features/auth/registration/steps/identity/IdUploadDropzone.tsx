@@ -2,6 +2,7 @@ import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { REG_COLORS, REG_RADIUS } from "../../registrationTheme";
+import { PALETTE } from "@/theme/palette";
 
 type Props = {
   onPress: () => void;
@@ -19,8 +20,8 @@ const IdUploadDropzone = ({ onPress, isProcessing, hasError }: Props) => {
       style={({ pressed }) => ({
         borderWidth: 1.5,
         borderStyle: "dashed",
-        borderColor: hasError ? "#EF4444" : pressed ? REG_COLORS.primary : "#93C5FD",
-        backgroundColor: pressed ? "#EFF6FF" : "#F8FAFC",
+        borderColor: hasError ? PALETTE.red[500] : pressed ? REG_COLORS.primary : PALETTE.blue[300],
+        backgroundColor: pressed ? PALETTE.blue[50] : PALETTE.slate[50],
         borderRadius: REG_RADIUS.card,
         padding: 24,
         alignItems: "center",
@@ -37,7 +38,7 @@ const IdUploadDropzone = ({ onPress, isProcessing, hasError }: Props) => {
             width: 52,
             height: 52,
             borderRadius: 26,
-            backgroundColor: "#DBEAFE",
+            backgroundColor: PALETTE.blue[100],
             alignItems: "center",
             justifyContent: "center",
           }}
@@ -62,12 +63,12 @@ const IdUploadDropzone = ({ onPress, isProcessing, hasError }: Props) => {
           gap: 6,
           paddingHorizontal: 12,
           paddingVertical: 6,
-          backgroundColor: "#EEF2F6",
+          backgroundColor: PALETTE.slate[100],
           borderRadius: 20,
         }}
       >
-        <Feather name="shield" size={13} color="#475569" />
-        <Text style={{ fontSize: 11.5, fontWeight: "600", color: "#475569" }}>
+        <Feather name="shield" size={13} color={PALETTE.slate[700]} />
+        <Text style={{ fontSize: 11.5, fontWeight: "600", color: PALETTE.slate[700] }}>
           Stored privately & securely for Admin review only
         </Text>
       </View>

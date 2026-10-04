@@ -53,7 +53,7 @@ const IdDocumentViewer = ({
   if (document.error || !document.uri) {
     return (
       <View className={frameClass} style={{ minHeight: height }}>
-        <Feather name="alert-circle" size={28} color="#EF4444" />
+        <Feather name="alert-circle" size={28} color={PALETTE.red[500]} />
         <Text className="mt-2 px-6 text-center text-[12.5px] font-semibold text-red-500">
           {document.error || "The ID document could not be loaded."}
         </Text>

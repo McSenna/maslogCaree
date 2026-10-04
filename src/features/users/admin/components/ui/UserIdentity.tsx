@@ -8,7 +8,7 @@ import { initialsOf } from "../../userAdminModel";
 type UserIdentityProps = {
   name: string;
   avatarUrl: string | null;
-  /** The line under the name: the email, plus any columns this width folds in. */
+  /** The line under the name: the email, plus any columns this width folds in. Wraps to two lines, as the Masterlist's record line does. */
   detail: string;
   /** Replaces the plain name, e.g. with a button that opens the profile. */
   nameSlot?: React.ReactNode;
@@ -34,7 +34,7 @@ const UserIdentity = ({ name, avatarUrl, detail, nameSlot, large }: UserIdentity
             {name}
           </Text>
         )}
-        <Text numberOfLines={1} className="text-[12px] font-normal text-text2">
+        <Text numberOfLines={2} className="text-[12px] text-text2">
           {detail}
         </Text>
       </View>

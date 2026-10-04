@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import { RADIUS, useInventoryPalette } from "../inventoryTheme";
+import { PALETTE } from "@/theme/palette";
 
 export const HistoryLoading = () => {
   const palette = useInventoryPalette();
@@ -21,7 +22,7 @@ export const HistoryError = ({ message, onRetry }: { message: string; onRetry: (
     <View className="items-center gap-3 py-14">
       <View
         className="h-12 w-12 items-center justify-center rounded-full"
-        style={{ backgroundColor: "#FEE2E2" }}
+        style={{ backgroundColor: PALETTE.red[100] }}
       >
         <Feather name="alert-circle" size={20} color={palette.danger} />
       </View>

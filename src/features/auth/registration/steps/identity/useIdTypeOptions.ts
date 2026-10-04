@@ -5,6 +5,7 @@ import {
   type IdTypeOption,
 } from "@/features/users/services/userRequestsService";
 import { DEFAULT_ID_TYPES } from "../../registrationOptions";
+import { reportError } from "@/utils/errorReporting";
 
 export type IdTypeChoice = { value: string; label: string };
 
@@ -28,7 +29,9 @@ export const useIdTypeOptions = () => {
             }))
           );
         }
-      } catch {
+      } catch (error: unknown) {
+        // The built-in ID types still cover registration, so this stays off screen.
+        reportError("ID types not loaded", error);
       } finally {
         if (mounted) setLoadingConfig(false);
       }

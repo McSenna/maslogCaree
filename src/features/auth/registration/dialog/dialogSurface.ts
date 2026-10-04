@@ -2,6 +2,7 @@ import { clampMinHeight } from "@/components/ui/sheetLayout/sheetGeometry";
 import type { SheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 
 import { REG_COLORS, REG_RADIUS } from "../registrationTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const PREFERRED_SHEET_HEIGHT = 560;
 const PREFERRED_SHEET_SHARE = 0.7;
@@ -34,12 +35,12 @@ export const dialogSurfaceStyle = (isSheet: boolean, layout: SheetLayout) => ({
   borderWidth: isSheet ? 0 : 1,
   borderColor: REG_COLORS.border,
   overflow: "hidden" as const,
-  boxShadow: "0px 18px 48px rgba(8, 21, 47, 0.18)",
+  boxShadow: `0px 18px 48px ${withAlpha(PALETTE.ink, 0.18)}`,
 });
 
 /** Colour and side margins only: SheetViewport owns the vertical limits. */
 export const dialogBackdropStyle = (isSheet: boolean) => ({
-  backgroundColor: isSheet ? "rgba(8, 21, 47, 0.38)" : REG_COLORS.overlay,
+  backgroundColor: isSheet ? withAlpha(PALETTE.ink, 0.38) : REG_COLORS.overlay,
   paddingHorizontal: isSheet ? 0 : DESKTOP_EDGE,
 });
 

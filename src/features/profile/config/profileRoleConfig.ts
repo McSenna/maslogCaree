@@ -1,7 +1,14 @@
 import type { Feather } from "@expo/vector-icons";
 import type { UserRole } from "@/config/roleRoutes";
-import { PROFILE_COLORS } from "./profileTheme";
 
+import { getAdminDashboardPalette, ROLE_TONE } from "@/design/adminDashboardTheme";
+
+// Profile screens are light-only; badges wear the role's tone from the shared map.
+const tones = getAdminDashboardPalette("light").tones;
+const roleBadge = (role: keyof typeof ROLE_TONE) => {
+  const tone = tones[ROLE_TONE[role]];
+  return { background: tone.iconBg, text: tone.label, border: tone.iconBg };
+};
 export type ProfileFieldKey =
   | "fullName"
   | "userId"
@@ -67,11 +74,7 @@ export const PROFILE_ROLE_CONFIG: Record<UserRole, ProfileRoleConfig> = {
     title: "Admin Profile",
     idLabel: "Admin ID",
     idPrefix: "ADM",
-    badge: {
-      background: PROFILE_COLORS.primarySoft,
-      text: PROFILE_COLORS.primary,
-      border: "#DBEAFE",
-    },
+    badge: roleBadge("admin"),
     tagline: "Keeping MaslogCare running for every barangay.",
     fields: ["fullName", "userId", ...STAFF_FIELDS_TAIL],
   },
@@ -80,11 +83,7 @@ export const PROFILE_ROLE_CONFIG: Record<UserRole, ProfileRoleConfig> = {
     title: "Doctor Profile",
     idLabel: "Doctor ID",
     idPrefix: "DOC",
-    badge: {
-      background: PROFILE_COLORS.greenSoft,
-      text: PROFILE_COLORS.greenDeep,
-      border: "#A7F3D0",
-    },
+    badge: roleBadge("doctor"),
     tagline: "Caring for a healthier Maslog, one patient at a time.",
     fields: [
       "fullName",
@@ -99,11 +98,7 @@ export const PROFILE_ROLE_CONFIG: Record<UserRole, ProfileRoleConfig> = {
     title: "Midwife Profile",
     idLabel: "Midwife ID",
     idPrefix: "MID",
-    badge: {
-      background: "#FDF2F8",
-      text: "#DB2777",
-      border: "#FBCFE8",
-    },
+    badge: roleBadge("midwife"),
     tagline: "Safe mothers, healthy babies, stronger community.",
     fields: ["fullName", "userId", "facility", ...STAFF_FIELDS_TAIL],
   },
@@ -112,11 +107,7 @@ export const PROFILE_ROLE_CONFIG: Record<UserRole, ProfileRoleConfig> = {
     title: "BHW Profile",
     idLabel: "BHW ID",
     idPrefix: "BHW",
-    badge: {
-      background: "#F5F3FF",
-      text: "#7C3AED",
-      border: "#DDD6FE",
-    },
+    badge: roleBadge("bhw"),
     tagline: "Health care that reaches every doorstep.",
     fields: ["fullName", "userId", "assignedArea", ...STAFF_FIELDS_TAIL],
   },
@@ -125,11 +116,7 @@ export const PROFILE_ROLE_CONFIG: Record<UserRole, ProfileRoleConfig> = {
     title: "Resident Profile",
     idLabel: "Resident ID",
     idPrefix: "RES",
-    badge: {
-      background: PROFILE_COLORS.greenSoft,
-      text: PROFILE_COLORS.greenDeep,
-      border: "#A7F3D0",
-    },
+    badge: roleBadge("resident"),
     tagline: "A healthier me for a stronger Maslog.",
     fields: [
       "fullName",

@@ -1,5 +1,5 @@
 import type { StoredTheme } from "@/utils/storage";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type BottomNavPalette = {
   surface: string;
@@ -13,25 +13,25 @@ export type BottomNavPalette = {
 };
 
 const LIGHT: BottomNavPalette = {
-  surface: "#FFFFFF",
-  border: "#E2E8F0",
+  surface: PALETTE.white,
+  border: PALETTE.slate[200],
   active: PALETTE.blue[600],
-  activePill: "#EFF6FF",
-  inactive: "#64748B",
-  shadow: "0px -2px 14px rgba(15, 23, 42, 0.06)",
-  badgeBg: "#EF4444",
-  badgeText: "#FFFFFF",
+  activePill: PALETTE.blue[50],
+  inactive: PALETTE.slate[500],
+  shadow: `0px -2px 14px ${withAlpha(PALETTE.ink, 0.06)}`,
+  badgeBg: PALETTE.red[600],
+  badgeText: PALETTE.white,
 };
 
 const DARK: BottomNavPalette = {
-  surface: "#0F172A",
-  border: "rgba(51, 65, 85, 0.7)",
-  active: "#60A5FA",
-  activePill: "rgba(96, 165, 250, 0.16)",
-  inactive: "#94A3B8",
-  shadow: "0px -2px 18px rgba(0, 0, 0, 0.45)",
-  badgeBg: "#EF4444",
-  badgeText: "#FFFFFF",
+  surface: PALETTE.slate[800],
+  border: withAlpha(PALETTE.slate[700], 0.7),
+  active: PALETTE.blue[400],
+  activePill: withAlpha(PALETTE.blue[400], 0.16),
+  inactive: PALETTE.slate[400],
+  shadow: `0px -2px 18px ${withAlpha(PALETTE.ink, 0.45)}`,
+  badgeBg: PALETTE.red[600],
+  badgeText: PALETTE.white,
 };
 
 export const getBottomNavPalette = (theme: StoredTheme): BottomNavPalette => {

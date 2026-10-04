@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { Platform, Pressable, Text, View } from "react-native";
 import { fromIsoDateKey, toIsoDateKey } from "../../utils/dateTime";
 import { MISSION_RADIUS, useMissionSchedulePalette } from "./missionScheduleTheme";
+import { PALETTE } from "@/theme/palette";
 
 const WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const CELL_HEIGHT = 46;
@@ -131,7 +132,7 @@ const MissionCalendar = ({
                 <Text
                   className={`text-[14px] tabular-nums ${isSelected || isToday ? "font-bold" : "font-medium"}`}
                   style={{
-                    color: isSelected ? "#FFFFFF" : isToday ? palette.primary : palette.body,
+                    color: isSelected ? PALETTE.white : isToday ? palette.primary : palette.body,
                   }}
                 >
                   {day}

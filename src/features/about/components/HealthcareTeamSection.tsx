@@ -40,10 +40,10 @@ const HealthcareTeamSection = ({
       >
         {loading ? (
           <View style={{ alignItems: "center", gap: 12, paddingVertical: 24 }} accessibilityLabel="Loading healthcare team">
-            <Skeleton className="h-24 w-full max-w-[224px] rounded-2xl" />
+            <Skeleton className="h-24 w-full max-w-[224px] rounded-lg" />
             <View style={{ flexDirection: "row", gap: 12, width: "100%", maxWidth: 344 }}>
-              <Skeleton className="h-20 flex-1 rounded-2xl" />
-              <Skeleton className="h-20 flex-1 rounded-2xl" />
+              <Skeleton className="h-20 flex-1 rounded-lg" />
+              <Skeleton className="h-20 flex-1 rounded-lg" />
             </View>
           </View>
         ) : error ? (

@@ -29,6 +29,16 @@ export const systemLogActions = [
   "ANNOUNCEMENT_CREATED",
   "ANNOUNCEMENT_UPDATED",
   "ANNOUNCEMENT_DELETED",
+  "MASTER_RESIDENT_CREATED",
+  "MASTER_RESIDENT_UPDATED",
+  "MASTER_RESIDENT_DEACTIVATED",
+  "MASTER_RESIDENT_REACTIVATED",
+  "MASTER_RESIDENTS_IMPORTED",
+  "MEDICAL_RECORD_CREATED",
+  "MEDICAL_RECORD_UPDATED",
+  "MEDICAL_RECORD_DUPLICATE_CONFIRMED",
+  "ACCOUNT_MASTER_LINKED",
+  "ACCOUNT_MASTER_UNLINKED",
 ] as const;
 
 export const SEVERITY_OPTIONS = ["all", "info", "success", "warning", "error"] as const;
@@ -40,6 +50,7 @@ export const LOG_TYPE_OPTIONS = [
   "Appointment Activity",
   "Patient Records",
   "Schedule Management",
+  "Master List Management",
   "System Event",
 ] as const;
 

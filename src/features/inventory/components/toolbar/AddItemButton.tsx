@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Pressable, Text } from "react-native";
 import { CONTROL_HEIGHT, RADIUS, useInventoryPalette } from "../inventoryTheme";
+import { PALETTE } from "@/theme/palette";
 
 const AddItemButton = ({ onPress }: { onPress: () => void }) => {
   const palette = useInventoryPalette();
@@ -17,7 +18,7 @@ const AddItemButton = ({ onPress }: { onPress: () => void }) => {
         backgroundColor: palette.primary,
       }}
     >
-      <Feather name="plus" size={17} color="#FFFFFF" />
+      <Feather name="plus" size={17} color={PALETTE.white} />
       <Text className="text-[14px] font-semibold text-white">Add Item</Text>
     </Pressable>
   );

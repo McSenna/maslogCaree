@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Feather } from "@expo/vector-icons";
 import { Animated, Text } from "react-native";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 import { useThemeColors } from "@/hooks/useThemeColors";
@@ -52,14 +53,16 @@ const AppointmentStatusBadge = ({ status, audience = "staff", size = "sm" }: App
         alignSelf: "flex-start",
         flexDirection: "row",
         alignItems: "center",
-        gap: 6,
-        paddingHorizontal: compact ? 10 : 12,
+        gap: 4,
+        paddingHorizontal: compact ? 8 : 12,
         paddingVertical: compact ? 4 : 6,
         borderRadius: RADII.pill,
         backgroundColor: tone.bg,
+        borderWidth: 1,
+        borderColor: tone.border,
       }}
     >
-      <Animated.View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: meta.dot }} />
+      <Feather name={meta.icon} size={compact ? 12 : 14} color={tone.fg} />
       <Text numberOfLines={1} style={{ color: tone.fg, fontSize: compact ? 12 : 13, fontWeight: "600" }}>
         {meta.label}
       </Text>

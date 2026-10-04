@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import type { Announcement } from "../data/announcements";
 import AnnouncementTag from "./AnnouncementTag";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AnnouncementCardProps = {
   announcement: Announcement;
@@ -16,11 +17,11 @@ const AnnouncementCard = ({
 
   return (
     <View
-      className="bg-white rounded-2xl px-4 py-4"
+      className="bg-white rounded-lg px-4 py-4"
       style={{
         borderWidth: 1,
-        borderColor: "#F1F5F9",
-        boxShadow: "0px 2px 6px rgba(15,23,42,0.04)",
+        borderColor: PALETTE.slate[100],
+        boxShadow: `0px 2px 6px ${withAlpha(PALETTE.ink, 0.04)}`,
         elevation: 2,
       }}
     >
@@ -55,9 +56,9 @@ const AnnouncementCard = ({
 
       <View
         className="mt-3 pt-3 flex-row items-center gap-1.5"
-        style={{ borderTopWidth: 1, borderTopColor: "#F1F5F9" }}
+        style={{ borderTopWidth: 1, borderTopColor: PALETTE.slate[100] }}
       >
-        <Feather name="calendar" size={11} color="#CBD5E1" />
+        <Feather name="calendar" size={11} color={PALETTE.slate[500]} />
         <Text
           className="font-semibold text-slate-500"
           style={{ fontSize: isTablet ? 12 : 10.5 }}

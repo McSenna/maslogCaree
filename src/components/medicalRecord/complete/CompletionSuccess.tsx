@@ -19,7 +19,7 @@ const CompletionSuccess = ({
   onClose: () => void;
 }) => {
   const palette = useQueuePalette();
-  const green = palette.tones.green;
+  const green = palette.tones.care;
 
   const outcomes = [
     `${serviceLabel} record saved to ${patientName}'s medical history.`,

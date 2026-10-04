@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 import { HC } from "../../constants/aboutTheme";
 import LeaderAvatar from "../LeaderAvatar";
 import { CARD_SHADOW, type LeaderTierProps } from "./leaderCardTypes";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const TopTierCard = ({
   title,
@@ -40,8 +41,8 @@ const TopTierCard = ({
             iconColor={HC.tealLight}
             ringColor={HC.tealLight}
             ringWidth={2}
-            fill="rgba(11,122,117,0.25)"
-            borderColor="rgba(20,168,159,0.5)"
+            fill={withAlpha(PALETTE.blue[600], 0.25)}
+            borderColor={withAlpha(PALETTE.blue[500], 0.5)}
             borderWidth={1.5}
             marginBottom={12}
           />
@@ -54,9 +55,9 @@ const TopTierCard = ({
               paddingHorizontal: 8,
               paddingVertical: 6,
               marginBottom: 6,
-              backgroundColor: "rgba(11,122,117,0.2)",
+              backgroundColor: withAlpha(PALETTE.blue[600], 0.2),
               borderWidth: 1,
-              borderColor: "rgba(20,168,159,0.2)",
+              borderColor: withAlpha(PALETTE.blue[500], 0.2),
             }}
           >
             <Text
@@ -74,7 +75,7 @@ const TopTierCard = ({
 
           <Text
             style={{
-              color: "rgba(255,255,255,0.88)",
+              color: withAlpha(PALETTE.white, 0.88),
               fontSize: isTablet ? 12 : 11,
               fontWeight: "700",
               textTransform: "uppercase",
@@ -86,7 +87,7 @@ const TopTierCard = ({
           </Text>
           <Text
             style={{
-              color: "rgba(255,255,255,0.8)",
+              color: withAlpha(PALETTE.white, 0.8),
               fontSize: isTablet ? 13 : 12,
               textAlign: "center",
               marginTop: 2,

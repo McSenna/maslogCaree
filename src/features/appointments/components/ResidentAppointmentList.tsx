@@ -26,7 +26,7 @@ type ResidentAppointmentListProps = {
 const AppointmentListSkeleton = () => (
   <View style={{ gap: SPACING.md }} accessibilityLabel="Loading appointments">
     {[0, 1, 2].map((key) => (
-      <Skeleton key={key} className="h-36 w-full rounded-2xl" />
+      <Skeleton key={key} className="h-36 w-full rounded-lg" />
     ))}
   </View>
 );

@@ -7,6 +7,7 @@ import type { MedicalRecord } from "@/services/medicalRecords";
 
 import { formatDate } from "../recordFormat";
 import { DetailSection, Paragraph } from "./DetailSection";
+import { PALETTE } from "@/theme/palette";
 
 type Props = { palette: ResidentDialogPalette; record: MedicalRecord };
 
@@ -18,7 +19,7 @@ export const AssessmentSection = ({ palette, record }: Props) => {
       palette={palette}
       title="Diagnosis & Findings"
       icon="check-square"
-      iconColor="#059669"
+      iconColor={PALETTE.success[600]}
     >
       <View style={{ gap: 12 }}>
         {record.diagnosis ? (

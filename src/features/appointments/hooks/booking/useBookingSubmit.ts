@@ -1,10 +1,10 @@
 import { useCallback, useRef, useState } from "react";
-import { toast } from "@/components/feedback/toast/toastStore";
 import { createResidentAppointment, type AppointmentRecord } from "@/services/appointments";
 import { getApiErrorMessage, normalizeApiError } from "@/utils/apiErrorHandler";
 import { createBookingRequestKey } from "./bookingRules";
 import { classifyDraftFailure, draftBody, validateDraft, type BookingDraft } from "./bookingDraft";
 import type { BookingErrors } from "./bookingTypes";
+import { toastError } from "@/utils/errorToast/toastError";
 
 const CONNECTION_MESSAGE =
   "We could not reach the health center, so your booking may not have gone through. Your details are kept. Tap Book appointment again; you will not be booked twice.";
@@ -60,7 +60,7 @@ export const useBookingSubmit = ({
         onSlotRefused();
       }
       setSubmitError(failure === "connection" ? CONNECTION_MESSAGE : getApiErrorMessage(error, FALLBACK_MESSAGE));
-      toast.error("Appointment not booked");
+      toastError("Appointment not booked", error, { inline: true });
     } finally {
       inFlight.current = false;
       setSubmitting(false);

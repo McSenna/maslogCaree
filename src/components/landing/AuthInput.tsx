@@ -24,6 +24,7 @@ interface AuthInputProps {
   returnKeyType?: TextInputProps["returnKeyType"];
   onSubmitEditing?: () => void;
   submitBehavior?: TextInputProps["submitBehavior"];
+  maxLength?: number;
   inputRef?: RefObject<TextInput | null>;
   accessibilityLabel?: string;
   accessibilityHint?: string;
@@ -46,6 +47,7 @@ const AuthInput = ({
   returnKeyType,
   onSubmitEditing,
   submitBehavior,
+  maxLength,
   inputRef,
   accessibilityLabel,
   accessibilityHint,
@@ -98,6 +100,7 @@ const AuthInput = ({
         returnKeyType={returnKeyType}
         onSubmitEditing={onSubmitEditing}
         submitBehavior={submitBehavior}
+        maxLength={maxLength}
         editable={!disabled}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}

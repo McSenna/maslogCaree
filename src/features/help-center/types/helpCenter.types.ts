@@ -1,3 +1,4 @@
+import type { MetricTone } from "@/design/adminDashboard/paletteTypes";
 import type { Feather } from "@expo/vector-icons";
 import type { UserRole } from "@/config/roleRoutes";
 
@@ -16,7 +17,7 @@ export type HelpCategory = {
   title: string;
   description: string;
   icon: HelpIcon;
-  tone: "blue" | "green" | "pink" | "purple";
+  tone: MetricTone;
   articles: readonly HelpArticle[];
 };
 

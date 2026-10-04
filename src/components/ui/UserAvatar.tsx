@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { Image, type ImageStyle, type StyleProp, Text, View } from "react-native";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export type UserAvatarProps = {
   size?: number;
@@ -32,7 +33,7 @@ const UserAvatar = ({
   accessibilityLabel = "User avatar",
   style,
   fallbackBackgroundColor,
-  fallbackIconColor = "rgba(255,255,255,0.95)",
+  fallbackIconColor = withAlpha(PALETTE.white, 0.95),
   initials,
 }: UserAvatarProps) => {
   const uri = useMemo(() => normalizeImageUrl(imageUrl), [imageUrl]);

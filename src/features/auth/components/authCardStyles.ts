@@ -3,6 +3,7 @@ import { LANDING_COLORS } from "@/config/landingAssets";
 import { AUTH_CARD_MAX_WIDTH } from "./authCardMetricPresets";
 import { FONT_FAMILY } from "./authCardFont";
 import { webStyle } from "@/theme/webStyle";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const BUTTON_BASE = {
   flexDirection: "row",
@@ -20,13 +21,13 @@ export const authCardStyles = StyleSheet.create({
   card: {
     backgroundColor: LANDING_COLORS.white,
     borderWidth: 1,
-    borderColor: "#E2EAF4",
+    borderColor: PALETTE.blue[100],
     ...(Platform.OS === "web" ? webStyle({
-        boxShadow: "0px 14px 40px rgba(8, 21, 47, 0.08)",
+        boxShadow: `0px 14px 40px ${withAlpha(PALETTE.ink, 0.08)}`,
         transition: "box-shadow 220ms ease, border-color 220ms ease",
       }) : {
         elevation: 5,
-        shadowColor: "#08152F",
+        shadowColor: PALETTE.ink,
         shadowOffset: { width: 0, height: 6 },
         shadowOpacity: 0.07,
         shadowRadius: 24,
@@ -34,8 +35,8 @@ export const authCardStyles = StyleSheet.create({
   },
   cardHovered: {
     ...webStyle({
-        boxShadow: "0px 22px 56px rgba(8, 21, 47, 0.13)",
-        borderColor: "#D2E0F2",
+        boxShadow: `0px 22px 56px ${withAlpha(PALETTE.ink, 0.13)}`,
+        borderColor: PALETTE.blue[200],
       }),
   },
   cardDesktop: {
@@ -72,7 +73,7 @@ export const authCardStyles = StyleSheet.create({
     letterSpacing: 0.1,
   },
   buttonHovered: {
-    ...webStyle({ boxShadow: "0px 10px 22px rgba(8, 21, 47, 0.18)" }),
+    ...webStyle({ boxShadow: `0px 10px 22px ${withAlpha(PALETTE.ink, 0.18)}` }),
   },
   buttonPressed: {
     opacity: 0.9,
@@ -94,7 +95,7 @@ export const authCardStyles = StyleSheet.create({
       }),
   },
   forgotContainerActive: {
-    backgroundColor: "rgba(21, 101, 216, 0.08)",
+    backgroundColor: withAlpha(PALETTE.blue[600], 0.08),
   },
   forgotText: {
     color: LANDING_COLORS.primaryBlue,

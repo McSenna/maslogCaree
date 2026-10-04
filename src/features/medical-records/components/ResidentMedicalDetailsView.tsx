@@ -10,7 +10,10 @@ import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { CompletionForm, MedicalRecord } from "@/services/medicalRecords";
 import type { AppointmentRecord } from "@/types/appointments.types";
 
+import { isEncodedRecord } from "@/services/medicalRecordTypes";
+
 import { AppointmentInfoSection } from "./sections/AppointmentInfoSection";
+import { HistoricalVisitSection } from "./sections/HistoricalVisitSection";
 import {
   AssessmentSection,
   RecommendationsSection,
@@ -67,12 +70,16 @@ export const ResidentMedicalDetailsView = ({
     <View style={{ gap: 16 }}>
       <MedicalRecordSummary palette={palette} record={record} serviceLabel={serviceLabel} />
 
-      <AppointmentInfoSection
-        palette={palette}
-        record={record}
-        serviceLabel={serviceLabel}
-        appointment={appointment}
-      />
+      {isEncodedRecord(record) ? (
+        <HistoricalVisitSection palette={palette} record={record} serviceLabel={serviceLabel} />
+      ) : (
+        <AppointmentInfoSection
+          palette={palette}
+          record={record}
+          serviceLabel={serviceLabel}
+          appointment={appointment}
+        />
+      )}
 
       <VitalSignsGrid palette={palette} entries={vitalsGroup?.entries ?? []} />
 

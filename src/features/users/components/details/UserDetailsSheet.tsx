@@ -8,6 +8,7 @@ import UserModalActions from "./UserModalActions";
 import { useUserDetailsPalette } from "./detailsTheme";
 import UserSheetBody from "./sheet/UserSheetBody";
 import UserSheetHeader from "./sheet/UserSheetHeader";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const TITLE_ID = "user-details-sheet-title";
 
@@ -52,7 +53,7 @@ const UserDetailsSheet = ({
       accessibilityLabel="User details"
       surface={palette.cardBg}
       handleColor={palette.divider}
-      scrim="rgba(15,23,42,0.35)"
+      scrim={withAlpha(PALETTE.slate[800], 0.35)}
       // The action row below pads itself past the home indicator when present.
       applyBottomInset={!hasActions}
       header={(requestClose) => (

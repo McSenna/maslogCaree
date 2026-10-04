@@ -5,7 +5,7 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import { supportStatusLabel } from "../utils/support.utils";
 import type { SupportStatus } from "../types/support.types";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AdminTicketStatusBadgeProps = {
   status: SupportStatus;
@@ -15,39 +15,39 @@ const getStatusTone = (status: SupportStatus, isDark: boolean) => {
   switch (status) {
     case "open":
       return {
-        bg: isDark ? "rgba(2, 132, 199, 0.16)" : "#E0F2FE",
-        border: isDark ? "rgba(56, 189, 248, 0.3)" : "#BAE6FD",
-        text: isDark ? "#38BDF8" : PALETTE.blue[600],
+        bg: isDark ? withAlpha(PALETTE.blue[500], 0.16) : PALETTE.blue[100],
+        border: isDark ? withAlpha(PALETTE.blue[400], 0.3) : PALETTE.blue[200],
+        text: isDark ? PALETTE.blue[400] : PALETTE.blue[600],
         dot: PALETTE.blue[600],
       };
     case "in_review":
       return {
-        bg: isDark ? "rgba(217, 119, 6, 0.16)" : "#FEF3C7",
-        border: isDark ? "rgba(245, 158, 11, 0.3)" : "#FDE68A",
-        text: isDark ? "#FBBF24" : "#B45309",
-        dot: "#F59E0B",
+        bg: isDark ? withAlpha(PALETTE.amber[500], 0.16) : PALETTE.amber[100],
+        border: isDark ? withAlpha(PALETTE.amber[500], 0.3) : PALETTE.amber[100],
+        text: isDark ? PALETTE.amber[300] : PALETTE.amber[600],
+        dot: PALETTE.amber[500],
       };
     case "awaiting_user":
       return {
-        bg: isDark ? "rgba(225, 29, 72, 0.16)" : "#FFE4E6",
-        border: isDark ? "rgba(244, 63, 94, 0.3)" : "#FECDD3",
-        text: isDark ? "#FB7185" : "#BE123C",
-        dot: "#E11D48",
+        bg: isDark ? withAlpha(PALETTE.red[600], 0.16) : PALETTE.red[100],
+        border: isDark ? withAlpha(PALETTE.red[500], 0.3) : PALETTE.red[200],
+        text: isDark ? PALETTE.red[300] : PALETTE.red[700],
+        dot: PALETTE.red[600],
       };
     case "resolved":
       return {
-        bg: isDark ? "rgba(5, 150, 105, 0.16)" : "#D1FAE5",
-        border: isDark ? "rgba(16, 185, 129, 0.3)" : "#A7F3D0",
-        text: isDark ? "#34D399" : "#047857",
-        dot: "#10B981",
+        bg: isDark ? withAlpha(PALETTE.success[600], 0.16) : PALETTE.success[100],
+        border: isDark ? withAlpha(PALETTE.success[500], 0.3) : PALETTE.success[200],
+        text: isDark ? PALETTE.success[300] : PALETTE.success[700],
+        dot: PALETTE.success[500],
       };
     case "closed":
     default:
       return {
-        bg: isDark ? "rgba(100, 116, 139, 0.16)" : "#F1F5F9",
-        border: isDark ? "rgba(148, 163, 184, 0.3)" : "#E2E8F0",
-        text: isDark ? "#94A3B8" : "#64748B",
-        dot: "#94A3B8",
+        bg: isDark ? withAlpha(PALETTE.slate[500], 0.16) : PALETTE.slate[100],
+        border: isDark ? withAlpha(PALETTE.slate[400], 0.3) : PALETTE.slate[200],
+        text: isDark ? PALETTE.slate[400] : PALETTE.slate[500],
+        dot: PALETTE.slate[400],
       };
   }
 };

@@ -7,6 +7,7 @@ import UserDetailsError from "../../../details/UserDetailsError";
 import UserSheetSkeleton from "../../../details/UserSheetSkeleton";
 import { InfoRows } from "../../../details/userDetailRows";
 import type { UserRequestDetail } from "../../../../services/userRequestsService";
+import MasterListCheckCard from "../../masterList/MasterListCheckCard";
 import type { VerificationDecision } from "../useVerificationDecision";
 import { buildResidentRows } from "../verificationRows";
 import VerificationDocumentSection from "./VerificationDocumentSection";
@@ -50,6 +51,16 @@ const VerificationSheetBody = ({
 
           <SheetSection title="Resident Information">
             <InfoRows rows={buildResidentRows(request)} compact />
+          </SheetSection>
+
+          <SheetSection title="Barangay Master List">
+            <View className="pt-2">
+              <MasterListCheckCard
+                review={request.masterList}
+                resident={request.resident}
+                isPending={request.verification.verificationStatus === "pending"}
+              />
+            </View>
           </SheetSection>
 
           <SheetSection title="Identity Information">

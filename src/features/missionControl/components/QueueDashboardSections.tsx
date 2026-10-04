@@ -13,6 +13,9 @@ type QueueDashboardSectionsProps = {
   asTable: boolean;
   headerAction: ReactNode;
   onAssign: (appointment: AppointmentRecord, mode: "assign" | "reassign") => void;
+  /** Marks today's schedule and the appointments list, so summary cards can scroll to them. */
+  todayRef: (node: View | null) => void;
+  listRef: (node: View | null) => void;
 };
 
 const QueueDashboardSections = ({
@@ -21,6 +24,8 @@ const QueueDashboardSections = ({
   asTable,
   headerAction,
   onAssign,
+  todayRef,
+  listRef,
 }: QueueDashboardSectionsProps) => {
   const {
     dashboard,
@@ -52,13 +57,15 @@ const QueueDashboardSections = ({
         </View>
 
         <View className="min-w-0 gap-4" style={twoColumn ? { flex: 1 } : undefined}>
-          <TodaySchedulePanel
-            schedule={dashboard.overview?.schedule ?? []}
-            serviceLabels={serviceLabels}
-            loading={dashboard.overviewLoading}
-            emptyMessage={scopeEmptyMessage}
-            dateLabel={todayLabel}
-          />
+          <View ref={todayRef}>
+            <TodaySchedulePanel
+              schedule={dashboard.overview?.schedule ?? []}
+              serviceLabels={serviceLabels}
+              loading={dashboard.overviewLoading}
+              emptyMessage={scopeEmptyMessage}
+              dateLabel={todayLabel}
+            />
+          </View>
           <ServiceBreakdownPanel
             rows={dashboard.overview?.breakdown ?? []}
             loading={dashboard.overviewLoading}
@@ -66,30 +73,32 @@ const QueueDashboardSections = ({
         </View>
       </View>
 
-      <AppointmentsPanel
-        appointments={dashboard.statusList}
-        statusCounts={dashboard.overview?.statusCounts ?? {}}
-        activeStatus={dashboard.activeStatus}
-        onStatusChange={dashboard.setActiveStatus}
-        serviceLabels={serviceLabels}
-        headerAction={headerAction}
-        onApprove={(appointment) => onAssign(appointment, "assign")}
-        onMore={(appointment) =>
-          onAssign(appointment, appointment.status === "pending" ? "assign" : "reassign")
-        }
-        busyId={actions.saving ? (control.assignment.target?._id ?? null) : null}
-        canAct={control.canAct && dashboard.activeStatus !== "completed"}
-        onRowPress={
-          dashboard.activeStatus === "completed"
-            ? (appointment) => void completion.openRecord(appointment)
-            : undefined
-        }
-        loading={dashboard.listLoading}
-        error={dashboard.listError}
-        onRetry={() => void catalogue.refreshLists()}
-        emptyMessage={scopeEmptyMessage}
-        asTable={asTable}
-      />
+      <View ref={listRef}>
+        <AppointmentsPanel
+          appointments={dashboard.statusList}
+          statusCounts={dashboard.overview?.statusCounts ?? {}}
+          activeStatus={dashboard.activeStatus}
+          onStatusChange={dashboard.setActiveStatus}
+          serviceLabels={serviceLabels}
+          headerAction={headerAction}
+          onApprove={(appointment) => onAssign(appointment, "assign")}
+          onMore={(appointment) =>
+            onAssign(appointment, appointment.status === "pending" ? "assign" : "reassign")
+          }
+          busyId={actions.saving ? (control.assignment.target?._id ?? null) : null}
+          canAct={control.canAct && dashboard.activeStatus !== "completed"}
+          onRowPress={
+            dashboard.activeStatus === "completed"
+              ? (appointment) => void completion.openRecord(appointment)
+              : undefined
+          }
+          loading={dashboard.listLoading}
+          error={dashboard.listError}
+          onRetry={() => void catalogue.refreshLists()}
+          emptyMessage={scopeEmptyMessage}
+          asTable={asTable}
+        />
+      </View>
     </View>
   );
 };

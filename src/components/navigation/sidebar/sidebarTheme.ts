@@ -1,7 +1,7 @@
 import type { Breakpoint } from "@/theme/breakpoints";
 import { useMemo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 const SIDEBAR_WIDTHS: Record<Breakpoint, number> = { mobile: 0, tablet: 224, desktop: 256, wide: 272 };
 
@@ -19,31 +19,61 @@ export const SIDEBAR_METRICS = {
   sealSize: 89,
 } as const;
 
+const { blue, green, slate, night } = PALETTE;
+
+/**
+ * Sidebar colours for every role. The active item is Healthcare Blue text and
+ * icon on a faint blue wash: clear, but never a heavy block. The MaslogCare
+ * wordmark keeps Dark Navy plus brand blue.
+ */
 export const useSidebarPalette = () => {
   const { resolvedTheme } = useTheme();
 
   return useMemo(() => {
     const isDark = resolvedTheme === "dark";
 
+    if (isDark) {
+      return {
+        isDark,
+        surface: night.surface,
+        border: night.line,
+        eyebrow: night.subtle,
+        heading: night.heading,
+        idle: night.muted,
+        active: blue[300],
+        activeBg: withAlpha(blue[600], 0.16),
+        hoverBg: withAlpha(slate[400], 0.1),
+        decorLine: withAlpha(blue[600], 0.32),
+        decorSoft: withAlpha(blue[600], 0.18),
+        wave: withAlpha(blue[600], 0.12),
+        waveSoft: withAlpha(blue[600], 0.06),
+        community: night.muted,
+        leaf: green[400],
+        brandNavy: night.heading,
+        brandBlue: blue[400],
+        tagline: night.subtle,
+      };
+    }
+
     return {
       isDark,
-      surface: isDark ? "#0F172A" : "#FFFFFF",
-      border: isDark ? "#1E293B" : "#E4EAF2",
-      eyebrow: isDark ? "#7C8DA6" : "#7387A8",
-      heading: isDark ? "#F8FAFC" : "#0F2756",
-      idle: isDark ? "#94A3B8" : "#50658A",
-      active: isDark ? "#93C5FD" : PALETTE.blue[600],
-      activeBg: isDark ? "rgba(37,99,235,0.16)" : "#EAF4FF",
-      hoverBg: isDark ? "rgba(148,163,184,0.10)" : "#F5F9FF",
-      decorLine: isDark ? "#2B4A6F" : "#A8D3FF",
-      decorSoft: isDark ? "#1E3A5F" : "#CBE5FF",
-      wave: isDark ? "#16304D" : "#DCEBFB",
-      waveSoft: isDark ? "#111F35" : "#EFF6FE",
-      community: isDark ? "#94A3B8" : "#41618F",
-      leaf: isDark ? "#4ADE80" : "#22A45D",
-      brandNavy: isDark ? "#E2E8F0" : "#102A56",
-      brandBlue: isDark ? "#60A5FA" : PALETTE.blue[600],
-      tagline: isDark ? "#64748B" : "#8A9BB4",
+      surface: PALETTE.white,
+      border: slate[200],
+      eyebrow: slate[500],
+      heading: PALETTE.ink,
+      idle: slate[600],
+      active: blue[600],
+      activeBg: blue[50],
+      hoverBg: slate[50],
+      decorLine: blue[200],
+      decorSoft: blue[100],
+      wave: blue[50],
+      waveSoft: slate[50],
+      community: slate[600],
+      leaf: green[500],
+      brandNavy: PALETTE.ink,
+      brandBlue: blue[600],
+      tagline: slate[500],
     };
   }, [resolvedTheme]);
 };

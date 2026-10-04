@@ -1,7 +1,7 @@
 import { ScrollView, Text, View } from "react-native";
 import ActiveQueuePanel from "@/components/appointmentQueue/ActiveQueuePanel";
 import AppointmentsPanel from "@/components/appointmentQueue/AppointmentsPanel";
-import QueueStatCards from "@/components/appointmentQueue/QueueStatCards";
+import QueueStatCards, { QUEUE_CARD_STATUS, type QueueCardKey } from "@/components/appointmentQueue/QueueStatCards";
 import ServiceBreakdownPanel from "@/components/appointmentQueue/ServiceBreakdownPanel";
 import TodaySchedulePanel from "@/components/appointmentQueue/TodaySchedulePanel";
 import {
@@ -15,8 +15,11 @@ import CompleteAppointmentModal from "@/components/medicalRecord/CompleteAppoint
 import MedicalRecordDetails from "@/components/medicalRecord/MedicalRecordDetails";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
+import { useScrollToSection } from "@/hooks/useScrollToSection";
 import QueueRefreshButton from "../components/QueueRefreshButton";
 import { useBhwQueue } from "../hooks/useBhwQueue";
+
+const QUEUE_SECTIONS = ["today", "list"] as const;
 
 const BhwQueueScreen = () => {
   const palette = useQueuePalette();
@@ -24,6 +27,19 @@ const BhwQueueScreen = () => {
   const { user } = useAuth();
   const queue = useBhwQueue();
   const { dashboard, completion, serviceLabel, serviceLabels } = queue;
+  const { scrollRef, topRef, anchors, scrollTo } = useScrollToSection(QUEUE_SECTIONS, insets.paddingTop);
+  const { today: todayAnchor, list: listAnchor } = anchors;
+
+  // A summary card opens its list below: today's schedule, or an appointments tab.
+  const selectCard = (key: QueueCardKey) => {
+    const status = QUEUE_CARD_STATUS[key];
+    if (!status) {
+      scrollTo("today");
+      return;
+    }
+    dashboard.setActiveStatus(status);
+    scrollTo("list");
+  };
 
   const twoColumn = insets.width >= TWO_COLUMN_WIDTH;
   const asTable = insets.width >= TABLE_WIDTH;
@@ -34,6 +50,7 @@ const BhwQueueScreen = () => {
       <RoleScreenBackdrop color={palette.pageBg} insets={insets} />
 
       <ScrollView
+        ref={scrollRef}
         className="flex-1"
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -43,7 +60,7 @@ const BhwQueueScreen = () => {
           gap: 16,
         }}
       >
-        <View>
+        <View ref={topRef}>
           <Text className="text-[22px] font-bold" style={{ color: palette.heading }}>
             Appointments &amp; Queue
           </Text>
@@ -56,6 +73,8 @@ const BhwQueueScreen = () => {
           overview={dashboard.overview}
           loading={dashboard.overviewLoading}
           wide={fourCards}
+          activeStatus={dashboard.activeStatus}
+          onSelectCard={selectCard}
         />
 
         <View className={`w-full gap-4 ${twoColumn ? "flex-row items-start" : "flex-col"}`}>
@@ -75,13 +94,15 @@ const BhwQueueScreen = () => {
           </View>
 
           <View className="min-w-0 gap-4" style={twoColumn ? { flex: 1 } : undefined}>
-            <TodaySchedulePanel
-              schedule={dashboard.overview?.schedule ?? []}
-              serviceLabels={serviceLabels}
-              loading={dashboard.overviewLoading}
-              emptyMessage={queue.emptyMessage}
-              dateLabel={queue.todayLabel}
-            />
+            <View ref={todayAnchor}>
+              <TodaySchedulePanel
+                schedule={dashboard.overview?.schedule ?? []}
+                serviceLabels={serviceLabels}
+                loading={dashboard.overviewLoading}
+                emptyMessage={queue.emptyMessage}
+                dateLabel={queue.todayLabel}
+              />
+            </View>
             <ServiceBreakdownPanel
               rows={dashboard.overview?.breakdown ?? []}
               loading={dashboard.overviewLoading}
@@ -89,32 +110,34 @@ const BhwQueueScreen = () => {
           </View>
         </View>
 
-        <AppointmentsPanel
-          appointments={dashboard.statusList}
-          statusCounts={dashboard.overview?.statusCounts ?? {}}
-          activeStatus={dashboard.activeStatus}
-          onStatusChange={dashboard.setActiveStatus}
-          serviceLabels={serviceLabels}
-          headerAction={
-            <QueueRefreshButton
-              onPress={queue.refreshAll}
-              busy={queue.busy}
-              accessibilityLabel={`Refresh the ${serviceLabel} queue`}
-            />
-          }
-          busyId={null}
-          canAct={false}
-          onRowPress={
-            dashboard.activeStatus === "completed"
-              ? (appointment) => void completion.openRecord(appointment)
-              : undefined
-          }
-          loading={dashboard.listLoading}
-          error={dashboard.listError}
-          onRetry={() => void dashboard.loadStatusList(dashboard.activeStatus)}
-          emptyMessage={queue.emptyMessage}
-          asTable={asTable}
-        />
+        <View ref={listAnchor}>
+          <AppointmentsPanel
+            appointments={dashboard.statusList}
+            statusCounts={dashboard.overview?.statusCounts ?? {}}
+            activeStatus={dashboard.activeStatus}
+            onStatusChange={dashboard.setActiveStatus}
+            serviceLabels={serviceLabels}
+            headerAction={
+              <QueueRefreshButton
+                onPress={queue.refreshAll}
+                busy={queue.busy}
+                accessibilityLabel={`Refresh the ${serviceLabel} queue`}
+              />
+            }
+            busyId={null}
+            canAct={false}
+            onRowPress={
+              dashboard.activeStatus === "completed"
+                ? (appointment) => void completion.openRecord(appointment)
+                : undefined
+            }
+            loading={dashboard.listLoading}
+            error={dashboard.listError}
+            onRetry={() => void dashboard.loadStatusList(dashboard.activeStatus)}
+            emptyMessage={queue.emptyMessage}
+            asTable={asTable}
+          />
+        </View>
       </ScrollView>
 
       <CompleteAppointmentModal

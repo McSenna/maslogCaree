@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type ProfileOverlayProps = {
   visible: boolean;
@@ -101,7 +102,7 @@ const ProfileOverlay = ({
             disabled={!dismissOnBackdropPress}
             style={{
               flex: 1,
-              backgroundColor: "rgba(15, 23, 42, 0.40)",
+              backgroundColor: withAlpha(PALETTE.slate[800], 0.40),
               ...(Platform.OS === "web"
                 ? ({ backdropFilter: "blur(4px)" } as object)
                 : null),

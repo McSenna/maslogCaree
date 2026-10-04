@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import SegmentedControl, { type SegmentOption } from "@/components/dashboard/kit/SegmentedControl";
-import SimpleBarChart from "@/components/ui/charts/SimpleBarChart";
+import SimpleLineChart from "@/components/ui/charts/SimpleLineChart";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import {
   expandMonth,
@@ -11,7 +11,7 @@ import {
 } from "@/features/adminDashboard/utils/dashboardAnalytics";
 import type { TrendPoint } from "@/services/adminDashboardService";
 import AnalyticsSummary, { type SummaryDelta } from "./analytics/AnalyticsSummary";
-import HighlightStat from "./analytics/HighlightStat";
+import InlineStat from "./analytics/InlineStat";
 import EmptyPanelState from "./EmptyPanelState";
 import PanelCard from "./PanelCard";
 
@@ -49,20 +49,6 @@ const monthOverMonth = (points: TrendPoint[], latestIsPartial: boolean): Summary
         : `${expandMonth(latest.label)}${latestIsPartial ? " so far" : ""}: ${Math.abs(delta)} ${delta > 0 ? "more" : "fewer"} than ${expandMonth(previous.label)}`,
   };
 };
-
-const LegendSwatch = ({ palette, partial }: { palette: AdminDashboardPalette; partial?: boolean }) => (
-  <View
-    style={{
-      width: 12,
-      height: 12,
-      borderRadius: 3,
-      backgroundColor: partial ? palette.tones.blue.cardBg : palette.primary,
-      borderWidth: partial ? 1.5 : 0,
-      borderStyle: partial ? "dashed" : "solid",
-      borderColor: palette.primary,
-    }}
-  />
-);
 
 const RegistrationTrendPanel = ({
   palette,
@@ -113,10 +99,8 @@ const RegistrationTrendPanel = ({
         delta={monthOverMonth(points, latestIsPartial)}
         aside={
           latest ? (
-            <HighlightStat
+            <InlineStat
               palette={palette}
-              tone="blue"
-              icon="calendar-month-outline"
               label={latestIsPartial ? "This month" : "Latest month"}
               value={formatMonthYear(latest)}
               meta={`${accounts(latest.count)}${latestIsPartial ? " so far" : ""}`}
@@ -133,47 +117,36 @@ const RegistrationTrendPanel = ({
         />
       ) : (
         <View>
-          <SimpleBarChart
-            data={chartData}
-            height={compact ? 200 : 180}
-            accentColor={palette.primary}
-            dimColor={palette.bannerArt}
-            highlightPeak={false}
-            showValues
-            maxBarWidth={compact ? 36 : 56}
-            radius={6}
+          {/* One series, so no legend box: the panel title names it. */}
+          <SimpleLineChart
+            labels={chartData.map((point) => point.label)}
+            series={[
+              {
+                values: chartData.map((point) => point.value),
+                color: palette.primary,
+                showArea: true,
+                label: "New accounts",
+              },
+            ]}
+            height={compact ? 196 : 208}
+            showDots
+            showLegend={false}
             gridDashed
+            emphasizeLatest
             tickColor={palette.muted}
-            formatTooltip={(datum, index) => {
-              const point = points[index];
+            formatTooltip={(index) => {
+              const point = chartData[index];
               return {
-                title: formatMonthYear(point),
-                meta: `${datum.value.toLocaleString()} ${datum.value === 1 ? "registration" : "registrations"}${datum.partial ? " so far" : ""}`,
+                title: formatMonthYear(points[index]),
+                meta: `${point.value.toLocaleString()} ${point.value === 1 ? "registration" : "registrations"}${point.partial ? " so far" : ""}`,
               };
             }}
           />
-
-          <View
-            className="mt-2 flex-row flex-wrap items-center"
-            style={{ columnGap: 16, rowGap: 6 }}
-            accessibilityElementsHidden
-            importantForAccessibility="no-hide-descendants"
-          >
-            <View className="flex-row items-center gap-1.5">
-              <LegendSwatch palette={palette} />
-              <Text className="text-[12px] font-medium" style={{ color: palette.muted }}>
-                New accounts in a full month
-              </Text>
-            </View>
-            {chartData.some((d) => d.partial) ? (
-              <View className="flex-row items-center gap-1.5">
-                <LegendSwatch palette={palette} partial />
-                <Text className="text-[12px] font-medium" style={{ color: palette.muted }}>
-                  Current month, to date
-                </Text>
-              </View>
-            ) : null}
-          </View>
+          {latestIsPartial && latest ? (
+            <Text className="mt-2 text-[12px] font-medium" style={{ color: palette.muted }}>
+              {`${expandMonth(latest.label)} is still in progress, so its point counts accounts so far.`}
+            </Text>
+          ) : null}
         </View>
       )}
     </PanelCard>

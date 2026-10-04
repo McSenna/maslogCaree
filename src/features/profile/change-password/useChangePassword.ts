@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { TextInput } from "react-native";
 
-import { toast } from "@/components/feedback/toast/toastStore";
 import {
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
   meetsAllPasswordRules,
   passwordStrength,
   type PasswordStrength,
@@ -11,6 +12,7 @@ import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 import type { ChangePasswordErrors, ChangePasswordFormValues } from "./changePassword.types";
 import { changePasswordApi } from "./changePasswordService";
+import { toastError } from "@/utils/errorToast/toastError";
 
 const INITIAL_VALUES: ChangePasswordFormValues = {
   currentPassword: "",
@@ -69,7 +71,7 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
       newErrors.newPassword = "Your new password must be different from your current password.";
     } else if (!meetsAllPasswordRules(values.newPassword)) {
       newErrors.newPassword =
-        "Password must be at least 8 characters with uppercase, lowercase, number, and special character.";
+        `Password must be ${PASSWORD_MIN_LENGTH} to ${PASSWORD_MAX_LENGTH} characters with uppercase, lowercase, number, and special character.`;
     }
 
     if (!values.confirmPassword) {
@@ -114,7 +116,7 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
     } catch (error) {
       const message = getApiErrorMessage(error, "Unable to change your password. Please try again.");
       const lower = message.toLowerCase();
-      toast.error("Password not changed");
+      toastError("Password not changed", error, { inline: true });
 
       if (lower.includes("current password")) {
         setErrors({ currentPassword: "Current password is incorrect." });

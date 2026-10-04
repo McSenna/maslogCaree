@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { Pressable, Text, View } from "react-native";
 import { NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
 import type { NotificationFilter } from "../notification.types";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type NotificationFilterTabsProps = {
   value: NotificationFilter;
@@ -39,9 +40,9 @@ const Tab = ({
         height: compact ? 30 : 34,
         paddingHorizontal: compact ? 12 : 14,
         borderRadius: 8,
-        backgroundColor: active ? palette.primarySoft : "rgba(148,163,184,0.08)",
+        backgroundColor: active ? palette.primarySoft : withAlpha(PALETTE.slate[400], 0.08),
         borderWidth: 1,
-        borderColor: active ? "rgba(22,119,255,0.22)" : "transparent",
+        borderColor: active ? withAlpha(PALETTE.blue[500], 0.22) : "transparent",
         opacity: pressed ? 0.8 : 1,
       })}
     >
@@ -61,7 +62,7 @@ const Tab = ({
           paddingHorizontal: 6,
           paddingVertical: 1.5,
           borderRadius: 10,
-          backgroundColor: active ? "rgba(22,119,255,0.14)" : "rgba(148,163,184,0.15)",
+          backgroundColor: active ? withAlpha(PALETTE.blue[500], 0.14) : withAlpha(PALETTE.slate[400], 0.15),
         }}
       >
         <Text

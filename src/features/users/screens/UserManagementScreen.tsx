@@ -8,13 +8,11 @@ import { getSidebarWidth } from "@/components/navigation/sidebar/sidebarTheme";
 import { exportAnnouncementsCsv as saveCsv } from "@/features/announcements/admin/services/exportAnnouncementsCsv";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
-import { useSearchParamValue } from "@/hooks/useSearchParamValue";
 
 import PhoneUsersView from "../admin/components/phone/PhoneUsersView";
 import ScreenOverlays from "../admin/components/shared/ScreenOverlays";
 import { TABLE_MIN_WIDTH } from "../admin/components/wide/tableColumns";
 import WideUsersView from "../admin/components/wide/WideUsersView";
-import { tabFromParam } from "../admin/hooks/useUserFilterState";
 import { useUsersScreen } from "../admin/hooks/useUsersScreen";
 import { buildUsersCsv, usersCsvFileName } from "../admin/userCsv";
 import { useUsersTheme } from "../admin/useUsersTheme";
@@ -32,7 +30,7 @@ const UserManagementScreen = () => {
   const insets = useRoleScreenInsets();
   const { isMobile, width: windowWidth, breakpoint } = useResponsive();
   const [measuredWidth, setMeasuredWidth] = useState<number | null>(null);
-  const screen = useUsersScreen({ initialTab: tabFromParam(useSearchParamValue("section")), isPhone: isMobile });
+  const screen = useUsersScreen({ isPhone: isMobile });
 
   // Until the first layout, estimate the content width from the window.
   const width = measuredWidth ?? windowWidth - getSidebarWidth(breakpoint) - SHELL_PADDING_X;
@@ -47,14 +45,10 @@ const UserManagementScreen = () => {
     );
   };
 
-  // NOTE: there is no endpoint for creating accounts here yet. Residents
-  // register in the app; this says so rather than opening a form that cannot save.
-  const onAddUser = () => toast.info("Adding users is not available here yet", "Residents create their accounts by registering in the app.");
-
   const body = wide ? (
-    <WideUsersView screen={screen} width={width} insets={insets} onExport={onExport} onAddUser={onAddUser} />
+    <WideUsersView screen={screen} width={width} insets={insets} onExport={onExport} />
   ) : (
-    <PhoneUsersView screen={screen} width={width} onExport={onExport} onAddUser={onAddUser} />
+    <PhoneUsersView screen={screen} width={width} onExport={onExport} />
   );
 
   return (

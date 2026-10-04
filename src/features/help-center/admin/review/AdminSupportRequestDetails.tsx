@@ -6,6 +6,7 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import { fileExtensionOf, formatFileSize } from "../../utils/support.utils";
 import type { SupportAttachment } from "../../types/support.types";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AdminSupportRequestDetailsProps = {
   subject: string;
@@ -77,7 +78,7 @@ const AdminSupportRequestDetails = ({
                       width: 32,
                       height: 32,
                       borderRadius: 8,
-                      backgroundColor: palette.isDark ? "rgba(99, 102, 241, 0.14)" : "#EEF2FF",
+                      backgroundColor: palette.isDark ? withAlpha(PALETTE.blue[600], 0.14) : PALETTE.blue[50],
                       alignItems: "center",
                       justifyContent: "center",
                     }}

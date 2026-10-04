@@ -19,6 +19,7 @@ import {
   HistoryLoading,
 } from "./history/HistoryStates";
 import { useItemHistory } from "./history/useItemHistory";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type InventoryHistoryModalProps = {
   visible: boolean;
@@ -55,7 +56,7 @@ const InventoryHistoryModal = ({
     >
       <SheetViewport
         layout={layout}
-        style={{ backgroundColor: "rgba(15,37,87,0.35)", paddingHorizontal: 16 }}
+        style={{ backgroundColor: withAlpha(PALETTE.ink, 0.35), paddingHorizontal: 16 }}
       >
         <Pressable
           accessibilityRole="button"
@@ -73,7 +74,7 @@ const InventoryHistoryModal = ({
             backgroundColor: palette.cardBg,
             borderColor: palette.cardBorder,
             ...createShadow({
-              color: "#0F172A",
+              color: PALETTE.slate[800],
               opacity: 0.18,
               radius: 28,
               offsetY: 2,

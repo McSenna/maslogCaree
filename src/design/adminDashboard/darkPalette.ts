@@ -1,79 +1,73 @@
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "../../theme/palette.ts";
 import type { AdminDashboardPalette } from "./paletteTypes";
 
-const { blue, teal, slate, rose, indigo, amber } = PALETTE;
+const { blue, green, orange, success, amber, red, night } = PALETTE;
 
+// Translucent brand fills for tints on the dark card; alpha keeps one hue per role.
+const tint = {
+  blue: (a: number) => withAlpha(blue[600], a),
+  green: (a: number) => withAlpha(green[500], a),
+  orange: (a: number) => withAlpha(orange[400], a),
+  success: (a: number) => withAlpha(success[500], a),
+  amber: (a: number) => withAlpha(amber[500], a),
+  red: (a: number) => withAlpha(red[500], a),
+  slate: (a: number) => withAlpha(PALETTE.slate[500], a),
+};
+
+/**
+ * MaslogCare palette (dark): surfaces stepped down from Dark Navy, so dark mode
+ * is the same family rather than an inverted light theme. Text on the card
+ * (#19212B): heading 15.1:1, body 11.5:1, muted 7.7:1, subtle 6.3:1,
+ * primary 6.3:1; every status foreground is 7:1 or more.
+ */
 export const dark: AdminDashboardPalette = {
-  pageBg: slate[950],
-  cardBg: slate[900],
-  cardBorder: slate[800],
-  divider: slate[800],
-  heading: slate[50],
-  body: slate[300],
-  muted: slate[400],
-  subtle: "#7D8CA3",
+  pageBg: night.page,
+  cardBg: night.surface,
+  cardBorder: night.line,
+  divider: night.line,
+  heading: night.heading,
+  body: night.body,
+  muted: night.muted,
+  subtle: night.subtle,
   primary: blue[400],
-  onPrimary: "#0B1220",
+  onPrimary: night.page,
   focusRing: blue[300],
-  hoverBg: "#16213A",
-  positive: "#34D399",
-  negative: "#FB7185",
-  bannerBg: "#0B1F3A",
-  bannerBorder: "#1E3A5F",
-  bannerArt: "#1E3A5F",
-  bannerArtSoft: "#16304D",
-  skeleton: slate[800],
-  menuBg: "#111C33",
-  menuBorder: slate[800],
-  statusActive: "#34D399",
-  statusInactive: slate[500],
+  hoverBg: night.raised,
+  positive: success[300],
+  negative: red[300],
+  bannerBg: tint.blue(0.12),
+  bannerBorder: tint.blue(0.28),
+  bannerArt: tint.blue(0.3),
+  bannerArtSoft: tint.blue(0.18),
+  skeleton: night.line,
+  menuBg: night.raised,
+  menuBorder: night.lineStrong,
+  statusActive: success[300],
+  statusInactive: night.lineStrong,
   tones: {
-    blue: {
-      cardBg: "rgba(21,101,216,0.14)",
-      cardBorder: "rgba(21,101,216,0.30)",
-      iconBg: "rgba(21,101,216,0.24)",
-      icon: blue[300],
-      label: blue[300],
-    },
-    green: {
-      cardBg: "rgba(19,147,132,0.14)",
-      cardBorder: "rgba(19,147,132,0.30)",
-      iconBg: "rgba(19,147,132,0.24)",
-      icon: teal[300],
-      label: teal[300],
-    },
-    pink: {
-      cardBg: "rgba(229,72,106,0.13)",
-      cardBorder: "rgba(229,72,106,0.28)",
-      iconBg: "rgba(229,72,106,0.22)",
-      icon: rose[300],
-      label: rose[300],
-    },
-    purple: {
-      cardBg: "rgba(91,99,230,0.14)",
-      cardBorder: "rgba(91,99,230,0.30)",
-      iconBg: "rgba(91,99,230,0.24)",
-      icon: indigo[300],
-      label: indigo[300],
-    },
-    amber: {
-      cardBg: "rgba(245,158,11,0.13)",
-      cardBorder: "rgba(245,158,11,0.28)",
-      iconBg: "rgba(245,158,11,0.22)",
-      icon: amber[300],
-      label: amber[300],
-    },
+    primary: { cardBg: night.surface, cardBorder: night.line, iconBg: tint.blue(0.2), icon: blue[300], label: blue[300] },
+    care: { cardBg: night.surface, cardBorder: night.line, iconBg: tint.green(0.18), icon: green[300], label: green[300] },
+    accent: { cardBg: night.surface, cardBorder: night.line, iconBg: tint.orange(0.16), icon: orange[300], label: orange[300] },
+    danger: { cardBg: night.surface, cardBorder: night.line, iconBg: tint.red(0.16), icon: red[300], label: red[300] },
+    neutral: { cardBg: night.surface, cardBorder: night.line, iconBg: tint.slate(0.22), icon: night.body, label: night.body },
   },
   trends: {
-    up: { text: "#86EFAC", bg: "rgba(34,197,94,0.16)" },
-    down: { text: "#FDA4AF", bg: "rgba(229,72,106,0.16)" },
+    up: { text: success[300], bg: tint.success(0.16) },
+    down: { text: red[300], bg: tint.red(0.16) },
   },
   statusTones: {
-    success: { bg: "rgba(16,185,129,0.14)", fg: "#6EE7B7", border: "rgba(16,185,129,0.3)" },
-    warning: { bg: "rgba(245,158,11,0.16)", fg: "#FCD34D", border: "rgba(245,158,11,0.3)" },
-    danger: { bg: "rgba(239,68,68,0.14)", fg: "#FCA5A5", border: "rgba(239,68,68,0.3)" },
-    info: { bg: "rgba(37,99,235,0.16)", fg: "#93C5FD", border: "rgba(37,99,235,0.3)" },
-    progress: { bg: "rgba(139,92,246,0.16)", fg: "#C4B5FD", border: "rgba(139,92,246,0.3)" },
-    neutral: { bg: "rgba(100,116,139,0.18)", fg: "#CBD5E1", border: "rgba(100,116,139,0.3)" },
+    success: { bg: tint.success(0.14), fg: success[300], border: tint.success(0.32) },
+    warning: { bg: tint.amber(0.14), fg: amber[300], border: tint.amber(0.32) },
+    danger: { bg: tint.red(0.14), fg: red[300], border: tint.red(0.32) },
+    info: { bg: tint.blue(0.16), fg: blue[300], border: tint.blue(0.32) },
+    progress: { bg: tint.blue(0.26), fg: blue[200], border: tint.blue(0.45) },
+    neutral: { bg: tint.slate(0.2), fg: night.body, border: tint.slate(0.34) },
+  },
+  roleColors: {
+    resident: blue[400],
+    bhw: orange[400],
+    doctor: green[500],
+    midwife: green[200],
+    admin: night.body,
   },
 };

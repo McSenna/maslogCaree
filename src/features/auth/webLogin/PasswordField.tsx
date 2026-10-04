@@ -1,4 +1,5 @@
 import { useState, type KeyboardEvent, type RefObject } from "react";
+import { PASSWORD_MAX_LENGTH } from "../forgotPassword/passwordRules";
 import LoginField, { errorId } from "./LoginField";
 import { LockIcon } from "./LoginIcons";
 import PasswordToggle from "./PasswordToggle";
@@ -49,6 +50,7 @@ const PasswordField = ({ inputRef, value, error, busy, onChange }: PasswordField
         name="password"
         type={shown ? "text" : "password"}
         autoComplete="current-password"
+        maxLength={PASSWORD_MAX_LENGTH}
         autoCapitalize="none"
         autoCorrect="off"
         spellCheck={false}

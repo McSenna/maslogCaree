@@ -6,6 +6,7 @@ import RoleBadge from "../RoleBadge";
 import UserStatusBadge from "../UserStatusBadge";
 import { useUserDetailsPalette } from "./detailsTheme";
 import { createShadow } from "@/design/shadow";
+import { PALETTE } from "@/theme/palette";
 
 const UserProfileSummary = ({ user }: { user: AdminUser }) => {
   const palette = useUserDetailsPalette();
@@ -20,7 +21,7 @@ const UserProfileSummary = ({ user }: { user: AdminUser }) => {
             borderWidth: 3,
             borderColor: palette.avatarRing,
             ...createShadow({
-              color: "#0F2557",
+              color: PALETTE.ink,
               offsetY: 4,
               radius: 10,
               opacity: 0.14,

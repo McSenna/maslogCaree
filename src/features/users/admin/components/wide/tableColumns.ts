@@ -1,5 +1,7 @@
 /**
- * Column widths shared by the heading band and every data row. The table
+ * Column widths shared by the heading band and every data row, sized like the
+ * Masterlist tab's columns: fixed widths never shrink, the text columns take
+ * what is left. The table
  * lives beside the app sidebar, so modes follow the measured content width
  * rather than the window: about 1096px at a 1440 window, 968px at 1280, 712px at 1024.
  *
@@ -10,18 +12,18 @@
 export type TableMode = "full" | "laptop" | "tablet";
 
 export const COLUMN = {
-  check: "w-5",
+  check: "w-5 shrink-0",
   user: "min-w-0 flex-[1.5]",
-  role: "w-[100px]",
-  access: "w-[120px]",
+  role: "w-[100px] shrink-0",
+  access: "w-[120px] shrink-0",
   location: "min-w-0 flex-[1.2]",
-  status: "w-[130px]",
-  lastLogin: "w-[120px]",
-  actions: "w-11 items-end",
-  requested: "w-[120px]",
-  submitted: "w-[120px]",
-  decide: "w-[200px] items-end",
-  review: "w-[110px] items-end",
+  status: "w-[130px] shrink-0",
+  lastLogin: "w-[120px] shrink-0",
+  actions: "w-11 shrink-0 items-end",
+  requested: "w-[120px] shrink-0",
+  submitted: "w-[120px] shrink-0",
+  decide: "w-[200px] shrink-0 items-end",
+  review: "w-[110px] shrink-0 items-end",
 } as const;
 
 // Below this the screen uses the phone list, which also covers portrait tablets.

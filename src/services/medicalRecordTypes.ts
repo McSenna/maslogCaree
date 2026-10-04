@@ -16,6 +16,8 @@ export type MedicalField = {
   group?: string;
   unit?: string;
   inventoryCategory?: string;
+  /** Date fields only: "past" (today or earlier) or "after_visit" (the visit day or later). */
+  when?: "past" | "after_visit";
 };
 
 export type CompletionForm = {
@@ -73,7 +75,16 @@ export type MedicalRecord = {
   appointmentDate?: string | null;
   completedAt: string;
   createdAt?: string;
+  /** Missing on records from before sources existed; those are appointments. */
+  source?: "appointment" | "historical_masterlist" | "walk_in" | "medical_mission" | "manual_entry";
+  /** Encoded records: the provider as written on the paper record. */
+  providerName?: string;
+  visitReason?: string;
 };
+
+/** True for records staff encoded from the health center's files rather than a completed appointment. */
+export const isEncodedRecord = (record: Pick<MedicalRecord, "source">): boolean =>
+  Boolean(record.source && record.source !== "appointment");
 
 export type MedicalRecordInput = {
   assessment: string;

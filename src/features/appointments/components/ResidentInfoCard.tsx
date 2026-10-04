@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { APPOINTMENT_COLORS, APPOINTMENT_METRICS } from "./appointmentTheme";
+import { PALETTE } from "@/theme/palette";
 
 export type ResidentInfo = {
   name: string;
@@ -76,7 +77,7 @@ const ResidentInfoCard = ({ resident }: { resident: ResidentInfo }) => {
           }}
         >
           <Feather name="check-circle" size={12} color={APPOINTMENT_COLORS.success} />
-          <Text style={{ fontSize: 11.5, fontWeight: "600", color: "#166534" }}>
+          <Text style={{ fontSize: 11.5, fontWeight: "600", color: PALETTE.success[700] }}>
             Auto-filled from your profile
           </Text>
         </View>

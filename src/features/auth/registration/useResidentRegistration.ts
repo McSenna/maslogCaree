@@ -19,16 +19,17 @@ export const useResidentRegistration = (onComplete?: () => void) => {
   const photo = useProfilePhoto();
   const emailVerification = useEmailVerification(values.email);
 
-  const { isSubmitting, registeredEmail, setRegisteredEmail, submit } = useRegistrationSubmit({
-    values,
-    profilePhoto: photo.photo,
-    emailVerificationToken: emailVerification.token,
-    agreedToTerms,
-    setErrors,
-    setTouched,
-    setSubmitError,
-    goToStep,
-  });
+  const { isSubmitting, registeredEmail, registeredStatus, clearRegistration, submit } =
+    useRegistrationSubmit({
+      values,
+      profilePhoto: photo.photo,
+      emailVerificationToken: emailVerification.token,
+      agreedToTerms,
+      setErrors,
+      setTouched,
+      setSubmitError,
+      goToStep,
+    });
 
   const step = REGISTRATION_STEPS[stepIndex];
   const isLastStep = stepIndex === REGISTRATION_STEPS.length - 1;
@@ -54,12 +55,12 @@ export const useResidentRegistration = (onComplete?: () => void) => {
   const reset = useCallback(() => {
     form.resetForm();
     setAgreedToTerms(false);
-    setRegisteredEmail("");
+    clearRegistration();
     setShowOtpModal(false);
     photo.setPhoto(null);
     emailVerification.reset();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, photo, setRegisteredEmail]);
+  }, [form, photo, clearRegistration]);
 
   const completedSteps = useMemo(
     () =>
@@ -98,6 +99,7 @@ export const useResidentRegistration = (onComplete?: () => void) => {
 
     isSucceeded,
     registeredEmail,
+    registeredStatus,
     showOtpModal,
     openOtpModal: () => setShowOtpModal(true),
     closeOtpModal: () => setShowOtpModal(false),

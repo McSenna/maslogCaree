@@ -2,9 +2,9 @@ import { useCallback } from "react";
 
 import { toast } from "@/components/feedback/toast/toastStore";
 import { assignAppointment, type AppointmentRecord } from "@/services/appointments";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 
 import type { AssignMode } from "./useSlotAssignment";
+import { toastError } from "@/utils/errorToast/toastError";
 
 const formatPlaced = (iso: string | null | undefined): string => {
   if (!iso) return "the first open position";
@@ -39,7 +39,7 @@ export const useWeeklyPlacement = ({
         toast.success("Immunization scheduled", `Placed on ${formatPlaced(placed.slotStart)}, first come, first served.`);
         await onPlaced();
       } catch (error: unknown) {
-        toast.error("Unable to schedule the immunization", getApiErrorMessage(error, "The request could not be placed."));
+        toastError("Unable to schedule the immunization", error, { fallback: "The request could not be placed." });
       } finally {
         setSaving(false);
       }

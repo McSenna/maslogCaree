@@ -1,26 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLatestRef } from "@/hooks/useLatestRef";
+import { toastError } from "@/utils/errorToast/toastError";
 
 export const UNDO_WINDOW_MS = 6000;
 
-export type UndoToastState<T> = { kind: "pending"; item: T } | { kind: "failed" } | null;
+export type UndoToastState<T> = { kind: "pending"; item: T } | null;
 
-/**
- * An action the user can take back. The screen applies it at once (hiding a
- * row, changing a status); `commit` is only called when the toast is
- * dismissed or its six seconds run out, and a rejected commit shows the
- * failure notice so the screen can put things back.
- *
- * Knows nothing about what `T` is: the caller owns the API call and how the
- * pending item changes what is on screen.
- */
-export const useUndoableAction = <T,>(commit: (item: T) => Promise<void>) => {
+export const useUndoableAction = <T,>(commit: (item: T) => Promise<void>, failureTitle: (item: T) => string) => {
   const [pending, setPending] = useState<T | null>(null);
   const [toast, setToast] = useState<UndoToastState<T>>(null);
   const pendingRef = useRef<T | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const commitRef = useLatestRef(commit);
+  const failureTitleRef = useLatestRef(failureTitle);
 
   const stopTimer = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -33,16 +26,16 @@ export const useUndoableAction = <T,>(commit: (item: T) => Promise<void>) => {
     if (item === null) return;
     // Cleared before awaiting, so a second dismiss or the timer cannot send it twice.
     pendingRef.current = null;
-    setToast((current) => (current?.kind === "pending" ? null : current));
+    setToast(null);
 
     try {
       await commitRef.current(item);
-    } catch {
-      setToast({ kind: "failed" });
+    } catch (error: unknown) {
+      toastError(failureTitleRef.current(item), error);
     } finally {
       setPending((current) => (current === item ? null : current));
     }
-  }, [commitRef]);
+  }, [commitRef, failureTitleRef]);
 
   const request = useCallback(
     (item: T) => {
@@ -68,22 +61,14 @@ export const useUndoableAction = <T,>(commit: (item: T) => Promise<void>) => {
     else setToast(null);
   }, [send]);
 
-  // The failure notice clears itself on the same clock.
-  useEffect(() => {
-    if (toast?.kind !== "failed") return;
-    const timer = setTimeout(() => setToast(null), UNDO_WINDOW_MS);
-    return () => clearTimeout(timer);
-  }, [toast]);
-
-  // Leaving the screen is not an undo: send what is still waiting, without touching state.
   useEffect(
     () => () => {
       stopTimer();
       const item = pendingRef.current;
       pendingRef.current = null;
-      if (item !== null) void commitRef.current(item).catch(() => undefined);
+      if (item !== null) void commitRef.current(item).catch((error: unknown) => toastError(failureTitleRef.current(item), error));
     },
-    [commitRef]
+    [commitRef, failureTitleRef]
   );
 
   return { pending, toast, request, undo, dismiss };

@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import IconButton from "@/components/buttons/IconButton";
 import { useResponsive } from "@/hooks/useResponsive";
 import { SPACING } from "@/theme/spacing";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type ImageZoomModalProps = {
   visible: boolean;
@@ -15,7 +16,7 @@ type ImageZoomModalProps = {
 };
 
 const CLOSE_SIZE = 40;
-const SCRIM = "rgba(2, 6, 23, 0.92)";
+const SCRIM = withAlpha(PALETTE.slate[950], 0.92);
 
 const ImageZoomModal = ({ visible, uri, onClose, accessibilityLabel, maxImageWidth = 1000 }: ImageZoomModalProps) => {
   const { width, height } = useResponsive();

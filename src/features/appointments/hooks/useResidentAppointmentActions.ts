@@ -4,6 +4,7 @@ import { toast } from "@/components/feedback/toast/toastStore";
 import { cancelAppointment } from "@/services/appointmentActionsApi";
 import type { AppointmentRecord } from "@/types/appointments.types";
 import { getApiErrorMessage, isConflictError } from "@/utils/apiErrorHandler";
+import { toastError } from "@/utils/errorToast/toastError";
 
 /**
  * Drives the resident's reschedule and cancel overlays: which appointment is
@@ -39,7 +40,7 @@ export const useResidentAppointmentActions = (refresh: () => Promise<void> | voi
       } catch (e: unknown) {
         // The reason stays in the cancel form; the toast marks the failed attempt.
         setCancelError(getApiErrorMessage(e, "Unable to cancel appointment."));
-        toast.error("Appointment not cancelled");
+        toastError("Appointment not cancelled", e, { inline: true });
         // A conflict means staff changed it meanwhile: resync the card behind the dialog.
         if (isConflictError(e)) void refresh();
       } finally {
@@ -50,7 +51,7 @@ export const useResidentAppointmentActions = (refresh: () => Promise<void> | voi
   );
 
   // Closing can follow a refused attempt (slot taken, or the appointment changed
-  // elsewhere), so the list quietly resyncs instead of waiting for the next poll.
+  // elsewhere), so the list quietly resyncs in case the realtime update is still on its way.
   const closeReschedule = useCallback(() => {
     setRescheduleTarget(null);
     void refresh();

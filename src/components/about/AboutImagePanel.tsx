@@ -4,6 +4,7 @@ import { LANDING_COLORS, landingAssets } from "@/config/landingAssets";
 import { LEARN_MORE_INTRO } from "@/config/learnMoreContent";
 
 import { ABOUT_RADIUS } from "./aboutTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AboutImagePanelProps = {
   height: number;
@@ -42,7 +43,7 @@ const AboutImagePanel = ({ height }: AboutImagePanelProps) => {
           bottom: 0,
           paddingHorizontal: 14,
           paddingVertical: 10,
-          backgroundColor: "rgba(8, 21, 47, 0.68)",
+          backgroundColor: withAlpha(PALETTE.ink, 0.68),
           pointerEvents: "none",
         }}
       >

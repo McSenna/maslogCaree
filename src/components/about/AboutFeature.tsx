@@ -6,6 +6,7 @@ import type { LearnMoreFeature as FeatureData } from "@/config/learnMoreContent"
 
 import ServiceChip from "./ServiceChip";
 import { ABOUT_RADIUS, TONE_PALETTE } from "./aboutTheme";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AboutFeatureProps = {
   feature: FeatureData;
@@ -33,7 +34,7 @@ const AboutFeature = ({ feature, stacked }: AboutFeatureProps) => {
         borderColor: LANDING_COLORS.border,
         backgroundColor: LANDING_COLORS.white,
         ...Platform.select({
-          web: { boxShadow: "0px 1px 2px rgba(8, 21, 47, 0.04)" } as object,
+          web: { boxShadow: `0px 1px 2px ${withAlpha(PALETTE.ink, 0.04)}` } as object,
         }),
       }}
     >

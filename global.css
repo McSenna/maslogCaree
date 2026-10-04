@@ -168,7 +168,7 @@ body {
    Values mirror src/theme/palette.ts, which components use; keep them in sync. */
 
 :root {
-  --color-primary: #1565D8;
-  --color-surface: #FFFFFF;
-  --color-text-primary: #0F2557;
+  --color-primary: #2D5BFF;
+  --color-surface: #F5F7FA;
+  --color-text-primary: #1F2933;
 }

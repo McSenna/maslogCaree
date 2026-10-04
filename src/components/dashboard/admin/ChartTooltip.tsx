@@ -1,6 +1,7 @@
 import { Text, View } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 import { createShadow } from "@/design/shadow";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type ChartTooltipProps = {
   title: string;
@@ -18,8 +19,8 @@ const GAP = 8;
 
 const ChartTooltip = ({ title, meta, x, y, containerWidth }: ChartTooltipProps) => {
   const { resolvedTheme } = useTheme();
-  const background = resolvedTheme === "dark" ? "#1E293B" : "#0F2557";
-  const border = resolvedTheme === "dark" ? "rgba(255,255,255,0.12)" : "transparent";
+  const background = resolvedTheme === "dark" ? PALETTE.slate[800] : PALETTE.ink;
+  const border = resolvedTheme === "dark" ? withAlpha(PALETTE.white, 0.12) : "transparent";
 
   const left = Math.min(Math.max(EDGE, x - WIDTH / 2), Math.max(EDGE, containerWidth - WIDTH - EDGE));
   const top = Math.max(0, y - HEIGHT - TAIL - GAP);
@@ -38,7 +39,7 @@ const ChartTooltip = ({ title, meta, x, y, containerWidth }: ChartTooltipProps) 
           borderWidth: border === "transparent" ? 0 : 1,
           borderColor: border,
           ...createShadow({
-            color: "#0F172A",
+            color: PALETTE.slate[800],
             offsetY: 4,
             radius: 10,
             opacity: 0.18,
@@ -46,10 +47,10 @@ const ChartTooltip = ({ title, meta, x, y, containerWidth }: ChartTooltipProps) 
           }),
         }}
       >
-        <Text numberOfLines={1} className="text-[12.5px] font-bold" style={{ color: "#FFFFFF" }}>
+        <Text numberOfLines={1} className="text-[12.5px] font-bold" style={{ color: PALETTE.white }}>
           {title}
         </Text>
-        <Text numberOfLines={1} className="mt-0.5 text-[11.5px] font-medium" style={{ color: "#CBD5E1" }}>
+        <Text numberOfLines={1} className="mt-0.5 text-[11.5px] font-medium" style={{ color: PALETTE.slate[300] }}>
           {meta}
         </Text>
       </View>

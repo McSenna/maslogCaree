@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useState } from "react";
 
 import { CLIENT_PLATFORM } from "@/config/platformAccess";
 import { forceLogout, subscribeToLogout } from "@/services/authEvents";
+import { hydrateListViews } from "@/lib/listState/viewStateStore";
 import { hydrateAuthStorage } from "@/utils/storage";
 
 import type { AuthContextValue, CurrentUser } from "./auth/authTypes";
@@ -43,7 +44,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (canUseDOM) {
       restoreSession();
     } else {
-      void hydrateAuthStorage().then(restoreSession);
+      // Saved list views load with the session, so a restored table never starts on page 1 and jumps.
+      void Promise.all([hydrateAuthStorage(), hydrateListViews()]).then(restoreSession);
     }
 
     return unsubscribe;

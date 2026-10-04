@@ -7,6 +7,7 @@ import DialogFooter from "../DialogFooter";
 import { DialogHeader } from "../DialogHeader";
 import { DIALOG_CONTENT_PADDING } from "../dialogModalStyle";
 import type { DialogShellProps } from "./dialogShell.types";
+import { PALETTE } from "@/theme/palette";
 
 /** Bottom sheet for phone-width viewports, web included. */
 export const DialogSheetShell = ({
@@ -33,7 +34,7 @@ export const DialogSheetShell = ({
       footer={footer ? <DialogFooter palette={palette}>{footer}</DialogFooter> : undefined}
       accessibilityLabel={title}
       surface={palette.surface}
-      handleColor={palette.isDark ? "#475569" : "#CBD5E1"}
+      handleColor={palette.isDark ? PALETTE.slate[700] : PALETTE.slate[300]}
       maxHeightRatio={0.92}
       header={(requestClose) => (
         <DialogHeader

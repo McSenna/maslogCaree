@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { ROLE_COLORS, type AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { roleColorOf, type AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { calculatePercentage } from "@/features/adminDashboard/utils/dashboardAnalytics";
 import type { DashboardRole, RoleDistributionEntry } from "@/services/adminDashboardService";
 
@@ -68,7 +68,7 @@ export const useDonutSegments = ({
           label: entry.label,
           count: entry.count,
           percent: calculatePercentage(entry.count, total),
-          color: ROLE_COLORS[entry.role] ?? palette.primary,
+          color: roleColorOf(palette, entry.role),
           dash: `${length} ${circumference - length}`,
           offset: circumference / 4 - startFraction * circumference,
           hotspot: {
@@ -79,4 +79,4 @@ export const useDonutSegments = ({
         startFraction += fraction;
         return segment;
       });
-  }, [center, circumference, distribution, gap, palette.primary, radius, total]);
+  }, [center, circumference, distribution, gap, palette, radius, total]);

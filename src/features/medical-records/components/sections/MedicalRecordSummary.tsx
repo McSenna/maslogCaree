@@ -4,7 +4,10 @@ import { Text, View } from "react-native";
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { MedicalRecord } from "@/services/medicalRecords";
 
-import { formatDateTime } from "../recordFormat";
+import { isEncodedRecord } from "@/services/medicalRecordTypes";
+
+import { formatDate, formatDateTime } from "../recordFormat";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type Props = {
   palette: ResidentDialogPalette;
@@ -17,11 +20,13 @@ const providerOf = (record: MedicalRecord) => {
   if (provider && typeof provider === "object") {
     return { name: provider.fullname ?? "", role: provider.role ?? record.providerRole ?? "" };
   }
-  return { name: "", role: record.providerRole ?? "" };
+  return { name: record.providerName ?? "", role: record.providerRole ?? "" };
 };
 
 export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) => {
   const provider = providerOf(record);
+  // A paper record has a visit day but no time.
+  const historical = isEncodedRecord(record);
 
   return (
     <View
@@ -70,7 +75,7 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
           }}
         >
           <Text style={{ fontSize: 12, fontWeight: "600", color: palette.successFg }}>
-            Completed
+            {historical ? "Historical record" : "Completed"}
           </Text>
         </View>
       </View>
@@ -80,7 +85,7 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
           marginTop: 12,
           paddingTop: 10,
           borderTopWidth: 1,
-          borderTopColor: palette.isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+          borderTopColor: palette.isDark ? withAlpha(PALETTE.white, 0.08) : withAlpha(PALETTE.ink, 0.06),
           flexDirection: "row",
           flexWrap: "wrap",
           gap: 16,
@@ -99,7 +104,7 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <Feather name="calendar" size={14} color={palette.muted} />
           <Text style={{ fontSize: 13, color: palette.muted }}>
-            {formatDateTime(record.completedAt ?? record.createdAt)}
+            {historical ? formatDate(record.completedAt) : formatDateTime(record.completedAt ?? record.createdAt)}
           </Text>
         </View>
       </View>

@@ -7,11 +7,11 @@ import {
 } from "@/components/dashboard/admin";
 import { AttentionStrip, MetricRow, SplitRow, type AttentionItem } from "@/components/dashboard/kit";
 import type { AdminDashboardPalette, MetricTone } from "@/design/adminDashboardTheme";
-import type { AdminDashboardData, DashboardActivity, DashboardMetrics } from "@/services/adminDashboardService";
+import type { AdminDashboardData, DashboardMetrics } from "@/services/adminDashboardService";
 import { ANALYTICS_FLEX, donutSizeForPanel, LEGEND_BESIDE_MIN_WIDTH, PEOPLE_FLEX } from "../constants/dashboardLayout";
 import type { AdminDashboardLayout } from "../hooks/useAdminDashboardLayout";
-import ActivityLogTable from "./ActivityLogTable";
 import RecentUsersTable from "./RecentUsersTable";
+import { groupTotals } from "../utils/newestAccounts";
 
 type MetricSpec = {
   key: keyof DashboardMetrics;
@@ -20,40 +20,51 @@ type MetricSpec = {
   icon: keyof typeof Feather.glyphMap;
   label: string;
   description: string;
+  /** The Users list the card opens (query string for /admin/users). */
+  list: string;
+  hint: string;
 };
 
 const METRIC_SPECS: MetricSpec[] = [
   {
     key: "totalUsers",
     growthKey: "totalUsersGrowth",
-    tone: "blue",
+    tone: "primary",
     icon: "users",
     label: "Total users",
     description: "Every registered account",
+    list: "section=accounts",
+    hint: "Shows every account",
   },
   {
     key: "activeUsers",
     growthKey: "activeUsersGrowth",
-    tone: "green",
+    tone: "care",
     icon: "user-check",
     label: "Active users",
     description: "Verified and able to sign in",
+    list: "section=active",
+    hint: "Shows active users",
   },
   {
     key: "newUsersLast30Days",
     growthKey: "newUsersGrowth",
-    tone: "purple",
+    tone: "accent",
     icon: "user-plus",
     label: "New this month",
     description: "Joined in the last 30 days",
+    list: "section=accounts&sort=joined_desc",
+    hint: "Shows every account, newest first",
   },
   {
     key: "totalPatients",
     growthKey: "totalPatientsGrowth",
-    tone: "blue",
+    tone: "primary",
     icon: "heart",
     label: "Residents",
     description: "Patients on record",
+    list: "section=accounts&role=resident",
+    hint: "Shows resident accounts",
   },
 ];
 
@@ -62,8 +73,8 @@ export type AdminNavigation = {
   toRegistrations: () => void;
   toSupport: () => void;
   toInventory: () => void;
-  toSystemLogs: () => void;
-  toActivity: (activity: DashboardActivity) => void;
+  /** Opens the Users page on a given list, e.g. "section=active". */
+  toUserList: (list: string) => void;
 };
 
 const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`;
@@ -150,6 +161,8 @@ const DashboardBody = ({
             growth={data.metrics[spec.growthKey]}
             compact={isMobile}
             dense={layout.denseMetrics}
+            onPress={() => go.toUserList(spec.list)}
+            accessibilityHint={spec.hint}
           />
         ))}
       </MetricRow>
@@ -168,7 +181,8 @@ const DashboardBody = ({
         <RecentUsersTable
           palette={palette}
           isDark={isDark}
-          users={data.recentUsers}
+          newest={{ all: data.recentUsers, residents: data.recentResidents, staff: data.recentStaff }}
+          totals={groupTotals(data.metrics.totalUsers, data.roleDistribution)}
           compact={isMobile}
           onViewAll={go.toUsers}
           fill={!stackPanels}
@@ -181,15 +195,6 @@ const DashboardBody = ({
           fill={!stackPanels}
         />
       </SplitRow>
-
-      <ActivityLogTable
-        palette={palette}
-        isDark={isDark}
-        activities={data.recentActivities}
-        compact={isMobile}
-        onViewAll={go.toSystemLogs}
-        onOpenActivity={go.toActivity}
-      />
     </>
   );
 };

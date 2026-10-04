@@ -5,7 +5,7 @@ export const PRIVACY_CATEGORY: HelpCategory = {
   title: "Privacy & Security",
   description: "Learn how MaslogCare protects your personal and healthcare information.",
   icon: "shield",
-  tone: "blue",
+  tone: "primary",
   articles: [
     {
       id: "identity-verification",

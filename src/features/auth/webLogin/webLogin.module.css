@@ -1,15 +1,39 @@
+/* Colours are the MaslogCare palette (src/theme/palette.ts); this stylesheet
+   cannot import it, so every value is named once here and nowhere else. */
 .page {
-  --ink: #0b1233;
-  --ink-soft: #3d4560;
-  --brand: #0052fd;
-  --error: #b42318;
-  /* Darker than --error so error text clears 7:1 on white; the border keeps the brand red. */
-  --error-text: #a01f15;
-  --label: #1b2338;
-  --placeholder: #6b7488;
-  --line: #d3dae6;
-  --readonly: #f5f7fb;
-  --haze: #eef3fd;
+  --ink: #1f2933; /* ink */
+  --ink-soft: #3a4757; /* slate-700 */
+  --brand: #2d5bff; /* blue-600 */
+  --brand-hover: #1e45d9; /* blue-700 */
+  --brand-tint: #e5ecff; /* blue-100 */
+  --brand-tint-strong: #cad8ff; /* blue-200 */
+  --brand-rgb: 45, 91, 255;
+  --care: #038751; /* green-600: white text 4.6:1 */
+  --care-hover: #016d40; /* green-700 */
+  --care-tint: #d3f0e2; /* green-100 */
+  --care-tint-strong: #a9e2c6; /* green-200 */
+  --accent-ink: #9d6300; /* orange-600 */
+  --accent-tint: #ffebd1; /* orange-100 */
+  --accent-tint-strong: #ffd6a3; /* orange-200 */
+  --error: #ef4444; /* red-500: the field border, 3.8:1 */
+  --error-rgb: 239, 68, 68;
+  /* Darker than --error so error text clears 7:1 on white. */
+  --error-text: #b42328; /* red-700 */
+  --error-tint: #fef2f2; /* red-50 */
+  --error-line: #fecaca; /* red-200 */
+  --warning-text: #8a5300; /* amber-700 */
+  --label: #1f2933; /* ink */
+  --placeholder: #64748b; /* slate-500 */
+  /* A field's outline has to reach 3:1 to be findable; the old #d3dae6 was 1.4:1. */
+  --line: #8391a6; /* controlLine */
+  --divider: #e2e8f0; /* slate-200 */
+  --readonly: #f8fafc; /* slate-50 */
+  --surface: #ffffff;
+  --haze: #f0f4ff; /* blue-50 */
+  --haze-rgb: 240, 244, 255;
+  --haze-deep-rgb: 229, 236, 255; /* blue-100 */
+  --shadow-rgb: 31, 41, 51; /* ink */
+  --photo-tint: #507bff; /* blue-500 */
 
   container: page / inline-size;
   height: 100dvh;
@@ -89,17 +113,17 @@
   height: calc(var(--band) + 91px);
   background: linear-gradient(
     180deg,
-    rgba(234, 241, 253, 0.97) 0%,
-    rgba(234, 241, 253, 0.9) 20%,
-    rgba(234, 241, 253, 0.35) 42%,
-    rgba(234, 241, 253, 0.18) 70%,
+    rgba(var(--haze-rgb), 0.97) 0%,
+    rgba(var(--haze-rgb), 0.9) 20%,
+    rgba(var(--haze-rgb), 0.35) 42%,
+    rgba(var(--haze-rgb), 0.18) 70%,
     var(--haze) 100%
   );
 }
 
 /* The photo reads blue in the brand art: this recolors it and keeps its lightness. */
 .tint {
-  background: #5b86d6;
+  background: var(--photo-tint);
   mix-blend-mode: color;
   opacity: 0.55;
   /* Lighter toward the top so the flag keeps some of its red and blue. */
@@ -134,7 +158,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  filter: drop-shadow(0 6px 14px rgba(20, 50, 130, 0.2));
+  filter: drop-shadow(0 6px 14px rgba(var(--shadow-rgb), 0.2));
 }
 
 .wordmark {
@@ -150,7 +174,7 @@
 }
 
 .wordmarkBlue {
-  color: #1766f5;
+  color: var(--brand);
 }
 
 /* Phones and tablets open on the sign-in card, so the pitch and its actions stay desktop-only. */
@@ -204,18 +228,18 @@
 
 .actionPrimary {
   background: var(--brand);
-  color: #fff;
+  color: var(--surface);
 }
 
 .actionSecondary {
-  border-color: #b9c8e4;
+  border-color: var(--brand-tint-strong);
   background: rgba(255, 255, 255, 0.86);
-  color: #0a3fc0;
+  color: var(--brand-hover);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .actionPrimary:hover {
-    background: #0046d8;
+    background: var(--brand-hover);
   }
 
   .actionPrimary:hover .actionIcon {
@@ -224,7 +248,7 @@
 
   .actionSecondary:hover {
     border-color: var(--brand);
-    background: #fff;
+    background: var(--surface);
   }
 }
 
@@ -268,18 +292,18 @@
 }
 
 .toneBlue {
-  background: #d9e7ff;
-  color: #0a4ef4;
+  background: var(--brand-tint);
+  color: var(--brand);
 }
 
 .toneGreen {
-  background: #d3eee1;
-  color: #1f8f43;
+  background: var(--care-tint);
+  color: var(--care);
 }
 
 .toneOrange {
-  background: #fbe7cf;
-  color: #b86a05;
+  background: var(--accent-tint);
+  color: var(--accent-ink);
 }
 
 .featureText {
@@ -312,8 +336,8 @@
   margin: 0 auto;
   padding: 24px 18px 16px;
   border-radius: 20px;
-  background: #fff;
-  box-shadow: 0 24px 50px -24px rgba(30, 60, 140, 0.26);
+  background: var(--surface);
+  box-shadow: 0 24px 50px -24px rgba(var(--shadow-rgb), 0.26);
   animation: card-in 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -377,10 +401,10 @@
   align-items: flex-start;
   gap: 10px;
   padding: 12px 14px;
-  border: 1px solid #f3c5bf;
+  border: 1px solid var(--error-line);
   border-radius: 10px;
-  background: #fef3f2;
-  color: #7a1a12;
+  background: var(--error-tint);
+  color: var(--error-text);
   font-size: 14px;
   line-height: 20px;
   animation: settle-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -417,13 +441,13 @@
   height: 56px;
   border: 1.5px solid var(--line);
   border-radius: 10px;
-  background: #fff;
+  background: var(--surface);
 }
 
 /* No transition: focus usually arrives by Tab or tap, and the ring should be there at once. */
 .field:focus-within {
   border-color: var(--brand);
-  box-shadow: 0 0 0 4px rgba(0, 82, 253, 0.13);
+  box-shadow: 0 0 0 4px rgba(var(--brand-rgb), 0.16);
 }
 
 .fieldInvalid,
@@ -432,7 +456,7 @@
 }
 
 .fieldInvalid:focus-within {
-  box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.13);
+  box-shadow: 0 0 0 4px rgba(var(--error-rgb), 0.16);
 }
 
 .fieldBusy {
@@ -481,7 +505,7 @@
 
 .input:-webkit-autofill {
   -webkit-text-fill-color: var(--ink);
-  box-shadow: 0 0 0 100px #fff inset;
+  box-shadow: 0 0 0 100px var(--surface) inset;
 }
 
 .fieldBusy .input:-webkit-autofill {
@@ -538,7 +562,7 @@
 
 .capsHint {
   margin-top: 6px;
-  color: #8a4b00;
+  color: var(--warning-text);
   font-size: 14px;
   line-height: 20px;
 }
@@ -558,7 +582,7 @@
   padding: 0 16px;
   border: 0;
   border-radius: 8px;
-  color: #fff;
+  color: var(--surface);
   font: inherit;
   font-size: 17px;
   font-weight: 600;
@@ -584,7 +608,7 @@
 
 .buttonSecondary {
   margin-top: 10px;
-  background: #1a7f3b;
+  background: var(--care);
 }
 
 /* Hover styles only where a real pointer can hover; a tap would otherwise leave them stuck. */
@@ -594,11 +618,11 @@
   }
 
   .buttonPrimary:hover {
-    background: #0046d8;
+    background: var(--brand-hover);
   }
 
   .buttonSecondary:hover {
-    background: #156b31;
+    background: var(--care-hover);
   }
 
   .link:hover {
@@ -611,7 +635,7 @@
   width: 18px;
   height: 18px;
   border: 2.5px solid rgba(255, 255, 255, 0.35);
-  border-top-color: #fff;
+  border-top-color: var(--surface);
   border-radius: 50%;
   animation: spin 800ms linear infinite;
 }
@@ -631,7 +655,7 @@
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: #0b55f0;
+  color: var(--brand);
   font: inherit;
   font-size: 15px;
   cursor: pointer;
@@ -647,7 +671,7 @@
 
 .dividerLine {
   height: 1.5px;
-  background: #e4e9f1;
+  background: var(--divider);
 }
 
 .dividerText {
@@ -703,7 +727,7 @@
   gap: 8px;
   padding: 24px;
   border-radius: inherit;
-  background: #fff;
+  background: var(--surface);
   text-align: center;
   animation: settle-in 240ms cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -715,8 +739,8 @@
   height: 64px;
   margin-bottom: 8px;
   border-radius: 50%;
-  background: #e3f4e8;
-  color: #1a7f3b;
+  background: var(--care-tint);
+  color: var(--care);
 }
 
 .successIcon {
@@ -766,11 +790,11 @@
     height: calc(var(--photo-top) + var(--photo-h));
     background: linear-gradient(
       180deg,
-      rgba(238, 243, 253, 0.97) 0%,
-      rgba(238, 243, 253, 0.9) 30%,
-      rgba(238, 243, 253, 0.62) 52%,
-      rgba(238, 243, 253, 0.5) 75%,
-      rgba(238, 243, 253, 0.8) 100%
+      rgba(var(--haze-rgb), 0.97) 0%,
+      rgba(var(--haze-rgb), 0.9) 30%,
+      rgba(var(--haze-rgb), 0.62) 52%,
+      rgba(var(--haze-rgb), 0.5) 75%,
+      rgba(var(--haze-rgb), 0.8) 100%
     );
   }
 
@@ -944,20 +968,20 @@
   /* Left wash keeps the intro readable; the top and bottom washes blend the photo into the page. */
   .haze {
     background:
-      linear-gradient(180deg, rgba(214, 229, 253, 0.9) 0%, rgba(214, 229, 253, 0) 26%),
+      linear-gradient(180deg, rgba(var(--haze-deep-rgb), 0.9) 0%, rgba(var(--haze-deep-rgb), 0) 26%),
       linear-gradient(
         90deg,
-        rgba(238, 244, 254, 0.95) 0%,
-        rgba(238, 244, 254, 0.9) 34%,
-        rgba(238, 244, 254, 0.45) 50%,
-        rgba(238, 244, 254, 0) 62%
+        rgba(var(--haze-rgb), 0.95) 0%,
+        rgba(var(--haze-rgb), 0.9) 34%,
+        rgba(var(--haze-rgb), 0.45) 50%,
+        rgba(var(--haze-rgb), 0) 62%
       ),
       linear-gradient(
         180deg,
-        rgba(233, 241, 254, 0.9) 0%,
-        rgba(238, 244, 254, 0.62) 50%,
-        rgba(238, 244, 254, 0.42) 80%,
-        rgba(238, 244, 254, 0.3) 100%
+        rgba(var(--haze-rgb), 0.9) 0%,
+        rgba(var(--haze-rgb), 0.62) 50%,
+        rgba(var(--haze-rgb), 0.42) 80%,
+        rgba(var(--haze-rgb), 0.3) 100%
       );
   }
 
@@ -984,7 +1008,7 @@
   .seal {
     width: clamp(76px, calc(124 * var(--s)), 148px);
     height: clamp(76px, calc(124 * var(--s)), 148px);
-    filter: drop-shadow(0 calc(8 * var(--s)) calc(18 * var(--s)) rgba(20, 50, 130, 0.2));
+    filter: drop-shadow(0 calc(8 * var(--s)) calc(18 * var(--s)) rgba(var(--shadow-rgb), 0.2));
   }
 
   .wordmark {
@@ -1069,10 +1093,10 @@
     position: absolute;
     inset: calc(var(--bleed) * -1);
     z-index: -1;
-    border: 1px solid rgba(190, 208, 238, 0.9);
+    border: 1px solid var(--brand-tint-strong);
     border-radius: clamp(16px, calc(22 * var(--s)), 24px);
     background: rgba(255, 255, 255, 0.74);
-    box-shadow: 0 18px 40px -24px rgba(20, 50, 130, 0.35);
+    box-shadow: 0 18px 40px -24px rgba(var(--shadow-rgb), 0.35);
     backdrop-filter: blur(10px);
     opacity: 0;
     transition: opacity 180ms ease-out;
@@ -1096,15 +1120,15 @@
     }
 
     .feature:hover .toneBlue {
-      background: #c8dbff;
+      background: var(--brand-tint-strong);
     }
 
     .feature:hover .toneGreen {
-      background: #bfe5d2;
+      background: var(--care-tint-strong);
     }
 
     .feature:hover .toneOrange {
-      background: #f8d9b3;
+      background: var(--accent-tint-strong);
     }
   }
 
@@ -1132,7 +1156,7 @@
   .featureDescription {
     /* Wide enough that all three rows sit on one line at laptop sizes, so the list reads evenly. */
     max-width: 27em;
-    color: #1f2740;
+    color: var(--ink);
     font-size: clamp(15px, calc(19.5 * var(--s)), 23px);
     line-height: 1.45;
     text-wrap: balance;
@@ -1148,7 +1172,7 @@
     padding: 7px 14px 7px 11px;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.82);
-    box-shadow: 0 1px 2px rgba(20, 50, 130, 0.08);
+    box-shadow: 0 1px 2px rgba(var(--shadow-rgb), 0.08);
     color: var(--ink-soft);
     font-size: clamp(13px, calc(15 * var(--s)), 17px);
     font-weight: 500;
@@ -1178,8 +1202,8 @@
       clamp(24px, calc(40 * var(--s)), 48px);
     border-radius: clamp(20px, calc(28 * var(--s)), 32px);
     box-shadow:
-      0 1px 2px rgba(30, 60, 140, 0.06),
-      0 40px 80px -36px rgba(20, 50, 130, 0.38);
+      0 1px 2px rgba(var(--shadow-rgb), 0.06),
+      0 40px 80px -36px rgba(var(--shadow-rgb), 0.38);
   }
 
   .cardHeader {

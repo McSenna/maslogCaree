@@ -1,5 +1,6 @@
 import { ScrollViewStyleReset } from "expo-router/html";
 import type { PropsWithChildren } from "react";
+import { PALETTE } from "@/theme/palette";
 
 /**
  * Web-only document shell for the static export. Same as Expo's default
@@ -13,7 +14,7 @@ const Root = ({ children }: PropsWithChildren) => (
       <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
       <meta name="description" content="Book and track health center appointments in Barangay 61 Maslog, Legazpi City." />
-      <meta name="theme-color" content="#1565D8" />
+      <meta name="theme-color" content={PALETTE.blue[600]} />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
       <link rel="manifest" href="/manifest.json" />

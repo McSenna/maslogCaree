@@ -4,6 +4,7 @@ import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { ModalFrame } from "@/hooks/useModalFrame";
 import { RADII } from "@/theme/radius";
 import { SHADOWS } from "@/theme/shadows";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const DIALOG_CONTENT_PADDING = 20;
 
@@ -23,5 +24,5 @@ export const DIALOG_BACKDROP_STYLE: ViewStyle = {
   alignItems: "center",
   justifyContent: "center",
   padding: 16,
-  backgroundColor: "rgba(15, 23, 42, 0.45)",
+  backgroundColor: withAlpha(PALETTE.slate[800], 0.45),
 };

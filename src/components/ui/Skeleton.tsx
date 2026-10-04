@@ -34,7 +34,7 @@ export const StatCardSkeleton = () => {
           <Skeleton className="h-3 w-24" />
           <Skeleton className="h-8 w-20" />
         </View>
-        <Skeleton className="h-11 w-11 rounded-2xl" />
+        <Skeleton className="h-11 w-11 rounded-lg" />
       </View>
       <Skeleton className="h-3 w-full" />
     </View>

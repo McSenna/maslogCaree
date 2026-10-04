@@ -21,6 +21,8 @@ import { Block, Row } from "./details/RecordPrimitives";
 import { useResponsive } from "@/hooks/useResponsive";
 
 
+import { PALETTE, withAlpha } from "@/theme/palette";
+
 const MedicalRecordDetails = ({
   visible,
   record,
@@ -56,7 +58,7 @@ const MedicalRecordDetails = ({
     >
       <SheetViewport
         layout={layout}
-        style={{ backgroundColor: "rgba(15,37,87,0.35)", paddingHorizontal: isSheet ? 0 : 16 }}
+        style={{ backgroundColor: withAlpha(PALETTE.ink, 0.35), paddingHorizontal: isSheet ? 0 : 16 }}
       >
         <Pressable
           accessibilityRole="button"

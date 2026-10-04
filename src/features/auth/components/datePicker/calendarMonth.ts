@@ -1,5 +1,6 @@
 import { MONTHS } from "../../constants/registrationFields";
 import { daysInMonth, toIsoBirthDate } from "../../utils/dateOfBirth";
+import { isOutside, pastOnly, type DateBounds } from "./calendarBounds";
 
 export const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -8,11 +9,6 @@ export type CalendarCell = {
   day: number | null;
   iso: string | null;
   disabled: boolean;
-};
-
-export const startOfToday = (): Date => {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 };
 
 export const parseIsoDate = (value: string): { year: number; monthIndex: number; day: number } | null => {
@@ -32,10 +28,9 @@ export const parseIsoDate = (value: string): { year: number; monthIndex: number;
 export const monthLabel = (year: number, monthIndex: number): string =>
   `${MONTHS[monthIndex]} ${year}`;
 
-export const buildCalendarCells = (year: number, monthIndex: number): CalendarCell[] => {
+export const buildCalendarCells = (year: number, monthIndex: number, bounds: DateBounds = pastOnly()): CalendarCell[] => {
   const total = daysInMonth(year, monthIndex);
   const leading = new Date(year, monthIndex, 1).getDay();
-  const today = startOfToday();
 
   const blanks: CalendarCell[] = Array.from({ length: leading }, (_, index) => ({
     key: `blank-${index}`,
@@ -46,21 +41,13 @@ export const buildCalendarCells = (year: number, monthIndex: number): CalendarCe
 
   const days: CalendarCell[] = Array.from({ length: total }, (_, index) => {
     const day = index + 1;
-    return {
-      key: `day-${day}`,
-      day,
-      iso: toIsoBirthDate(year, monthIndex, day),
-      disabled: new Date(year, monthIndex, day) > today,
-    };
+    const iso = toIsoBirthDate(year, monthIndex, day);
+    return { key: `day-${day}`, day, iso, disabled: isOutside(iso, bounds) };
   });
 
   return [...blanks, ...days];
 };
 
-export const isFutureMonth = (year: number, monthIndex: number): boolean => {
-  const today = startOfToday();
-  return new Date(year, monthIndex, 1) > new Date(today.getFullYear(), today.getMonth(), 1);
-};
-
-export const clampToPast = (year: number, monthIndex: number, day: number): number =>
+/** The same day number in another month, pulled back to that month's last day. */
+export const clampDay = (year: number, monthIndex: number, day: number): number =>
   Math.min(day, daysInMonth(year, monthIndex));

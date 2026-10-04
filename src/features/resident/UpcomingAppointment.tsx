@@ -37,7 +37,7 @@ const relativeDay = (date: Date, now: Date = new Date()): string => {
 const DateTile = ({ palette, date }: { palette: AdminDashboardPalette; date: Date | null }) => (
   <View
     className="shrink-0 items-center justify-center"
-    style={{ width: 76, height: 84, borderRadius: 14, backgroundColor: palette.tones.blue.cardBg, borderWidth: 1, borderColor: palette.tones.blue.cardBorder }}
+    style={{ width: 76, height: 84, borderRadius: 14, backgroundColor: palette.tones.primary.cardBg, borderWidth: 1, borderColor: palette.tones.primary.cardBorder }}
     accessibilityElementsHidden
     importantForAccessibility="no-hide-descendants"
   >

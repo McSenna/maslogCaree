@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { PALETTE } from "../palette.ts";
+import { dark } from "../../design/adminDashboard/darkPalette.ts";
+import { light } from "../../design/adminDashboard/lightPalette.ts";
 import {
   ANNOUNCEMENT_DARK,
   ANNOUNCEMENT_LIGHT,
@@ -50,12 +51,15 @@ const check = (name: string, palette: AnnouncementPalette) => {
 };
 
 check("light", ANNOUNCEMENT_LIGHT);
+check("dark", ANNOUNCEMENT_DARK);
 
 describe("page background", () => {
   it("matches the admin dashboard page", () => {
-    assert.equal(ANNOUNCEMENT_LIGHT.page, PALETTE.mist);
-    assert.equal(ANNOUNCEMENT_DARK.page, PALETTE.slate[950]);
-    assert.equal(ANNOUNCEMENT_DARK.canvas, PALETTE.slate[900]);
+    assert.equal(ANNOUNCEMENT_LIGHT.page, light.pageBg);
+    assert.equal(ANNOUNCEMENT_LIGHT.brand, light.primary);
+    assert.equal(ANNOUNCEMENT_DARK.page, dark.pageBg);
+    assert.equal(ANNOUNCEMENT_DARK.canvas, dark.cardBg);
+    assert.equal(ANNOUNCEMENT_DARK.brand, dark.primary);
   });
 });
 check("dark", ANNOUNCEMENT_DARK);

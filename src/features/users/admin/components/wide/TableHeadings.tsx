@@ -1,20 +1,10 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 
+import { HeadingCell as Cell, TableHeadings as Band } from "@/components/dashboard/kit/TableHeadings";
 import Checkbox from "@/components/ui/Checkbox";
 
 import type { RowSelection } from "../../hooks/useRowSelection";
 import { COLUMN, type TableMode } from "./tableColumns";
-
-const Cell = ({ label, className = "" }: { label: string; className?: string }) => (
-  <Text numberOfLines={1} className={`text-[12px] font-semibold text-text2 ${className}`}>
-    {label}
-  </Text>
-);
-
-/** The dashboard table's tinted heading band. */
-const Band = ({ children }: { children: React.ReactNode }) => (
-  <View className="min-h-9 flex-row items-center gap-3 rounded-control bg-head px-3 py-2">{children}</View>
-);
 
 export const UserHeadings = ({ mode, selection }: { mode: TableMode; selection: RowSelection }) => (
   <Band>

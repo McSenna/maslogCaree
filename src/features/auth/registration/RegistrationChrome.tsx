@@ -6,9 +6,19 @@ import { REG_COLORS } from "./registrationTheme";
 type RegistrationChromeProps = {
   onClose: () => void;
   isSheet: boolean;
+  /** Defaults to the resident sign-up wording; other dialogs reuse the chrome. */
+  title?: string;
+  subtitle?: string;
+  closeLabel?: string;
 };
 
-const RegistrationChrome = ({ onClose, isSheet }: RegistrationChromeProps) => (
+const RegistrationChrome = ({
+  onClose,
+  isSheet,
+  title = "Create Your Account",
+  subtitle = "Join MaslogCare as a resident.",
+  closeLabel = "Close registration",
+}: RegistrationChromeProps) => (
   <View style={{ gap: isSheet ? 10 : 14 }}>
     <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
       <MaslogCareLogo size={isSheet ? 30 : 34} />
@@ -27,7 +37,7 @@ const RegistrationChrome = ({ onClose, isSheet }: RegistrationChromeProps) => (
       <Pressable
         onPress={onClose}
         accessibilityRole="button"
-        accessibilityLabel="Close registration"
+        accessibilityLabel={closeLabel}
         hitSlop={10}
         style={{
           width: 34,
@@ -52,10 +62,10 @@ const RegistrationChrome = ({ onClose, isSheet }: RegistrationChromeProps) => (
           color: REG_COLORS.heading,
         }}
       >
-        Create Your Account
+        {title}
       </Text>
       <Text style={{ fontSize: 13.5, lineHeight: 20, color: REG_COLORS.muted }}>
-        Join MaslogCare as a resident.
+        {subtitle}
       </Text>
     </View>
   </View>

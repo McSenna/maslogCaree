@@ -13,6 +13,7 @@ import { authCardStyles as styles } from "./authCardStyles";
 import ForgotPasswordLink from "./ForgotPasswordLink";
 import PlatformAccessModal from "./PlatformAccessModal";
 import ForgotPasswordFlow from "../forgotPassword/ForgotPasswordFlow";
+import { PALETTE } from "@/theme/palette";
 
 type AuthCardProps = {
   onOpenRegister?: () => void;
@@ -79,7 +80,7 @@ const AuthCard = ({
       >
         {form.isSubmitting ? (
           <View style={styles.loadingRow}>
-            <ActivityIndicator size="small" color="#FFFFFF" />
+            <ActivityIndicator size="small" color={PALETTE.white} />
             <Text style={styles.loginButtonText}>Logging in…</Text>
           </View>
         ) : (

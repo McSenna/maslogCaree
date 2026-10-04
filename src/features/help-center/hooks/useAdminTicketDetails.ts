@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { toast } from "@/components/feedback/toast/toastStore";
+import { useRealtimeItem } from "@/hooks/realtime/useRealtimeItem";
 import { getApiErrorMessage } from "@/utils/apiErrorHandler";
 import {
   fetchAdminSupportTicket,
@@ -8,39 +9,20 @@ import {
   updateAdminTicketStatus,
 } from "../services/adminSupportService";
 import type { SupportStatus, SupportTicket } from "../types/support.types";
+import { toastError } from "@/utils/errorToast/toastError";
 
-type LoadedTicket = { id: string; ticket: SupportTicket };
+const asTicket = (ticket: SupportTicket) => ticket;
 
+/** One ticket in the admin queue. A requester's reply, or another admin's action, appears while it is open. */
 export const useAdminTicketDetails = (ticketId: string | null, onChanged?: () => void) => {
-  const [loaded, setLoaded] = useState<LoadedTicket | null>(null);
-  const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!ticketId) return;
-
-    let active = true;
-
-    void (async () => {
-      setLoading(true);
-      try {
-        const result = await fetchAdminSupportTicket(ticketId);
-        if (active) {
-          setLoaded({ id: ticketId, ticket: result });
-          setError(null);
-        }
-      } catch (caught: unknown) {
-        if (active) setError(getApiErrorMessage(caught));
-      } finally {
-        if (active) setLoading(false);
-      }
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [ticketId]);
+  const { item, loading, error: loadError, mutate } = useRealtimeItem(
+    "adminSupportTicket",
+    ticketId,
+    fetchAdminSupportTicket,
+    { toItem: asTicket }
+  );
 
   const run = useCallback(
     async (
@@ -61,7 +43,7 @@ export const useAdminTicketDetails = (ticketId: string | null, onChanged?: () =>
         const message = getApiErrorMessage(caught);
         setError(message);
         // The phone sheet has no error area, so the toast carries the reason too.
-        toast.error(outcome.failure, message);
+        toastError(outcome.failure, caught);
         return false;
       } finally {
         setBusy(false);
@@ -74,32 +56,29 @@ export const useAdminTicketDetails = (ticketId: string | null, onChanged?: () =>
     (status: SupportStatus) =>
       run(async (id) => {
         const updated = await updateAdminTicketStatus(id, status);
-        setLoaded({ id, ticket: updated });
+        mutate(() => updated);
       }, { success: "Ticket status updated", failure: "Status not changed" }),
-    [run]
+    [run, mutate]
   );
 
   const sendReply = useCallback(
     (body: string) =>
       run(async (id) => {
         const message = await replyAsAdmin(id, body);
-        setLoaded((current) =>
-          current
-            ? {
-                ...current,
-                ticket: { ...current.ticket, messages: [...current.ticket.messages, message] },
-              }
-            : current
+        mutate((ticket) =>
+          ticket.messages.some((existing) => existing.id === message.id)
+            ? ticket
+            : { ...ticket, messages: [...ticket.messages, message] }
         );
       }, { success: "Reply sent", failure: "Reply not sent" }),
-    [run]
+    [run, mutate]
   );
 
   return {
-    ticket: loaded?.id === ticketId ? loaded.ticket : null,
+    ticket: item,
     loading,
     busy,
-    error,
+    error: error ?? loadError,
     changeStatus,
     sendReply,
   };

@@ -3,7 +3,7 @@ import { useState, type ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
-import { PALETTE } from "@/theme/palette";
+import { PALETTE, withAlpha } from "@/theme/palette";
 
 type DetailsModalHeaderProps = {
   icon: keyof typeof Feather.glyphMap;
@@ -30,8 +30,8 @@ const DetailsModalHeader = ({
 }: DetailsModalHeaderProps) => {
   const palette = useAdminSurfacePalette();
   const [hovered, setHovered] = useState(false);
-  const well = palette.isDark ? "rgba(37,99,235,0.18)" : "#EAF2FF";
-  const iconColor = palette.isDark ? "#93C5FD" : PALETTE.blue[600];
+  const well = palette.isDark ? withAlpha(PALETTE.blue[600], 0.18) : PALETTE.blue[50];
+  const iconColor = palette.isDark ? PALETTE.blue[300] : PALETTE.blue[600];
 
   return (
     <View className="w-full flex-row items-start justify-between gap-4">

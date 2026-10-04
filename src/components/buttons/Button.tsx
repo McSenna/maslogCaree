@@ -53,7 +53,7 @@ const Button = ({
   const colors = useThemeColors();
   const inactive = disabled || loading;
   const { hovered, pressed, focused, scaleStyle, handlers } = useInteractionState({ disabled: inactive });
-  const look = resolveButtonAppearance(variant, colors, { hovered, pressed, disabled: inactive });
+  const look = resolveButtonAppearance(variant, colors, { hovered, pressed, disabled: disabled && !loading });
   const isText = variant === "text";
   const iconNode = icon ? <Feather name={icon} size={BUTTON_ICON[size]} color={look.foreground} /> : null;
 
@@ -75,7 +75,6 @@ const Button = ({
           borderWidth: isText ? 0 : 1,
           borderColor: look.border,
           backgroundColor: look.background,
-          opacity: disabled && !loading ? 0.5 : 1,
           alignItems: "center",
           justifyContent: "center",
           outlineWidth: focused ? 3 : 0,

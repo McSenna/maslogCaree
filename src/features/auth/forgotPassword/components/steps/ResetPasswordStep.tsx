@@ -3,7 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { View } from "react-native";
 
 import type { ForgotPasswordController } from "../../useForgotPassword";
-import { meetsAllPasswordRules } from "../../passwordRules";
+import { PASSWORD_MAX_LENGTH, meetsAllPasswordRules } from "../../passwordRules";
 import { RECOVERY_COLORS as C } from "../../recoveryTheme";
 import PasswordRequirements, { PasswordStrengthMeter } from "../PasswordRequirements";
 import { PrimaryButton, RecoveryField, RecoveryMessage } from "../RecoveryControls";
@@ -46,6 +46,7 @@ export const ResetPasswordStep = ({ flow }: { flow: ForgotPasswordController }) 
           if (flow.error) flow.setError(null);
         }}
         placeholder="Enter a new password"
+        maxLength={PASSWORD_MAX_LENGTH}
         secureTextEntry={!showNew}
         autoCapitalize="none"
         autoComplete="new-password"
@@ -65,6 +66,7 @@ export const ResetPasswordStep = ({ flow }: { flow: ForgotPasswordController }) 
           if (flow.error) flow.setError(null);
         }}
         placeholder="Re-enter your new password"
+        maxLength={PASSWORD_MAX_LENGTH}
         secureTextEntry={!showConfirm}
         autoCapitalize="none"
         autoComplete="new-password"
