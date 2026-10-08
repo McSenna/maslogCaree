@@ -36,6 +36,7 @@ export const OTP_COPY = {
   recipientRejected:
     "We couldn't deliver a code to this address. Check it for typos or use a different email.",
   verified: "Email verified. You can continue with your registration.",
+  reverify: "Your email verification is no longer valid. Send a new code to verify this address again.",
 } as const;
 
 const NETWORK_CODES = new Set(["NETWORK_ERROR", "TIMEOUT_ERROR", "REQUEST_CANCELLED"]);
@@ -64,6 +65,22 @@ export const describeVerifyFailure = (code: string | undefined, length: number):
         clearCode: false,
       };
   }
+};
+
+export type SubmitEmailFailure = { kind: "taken" | "reverify"; message: string };
+
+/**
+ * Email problems the server can report when the finished form is submitted:
+ * the address was registered meanwhile ("taken"), or its verification was
+ * used, expired or missing ("reverify", so the user sends a fresh code).
+ * Anything else is left to the general registration message.
+ */
+export const describeSubmitEmailFailure = (code: string | undefined): SubmitEmailFailure | null => {
+  if (code === "EMAIL_EXISTS") return { kind: "taken", message: OTP_COPY.emailTaken };
+  if (code === "EMAIL_NOT_VERIFIED" || code === "EMAIL_VERIFICATION_EXPIRED") {
+    return { kind: "reverify", message: OTP_COPY.reverify };
+  }
+  return null;
 };
 
 /**

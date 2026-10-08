@@ -1,4 +1,4 @@
-/** One pickable day: a mission date, or a Wednesday on the immunization schedule. */
+/** One pickable day: a mission date, or a Thursday on the immunization schedule. */
 export type DayChoice = { id: string; date: string; openCount: number };
 
 export const missionDayChoices = (

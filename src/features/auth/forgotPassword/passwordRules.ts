@@ -35,4 +35,4 @@ export const passwordStrength = (value: string): PasswordStrength => {
 export const meetsAllPasswordRules = (value: string) =>
   PASSWORD_RULES.every((rule) => rule.test(value));
 
-export const isValidEmail = (value: string) => /^\S+@\S+\.\S+$/.test(value.trim());
+export { isValidEmailAddress as isValidEmail } from "../../../utils/emailAddress.ts";

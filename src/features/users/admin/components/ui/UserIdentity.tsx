@@ -13,13 +13,15 @@ type UserIdentityProps = {
   /** Replaces the plain name, e.g. with a button that opens the profile. */
   nameSlot?: React.ReactNode;
   large?: boolean;
+  /** Table rows keep the name and detail to one line each, with an ellipsis. */
+  singleLine?: boolean;
 };
 
 /** Avatar, name and detail line, as in the dashboard's user tables. */
-const UserIdentity = ({ name, avatarUrl, detail, nameSlot, large }: UserIdentityProps) => {
+const UserIdentity = ({ name, avatarUrl, detail, nameSlot, large, singleLine = false }: UserIdentityProps) => {
   const palette = useAdminSurfacePalette();
   return (
-    <View className="min-w-0 flex-1 flex-row items-center gap-3">
+    <View className="min-w-0 flex-1 flex-row items-center gap-3 self-stretch">
       <UserAvatar
         size={large ? 40 : 32}
         imageUrl={avatarUrl}
@@ -30,11 +32,11 @@ const UserIdentity = ({ name, avatarUrl, detail, nameSlot, large }: UserIdentity
       />
       <View className="min-w-0 flex-1">
         {nameSlot ?? (
-          <Text numberOfLines={2} className={`font-semibold text-ink ${large ? "text-[15px]" : "text-[13.5px]"}`}>
+          <Text numberOfLines={singleLine ? 1 : 2} className={`font-semibold text-ink ${large ? "text-[15px]" : "text-[13.5px]"}`}>
             {name}
           </Text>
         )}
-        <Text numberOfLines={2} className="text-[12px] text-text2">
+        <Text numberOfLines={singleLine ? 1 : 2} className="text-[12px] text-text2">
           {detail}
         </Text>
       </View>

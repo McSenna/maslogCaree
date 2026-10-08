@@ -1,5 +1,6 @@
 // Form rules for adding and editing master list records. Import-free so
 // `node --test` can load it; the server repeats every check.
+import { formatTableDate } from "../../utils/dateFormatter.ts";
 import type { MasterResidentInput, MasterResidentRecord } from "./masterList.types.ts";
 
 export type MasterFormField = keyof MasterResidentInput;
@@ -110,18 +111,6 @@ export const toMasterInput = (values: MasterResidentInput, isEditing: boolean): 
 export const masterFullName = (record: Pick<MasterResidentRecord, "firstName" | "middleName" | "lastName" | "suffix">) =>
   [record.firstName, record.middleName, record.lastName, record.suffix].map((part) => part.trim()).filter(Boolean).join(" ");
 
-export const formatBirthDate = (value: string) => {
-  const date = new Date(`${value}T00:00:00.000Z`);
-  return Number.isNaN(date.getTime())
-    ? "Not recorded"
-    : date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
-};
+export const formatBirthDate = (value: string) => formatTableDate(value);
 
 export const capitalize = (value: string) => (value ? `${value[0].toUpperCase()}${value.slice(1)}` : "");
-
-/** "Showing 21 to 40 of 52 records" */
-export const recordRangeLine = (page: number, pageSize: number, shown: number, total: number) => {
-  if (total === 0) return "No records";
-  const from = (page - 1) * pageSize + 1;
-  return `Showing ${from} to ${from + shown - 1} of ${total} records`;
-};

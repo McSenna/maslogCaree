@@ -53,7 +53,7 @@ const DismissButton = ({ onPress }: { onPress: () => void }) => {
   );
 };
 
-const ActionButton = ({ label, onPress }: { label: string; onPress: () => void }) => {
+const ActionButton = ({ label, accessibilityLabel, onPress }: { label: string; accessibilityLabel?: string; onPress: () => void }) => {
   const colors = useThemeColors();
   const { hovered, pressed, focused, handlers } = useInteractionState();
 
@@ -61,6 +61,7 @@ const ActionButton = ({ label, onPress }: { label: string; onPress: () => void }
     <Pressable
       {...handlers}
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       onPress={onPress}
       style={{
         minHeight: CONTROL,
@@ -142,6 +143,7 @@ const ToastCard = ({ message, onPauseChange }: ToastCardProps) => {
       {message.action ? (
         <ActionButton
           label={message.action.label}
+          accessibilityLabel={message.action.accessibilityLabel}
           onPress={() => {
             dismissToast(message.id);
             message.action?.onPress();

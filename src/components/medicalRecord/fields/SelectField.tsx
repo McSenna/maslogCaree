@@ -1,6 +1,5 @@
 import { Pressable, Text, View } from "react-native";
 
-import { QUEUE_RADIUS } from "@/components/appointmentQueue/queueTheme";
 
 import { FieldHelper, FieldLabel, type FieldPartProps } from "./fieldShell";
 

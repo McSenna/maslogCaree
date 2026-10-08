@@ -6,7 +6,7 @@ import { isServiceDay } from "@/utils/serviceDays";
 
 import { keepOpenDay } from "./bookingRules";
 
-const LOAD_ERROR = "We could not load the open Wednesdays. Check your connection, then try again.";
+const LOAD_ERROR = "We could not load the open Thursdays. Check your connection, then try again.";
 
 /**
  * The days of a weekly service (immunization) and the one the resident picked.

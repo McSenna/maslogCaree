@@ -5,7 +5,8 @@
 
 export type ToastTone = "success" | "error" | "info";
 
-export type ToastAction = { label: string; onPress: () => void };
+/** `accessibilityLabel` names the action for screen readers when the label alone is vague ("Undo delete"). */
+export type ToastAction = { label: string; accessibilityLabel?: string; onPress: () => void };
 
 export type ToastMessage = {
   id: number;

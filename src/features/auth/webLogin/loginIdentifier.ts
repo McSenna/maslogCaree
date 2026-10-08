@@ -1,46 +1,33 @@
 // Kept free of `@/` imports so `node --test` can load it.
+import { checkEmailAddress, emailFormatMessage } from "../../../utils/emailAddress.ts";
 import { PASSWORD_MAX_LENGTH } from "../forgotPassword/passwordRules.ts";
 
 export const LOGIN_MESSAGES = {
-  identifierRequired: "Enter your email or mobile number.",
-  mobileLength: "Mobile numbers have 11 digits, like 0917 123 4567.",
-  emailFormat: "Check your email address. It should look like juan@email.com.",
+  emailRequired: "Enter your email address.",
+  // People who signed in with a number before keep trying it; say plainly what to use instead.
+  mobileNotAccepted: "Sign in with your email address. Mobile numbers can't be used to sign in.",
   passwordRequired: "Enter your password.",
   passwordTooLong: `Passwords have at most ${PASSWORD_MAX_LENGTH} characters. Check what you entered.`,
+  // The server answers an unknown address and a wrong password the same way, so nobody can use
+  // the login form to find out who has an account. This message covers both cases.
   credentialsMismatch:
-    "That email or mobile number and password don't match. Check both and try again, or reset your password.",
+    "We couldn't sign you in with that email address and password. Check both, reset your password, or create an account if you're new.",
 } as const;
 
-export type IdentifierCheck =
-  | { ok: true; kind: "email" | "mobile"; value: string }
-  | { ok: false; message: string };
+export type LoginEmailCheck = { ok: true; value: string } | { ok: false; message: string };
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-// Separators people type between digit groups: "0917 123 4567", "0917-123-4567", "(0917) 123.4567".
-const MOBILE_SEPARATORS = /[\s().-]/g;
-const LOOKS_LIKE_PHONE = /^\+?[\d\s().-]+$/;
-const LOCAL_MOBILE = /^09\d{9}$/;
-const INTERNATIONAL_MOBILE = /^\+639\d{9}$/;
+// Only digits and the separators people type between digit groups: "0917 123 4567", "+63 917...".
+const LOOKS_LIKE_PHONE = /^\+?[\d\s().-]*\d[\d\s().-]*$/;
 
-/**
- * Accepts an email address or a Philippine mobile number (09XXXXXXXXX or
- * +639XXXXXXXXX). Mobile numbers come back in the local 09 form.
- */
-export const checkIdentifier = (raw: string): IdentifierCheck => {
+/** Sign-in takes an email address only. The address is sent exactly as typed, trimmed. */
+export const checkLoginEmail = (raw: string): LoginEmailCheck => {
   const value = raw.trim();
-  if (!value) return { ok: false, message: LOGIN_MESSAGES.identifierRequired };
+  if (!value) return { ok: false, message: LOGIN_MESSAGES.emailRequired };
+  if (LOOKS_LIKE_PHONE.test(value)) return { ok: false, message: LOGIN_MESSAGES.mobileNotAccepted };
 
-  if (LOOKS_LIKE_PHONE.test(value)) {
-    const digits = value.replace(MOBILE_SEPARATORS, "");
-    if (LOCAL_MOBILE.test(digits)) return { ok: true, kind: "mobile", value: digits };
-    if (INTERNATIONAL_MOBILE.test(digits)) {
-      return { ok: true, kind: "mobile", value: `0${digits.slice(3)}` };
-    }
-    return { ok: false, message: LOGIN_MESSAGES.mobileLength };
-  }
-
-  if (EMAIL_PATTERN.test(value)) return { ok: true, kind: "email", value };
-  return { ok: false, message: LOGIN_MESSAGES.emailFormat };
+  // Any provider is fine; only the shape of the address is checked.
+  const email = checkEmailAddress(value);
+  return email.ok ? { ok: true, value: email.value } : { ok: false, message: emailFormatMessage(email.reason) };
 };
 
 export const checkPassword = (password: string): string | null => {

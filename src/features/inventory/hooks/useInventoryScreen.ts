@@ -12,7 +12,6 @@ export const useInventoryScreen = () => {
   const insets = useRoleScreenInsets();
 
   const [contentWidth, setContentWidth] = useState(insets.width);
-  const [tableAreaWidth, setTableAreaWidth] = useState(0);
   const [filterSheet, setFilterSheet] = useState<"filters" | "sort" | null>(null);
 
   // The count from the last load lets the query move a page past the end back onto the last page.
@@ -25,7 +24,7 @@ export const useInventoryScreen = () => {
     panelItem: selection.panelItem,
     applyItemUpdate: data.applyItemUpdate,
     showItem: selection.showItem,
-    reload: data.reload,
+    revalidate: data.revalidate,
   });
 
   const { loading, total } = data;
@@ -64,8 +63,6 @@ export const useInventoryScreen = () => {
     detailsActions,
     filterSheet,
     setFilterSheet,
-    tableAreaWidth,
-    setTableAreaWidth,
     measureContent,
     showTable: contentWidth >= INVENTORY_LAYOUT.table,
     fourMetrics: contentWidth >= INVENTORY_LAYOUT.fourMetrics,

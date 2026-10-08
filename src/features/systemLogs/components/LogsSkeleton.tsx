@@ -1,61 +1,6 @@
 import { View } from "react-native";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { LOG_COLUMNS } from "./logsTableColumns";
 import { useSystemLogsPalette } from "./systemLogsTheme";
-
-export const LogsTableSkeleton = ({ rows = 8 }: { rows?: number }) => {
-  const palette = useSystemLogsPalette();
-
-  const columns = [
-    LOG_COLUMNS.timestamp,
-    LOG_COLUMNS.user,
-    LOG_COLUMNS.role,
-    LOG_COLUMNS.action,
-    LOG_COLUMNS.module,
-    LOG_COLUMNS.severity,
-    LOG_COLUMNS.ip,
-    LOG_COLUMNS.status,
-  ];
-
-  return (
-    <View className="w-full" accessibilityLabel="Loading system logs">
-      <View
-        className="w-full flex-row items-center"
-        style={{ height: 44, borderBottomWidth: 1, borderBottomColor: palette.divider }}
-      >
-        <View className="px-3" style={{ width: LOG_COLUMNS.checkbox }}>
-          <Skeleton className="h-[18px] w-[18px] rounded" />
-        </View>
-        {columns.map((flex, i) => (
-          <View key={i} className="px-3" style={{ flex, minWidth: 0 }}>
-            <Skeleton className="h-2.5 w-3/5 rounded" />
-          </View>
-        ))}
-      </View>
-
-      {Array.from({ length: rows }).map((_, row) => (
-        <View
-          key={row}
-          className="w-full flex-row items-center"
-          style={{
-            minHeight: 68,
-            borderBottomWidth: row === rows - 1 ? 0 : 1,
-            borderBottomColor: palette.divider,
-          }}
-        >
-          <View className="px-3" style={{ width: LOG_COLUMNS.checkbox }}>
-            <Skeleton className="h-[18px] w-[18px] rounded" />
-          </View>
-          {columns.map((flex, i) => (
-            <View key={i} className="px-3" style={{ flex, minWidth: 0 }}>
-              <Skeleton className="h-3 w-4/5 rounded" />
-            </View>
-          ))}
-        </View>
-      ))}
-    </View>
-  );
-};
 
 export const MobileLogCardSkeleton = ({ count = 5 }: { count?: number }) => {
   const palette = useSystemLogsPalette();

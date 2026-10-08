@@ -1,21 +1,11 @@
-/**
- * Fixed-day service rules, mirrored from `serviceWeekdays` in the backend's
- * consultation categories. The server enforces them; this copy only gives
- * early feedback in the UI.
- */
-
-// Barangay Maslog keeps Philippine time, which has no daylight saving, so one
-// fixed offset maps any timestamp to its local calendar day on every device.
 const APP_UTC_OFFSET_MS = 8 * 60 * 60 * 1000;
 const DAY_MS = 24 * 60 * 60 * 1000;
-// 1970-01-01, day zero, was a Thursday.
 const EPOCH_WEEKDAY = 4;
 
 const WEEKDAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-/** Date#getDay() numbering, matching the backend. */
 const SERVICE_WEEKDAYS: Readonly<Record<string, readonly number[]>> = {
-  immunization: [3],
+  immunization: [4],
 };
 
 /** Services with their own weekly schedule (mirrors `scheduling: "weekly"` in the backend config). */
@@ -27,10 +17,6 @@ export const isWeeklyService = (serviceKey: string | null | undefined): boolean 
 const weekdaysOf = (serviceKey: string | null | undefined): readonly number[] | null =>
   (serviceKey && SERVICE_WEEKDAYS[serviceKey]) || null;
 
-/**
- * Days since the epoch on the barangay's calendar. A date-only key such as
- * "2026-10-07" parses as UTC midnight, which is 8 AM the same day here.
- */
 const appDayNumber = (value: string | Date): number | null => {
   const time = new Date(value).getTime();
   return Number.isNaN(time) ? null : Math.floor((time + APP_UTC_OFFSET_MS) / DAY_MS);
@@ -48,7 +34,7 @@ export const isServiceDay = (serviceKey: string | null | undefined, value: strin
   return weekday != null && weekdays.includes(weekday);
 };
 
-/** "Wednesday" for a fixed-day service, null for a service open every day. */
+/** "Thursday" for a fixed-day service, null for a service open every day. */
 export const serviceDayNames = (serviceKey: string | null | undefined): string | null => {
   const weekdays = weekdaysOf(serviceKey);
   return weekdays ? weekdays.map((day) => WEEKDAY_NAMES[day]).join(" and ") : null;
@@ -64,10 +50,6 @@ export const msUntilNextAppDay = (now: Date = new Date()): number => {
   return DAY_MS - intoDay;
 };
 
-/**
- * A fixed-day service cannot be completed before its scheduled calendar day.
- * The device clock only drives the button; the server re-checks with its own.
- */
 export const isCompletionLocked = (
   serviceKey: string | null | undefined,
   slotStart: string | null | undefined,

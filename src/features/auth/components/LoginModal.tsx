@@ -3,7 +3,6 @@ import { ScrollView, Text, View } from "react-native";
 import Modal from "@/components/ui/AppModal";
 
 import Button from "@/components/buttons/Button";
-import InlineAlert from "@/components/feedback/InlineAlert";
 import TextField from "@/components/forms/TextField";
 import BrandedDialogHeader from "@/components/ui/dialog/BrandedDialogHeader";
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
@@ -66,11 +65,11 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
             contentContainerStyle={{ padding: SPACING.xl - 4, gap: SPACING.lg }}
           >
             <TextField
-              label="Email or phone number"
-              leftIcon="user"
+              label="Email address"
+              leftIcon="mail"
               value={form.email}
               onChangeText={form.setEmail}
-              placeholder="Enter your email or phone"
+              placeholder="Enter your email address"
               autoCapitalize="none"
               autoComplete="username"
               keyboardType="email-address"
@@ -94,7 +93,6 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
               error={form.passwordError}
             />
 
-            {form.formError ? <InlineAlert title={form.formError.title} message={form.formError.message} /> : null}
 
             <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
               <Button variant="text" size="sm" label="Forgot password?" onPress={form.forgotPassword} />

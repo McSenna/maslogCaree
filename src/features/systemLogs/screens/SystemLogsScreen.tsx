@@ -14,7 +14,7 @@ import { useSystemLogs } from "../hooks/useSystemLogs";
 import { useSystemLogStats } from "../hooks/useSystemLogStats";
 import DesktopLogsView from "./DesktopLogsView";
 import LogFiltersToolbar from "./LogFiltersToolbar";
-import { buildFallback, buildMobileContent } from "./LogsListContent";
+import { buildMobileContent } from "./LogsListContent";
 import MobileLogsView from "./MobileLogsView";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
@@ -27,8 +27,6 @@ const SystemLogsScreen = () => {
   // "View activity" hands its search over in memory, never in the URL.
   const [initialSearch] = useState(peekActivitySearch);
   useEffect(clearActivitySearch, []);
-
-  const [tableAreaWidth, setTableAreaWidth] = useState(0);
 
   // The count from the last load lets the filters move a page past the end back onto the last page.
   const [listTotal, setListTotal] = useState<number | null>(null);
@@ -64,7 +62,6 @@ const SystemLogsScreen = () => {
   const retry = () => fetchLogs({ ...filters.params, page: 1 });
   const showingRows = !loading && !error && logs.length > 0;
 
-  const fallback = buildFallback(error, filters.hasActiveFilters, retry);
   const mobileContent = buildMobileContent({
     loading,
     refreshing,
@@ -120,16 +117,13 @@ const SystemLogsScreen = () => {
               logs={logs}
               loading={loading}
               refreshing={refreshing}
-              fallback={fallback}
-              showFallback={Boolean(error) || logs.length === 0}
+              error={error}
+              hasActiveFilters={filters.hasActiveFilters}
+              onRetry={retry}
               selectedLog={selection.selectedLog}
               onSelect={selection.selectLog}
               onClearSelection={selection.clearSelection}
-              tableAreaWidth={tableAreaWidth}
-              onTableAreaWidth={setTableAreaWidth}
-              showPagination={showingRows}
               page={filters.page}
-              totalPages={totalPages}
               total={total}
               onPageChange={filters.setPage}
             />
@@ -138,7 +132,6 @@ const SystemLogsScreen = () => {
               content={mobileContent}
               showPagination={showingRows}
               page={filters.page}
-              totalPages={totalPages}
               total={total}
               onPageChange={filters.setPage}
             />

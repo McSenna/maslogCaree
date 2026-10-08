@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import { CARD_SHADOW, RADIUS, useUsersPalette } from "@/features/users/components/usersTheme";
-import { RESIDENT_COLUMNS } from "./residentsLayout";
 
 const Bar = ({ width, height = 10 }: { width: number | `${number}%`; height?: number }) => {
   const palette = useUsersPalette();
@@ -38,73 +37,18 @@ const CardSkeleton = ({ dense }: { dense: boolean }) => {
   );
 };
 
-const RowSkeleton = ({ isLast }: { isLast: boolean }) => {
-  const palette = useUsersPalette();
-
-  return (
-    <View
-      className="w-full flex-row items-center"
-      style={{
-        minHeight: 68,
-        borderBottomWidth: isLast ? 0 : 1,
-        borderBottomColor: palette.divider,
-      }}
-    >
-      <View
-        className="flex-row items-center gap-2.5 px-3"
-        style={{ flex: RESIDENT_COLUMNS.resident, minWidth: 0 }}
-      >
-        <View style={{ width: 40, height: 40, borderRadius: 999, backgroundColor: palette.skeleton }} />
-        <View className="min-w-0 flex-1 gap-1.5">
-          <Bar width="70%" height={12} />
-          <Bar width="45%" height={9} />
-        </View>
-      </View>
-      <View className="gap-1.5 px-3" style={{ flex: RESIDENT_COLUMNS.contact, minWidth: 0 }}>
-        <Bar width="65%" />
-        <Bar width="85%" height={9} />
-      </View>
-      <View className="px-3" style={{ flex: RESIDENT_COLUMNS.address, minWidth: 0 }}>
-        <Bar width="88%" />
-      </View>
-      <View className="px-3" style={{ flex: RESIDENT_COLUMNS.status, minWidth: 0 }}>
-        <Bar width={64} height={22} />
-      </View>
-      <View className="px-3" style={{ flex: RESIDENT_COLUMNS.registered, minWidth: 0 }}>
-        <Bar width="70%" />
-      </View>
-    </View>
-  );
-};
-
 type ResidentsSkeletonListProps = {
   count?: number;
-  isMobile?: boolean;
   dense?: boolean;
 };
 
-const ResidentsSkeletonList = ({
-  count = 8,
-  isMobile = false,
-  dense = false,
-}: ResidentsSkeletonListProps) => {
-  if (isMobile) {
-    return (
-      <View className="w-full gap-2.5">
-        {Array.from({ length: count }).map((_, index) => (
-          <CardSkeleton key={index} dense={dense} />
-        ))}
-      </View>
-    );
-  }
-
-  return (
-    <View className="w-full">
-      {Array.from({ length: count }).map((_, index) => (
-        <RowSkeleton key={index} isLast={index === count - 1} />
-      ))}
-    </View>
-  );
-};
+/** Phone placeholders shaped like resident cards; the desktop table draws its own skeleton rows. */
+const ResidentsSkeletonList = ({ count = 8, dense = false }: ResidentsSkeletonListProps) => (
+  <View className="w-full gap-2.5">
+    {Array.from({ length: count }).map((_, index) => (
+      <CardSkeleton key={index} dense={dense} />
+    ))}
+  </View>
+);
 
 export default ResidentsSkeletonList;

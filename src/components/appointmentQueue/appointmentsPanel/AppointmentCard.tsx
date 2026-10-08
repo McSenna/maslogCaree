@@ -1,43 +1,30 @@
-import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { QUEUE_RADIUS, type QueuePalette } from "../queueTheme";
+import { Text, View } from "react-native";
+
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
+import { TYPE } from "@/theme/typography";
+import { appointmentPatientName, childCaption } from "@/utils/appointmentPatient";
+
+import type { QueuePalette } from "../queueTheme";
 import { isRescheduledRequest, scheduleFor } from "./appointmentSchedule";
 import QueueAvatar from "./QueueAvatar";
 import RowActions, { type RowActionProps } from "./RowActions";
-import { TYPE } from "@/theme/typography";
-import { appointmentPatientName, childCaption } from "@/utils/appointmentPatient";
 
 type AppointmentCardProps = RowActionProps & {
   serviceLabel: string;
   palette: QueuePalette;
 };
 
-const AppointmentCard = ({
-  appointment,
-  serviceLabel,
-  palette,
-  ...actions
-}: AppointmentCardProps) => {
+/** One appointment on a phone or a narrow panel; the table's card list draws the frame around it. */
+const AppointmentCard = ({ appointment, serviceLabel, palette, ...actions }: AppointmentCardProps) => {
   const when = scheduleFor(appointment);
 
   return (
-    <View
-      className="w-full gap-3 border p-3.5"
-      style={{
-        borderRadius: QUEUE_RADIUS.card,
-        backgroundColor: palette.panelBg,
-        borderColor: palette.panelBorder,
-      }}
-    >
+    <View className="w-full gap-3">
       <View className="flex-row items-center gap-3">
         <QueueAvatar name={appointmentPatientName(appointment, "")} palette={palette} />
         <View className="min-w-0 flex-1">
-          <Text
-            numberOfLines={1}
-            className="text-[15px] font-bold"
-            style={{ color: palette.heading }}
-          >
+          <Text numberOfLines={1} className="text-[15px] font-bold" style={{ color: palette.heading }}>
             {appointmentPatientName(appointment)}
           </Text>
           <Text numberOfLines={1} className="mt-0.5 text-[13px]" style={{ color: palette.muted }}>
@@ -66,10 +53,7 @@ const AppointmentCard = ({
         </View>
       </View>
 
-      <View
-        className="flex-row items-center justify-between gap-2 pt-3"
-        style={{ borderTopWidth: 1, borderTopColor: palette.divider }}
-      >
+      <View className="flex-row flex-wrap items-center justify-between gap-2 border-t pt-3" style={{ borderTopColor: palette.divider }}>
         <AppointmentStatusBadge status={appointment.status} />
         <RowActions appointment={appointment} {...actions} />
       </View>

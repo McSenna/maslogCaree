@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { FlatList, Platform, RefreshControl, ScrollView, View } from "react-native";
-import Pagination from "@/components/ui/Pagination";
+import { Pagination } from "@/components/data-table";
 import type { InventoryScreenController } from "../hooks/useInventoryScreen";
 import { PAGE_SIZE } from "../constants/inventoryLayout";
 import { can } from "../services/inventoryService";
@@ -65,10 +65,9 @@ const InventoryMobileLayout = ({
       <View className="w-full pt-4">
         <Pagination
           page={query.page}
-          totalPages={data.totalPages}
           total={data.total}
           pageSize={PAGE_SIZE}
-          isDesktop={false}
+          compact
           onPageChange={query.setPage}
           noun="items"
         />
@@ -76,7 +75,7 @@ const InventoryMobileLayout = ({
     ) : null;
 
   const empty = data.loading ? (
-    <InventorySkeleton count={6} isMobile dense={dense} />
+    <InventorySkeleton count={6} dense={dense} />
   ) : (
     <View
       className="w-full border"

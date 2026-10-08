@@ -6,13 +6,6 @@ import MobileLogList from "../components/MobileLogList";
 import { PAGE_SIZE } from "../constants/logsLayout";
 import type { SystemLog } from "../services/systemLogService";
 
-export const buildFallback = (error: string | null, hasActiveFilters: boolean, onRetry: () => void): ReactNode =>
-  error ? (
-    <LogsErrorState message={error} onRetry={onRetry} bare />
-  ) : (
-    <LogsEmptyState hasFilters={hasActiveFilters} bare />
-  );
-
 export const buildMobileContent = ({
   loading,
   refreshing,

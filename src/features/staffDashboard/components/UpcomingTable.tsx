@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import PanelCard from "@/components/dashboard/admin/PanelCard";
-import { DataTable, type TableColumn } from "@/components/dashboard/kit";
+import { DataTable, type Column } from "@/components/data-table";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { StaffAppointment } from "@/services/staffDashboardService";
 import ServiceBadge from "./ServiceBadge";
@@ -54,11 +54,12 @@ const UpcomingTable = ({
 }) => {
   const rows = appointments.slice(0, VISIBLE_ROWS);
 
-  const columns: TableColumn<StaffAppointment>[] = [
+  const columns: Column<StaffAppointment>[] = [
     {
       key: "patient",
       header: personNoun === "resident" ? "Resident" : "Patient",
       flex: 1,
+      minWidth: 150,
       render: (row) => (
         <View className="min-w-0 gap-1" style={{ alignSelf: "stretch" }}>
           <Text className="text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
@@ -68,7 +69,7 @@ const UpcomingTable = ({
         </View>
       ),
     },
-    { key: "when", header: "When", width: 112, align: "right", render: (row) => <When palette={palette} iso={row.slotStart} /> },
+    { key: "when", header: "When", width: 144, align: "right", render: (row) => <When palette={palette} iso={row.slotStart} /> },
   ];
 
   return (
@@ -82,17 +83,18 @@ const UpcomingTable = ({
       fill={fill}
     >
       <DataTable
-        palette={palette}
         caption="Coming up"
+        surface="plain"
+        density="compact"
         columns={columns}
-        rows={rows}
+        data={rows}
         rowKey={(row) => row._id}
         rowLabel={(row) => {
           const { day, time } = parts(row.slotStart);
           return `${row.patientName}, ${row.serviceLabel}, ${day} ${time}`;
         }}
         emptyIcon="calendar"
-        emptyMessage="Nothing booked after today yet."
+        emptyTitle="Nothing booked after today yet."
       />
     </PanelCard>
   );

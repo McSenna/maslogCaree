@@ -1,34 +1,50 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { LOGIN_MESSAGES, checkIdentifier, checkPassword } from "../loginIdentifier.ts";
+import { EMAIL_MESSAGES } from "../../../../utils/emailAddress.ts";
+import { LOGIN_MESSAGES, checkLoginEmail, checkPassword } from "../loginIdentifier.ts";
 
-describe("checkIdentifier", () => {
-  it("asks for a value when the field is empty", () => {
+describe("checkLoginEmail", () => {
+  it("asks for an email address when the field is empty", () => {
     for (const raw of ["", "   "]) {
-      assert.deepEqual(checkIdentifier(raw), { ok: false, message: LOGIN_MESSAGES.identifierRequired });
+      assert.deepEqual(checkLoginEmail(raw), { ok: false, message: LOGIN_MESSAGES.emailRequired });
     }
   });
 
-  it("accepts local and international PH mobile numbers and returns the 09 form", () => {
-    for (const raw of ["09171234567", "0917 123 4567", "0917-123-4567", "+639171234567", " +63 917 123 4567 "]) {
-      assert.deepEqual(checkIdentifier(raw), { ok: true, kind: "mobile", value: "09171234567" }, raw);
+  it("refuses a mobile number in any format and says sign-in takes an email address", () => {
+    const numbers = ["09171234567", "0917 123 4567", "0917-123-4567", "(0917) 123.4567", "+639171234567", " +63 917 123 4567 ", "0917123456"];
+    for (const raw of numbers) {
+      assert.deepEqual(checkLoginEmail(raw), { ok: false, message: LOGIN_MESSAGES.mobileNotAccepted }, raw);
     }
   });
 
-  it("explains the 11-digit format for short or malformed numbers", () => {
-    for (const raw of ["0917123456", "0917 123", "091712345678", "639171234567", "12345678901"]) {
-      assert.deepEqual(checkIdentifier(raw), { ok: false, message: LOGIN_MESSAGES.mobileLength }, raw);
+  it("never mentions mobile numbers except to say they are not accepted", () => {
+    for (const [key, message] of Object.entries(LOGIN_MESSAGES)) {
+      if (key === "mobileNotAccepted") continue;
+      assert.doesNotMatch(message, /mobile|phone/i, key);
     }
   });
 
   it("accepts a well-formed email address", () => {
-    assert.deepEqual(checkIdentifier(" juan@email.com "), { ok: true, kind: "email", value: "juan@email.com" });
+    assert.deepEqual(checkLoginEmail(" juan@email.com "), { ok: true, value: "juan@email.com" });
   });
 
-  it("shows an example for malformed email addresses", () => {
-    for (const raw of ["juan", "juan@", "juan@email", "juan@email.c", "juan dela@email.com"]) {
-      assert.deepEqual(checkIdentifier(raw), { ok: false, message: LOGIN_MESSAGES.emailFormat }, raw);
+  it("says what to fix in a malformed email address", () => {
+    const cases: [string, string][] = [
+      ["juan", EMAIL_MESSAGES.missingAt],
+      ["juan@", EMAIL_MESSAGES.domainFormat],
+      ["juan@email", EMAIL_MESSAGES.domainFormat],
+      ["juan@email.c", EMAIL_MESSAGES.domainFormat],
+      ["juan dela@email.com", EMAIL_MESSAGES.spaces],
+    ];
+    for (const [raw, message] of cases) {
+      assert.deepEqual(checkLoginEmail(raw), { ok: false, message }, raw);
+    }
+  });
+
+  it("accepts an address from any provider exactly as typed", () => {
+    for (const raw of ["maria@yahoo.com", "Ana.Cruz+clinic@outlook.ph", "staff@deped.gov.ph"]) {
+      assert.deepEqual(checkLoginEmail(raw), { ok: true, value: raw }, raw);
     }
   });
 });

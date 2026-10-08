@@ -1,5 +1,18 @@
 import StateBlock from "@/components/ui/StateBlock";
 
+export const INVENTORY_ERROR = "Unable to load inventory.";
+
+/** Nothing stocked yet, or nothing matching the filters. Only users who can add items get that action. */
+export const inventoryEmptyCopy = (hasActiveFilters: boolean) =>
+  hasActiveFilters
+    ? { icon: "search" as const, title: "No inventory items found.", body: "Try adjusting your search or filters.", action: "Clear filters" }
+    : {
+        icon: "package" as const,
+        title: "No inventory items yet",
+        body: "Add medicines, vaccines, supplies, or equipment to start tracking stock.",
+        action: "Add item",
+      };
+
 type InventoryEmptyStateProps = {
   error: string | null;
   hasActiveFilters: boolean;
@@ -9,45 +22,24 @@ type InventoryEmptyStateProps = {
   onAddItem: () => void;
 };
 
-const InventoryEmptyState = ({
-  error,
-  hasActiveFilters,
-  canCreate,
-  onRetry,
-  onClearFilters,
-  onAddItem,
-}: InventoryEmptyStateProps) => {
+/** The phone list's error and empty states; the desktop table draws the same ones itself. */
+const InventoryEmptyState = ({ error, hasActiveFilters, canCreate, onRetry, onClearFilters, onAddItem }: InventoryEmptyStateProps) => {
   if (error) {
     return (
-      <StateBlock
-        icon="alert-circle"
-        tone="error"
-        title="Unable to load inventory."
-        body="Please try again."
-        action={{ label: "Retry", onPress: onRetry }}
-      />
+      <StateBlock icon="alert-circle" tone="error" title={INVENTORY_ERROR} body="Please try again." action={{ label: "Retry", onPress: onRetry }} />
     );
   }
 
-  if (hasActiveFilters) {
-    return (
-      <StateBlock
-        icon="search"
-        tone="neutral"
-        title="No inventory items found."
-        body="Try adjusting your search or filters."
-        action={{ label: "Clear Filters", onPress: onClearFilters }}
-      />
-    );
-  }
-
+  const copy = inventoryEmptyCopy(hasActiveFilters);
+  const onPress = hasActiveFilters ? onClearFilters : onAddItem;
+  const showAction = hasActiveFilters || canCreate;
   return (
     <StateBlock
-      icon="package"
+      icon={copy.icon}
       tone="neutral"
-      title="No inventory items yet"
-      body="Add medicines, vaccines, supplies, or equipment to start tracking stock."
-      action={canCreate ? { label: "Add Item", onPress: onAddItem } : undefined}
+      title={copy.title}
+      body={copy.body}
+      action={showAction ? { label: copy.action, onPress } : undefined}
     />
   );
 };

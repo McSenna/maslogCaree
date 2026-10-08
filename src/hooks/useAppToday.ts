@@ -4,7 +4,7 @@ import { msUntilNextAppDay } from "@/utils/serviceDays";
 
 /**
  * The current time, re-read when the barangay's calendar day rolls over, so
- * day-gated actions (immunization on its Wednesday) unlock on a screen left
+ * day-gated actions (immunization on its Thursday) unlock on a screen left
  * open overnight, such as the health center tablet, without a reload.
  */
 export const useAppToday = (): Date => {

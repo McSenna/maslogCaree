@@ -25,14 +25,18 @@ const resolveView = (isLoading: boolean, failed: boolean, total: number, shown: 
   return "list";
 };
 
-const deletionFailedTitle = () => "Announcement not deleted";
+const DELETION_TOAST = {
+  message: () => "Announcement deleted.",
+  failureTitle: () => "Announcement not deleted",
+  undoLabel: "Undo delete",
+};
 
 /** Everything both layouts share; only the presentation differs between them. */
 export const useAnnouncementsScreen = (openOnMount: boolean) => {
   const data = useAnnouncements();
   const { deleteAnnouncement } = data;
   const commitDelete = useCallback((item: Announcement) => deleteAnnouncement(item.id), [deleteAnnouncement]);
-  const deletion = useUndoableAction(commitDelete, deletionFailedTitle);
+  const deletion = useUndoableAction(commitDelete, DELETION_TOAST);
   const [filters, setFilters] = useState<AnnouncementFilters>(EMPTY_FILTERS);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [editor, setEditor] = useState<EditorTarget>(openOnMount ? "new" : null);
@@ -63,7 +67,6 @@ export const useAnnouncementsScreen = (openOnMount: boolean) => {
     },
     [requestDelete]
   );
-  const toastMessage = deletion.toast ? "Announcement deleted." : null;
 
   const view = resolveView(data.isLoading, Boolean(data.error), present.length, visible.length);
 
@@ -71,7 +74,6 @@ export const useAnnouncementsScreen = (openOnMount: boolean) => {
     view,
     data,
     deletion,
-    toastMessage,
     filters,
     setQuery,
     setAudience,

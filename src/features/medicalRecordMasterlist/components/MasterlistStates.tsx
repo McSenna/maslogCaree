@@ -1,22 +1,34 @@
 import { View } from "react-native";
 
-import DashboardButton from "@/components/dashboard/admin/DashboardButton";
-import DashboardErrorState from "@/components/dashboard/admin/DashboardErrorState";
-import EmptyPanelState from "@/components/dashboard/admin/EmptyPanelState";
+import { TableEmptyState, TableErrorState, type DataTableProps } from "@/components/data-table";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import type { MasterListView } from "@/features/masterList/masterListView";
 
-const LoadingRows = () => (
-  <View accessible accessibilityLabel="Loading medical records" accessibilityRole="progressbar">
-    {[0, 1, 2, 3, 4].map((row) => (
-      <View key={row} className="min-h-16 gap-2 border-t border-divider px-3 py-3">
-        <Skeleton className="h-3.5 w-[40%]" />
-        <Skeleton className="h-3 w-[25%]" />
-      </View>
-    ))}
-  </View>
-);
+type EmptyCopy = Pick<DataTableProps<unknown>, "emptyIcon" | "emptyTitle" | "emptyDescription" | "emptyAction">;
+
+export const MASTERLIST_ERROR = "Unable to load medical records.";
+
+/** Nothing encoded yet, or nothing matching the filters. Only encoders get the add action. */
+export const masterlistEmptyCopy = (
+  filtered: boolean,
+  canEncode: boolean,
+  onClearFilters: () => void,
+  onAdd: () => void
+): EmptyCopy =>
+  filtered
+    ? {
+        emptyIcon: "search",
+        emptyTitle: "No medical records found",
+        emptyDescription: "Nothing matches this search and these filters.",
+        emptyAction: { label: "Clear filters", icon: "x", onPress: onClearFilters, variant: "outlined" },
+      }
+    : {
+        emptyIcon: "file-text",
+        emptyTitle: "No medical records found",
+        emptyDescription:
+          "Encode the health center's paper records here. Each one is filed under a resident on the barangay master list.",
+        emptyAction: canEncode ? { label: "Add medical record", icon: "plus", onPress: onAdd } : undefined,
+      };
 
 type Props = {
   view: Exclude<MasterListView, "list">;
@@ -26,39 +38,25 @@ type Props = {
   onAdd: () => void;
 };
 
-/** What the table area shows instead of records: loading, error, nothing yet, or nothing matching. */
+/** The phone list's loading, error and empty states; the wide table draws the same ones itself. */
 const MasterlistStates = ({ view, canEncode, onRetry, onClearFilters, onAdd }: Props) => {
-  const palette = useAdminSurfacePalette();
-  if (view === "loading") return <LoadingRows />;
-  if (view === "error") {
+  if (view === "loading") {
     return (
-      <View className="p-3">
-        <DashboardErrorState
-          palette={palette}
-          title="Unable to load medical records."
-          message="Check your connection and try again."
-          retryLabel="Try loading medical records again"
-          onRetry={onRetry}
-        />
+      <View accessible accessibilityLabel="Loading medical records" accessibilityRole="progressbar">
+        {[0, 1, 2, 3, 4].map((row) => (
+          <View key={row} className="min-h-16 gap-2 border-t border-divider px-3 py-3">
+            <Skeleton className="h-3.5 w-[40%]" />
+            <Skeleton className="h-3 w-[25%]" />
+          </View>
+        ))}
       </View>
     );
   }
-  if (view === "noResults") {
-    return (
-      <EmptyPanelState palette={palette} icon="search" title="No medical records found" message="Nothing matches this search and these filters.">
-        <DashboardButton palette={palette} variant="link" label="Clear filters" onPress={onClearFilters} />
-      </EmptyPanelState>
-    );
-  }
+  if (view === "error") return <TableErrorState title={MASTERLIST_ERROR} onRetry={onRetry} />;
+
+  const copy = masterlistEmptyCopy(view === "noResults", canEncode, onClearFilters, onAdd);
   return (
-    <EmptyPanelState
-      palette={palette}
-      icon="file-text"
-      title="No medical records found"
-      message="Encode the health center's paper records here. Each one is filed under a resident on the barangay master list."
-    >
-      {canEncode ? <DashboardButton palette={palette} variant="primary" icon="plus" label="Add medical record" onPress={onAdd} /> : null}
-    </EmptyPanelState>
+    <TableEmptyState icon={copy.emptyIcon} title={copy.emptyTitle ?? ""} description={copy.emptyDescription} action={copy.emptyAction} />
   );
 };
 

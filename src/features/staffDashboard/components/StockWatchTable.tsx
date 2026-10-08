@@ -1,14 +1,14 @@
 import { Text, View } from "react-native";
 import PanelCard from "@/components/dashboard/admin/PanelCard";
-import { DataTable, StatusPill, type TableColumn } from "@/components/dashboard/kit";
+import { Badge, DataTable, type Column, type FeatherName } from "@/components/data-table";
 import type { AdminDashboardPalette, StatusToneName } from "@/design/adminDashboardTheme";
 import type { InventoryAlert } from "@/services/staffDashboardService";
 import { stockIssueOf, type StockIssue } from "../model/staffDashboardModel";
 
-const ISSUE: Record<StockIssue, { label: string; tone: StatusToneName }> = {
-  out: { label: "Out of stock", tone: "danger" },
-  low: { label: "Low", tone: "warning" },
-  expiring: { label: "Expiring", tone: "info" },
+const ISSUE: Record<StockIssue, { label: string; tone: StatusToneName; icon: FeatherName }> = {
+  out: { label: "Out of stock", tone: "danger", icon: "x-circle" },
+  low: { label: "Low", tone: "warning", icon: "alert-triangle" },
+  expiring: { label: "Expiring", tone: "info", icon: "clock" },
 };
 
 const expiryLabel = (iso: string | null): string => {
@@ -29,9 +29,9 @@ const ItemCell = ({ palette, item }: { palette: AdminDashboardPalette; item: Inv
   </View>
 );
 
-const IssuePill = ({ palette, item }: { palette: AdminDashboardPalette; item: InventoryAlert }) => {
+const IssuePill = ({ item }: { item: InventoryAlert }) => {
   const issue = stockIssueOf(item);
-  return issue ? <StatusPill palette={palette} tone={ISSUE[issue].tone} label={ISSUE[issue].label} /> : null;
+  return issue ? <Badge tone={ISSUE[issue].tone} icon={ISSUE[issue].icon} label={ISSUE[issue].label} spokenAs="Stock" /> : null;
 };
 
 /** Stock in this role's categories that needs reordering or will expire soon. */
@@ -46,12 +46,12 @@ const StockWatchTable = ({
   onOpenInventory: () => void;
   fill?: boolean;
 }) => {
-  const columns: TableColumn<InventoryAlert>[] = [
-    { key: "item", header: "Item", flex: 1, render: (item) => <ItemCell palette={palette} item={item} /> },
+  const columns: Column<InventoryAlert>[] = [
+    { key: "item", header: "Item", flex: 1, minWidth: 140, render: (item) => <ItemCell palette={palette} item={item} /> },
     {
       key: "stock",
       header: "In stock",
-      width: 60,
+      width: 92,
       align: "right",
       render: (item) => (
         <Text className="text-[13.5px] font-bold" style={{ color: palette.heading, fontVariant: ["tabular-nums"] }}>
@@ -59,7 +59,7 @@ const StockWatchTable = ({
         </Text>
       ),
     },
-    { key: "issue", header: "Status", width: 104, align: "right", render: (item) => <IssuePill palette={palette} item={item} /> },
+    { key: "issue", header: "Status", width: 152, align: "right", cardRole: "badge", render: (item) => <IssuePill item={item} /> },
   ];
 
   return (
@@ -73,10 +73,11 @@ const StockWatchTable = ({
       fill={fill}
     >
       <DataTable
-        palette={palette}
         caption="Stock to watch"
+        surface="plain"
+        density="compact"
         columns={columns}
-        rows={items}
+        data={items}
         rowKey={(item) => item._id}
         rowLabel={(item) => {
           const issue = stockIssueOf(item);
@@ -85,7 +86,7 @@ const StockWatchTable = ({
         onRowPress={onOpenInventory}
         rowHint="Opens the inventory"
         emptyIcon="check-circle"
-        emptyMessage="Stock levels look healthy."
+        emptyTitle="Stock levels look healthy."
       />
     </PanelCard>
   );

@@ -1,6 +1,5 @@
 import type { RefObject } from "react";
 import { View, type TextInput } from "react-native";
-import InlineAlert from "@/components/feedback/InlineAlert";
 import AuthField from "@/components/landing/AuthField";
 import { PASSWORD_MAX_LENGTH } from "../forgotPassword/passwordRules";
 import type { useLoginForm } from "../hooks/useLoginForm";
@@ -29,9 +28,9 @@ const AuthCardFields = ({ form, metrics, emailRef, passwordRef, onSubmit }: Auth
       <AuthField
         {...fieldProps}
         inputRef={emailRef}
-        label="Email or phone number"
+        label="Email address"
         icon="mail-outline"
-        placeholder="Enter your email or phone"
+        placeholder="Enter your email address"
         value={form.email}
         onChangeText={form.setEmail}
         keyboardType="email-address"
@@ -59,10 +58,6 @@ const AuthCardFields = ({ form, metrics, emailRef, passwordRef, onSubmit }: Auth
         onSubmitEditing={onSubmit}
         error={form.passwordError}
       />
-
-      {form.formError ? (
-        <InlineAlert scheme="light" title={form.formError.title} message={form.formError.message} />
-      ) : null}
     </View>
   );
 };

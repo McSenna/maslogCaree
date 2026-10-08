@@ -1,48 +1,71 @@
-import type { ReactNode } from "react";
+import { useMemo } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
 import type { InventoryScreenController } from "../hooks/useInventoryScreen";
-import { PANEL_WIDTH } from "../constants/inventoryLayout";
+import { PAGE_SIZE, PANEL_WIDTH } from "../constants/inventoryLayout";
 import { can } from "../services/inventoryService";
 import InventoryDetailsPanel from "./InventoryDetailsPanel";
 import InventoryMetricCards from "./InventoryMetricCards";
-import InventoryTableCard from "./InventoryTableCard";
+import { DataTable } from "@/components/data-table";
+import { INVENTORY_ERROR, inventoryEmptyCopy } from "./InventoryEmptyState";
+import { inventoryColumns } from "./inventoryColumns";
 import InventoryToolbar from "./InventoryToolbar";
 import { useInventoryPalette } from "./inventoryTheme";
 import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 type InventoryDesktopLayoutProps = {
   controller: InventoryScreenController;
-  emptyState: ReactNode;
 };
 
-const InventoryDesktopLayout = ({
-  controller,
-  emptyState,
-}: InventoryDesktopLayoutProps) => {
+const InventoryDesktopLayout = ({ controller }: InventoryDesktopLayoutProps) => {
   const palette = useInventoryPalette();
   const { query, data, selection, mutations, detailsActions, sideBySide } = controller;
   const { filters } = query;
   // A new page starts at its first row.
   const scrollRef = useScrollTopOnChange<ScrollView>(query.page);
 
+  const checkedOnPage = data.items.filter((item) => selection.checkedIds.has(item._id)).length;
+  const allChecked = data.items.length > 0 && checkedOnPage === data.items.length;
+  const columns = useMemo(
+    () =>
+      inventoryColumns({
+        checkedIds: selection.checkedIds,
+        allChecked,
+        someChecked: checkedOnPage > 0 && !allChecked,
+        onToggleItem: selection.toggleItem,
+        onToggleAll: selection.toggleAllOnPage,
+        onOpen: selection.selectItem,
+      }),
+    [selection.checkedIds, allChecked, checkedOnPage, selection.toggleItem, selection.toggleAllOnPage, selection.selectItem]
+  );
+  const empty = inventoryEmptyCopy(query.hasActiveFilters);
+  const emptyAction = query.hasActiveFilters
+    ? { label: empty.action, icon: "x" as const, onPress: query.clearFilters, variant: "outlined" as const }
+    : can(data.permissions, "inventory.create")
+      ? { label: empty.action, icon: "plus" as const, onPress: () => mutations.openModal("add-item") }
+      : undefined;
+
   const tableCard = (
-    <InventoryTableCard
-      items={data.items}
-      loading={data.loading}
-      error={data.error}
-      fallback={emptyState}
-      selectedId={selection.selectedId}
-      onSelectItem={selection.selectItem}
-      checkedIds={selection.checkedIds}
-      onToggleItem={selection.toggleItem}
-      onToggleAll={selection.toggleAllOnPage}
-      tableAreaWidth={controller.tableAreaWidth}
-      onTableAreaWidth={controller.setTableAreaWidth}
-      page={query.page}
-      totalPages={data.totalPages}
-      total={data.total}
-      onPageChange={query.setPage}
-    />
+    <View className="min-w-0 flex-1">
+      <DataTable
+        caption="Inventory items"
+        columns={columns}
+        data={data.items}
+        rowKey={(item) => item._id}
+        loading={data.loading}
+        refreshing={data.refreshing}
+        error={data.error ? "Please try again." : null}
+        errorTitle={INVENTORY_ERROR}
+        onRetry={() => void data.reload()}
+        emptyIcon={empty.icon}
+        emptyTitle={empty.title}
+        emptyDescription={empty.body}
+        emptyAction={emptyAction}
+        onRowPress={selection.selectItem}
+        rowPressMode="pointer"
+        isRowSelected={(item) => item._id === selection.selectedId}
+        pagination={{ page: query.page, pageSize: PAGE_SIZE, total: data.total, onPageChange: query.setPage, noun: "items" }}
+      />
+    </View>
   );
 
   const detailsPanel = (

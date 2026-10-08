@@ -1,12 +1,29 @@
 import { View } from "react-native";
 
-import DashboardButton from "@/components/dashboard/admin/DashboardButton";
-import DashboardErrorState from "@/components/dashboard/admin/DashboardErrorState";
-import EmptyPanelState from "@/components/dashboard/admin/EmptyPanelState";
+import { TableEmptyState, TableErrorState, type DataTableProps } from "@/components/data-table";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { MasterListView } from "../masterListView";
+
+type EmptyCopy = Pick<DataTableProps<unknown>, "emptyIcon" | "emptyTitle" | "emptyDescription" | "emptyAction">;
+
+export const MASTER_LIST_ERROR = "Could not load the master list.";
+
+/** Nothing on the list yet, or nothing matching the search: different words and a different next step. */
+export const masterListEmptyCopy = (filtered: boolean, onClearFilters: () => void, onAdd: () => void): EmptyCopy =>
+  filtered
+    ? {
+        emptyIcon: "search",
+        emptyTitle: "No records found",
+        emptyDescription: "Nothing matches this search. Check the spelling or search by record ID.",
+        emptyAction: { label: "Clear search", icon: "x", onPress: onClearFilters, variant: "outlined" },
+      }
+    : {
+        emptyIcon: "users",
+        emptyTitle: "No master list records yet",
+        emptyDescription: "Add the barangay's official resident records here. Sign-ups are checked against this list.",
+        emptyAction: { label: "Add record", icon: "plus", onPress: onAdd },
+      };
 
 const LoadingRows = () => (
   <View accessible accessibilityLabel="Loading master list records" accessibilityRole="progressbar">
@@ -26,39 +43,19 @@ type Props = {
   onAdd: () => void;
 };
 
-/** What the table area shows instead of records: loading, error, nothing yet, or nothing matching. */
+/** The phone list's loading, error and empty states; the wide table draws the same ones itself. */
 const MasterListStates = ({ view, onRetry, onClearFilters, onAdd }: Props) => {
-  const palette = useAdminSurfacePalette();
   if (view === "loading") return <LoadingRows />;
-  if (view === "error") {
-    return (
-      <View className="p-3">
-        <DashboardErrorState
-          palette={palette}
-          title="Could not load the master list."
-          message="Check your connection and try again."
-          retryLabel="Retry loading the master list"
-          onRetry={onRetry}
-        />
-      </View>
-    );
-  }
-  if (view === "noResults") {
-    return (
-      <EmptyPanelState palette={palette} icon="search" title="No records found" message="Nothing matches this search and status.">
-        <DashboardButton palette={palette} variant="link" label="Clear search" onPress={onClearFilters} />
-      </EmptyPanelState>
-    );
-  }
+  if (view === "error") return <TableErrorState title={MASTER_LIST_ERROR} onRetry={onRetry} />;
+
+  const copy = masterListEmptyCopy(view === "noResults", onClearFilters, onAdd);
   return (
-    <EmptyPanelState
-      palette={palette}
-      icon="list"
-      title="No master list records yet"
-      message="Add the barangay's official resident records here. Sign-ups are checked against this list."
-    >
-      <DashboardButton palette={palette} variant="primary" icon="plus" label="Add record" onPress={onAdd} />
-    </EmptyPanelState>
+    <TableEmptyState
+      icon={copy.emptyIcon}
+      title={copy.emptyTitle ?? ""}
+      description={copy.emptyDescription}
+      action={copy.emptyAction}
+    />
   );
 };
 

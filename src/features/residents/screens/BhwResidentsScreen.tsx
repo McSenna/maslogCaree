@@ -27,11 +27,7 @@ const BhwResidentsScreen = () => {
       <RoleScreenBackdrop color={palette.pageBg} insets={controller.insets} />
 
       {controller.showTable ? (
-        <ResidentsDesktopLayout
-          controller={controller}
-          toolbar={toolbar}
-          emptyState={emptyState}
-        />
+        <ResidentsDesktopLayout controller={controller} toolbar={toolbar} />
       ) : (
         <ResidentsMobileLayout
           controller={controller}

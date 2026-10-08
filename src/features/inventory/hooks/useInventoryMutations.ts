@@ -25,14 +25,14 @@ type InventoryMutationsInput = {
   panelItem: InventoryItem | null;
   applyItemUpdate: (item: InventoryItem) => void;
   showItem: (item: InventoryItem) => void;
-  reload: () => Promise<unknown>;
+  revalidate: () => Promise<unknown>;
 };
 
 export const useInventoryMutations = ({
   panelItem,
   applyItemUpdate,
   showItem,
-  reload,
+  revalidate,
 }: InventoryMutationsInput) => {
   const [activeModal, setActiveModal] = useState<ActiveModal>("none");
   const [submitting, setSubmitting] = useState(false);
@@ -65,7 +65,9 @@ export const useInventoryMutations = ({
         showItem(updated);
         closeModal();
         toast.success(message || fallbackMessage);
-        await reload();
+        // Totals, sort order and a new item's place on the page come from the
+        // server; the table stays on screen while they reload.
+        void revalidate();
       } catch (error: unknown) {
         setPendingRelease(null);
         // The reason stays in the open form, next to what needs changing.
@@ -75,7 +77,7 @@ export const useInventoryMutations = ({
         setSubmitting(false);
       }
     },
-    [applyItemUpdate, closeModal, reload, showItem]
+    [applyItemUpdate, closeModal, revalidate, showItem]
   );
 
   const createItem = useCallback(

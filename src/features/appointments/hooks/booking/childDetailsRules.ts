@@ -46,7 +46,7 @@ export const validateWeeklyBooking = (input: WeeklyBookingInput, todayKey?: stri
   if (childName) errors.childName = childName;
   const childDob = validateChildBirthDate(input.childDob, todayKey);
   if (childDob) errors.childDob = childDob;
-  if (!input.dateKey) errors.slot = "Choose a Wednesday with open times.";
+  if (!input.dateKey) errors.slot = "Choose a Thursday with open times.";
   if (!input.confirmed) errors.confirmed = "Confirm that your appointment details are correct.";
   return errors;
 };

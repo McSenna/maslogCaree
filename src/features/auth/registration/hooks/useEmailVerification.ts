@@ -196,6 +196,19 @@ export const useEmailVerification = (email: string) => {
     setReturnFocusRequest((count) => count + 1);
   }, []);
 
+  /**
+   * The server refused the verification at submit (used, expired or missing).
+   * Starts over so the field offers a new code, and says why under the field;
+   * the message clears as soon as a new code is requested.
+   */
+  const rejectVerification = useCallback(
+    (message: string) => {
+      clearAll();
+      setError(message);
+    },
+    [clearAll]
+  );
+
   /** Drops the pending code and hands focus back to the address field to correct it. */
   const changeEmail = useCallback(() => {
     clearAll();
@@ -226,6 +239,7 @@ export const useEmailVerification = (email: string) => {
     openCodeDialog,
     closeCodeDialog,
     changeEmail,
+    rejectVerification,
     reset: clearAll,
   };
 };

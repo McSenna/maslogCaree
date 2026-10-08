@@ -56,7 +56,7 @@ export const useBookingSubmit = ({
     } catch (error: unknown) {
       const failure = classifyDraftFailure(draft, normalizeApiError(error));
       if (failure === "slot_unavailable") {
-        setErrors({ slot: draft.weekly ? "Choose another Wednesday." : "Choose another time." });
+        setErrors({ slot: draft.weekly ? "Choose another Thursday." : "Choose another time." });
         onSlotRefused();
       }
       setSubmitError(failure === "connection" ? CONNECTION_MESSAGE : getApiErrorMessage(error, FALLBACK_MESSAGE));

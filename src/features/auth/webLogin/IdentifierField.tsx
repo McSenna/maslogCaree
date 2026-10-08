@@ -14,11 +14,11 @@ type IdentifierFieldProps = {
   onBlur: () => void;
 };
 
-/** Email or PH mobile number; `inputMode="email"` keeps both @ and digits one tap away. */
+/** The sign-in email address; `inputMode="email"` puts @ and . on the phone keyboard. */
 const IdentifierField = ({ inputRef, value, error, busy, onChange, onBlur }: IdentifierFieldProps) => (
   <LoginField
     id={FIELD_ID}
-    label="Email address or phone number"
+    label="Email address"
     icon={<MailIcon className={`${s.fieldIcon} ${s.fieldIconBrand}`} />}
     error={error}
     busy={busy}
@@ -34,7 +34,7 @@ const IdentifierField = ({ inputRef, value, error, busy, onChange, onBlur }: Ide
       autoCapitalize="none"
       autoCorrect="off"
       spellCheck={false}
-      placeholder="juan@email.com or 0917 123 4567"
+      placeholder="juan@email.com"
       value={value}
       readOnly={busy}
       aria-invalid={Boolean(error)}

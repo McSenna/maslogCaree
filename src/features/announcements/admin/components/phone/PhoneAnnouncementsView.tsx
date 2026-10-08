@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { FlatList, RefreshControl, Text, View, type ListRenderItem } from "react-native";
 
 import { CardBottom } from "@/components/dashboard/kit/TableCard";
-import UndoToast from "@/components/feedback/UndoToast";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { Announcement } from "../../adminAnnouncement.types";
@@ -68,17 +67,10 @@ const PhoneAnnouncementsView = ({ screen, onExport }: PhoneAnnouncementsViewProp
           />
         }
         // Room for the toast so it never sits on the last row's buttons.
-        contentContainerClassName={deletion.toast ? "pb-20" : ""}
+        contentContainerClassName={deletion.pending ? "pb-20" : ""}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
-      />
-      <UndoToast
-        message={screen.toastMessage}
-        onUndo={deletion.toast?.kind === "pending" ? deletion.undo : undefined}
-        undoLabel="Undo delete"
-        onDismiss={deletion.dismiss}
-        positionClassName="bottom-5 left-3 right-3"
       />
     </View>
   );

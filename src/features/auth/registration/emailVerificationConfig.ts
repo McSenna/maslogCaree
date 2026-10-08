@@ -1,5 +1,6 @@
+import { isValidEmailAddress } from "../../../utils/emailAddress.ts";
+
 export const OTP_LENGTH = 6;
 
-export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-export const isValidEmailFormat = (email: string) => EMAIL_PATTERN.test(email.trim());
+/** The shared email rule: any provider, only the shape is checked. */
+export const isValidEmailFormat = (email: string) => isValidEmailAddress(email);

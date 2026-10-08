@@ -7,12 +7,6 @@ export type NotifyButtonStyle = DialogAction["style"];
 
 export type NotifyButton = DialogAction;
 
-/**
- * Asks the user to choose between actions. Native keeps the platform alert,
- * which also stays safe to open pickers from; web gets an in-app dialog because
- * `window.confirm` can only express two outcomes and ignores destructive styling.
- * A message with no choices is informational and shows as a toast instead.
- */
 export const showAlert = (title: string, message?: string, buttons?: NotifyButton[]): void => {
   if (!buttons?.length) {
     toast.info(title, message);

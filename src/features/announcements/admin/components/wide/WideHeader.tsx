@@ -1,19 +1,16 @@
 import { View } from "react-native";
 
 import DashboardHeader from "@/components/dashboard/kit/DashboardHeader";
-import { CardTop } from "@/components/dashboard/kit/TableCard";
-import { HeadingCell, TableHeadings } from "@/components/dashboard/kit/TableHeadings";
 import SearchField from "@/components/ui/SearchField";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { AnnouncementsScreenState } from "../../hooks/useAnnouncementsScreen";
 import AudiencePicker from "../ui/AudiencePicker";
 import StatusTabs from "../ui/StatusTabs";
-import { COLUMN, TOOLBAR_ONE_ROW_WIDTH, type TableMode } from "./tableColumns";
+import { TOOLBAR_ONE_ROW_WIDTH } from "./tableColumns";
 
 type WideHeaderProps = {
   screen: AnnouncementsScreenState;
-  mode: TableMode;
   width: number;
   onExport: () => void;
 };
@@ -24,19 +21,8 @@ export const ANNOUNCEMENTS_SUBTITLE = "Notices shown to patients and health staf
 const SEARCH_WIDTH = { width: 280 };
 const SEARCH_FILL = { flex: 1, minWidth: 220 };
 
-const ColumnHeadings = ({ mode }: { mode: TableMode }) => (
-  <TableHeadings>
-    <HeadingCell label="Title" className={COLUMN.title} />
-    <HeadingCell label="Audience" className={COLUMN.audience} />
-    <HeadingCell label="Status" className={COLUMN.status} />
-    {mode === "full" ? <HeadingCell label="Posted" className={COLUMN.posted} /> : null}
-    {mode === "full" ? <HeadingCell label="Expires" className={COLUMN.expires} /> : null}
-    <HeadingCell label="Actions" className={`${COLUMN.actions} text-right`} />
-  </TableHeadings>
-);
-
-/** The dashboard's page header and toolbar, then the top of the table card. */
-const WideHeader = ({ screen, mode, width, onExport }: WideHeaderProps) => {
+/** The dashboard's page header and the toolbar above the announcements table. */
+const WideHeader = ({ screen, width, onExport }: WideHeaderProps) => {
   const palette = useAdminSurfacePalette();
   const { view, filters, counts } = screen;
   const showControls = view === "list" || view === "noResults";
@@ -69,8 +55,6 @@ const WideHeader = ({ screen, mode, width, onExport }: WideHeaderProps) => {
         </View>
       ) : null}
 
-      {/* Empty and error states still sit in the table card, without headings that label nothing. */}
-      <CardTop>{view === "list" || view === "loading" ? <ColumnHeadings mode={mode} /> : null}</CardTop>
     </View>
   );
 };

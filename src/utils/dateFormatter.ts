@@ -28,6 +28,23 @@ export const formatDate = (value: string | Date | null | undefined): string => {
   return d.toLocaleDateString(undefined, LONG_DATE_OPTS);
 };
 
+const CALENDAR_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * "Jun 7, 2005": the one date format in data tables. A date-only value
+ * ("2005-06-07", a birth date) is a calendar day and is read in UTC so no time
+ * zone moves it to the day before; a full timestamp shows the viewer's local day.
+ */
+export const formatTableDate = (value: string | Date | null | undefined, fallback = "Not recorded"): string => {
+  if (typeof value === "string" && CALENDAR_DAY.test(value)) {
+    const day = new Date(`${value}T00:00:00.000Z`);
+    if (Number.isNaN(day.getTime())) return fallback;
+    return day.toLocaleDateString("en-US", { ...SHORT_DATE_OPTS, timeZone: "UTC" });
+  }
+  const d = parseDate(value);
+  return d ? d.toLocaleDateString("en-US", SHORT_DATE_OPTS) : fallback;
+};
+
 export const formatDateTime = (
   value: string | Date | null | undefined
 ): { date: string; time: string } => {

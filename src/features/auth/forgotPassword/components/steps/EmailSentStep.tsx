@@ -10,8 +10,8 @@ export const EmailSentStep = ({ flow }: { flow: ForgotPasswordController }) => (
   <View className="w-full items-center gap-5">
     <StepIcon icon="mail" />
     <StepHeading
-      title="Check Your Gmail"
-      subtitle="We've sent a 6-digit verification code to your Gmail account."
+      title="Check your email"
+      subtitle="We've sent a 6-digit verification code to your email address."
     />
 
     <View

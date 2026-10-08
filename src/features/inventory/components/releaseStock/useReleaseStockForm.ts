@@ -11,7 +11,9 @@ export const useReleaseStockForm = (visible: boolean, item: InventoryItem | null
   const [recipient, setRecipient] = useState("");
   const [remarks, setRemarks] = useState("");
 
-  useSyncOnChange([visible, item], () => {
+  // Keyed by id, not the object: a fresh copy of the same item must not wipe
+  // the form. The live `item` still sets the stock the quantity is checked against.
+  useSyncOnChange([visible, item?._id], () => {
     if (!visible) return;
     setQuantity("");
     setType("STOCK_OUT");

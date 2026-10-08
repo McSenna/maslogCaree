@@ -3,21 +3,20 @@ import { RefreshControl, ScrollView, View } from "react-native";
 import { useUsersPalette } from "@/features/users/components/usersTheme";
 import type { BhwResidentsController } from "../hooks/useBhwResidentsScreen";
 import ResidentSummaryCards from "./ResidentSummaryCards";
-import ResidentsTableCard from "./ResidentsTableCard";
+import { DataTable } from "@/components/data-table";
+import { RESIDENTS_ERROR, residentsEmptyCopy } from "./ResidentsEmptyState";
+import { residentColumns } from "./residentColumns";
 import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 type ResidentsDesktopLayoutProps = {
   controller: BhwResidentsController;
   toolbar: ReactNode;
-  emptyState: ReactNode;
 };
 
-const ResidentsDesktopLayout = ({
-  controller,
-  toolbar,
-  emptyState,
-}: ResidentsDesktopLayoutProps) => {
+const ResidentsDesktopLayout = ({ controller, toolbar }: ResidentsDesktopLayoutProps) => {
   const palette = useUsersPalette();
+  const { residents } = controller;
+  const empty = residentsEmptyCopy(residents.hasActiveFilters);
   // A new page starts at its first row.
   const scrollRef = useScrollTopOnChange<ScrollView>(controller.residents.page);
 
@@ -43,10 +42,30 @@ const ResidentsDesktopLayout = ({
           onSelectStatus={controller.residents.showStatus}
           isWide={controller.wideSummary}
         />
-        <ResidentsTableCard
-          controller={controller}
+        <DataTable
+          caption="Residents"
+          columns={residentColumns}
+          data={residents.residents}
+          rowKey={(resident) => resident._id}
           toolbar={toolbar}
-          emptyState={emptyState}
+          loading={residents.loading}
+          refreshing={residents.busy && !residents.loading}
+          error={residents.error}
+          errorTitle={RESIDENTS_ERROR}
+          onRetry={residents.retry}
+          emptyIcon="users"
+          emptyTitle={empty.title}
+          emptyDescription={empty.body}
+          onRowPress={(resident) => controller.openDetails(resident._id)}
+          rowLabel={(resident) => `View details for ${resident.fullname}`}
+          isRowSelected={(resident) => resident._id === controller.detailsResidentId}
+          pagination={{
+            page: residents.page,
+            pageSize: residents.pageSize,
+            total: residents.total,
+            onPageChange: residents.setPage,
+            noun: "residents",
+          }}
         />
       </View>
     </ScrollView>

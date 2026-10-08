@@ -1,5 +1,5 @@
 /**
- * Applies status changes that are waiting on the undo toast, or just sent,
+ * Applies status changes that are being sent, or were just saved,
  * to the rows on screen. Import-free so `node --test` can load it.
  */
 import type { StatusAction, User, UserStatus, UserTab } from "./userAdmin.types.ts";

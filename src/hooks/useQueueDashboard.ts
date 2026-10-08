@@ -40,6 +40,10 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
   const overviewLoaded = useRef(false);
   const listLoadedFor = useRef<AppointmentStatus | null>(null);
   const queueLoaded = useRef(false);
+  // Saves and realtime both reload these views and the calls overlap: only the newest may write.
+  const latestOverview = useRef(0);
+  const latestList = useRef(0);
+  const latestQueue = useRef(0);
 
   useEffect(() => {
     overviewLoaded.current = false;
@@ -48,30 +52,36 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
   }, [categoryKey]);
 
   const loadOverview = useCallback(async () => {
+    const loadId = ++latestOverview.current;
     if (!overviewLoaded.current) setOverviewLoading(true);
     try {
-      setOverview(await fetchQueueOverview({ categoryKey }));
+      const next = await fetchQueueOverview({ categoryKey });
+      if (loadId !== latestOverview.current) return;
+      setOverview(next);
       overviewLoaded.current = true;
     } catch {
-      if (!overviewLoaded.current) setOverview(null);
+      if (loadId === latestOverview.current && !overviewLoaded.current) setOverview(null);
     } finally {
-      setOverviewLoading(false);
+      if (loadId === latestOverview.current) setOverviewLoading(false);
     }
   }, [categoryKey]);
 
   const loadStatusList = useCallback(
     async (status: AppointmentStatus) => {
+      const loadId = ++latestList.current;
       const refreshing = listLoadedFor.current === status;
       if (!refreshing) setListLoading(true);
       setListError(null);
       try {
-        setStatusList(
+        const rows =
           status === "completed"
             ? await fetchCompletedAppointments({ categoryKey })
-            : await fetchAppointmentsByStatus(status, { categoryKey })
-        );
+            : await fetchAppointmentsByStatus(status, { categoryKey });
+        if (loadId !== latestList.current) return;
+        setStatusList(rows);
         listLoadedFor.current = status;
       } catch (error: unknown) {
+        if (loadId !== latestList.current) return;
         const message = getApiErrorMessage(error, "The appointment list could not be loaded.");
         if (refreshing) {
           toastError("Unable to refresh appointments", error, { reason: REFRESH_FAILED });
@@ -80,13 +90,14 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
           setListError(message);
         }
       } finally {
-        setListLoading(false);
+        if (loadId === latestList.current) setListLoading(false);
       }
     },
     [categoryKey]
   );
 
   const loadQueue = useCallback(async () => {
+    const loadId = ++latestQueue.current;
     const refreshing = queueLoaded.current;
     if (!refreshing) setQueueLoading(true);
     setQueueError(null);
@@ -94,9 +105,11 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
       const lists = await Promise.all(
         ACTIVE_QUEUE_STATUSES.map((status) => fetchAppointmentsByStatus(status, { categoryKey }))
       );
+      if (loadId !== latestQueue.current) return;
       setQueue(sortQueueBySlot(lists.flat()));
       queueLoaded.current = true;
     } catch (error: unknown) {
+      if (loadId !== latestQueue.current) return;
       if (refreshing) {
         toastError("Unable to refresh the queue", error, { reason: REFRESH_FAILED });
       } else {
@@ -104,7 +117,7 @@ export const useQueueDashboard = (scope: QueueScope = {}) => {
         setQueueError(getApiErrorMessage(error, "The queue could not be loaded."));
       }
     } finally {
-      setQueueLoading(false);
+      if (loadId === latestQueue.current) setQueueLoading(false);
     }
   }, [categoryKey]);
 

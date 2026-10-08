@@ -36,6 +36,8 @@ export type UseInventoryReturn = {
   error: string | null;
   reload: () => Promise<void>;
   refresh: () => Promise<void>;
+  /** Reloads the page on screen without a skeleton, keeping the rows visible meanwhile. */
+  revalidate: () => Promise<void>;
   applyItemUpdate: (item: InventoryItem) => void;
 };
 
@@ -116,6 +118,7 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
 
   const reload = useCallback(() => load("initial"), [load]);
   const refresh = useCallback(() => load("refresh"), [load]);
+  const revalidate = useCallback(() => load("silent"), [load]);
 
   const applyItemUpdate = useCallback((updated: InventoryItem) => {
     setItems((prev) => prev.map((item) => (item._id === updated._id ? { ...item, ...updated } : item)));
@@ -129,7 +132,7 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
       if (change.action === "deleted") setItems((prev) => prev.filter((item) => item._id !== change.id));
       else applyItemUpdate(change.record);
     },
-    reload: () => void load("silent"),
+    reload: revalidate,
   });
 
   return {
@@ -144,6 +147,7 @@ export const useInventory = (query: InventoryQuery): UseInventoryReturn => {
     error,
     reload,
     refresh,
+    revalidate,
     applyItemUpdate,
   };
 };

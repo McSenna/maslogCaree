@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   fetchCategoryAnalytics,
   fetchConsultationCategories,
@@ -11,6 +11,7 @@ import {
 } from "@/services/appointments";
 import { useRealtimeEvents } from "@/hooks/realtime/useRealtimeEvents";
 import { useRealtimeRefetch } from "@/hooks/realtime/useRealtimeRefetch";
+import { useLatestRef } from "@/hooks/useLatestRef";
 import { removeItem, upsertItem } from "@/lib/realtime/collectionReducer";
 import { toastError } from "@/utils/errorToast/toastError";
 
@@ -39,28 +40,61 @@ export const useMissionCatalogue = () => {
   const [missionDetail, setMissionDetail] = useState<MissionDetail | null>(null);
   const [analytics, setAnalytics] = useState<CategoryAnalyticsRow[]>([]);
 
+  // Saves reload in the background while realtime reloads the same views, so
+  // only the newest request may write: an older response landing late would
+  // put stale rows back on screen.
+  const listsRequest = useRef(0);
+  const detailRequest = useRef(0);
+  const selectedRef = useLatestRef(selectedMissionId);
+
   const refreshLists = useCallback(async () => {
+    const request = ++listsRequest.current;
     try {
       const [nextCategories, nextMissions, nextPending] = await Promise.all([
         fetchConsultationCategories(),
         fetchMissionSchedules(),
         fetchPendingAppointments(),
       ]);
+      if (request !== listsRequest.current) return;
       setCategories(nextCategories);
       setMissions(nextMissions);
       setPending(nextPending);
     } catch (error: unknown) {
+      if (request !== listsRequest.current) return;
       toastError("Unable to load missions", error, { fallback: "Could not load mission data." });
     }
   }, []);
 
-  const loadMissionDetail = useCallback(async (missionId: string) => {
-    try {
-      setMissionDetail(await fetchMissionDetail(missionId));
-      setAnalytics(await fetchCategoryAnalytics(missionId));
-    } catch (error: unknown) {
-      toastError("Unable to load schedule", error, { fallback: "Could not load this mission schedule." });
-    }
+  const loadMissionDetail = useCallback(
+    async (missionId: string) => {
+      const request = ++detailRequest.current;
+      try {
+        const [detail, nextAnalytics] = await Promise.all([
+          fetchMissionDetail(missionId),
+          fetchCategoryAnalytics(missionId),
+        ]);
+        if (request !== detailRequest.current || selectedRef.current !== missionId) return;
+        setMissionDetail(detail);
+        setAnalytics(nextAnalytics);
+      } catch (error: unknown) {
+        // A mission deleted or deselected meanwhile is not an error the user needs to see.
+        if (request !== detailRequest.current || selectedRef.current !== missionId) return;
+        toastError("Unable to load schedule", error, { fallback: "Could not load this mission schedule." });
+      }
+    },
+    [selectedRef]
+  );
+
+  /** Puts a mission the server just returned on screen, the same way a realtime update does. */
+  const applyMission = useCallback(
+    (mission: MissionScheduleRecord) =>
+      setMissions((current) => upsertItem(current, mission, { getId: missionId, sort: latestDayFirst })),
+    []
+  );
+
+  const removeMission = useCallback((id: string) => {
+    setMissions((current) => removeItem(current, id, missionId));
+    setSelectedMissionId((selected) => (selected === id ? null : selected));
   }, []);
 
   useEffect(() => {
@@ -81,12 +115,8 @@ export const useMissionCatalogue = () => {
   // Another manager adding, moving or removing a mission day shows here at once.
   useRealtimeEvents("missionSchedule", (change) => {
     if (change.action === "resync") return;
-    if (change.action === "deleted") {
-      setMissions((current) => removeItem(current, change.id, missionId));
-      setSelectedMissionId((selected) => (selected === change.id ? null : selected));
-      return;
-    }
-    setMissions((current) => upsertItem(current, change.record, { getId: missionId, sort: latestDayFirst }));
+    if (change.action === "deleted") removeMission(change.id);
+    else applyMission(change.record);
   });
 
   // Pending requests, the open mission's bookings and its analytics are server
@@ -105,6 +135,8 @@ export const useMissionCatalogue = () => {
     analytics,
     refreshLists,
     loadMissionDetail,
+    applyMission,
+    removeMission,
   };
 };
 

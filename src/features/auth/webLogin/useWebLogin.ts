@@ -2,12 +2,9 @@ import { useCallback, useRef, useState } from "react";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPath } from "@/config/roleRoutes";
-import { ERROR_CODES, PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
-import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
-import { toastError } from "@/utils/errorToast/toastError";
-import { toast } from "@/components/feedback/toast/toastStore";
-import { LOGIN_MESSAGES, checkIdentifier, checkPassword } from "./loginIdentifier";
+import { PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
+import { toastLoginFailed, toastLoginRefused } from "../hooks/loginFailureToast";
+import { checkLoginEmail, checkPassword } from "./loginIdentifier";
 
 export type LoginStatus = "idle" | "submitting" | "success";
 
@@ -21,8 +18,7 @@ const successText = (role: string): string =>
 
 /**
  * Web login. A field that needs changing gets its own message under its box;
- * a sign-in the server refused gets one alert above the fields. Editing either
- * value clears the alert, since it described the values that were sent.
+ * a sign-in the server refused is reported in the error toast.
  */
 export const useWebLogin = () => {
   const { login } = useAuth();
@@ -31,7 +27,6 @@ export const useWebLogin = () => {
   const [identifier, setIdentifierValue] = useState("");
   const [password, setPasswordValue] = useState("");
   const [errors, setErrors] = useState<FieldErrors>(NO_ERRORS);
-  const [alert, setAlert] = useState<string | null>(null);
   const [status, setStatus] = useState<LoginStatus>("idle");
   const [successMessage, setSuccessMessage] = useState("");
   const [showPlatformNotice, setShowPlatformNotice] = useState(false);
@@ -42,19 +37,17 @@ export const useWebLogin = () => {
   const setIdentifier = useCallback((value: string) => {
     setIdentifierValue(value);
     setErrors((current) => ({ ...current, identifier: null }));
-    setAlert(null);
   }, []);
 
   const setPassword = useCallback((value: string) => {
     setPasswordValue(value);
     setErrors((current) => ({ ...current, password: null }));
-    setAlert(null);
   }, []);
 
   // Only a filled field is checked on blur; an empty one is left alone until submit.
   const validateIdentifierOnBlur = useCallback(() => {
     if (!identifier.trim()) return;
-    const check = checkIdentifier(identifier);
+    const check = checkLoginEmail(identifier);
     setErrors((current) => ({ ...current, identifier: check.ok ? null : check.message }));
   }, [identifier]);
 
@@ -62,13 +55,12 @@ export const useWebLogin = () => {
   const submit = useCallback(async (): Promise<keyof FieldErrors | null> => {
     if (inFlight.current) return null;
 
-    const idCheck = checkIdentifier(identifier);
+    const idCheck = checkLoginEmail(identifier);
     const nextErrors: FieldErrors = {
       identifier: idCheck.ok ? null : idCheck.message,
       password: checkPassword(password),
     };
     setErrors(nextErrors);
-    setAlert(null);
     if (!idCheck.ok) return "identifier";
     if (nextErrors.password) return "password";
 
@@ -89,21 +81,10 @@ export const useWebLogin = () => {
         setShowPlatformNotice(true);
         return null;
       }
-      // As on the phone sign-in: the alert above the fields explains, the toast marks the failed attempt.
-      toast.error("Couldn't log in");
-      setAlert(
-        result.code === ERROR_CODES.INVALID_CREDENTIALS
-          ? LOGIN_MESSAGES.credentialsMismatch
-          : getAuthErrorPresentation(
-              { code: result.code, message: result.error },
-              "Couldn't log in",
-              "We couldn't sign you in. Please try again."
-            ).message
-      );
+      toastLoginRefused(result);
     } catch (error: unknown) {
       setStatus("idle");
-      toastError("Couldn't log in", error, { inline: true });
-      setAlert(getApiErrorMessage(error, "We couldn't reach MaslogCare. Check your connection, then try again."));
+      toastLoginFailed(error);
     } finally {
       inFlight.current = false;
     }
@@ -116,7 +97,6 @@ export const useWebLogin = () => {
     password,
     setPassword,
     errors,
-    alert,
     status,
     successMessage,
     submit,

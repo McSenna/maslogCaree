@@ -16,7 +16,7 @@ export const EmailStep = ({ flow }: { flow: ForgotPasswordController }) => (
     <Image source={landingAssets.brandMark} style={{ width: 52, height: 52 }} resizeMode="contain" />
     <StepHeading
       title="Forgot Password?"
-      subtitle="Enter your Gmail address and we'll send you a verification code."
+      subtitle="Enter the email address on your account and we'll send you a verification code."
     />
 
     <RecoveryField
@@ -27,7 +27,7 @@ export const EmailStep = ({ flow }: { flow: ForgotPasswordController }) => (
         flow.setEmail(text);
         if (flow.error) flow.setError(null);
       }}
-      placeholder="yourname@gmail.com"
+      placeholder="name@provider.com"
       keyboardType="email-address"
       autoCapitalize="none"
       autoCorrect={false}

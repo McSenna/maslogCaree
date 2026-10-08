@@ -3,7 +3,7 @@ import ChildBirthDateField from "./ChildBirthDateField";
 import FormTextInput from "./FormTextInput";
 import WeeklyScheduleField from "./WeeklyScheduleField";
 
-/** Immunization asks for the child and a Wednesday only: no reason, notes, or time. */
+/** Immunization asks for the child and a Thursday only: no reason, notes, or time. */
 const ImmunizationVisitFields = ({ booking }: { booking: AppointmentBooking }) => (
   <>
     <FormTextInput

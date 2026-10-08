@@ -84,7 +84,7 @@ export const useSupportTickets = () => {
           ? removeItem(current, change.id, ticketId)
           : upsertItem(current, change.record, { getId: ticketId, sort: latestActivityFirst })
       ),
-    reload: () => void reloadQuietly(),
+    reload: reloadQuietly,
   });
 
   const refresh = useCallback(async () => {

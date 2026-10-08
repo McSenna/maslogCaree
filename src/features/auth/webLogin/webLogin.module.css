@@ -19,7 +19,6 @@
   --error-rgb: 239, 68, 68;
   /* Darker than --error so error text clears 7:1 on white. */
   --error-text: #b42328; /* red-700 */
-  --error-tint: #fef2f2; /* red-50 */
   --error-line: #fecaca; /* red-200 */
   --warning-text: #8a5300; /* amber-700 */
   --label: #1f2933; /* ink */
@@ -396,26 +395,6 @@
 }
 
 /* A sign-in the server refused, above the first label. */
-.alert {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid var(--error-line);
-  border-radius: 10px;
-  background: var(--error-tint);
-  color: var(--error-text);
-  font-size: 14px;
-  line-height: 20px;
-  animation: settle-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.alertIcon {
-  flex: none;
-  width: 20px;
-  height: 20px;
-}
-
 /* Above its box, never inside it, so it stays readable once the box is filled. */
 .label {
   align-self: flex-start;
@@ -463,8 +442,12 @@
   background: var(--readonly);
 }
 
+/* Above the input, which comes after it and fills the same box: an autofilled
+   input paints an opaque background (see .input:-webkit-autofill) that would
+   otherwise hide the icon. Clicks still pass through to the input. */
 .fieldIcon {
   position: absolute;
+  z-index: 1;
   top: 50%;
   left: 15px;
   width: 24px;
@@ -1257,7 +1240,6 @@
     line-height: 1.4;
   }
 
-  .alert,
   .fieldError {
     font-size: clamp(14px, calc(16 * var(--s)), 18px);
     line-height: 1.4;
@@ -1399,8 +1381,7 @@
     animation: fade-in 200ms ease-out both;
   }
 
-  .success,
-  .alert {
+  .success {
     animation: fade-in 150ms ease-out;
   }
 

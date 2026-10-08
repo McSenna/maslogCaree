@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { FlatList, Platform, RefreshControl, ScrollView, View } from "react-native";
-import Pagination from "@/components/ui/Pagination";
+import { Pagination } from "@/components/data-table";
 import { RADIUS, useUsersPalette } from "@/features/users/components/usersTheme";
 import type { BhwResidentsController } from "../hooks/useBhwResidentsScreen";
 import ResidentCard from "./ResidentCard";
@@ -52,10 +52,9 @@ const ResidentsMobileLayout = ({
       <View className="w-full pt-4">
         <Pagination
           page={residents.page}
-          totalPages={residents.totalPages}
           total={residents.total}
           pageSize={residents.pageSize}
-          isDesktop={false}
+          compact
           noun="residents"
           onPageChange={residents.setPage}
         />
@@ -63,7 +62,7 @@ const ResidentsMobileLayout = ({
     ) : null;
 
   const empty = residents.loading ? (
-    <ResidentsSkeletonList count={6} isMobile dense={dense} />
+    <ResidentsSkeletonList count={6} dense={dense} />
   ) : (
     <View
       className="w-full border"

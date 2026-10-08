@@ -47,7 +47,7 @@ const InventoryScreen = () => {
       {pageTint}
 
       {showTable ? (
-        <InventoryDesktopLayout controller={controller} emptyState={emptyState} />
+        <InventoryDesktopLayout controller={controller} />
       ) : (
         <InventoryMobileLayout controller={controller} emptyState={emptyState} />
       )}

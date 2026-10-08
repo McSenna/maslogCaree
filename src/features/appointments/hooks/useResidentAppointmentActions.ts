@@ -9,9 +9,13 @@ import { toastError } from "@/utils/errorToast/toastError";
 /**
  * Drives the resident's reschedule and cancel overlays: which appointment is
  * targeted, the in-flight guard that stops double submissions, and the refresh
- * + toast that follow a successful change.
+ * + toast that follow a successful change. `applyLocal` puts the server's
+ * updated appointment on screen as soon as it answers.
  */
-export const useResidentAppointmentActions = (refresh: () => Promise<void> | void) => {
+export const useResidentAppointmentActions = (
+  refresh: () => Promise<void> | void,
+  applyLocal?: (appointment: AppointmentRecord) => void
+) => {
 
   const [rescheduleTarget, setRescheduleTarget] = useState<AppointmentRecord | null>(null);
   const [cancelTarget, setCancelTarget] = useState<AppointmentRecord | null>(null);
@@ -33,10 +37,11 @@ export const useResidentAppointmentActions = (refresh: () => Promise<void> | voi
       setCancelError(null);
 
       try {
-        await cancelAppointment(cancelTarget._id, reason);
+        const cancelled = await cancelAppointment(cancelTarget._id, reason);
+        if (cancelled?._id) applyLocal?.(cancelled);
         setCancelTarget(null);
         toast.success("Appointment cancelled");
-        await refresh();
+        void refresh();
       } catch (e: unknown) {
         // The reason stays in the cancel form; the toast marks the failed attempt.
         setCancelError(getApiErrorMessage(e, "Unable to cancel appointment."));
@@ -47,7 +52,7 @@ export const useResidentAppointmentActions = (refresh: () => Promise<void> | voi
         setIsCancelling(false);
       }
     },
-    [cancelTarget, isCancelling, refresh]
+    [applyLocal, cancelTarget, isCancelling, refresh]
   );
 
   // Closing can follow a refused attempt (slot taken, or the appointment changed

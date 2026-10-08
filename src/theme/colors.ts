@@ -1,6 +1,6 @@
 import { dark } from "@/design/adminDashboard/darkPalette";
 import { light } from "@/design/adminDashboard/lightPalette";
-import { PALETTE, withAlpha } from "./palette";
+import { PALETTE, mix, withAlpha } from "./palette";
 
 export type ColorScheme = "light" | "dark";
 
@@ -30,6 +30,11 @@ export type ThemeColors = {
   successLine: string;
   overlay: string;
   skeleton: string;
+  /** Data tables: the heading band, a hovered or selected row, and the hairline between rows. */
+  tableHeader: string;
+  rowHover: string;
+  rowSelected: string;
+  rowDivider: string;
   success: Tone;
   warning: Tone;
   danger: Tone;
@@ -64,6 +69,11 @@ const lightColors: ThemeColors = {
   successLine: PALETTE.success[600],
   overlay: withAlpha(PALETTE.ink, 0.5),
   skeleton: light.skeleton,
+  tableHeader: slate[50],
+  rowHover: slate[50],
+  rowSelected: blue[50],
+  // A step lighter than the card border, so rows read as one block inside it.
+  rowDivider: slate[100],
   success: light.statusTones.success,
   warning: light.statusTones.warning,
   danger: light.statusTones.danger,
@@ -95,6 +105,10 @@ const darkColors: ThemeColors = {
   successLine: PALETTE.success[300],
   overlay: withAlpha(night.page, 0.72),
   skeleton: dark.skeleton,
+  tableHeader: night.raised,
+  rowHover: night.raised,
+  rowSelected: mix(blue[600], night.surface, 0.16),
+  rowDivider: night.line,
   success: dark.statusTones.success,
   warning: dark.statusTones.warning,
   danger: dark.statusTones.danger,

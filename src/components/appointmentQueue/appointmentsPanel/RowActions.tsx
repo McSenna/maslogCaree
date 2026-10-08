@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { View } from "react-native";
+
+import { TableButton } from "@/components/data-table";
 import type { AppointmentRecord } from "@/services/appointments";
-import { QUEUE_RADIUS, useQueuePalette, type QueuePalette } from "../queueTheme";
 import { appointmentPatientName } from "@/utils/appointmentPatient";
 
 export type RowActionProps = {
@@ -14,88 +13,28 @@ export type RowActionProps = {
   onRowPress?: (appointment: AppointmentRecord) => void;
 };
 
-const ApproveButton = ({
-  onPress,
-  palette,
-  busy,
-}: {
-  onPress: () => void;
-  palette: QueuePalette;
-  busy: boolean;
-}) => {
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <Pressable
-      onPress={onPress}
-      disabled={busy}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      accessibilityRole="button"
-      accessibilityLabel="Approve this appointment"
-      className="h-9 items-center justify-center px-4"
-      style={{
-        borderRadius: QUEUE_RADIUS.control,
-        backgroundColor: palette.primary,
-        opacity: busy ? 0.55 : hovered ? 0.9 : 1,
-      }}
-    >
-      <Text className="text-[13px] font-semibold text-white">Approve</Text>
-    </Pressable>
-  );
-};
-
-const MoreButton = ({
-  onPress,
-  palette,
-  label,
-}: {
-  onPress: () => void;
-  palette: QueuePalette;
-  label: string;
-}) => {
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      hitSlop={12}
-      className="h-9 w-9 items-center justify-center"
-      style={{
-        borderRadius: QUEUE_RADIUS.control,
-        borderWidth: 1,
-        borderColor: palette.panelBorder,
-      }}
-    >
-      <Feather name="more-horizontal" size={18} color={palette.muted} />
-    </Pressable>
-  );
-};
-
-const RowActions = ({
-  appointment,
-  onApprove,
-  onMore,
-  busyId,
-  canAct,
-}: RowActionProps) => {
-  const palette = useQueuePalette();
-
+/** Approve for a pending request, then the menu of other actions. Approve shows progress and cannot be pressed twice. */
+const RowActions = ({ appointment, onApprove, onMore, busyId, canAct }: RowActionProps) => {
   if (!canAct) return null;
+  const name = appointmentPatientName(appointment, "this appointment");
 
   return (
     <View className="flex-row items-center gap-2">
       {appointment.status === "pending" ? (
-        <ApproveButton
+        <TableButton
+          variant="primary"
+          label="Approve"
+          accessibilityLabel={`Approve the appointment for ${name}`}
+          loading={busyId === appointment._id}
           onPress={() => onApprove?.(appointment)}
-          palette={palette}
-          busy={busyId === appointment._id}
         />
       ) : null}
-      <MoreButton
+      <TableButton
+        iconOnly
+        icon="more-horizontal"
+        label="More actions"
+        accessibilityLabel={`More actions for ${name}`}
         onPress={() => onMore?.(appointment)}
-        palette={palette}
-        label={`More actions for ${appointmentPatientName(appointment, "this appointment")}`}
       />
     </View>
   );

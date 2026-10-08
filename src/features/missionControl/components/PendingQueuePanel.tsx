@@ -54,7 +54,7 @@ const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelPr
             <View style={{ marginTop: SPACING.xs, flexDirection: "row", flexWrap: "wrap", gap: SPACING.sm }}>
               <Button
                 size="sm"
-                label={isWeeklyService(appointment.consultationType) ? "Place on next open Wednesday" : "Assign slot"}
+                label={isWeeklyService(appointment.consultationType) ? "Place on next open Thursday" : "Assign slot"}
                 icon="calendar"
                 onPress={() => onAssign(appointment)}
               />

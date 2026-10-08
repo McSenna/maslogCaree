@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import PanelCard from "@/components/dashboard/admin/PanelCard";
-import { DataTable, type TableColumn } from "@/components/dashboard/kit";
+import { DataTable, type Column } from "@/components/data-table";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { StaffActivity } from "@/services/staffDashboardService";
 import ServiceBadge from "./ServiceBadge";
@@ -47,11 +47,12 @@ const RecordsTable = ({
 }) => {
   const rows = activities.slice(0, VISIBLE_ROWS);
 
-  const columns: TableColumn<StaffActivity>[] = [
+  const columns: Column<StaffActivity>[] = [
     {
       key: "patient",
       header: personNoun === "resident" ? "Resident" : "Patient",
       flex: 1.4,
+      minWidth: 150,
       render: (row) => (
         <Text className="text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
           {row.patientName}
@@ -63,8 +64,8 @@ const RecordsTable = ({
           {
             key: "service",
             header: "Service",
-            width: 140,
-            minTableWidth: 520,
+            width: 172,
+            hideBelow: "lg" as const,
             render: (row: StaffActivity) => (
               <ServiceBadge serviceKey={row.serviceType} label={row.serviceLabel} compact />
             ),
@@ -75,7 +76,8 @@ const RecordsTable = ({
       key: "detail",
       header: "Details",
       flex: 1.6,
-      minTableWidth: 440,
+      minWidth: 140,
+      hideBelow: "md",
       render: (row) => (
         <Text className="text-[13px]" numberOfLines={1} style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
           {detailOf(row)}
@@ -85,7 +87,7 @@ const RecordsTable = ({
     {
       key: "completed",
       header: "Filed",
-      width: 118,
+      width: 150,
       align: "right",
       render: (row) => (
         <Text className="text-[12.5px] font-medium" numberOfLines={1} style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
@@ -98,14 +100,15 @@ const RecordsTable = ({
   return (
     <PanelCard palette={palette} title={title} icon="file-text" subtitle={subtitle} fill={fill}>
       <DataTable
-        palette={palette}
         caption={title}
+        surface="plain"
+        density="compact"
+        layout={compact ? "cards" : "auto"}
         columns={columns}
-        rows={rows}
+        data={rows}
         rowKey={(row) => row._id}
         rowLabel={(row) => [row.patientName, row.serviceLabel, detailOf(row), completedLabel(row.completedAt)].filter(Boolean).join(", ")}
-        stacked={compact}
-        renderStacked={(row) => (
+        renderMobileCard={(row) => (
           <>
             <View className="flex-row items-center gap-3">
               <Text className="min-w-0 flex-1 text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
@@ -126,7 +129,7 @@ const RecordsTable = ({
           </>
         )}
         emptyIcon="file-text"
-        emptyMessage="Nothing filed yet for this service."
+        emptyTitle="Nothing filed yet for this service."
       />
     </PanelCard>
   );

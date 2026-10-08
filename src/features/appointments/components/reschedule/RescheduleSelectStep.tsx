@@ -17,7 +17,7 @@ type Props = {
   palette: ResidentDialogPalette;
   appointment: AppointmentRecord;
   dayChoices: DayChoice[];
-  /** A weekly service (immunization): Wednesdays on its own schedule, time assigned on save. */
+  /** A weekly service (immunization): Thursdays on its own schedule, time assigned on save. */
   weekly: boolean;
   scheduleId: string | null;
   availableSlots: string[];
@@ -97,11 +97,11 @@ export const RescheduleSelectStep = ({
       {dayNote ? <ServiceDayNote palette={palette} message={dayNote} /> : null}
 
       <View accessibilityRole="radiogroup">
-        <FieldLabel palette={palette}>{weekly ? "Select New Wednesday" : "Select New Date"}</FieldLabel>
+        <FieldLabel palette={palette}>{weekly ? "Select New Thursday" : "Select New Date"}</FieldLabel>
         <RescheduleDateList
           palette={palette}
           options={dayChoices}
-          emptyMessage={weekly ? "Every Wednesday in the next 8 weeks is full. Please check again later." : undefined}
+          emptyMessage={weekly ? "Every Thursday in the next 8 weeks is full. Please check again later." : undefined}
           selectedId={scheduleId}
           onSelect={onSelectSchedule}
         />
@@ -115,7 +115,7 @@ export const RescheduleSelectStep = ({
             serviceLabel={appointmentServiceLabel(appointment)}
             slotStart={slotStart}
             isCurrentSlot={isCurrentSlot}
-            explanation={weekly ? "Your new time is assigned when you confirm: the earliest open time on that Wednesday." : undefined}
+            explanation={weekly ? "Your new time is assigned when you confirm: the earliest open time on that Thursday." : undefined}
           />
         </View>
       ) : null}

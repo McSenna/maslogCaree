@@ -40,7 +40,7 @@ export const SuccessStep = ({ flow }: { flow: ForgotPasswordController }) => {
         title="Password Reset Successful"
         subtitle={
           emailSent
-            ? "Your password has been changed successfully. A security confirmation has been sent to your registered Gmail address."
+            ? "Your password has been changed successfully. A security confirmation has been sent to your registered email address."
             : "Your password has been changed successfully. You can now log in using your new password."
         }
       />

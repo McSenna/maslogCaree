@@ -45,19 +45,3 @@ export const SORT_OPTIONS: readonly SelectOption<InventorySortKey>[] = [
   { value: "expiry_asc", label: "Nearest Expiry" },
   { value: "expiry_desc", label: "Latest Expiry" },
 ];
-
-export const INVENTORY_COLUMNS = {
-  checkbox: 48,
-  item: 2.8,
-  category: 1.3,
-  batch: 1.35,
-  stock: 0.8,
-  unit: 0.9,
-  reorderLevel: 1.5,
-  expiry: 1.4,
-  status: 1.6,
-} as const;
-
-export const CELL_PADDING = 10;
-
-export const TABLE_MIN_WIDTH = 936;

@@ -12,8 +12,8 @@ export const APPOINTMENTS_CATEGORY: HelpCategory = {
       id: "book-appointment",
       title: "Booking an appointment",
       summary:
-        "Choose a service, pick an open date and time, then book. Your appointment is confirmed right away. For immunization, enter your child's name and date of birth and pick a Wednesday; the time is assigned first come, first served.",
-      keywords: ["book", "booking", "schedule", "slot", "consultation", "immunization", "vaccine", "child", "wednesday"],
+        "Choose a service, pick an open date and time, then book. Your appointment is confirmed right away. For immunization, enter your child's name and date of birth and pick a Thursday; the time is assigned first come, first served.",
+      keywords: ["book", "booking", "schedule", "slot", "consultation", "immunization", "vaccine", "child", "thursday"],
     },
     {
       id: "view-appointments",
@@ -25,7 +25,7 @@ export const APPOINTMENTS_CATEGORY: HelpCategory = {
       id: "reschedule-appointment",
       title: "Rescheduling an appointment",
       summary:
-        "Open the appointment, choose Reschedule, then select a new open time. The new time is confirmed right away. An immunization moves to another Wednesday and gets that day's first open time.",
+        "Open the appointment, choose Reschedule, then select a new open time. The new time is confirmed right away. An immunization moves to another Thursday and gets that day's first open time.",
       keywords: ["reschedule", "move", "change date", "rebook"],
     },
     {

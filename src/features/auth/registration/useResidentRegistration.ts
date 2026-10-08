@@ -29,6 +29,7 @@ export const useResidentRegistration = (onComplete?: () => void) => {
       setTouched,
       setSubmitError,
       goToStep,
+      rejectEmailVerification: emailVerification.rejectVerification,
     });
 
   const step = REGISTRATION_STEPS[stepIndex];

@@ -19,7 +19,9 @@ export const useItemFormState = (visible: boolean, item: InventoryItem | null) =
   const [supplier, setSupplier] = useState<string>("none");
   const [description, setDescription] = useState("");
 
-  useSyncOnChange([visible, item], () => {
+  // Keyed by id, not the object: a fresh copy of the same item must not
+  // overwrite edits in progress. Table rows carry every field this form seeds.
+  useSyncOnChange([visible, item?._id], () => {
     if (!visible) return;
     setName(item?.name ?? "");
     setSpecification(item?.specification ?? "");

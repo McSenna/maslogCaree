@@ -14,7 +14,7 @@ const formatPlaced = (iso: string | null | undefined): string => {
 
 /**
  * Immunization never goes on a mission. Placing a pending request puts it on
- * the first open Wednesday position (the server chooses); moving one is the
+ * the first open Thursday position (the server chooses); moving one is the
  * resident's reschedule, so staff are told so instead of being shown slots.
  */
 export const useWeeklyPlacement = ({
@@ -28,7 +28,7 @@ export const useWeeklyPlacement = ({
     async (appointment: AppointmentRecord, mode: AssignMode) => {
       if (mode === "reassign") {
         toast.info(
-          "Immunization keeps its own Wednesday schedule",
+          "Immunization keeps its own Thursday schedule",
           "The resident can reschedule it in the app, and it gets the first open time. You can also cancel it."
         );
         return;
@@ -37,7 +37,7 @@ export const useWeeklyPlacement = ({
       try {
         const placed = await assignAppointment(appointment._id, {});
         toast.success("Immunization scheduled", `Placed on ${formatPlaced(placed.slotStart)}, first come, first served.`);
-        await onPlaced();
+        void onPlaced();
       } catch (error: unknown) {
         toastError("Unable to schedule the immunization", error, { fallback: "The request could not be placed." });
       } finally {

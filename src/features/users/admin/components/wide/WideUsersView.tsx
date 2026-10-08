@@ -1,21 +1,16 @@
-import { useCallback } from "react";
-import { FlatList, View, type ListRenderItem } from "react-native";
+import { useMemo } from "react";
+import { ScrollView, View } from "react-native";
 
-import UndoToast from "@/components/feedback/UndoToast";
+import { DataTable } from "@/components/data-table";
 import type { RoleScreenInsets } from "@/hooks/useRoleScreenInsets";
+import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 import { PAGE_SIZE } from "../../hooks/useUserQueries";
 import type { UsersScreenState } from "../../hooks/useUsersScreen";
-import type { MenuAnchor, SignupRequest, User } from "../../userAdmin.types";
-import ListState from "../shared/ScreenStates";
-import RequestTableRow from "./RequestTableRow";
-import { CardBottom } from "@/components/dashboard/kit/TableCard";
-import TableFooter from "./TableFooter";
-import { tableModeFor } from "./tableColumns";
-import UserTableRow from "./UserTableRow";
 import MasterListWideList from "../masterList/MasterListWideList";
+import { USERS_ERROR, usersEmptyCopy } from "../shared/ScreenStates";
+import { requestColumns, userColumns } from "./userColumns";
 import WideHeader from "./WideHeader";
-import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
 
 type WideUsersViewProps = {
   screen: UsersScreenState;
@@ -24,89 +19,72 @@ type WideUsersViewProps = {
   onExport: () => void;
 };
 
+const CONNECTION_HINT = "Check your connection, then try again.";
+
 const WideUsersView = ({ screen, width, insets, onExport }: WideUsersViewProps) => {
-  const { view, filters, selection, menu, requestTab, undo } = screen;
-  const contentWidth = width - insets.gutter * 2;
-  const mode = tableModeFor(contentWidth);
-  const { toggle, isSelected } = selection;
+  const { view, filters, selection, menu, requestTab } = screen;
   const { openReview, openMenu, details } = screen;
-  // A new page starts at its first row; the tab decides which of the two lists is mounted.
-  const usersRef = useScrollTopOnChange<FlatList<User>>(filters.page);
-  const requestsRef = useScrollTopOnChange<FlatList<SignupRequest>>(filters.page);
-  const openProfile = details.openDetails;
-  const firstUserId = screen.rows[0]?.id;
-  const firstRequestId = screen.requests.items[0]?.id;
+  // A new page starts at its first row.
+  const scrollRef = useScrollTopOnChange<ScrollView>(filters.page);
+  const pending = filters.tab === "requests";
+  const menuUserId = menu?.userId ?? null;
 
-  const onOpenMenu = useCallback((userId: string, anchor: MenuAnchor) => openMenu({ userId, anchor }), [openMenu]);
-
-  const renderUser: ListRenderItem<User> = useCallback(
-    ({ item }) => (
-      <UserTableRow
-        user={item}
-        mode={mode}
-        first={item.id === firstUserId}
-        selected={isSelected(item.id)}
-        menuOpen={menu?.userId === item.id}
-        onToggle={toggle}
-        onOpenProfile={openProfile}
-        onOpenMenu={onOpenMenu}
-      />
-    ),
-    [mode, firstUserId, isSelected, menu, toggle, openProfile, onOpenMenu]
+  const users = useMemo(
+    () =>
+      userColumns({
+        selection,
+        menuUserId,
+        onOpenProfile: details.openDetails,
+        onOpenMenu: (userId, anchor) => openMenu({ userId, anchor }),
+      }),
+    [selection, menuUserId, details.openDetails, openMenu]
   );
-
-  const renderRequest: ListRenderItem<SignupRequest> = useCallback(
-    ({ item }) => <RequestTableRow request={item} mode={mode} first={item.id === firstRequestId} onReview={openReview} />,
-    [mode, firstRequestId, openReview]
-  );
+  const requests = useMemo(() => requestColumns({ pending, onReview: openReview }), [pending, openReview]);
 
   if (screen.masterTab) return <MasterListWideList screen={screen} width={width} insets={insets} />;
 
-  const shown = requestTab ? screen.requests.items.length : screen.rows.length;
-  const padding = {
-    paddingHorizontal: insets.gutter,
-    paddingTop: insets.paddingTop,
-    paddingBottom: insets.paddingBottom + (undo.toast ? 72 : 0),
-  };
+  const contentWidth = width - insets.gutter * 2;
+  const list = requestTab ? screen.requests : screen.users;
   const shared = {
-    ListHeaderComponent: <WideHeader screen={screen} mode={mode} width={contentWidth} onExport={onExport} />,
-    ListEmptyComponent:
-      view === "list" ? null : (
-        <CardBottom>
-          <ListState view={view} tab={filters.tab} onRetry={screen.retry} onClearFilters={filters.clearFilters} />
-        </CardBottom>
-      ),
-    ListFooterComponent:
-      view === "list" ? (
-        <TableFooter page={filters.page} pageSize={PAGE_SIZE} shown={shown} total={screen.total} noun={requestTab ? "requests" : "users"} onPage={filters.setPage} />
-      ) : null,
-    contentContainerStyle: padding,
-    showsVerticalScrollIndicator: false,
-    keyboardShouldPersistTaps: "handled" as const,
+    loading: view === "loading",
+    refreshing: list.isFetching && view === "list",
+    error: view === "error" ? CONNECTION_HINT : null,
+    errorTitle: USERS_ERROR,
+    onRetry: screen.retry,
+    ...usersEmptyCopy(filters.tab, view === "noResults", filters.clearFilters),
+    pagination: {
+      page: filters.page,
+      pageSize: PAGE_SIZE,
+      total: screen.total,
+      onPageChange: filters.setPage,
+      noun: requestTab ? "requests" : "users",
+    },
   };
 
   return (
     <View className="flex-1">
-      {requestTab ? (
-        <FlatList ref={requestsRef} data={view === "list" ? screen.requests.items : []} keyExtractor={(item) => item.id} renderItem={renderRequest} extraData={mode} {...shared} />
-      ) : (
-        <FlatList
-          ref={usersRef}
-          data={view === "list" ? screen.rows : []}
-          keyExtractor={(item) => item.id}
-          renderItem={renderUser}
-          extraData={`${mode}:${selection.count}:${menu?.userId}`}
-          {...shared}
-        />
-      )}
-      <View pointerEvents="box-none" className="absolute inset-0">
-        <UndoToast
-          message={undo.message}
-          onUndo={undo.toast?.kind === "pending" ? undo.undo : undefined}
-          onDismiss={undo.dismiss}
-          positionClassName="bottom-8 left-10 w-[420px] max-w-full"
-        />
-      </View>
+      <ScrollView
+        ref={scrollRef}
+        contentContainerStyle={{ paddingHorizontal: insets.gutter, paddingTop: insets.paddingTop, paddingBottom: insets.paddingBottom }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View className="gap-4">
+          <WideHeader screen={screen} width={contentWidth} onExport={onExport} />
+          {requestTab ? (
+            <DataTable caption="Sign-up requests" columns={requests} data={screen.requests.items} rowKey={(row) => row.id} {...shared} />
+          ) : (
+            <DataTable
+              caption="Users"
+              columns={users}
+              data={screen.rows}
+              rowKey={(row) => row.id}
+              isRowSelected={(row) => selection.isSelected(row.id)}
+              {...shared}
+            />
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 };

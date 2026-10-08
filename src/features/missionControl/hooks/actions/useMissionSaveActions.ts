@@ -31,7 +31,7 @@ export const useMissionSaveActions = ({
   const [editOpen, setEditOpen] = useState(false);
   const [editMissionId, setEditMissionId] = useState<string | null>(null);
 
-  const { categories, missions, loadMissionDetail, setSelectedMissionId } = catalogue;
+  const { categories, missions, applyMission, setSelectedMissionId } = catalogue;
 
   const createMission = useCallback(async (): Promise<boolean> => {
     const categoriesPayload = createForm.toPayload(categories);
@@ -58,9 +58,12 @@ export const useMissionSaveActions = ({
         endTime,
         categories: categoriesPayload,
       });
-      await revalidate();
-      if (created?._id) setSelectedMissionId(created._id);
+      if (created?._id) {
+        applyMission(created);
+        setSelectedMissionId(created._id);
+      }
       toast.success("Mission schedule created", "You can now assign patients from the queue.");
+      void revalidate();
       return true;
     } catch (error: unknown) {
       toastError("Unable to create schedule", error, { fallback: "The mission schedule could not be created." });
@@ -68,7 +71,7 @@ export const useMissionSaveActions = ({
     } finally {
       setSaving(false);
     }
-  }, [categories, createForm, missions, revalidate, setSaving, setSelectedMissionId]);
+  }, [applyMission, categories, createForm, missions, revalidate, setSaving, setSelectedMissionId]);
 
   const openEdit = useCallback(
     (mission: MissionScheduleRecord) => {
@@ -109,27 +112,27 @@ export const useMissionSaveActions = ({
 
     setSaving(true);
     try {
-      await updateMissionSchedule(editMissionId, {
+      const updated = await updateMissionSchedule(editMissionId, {
         date,
         startTime,
         endTime,
         categories: categoriesPayload,
       });
       setEditOpen(false);
-      await revalidate();
+      if (updated?._id) applyMission(updated);
       setSelectedMissionId(editMissionId);
-      await loadMissionDetail(editMissionId);
       toast.success("Mission schedule updated");
+      void revalidate();
     } catch (error: unknown) {
       toastError("Unable to update schedule", error, { fallback: "The mission schedule could not be updated." });
     } finally {
       setSaving(false);
     }
   }, [
+    applyMission,
     categories,
     editForm,
     editMissionId,
-    loadMissionDetail,
     missions,
     revalidate,
     setSaving,

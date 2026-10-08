@@ -4,6 +4,7 @@ import { describe, it } from "node:test";
 import {
   OTP_COPY,
   describeSendFailure,
+  describeSubmitEmailFailure,
   describeVerifyFailure,
   formatCountdown,
   maskEmail,
@@ -110,5 +111,23 @@ describe("presentation helpers", () => {
     assert.equal(formatCountdown(45), "0:45");
     assert.equal(formatCountdown(5), "0:05");
     assert.equal(formatCountdown(-3), "0:00");
+  });
+});
+
+describe("email failures at the final submit", () => {
+  it("puts an address that is already registered back on the email field", () => {
+    assert.deepEqual(describeSubmitEmailFailure("EMAIL_EXISTS"), { kind: "taken", message: OTP_COPY.emailTaken });
+  });
+
+  it("asks for a new code when the verification was used, expired or never happened", () => {
+    for (const code of ["EMAIL_NOT_VERIFIED", "EMAIL_VERIFICATION_EXPIRED"]) {
+      assert.deepEqual(describeSubmitEmailFailure(code), { kind: "reverify", message: OTP_COPY.reverify }, code);
+    }
+  });
+
+  it("leaves every other failure to the general registration message", () => {
+    for (const code of [undefined, "NETWORK_ERROR", "VALIDATION_ERROR"]) {
+      assert.equal(describeSubmitEmailFailure(code), null, String(code));
+    }
   });
 });

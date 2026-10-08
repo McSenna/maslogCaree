@@ -23,8 +23,8 @@ const ResidentAppointments = () => {
   const insets = useRoleScreenInsets();
   const palette = useQueuePalette();
 
-  const { appointments, loading, error, refresh, revalidate } = useResidentAppointments();
-  const actions = useResidentAppointmentActions(revalidate);
+  const { appointments, loading, error, refresh, revalidate, applyLocal } = useResidentAppointments();
+  const actions = useResidentAppointmentActions(revalidate, applyLocal);
   const recordViewer = useMedicalRecordViewer();
 
   // `?book=1` is the dashboard's "Book appointment" shortcut.

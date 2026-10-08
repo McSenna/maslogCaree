@@ -15,7 +15,7 @@ export const OtpStep = ({ flow }: { flow: ForgotPasswordController }) => (
     <StepIcon icon="shield" />
     <StepHeading
       title="Enter Verification Code"
-      subtitle="Enter the 6-digit verification code sent to your Gmail."
+      subtitle="Enter the 6-digit verification code sent to your email."
     />
 
     <OtpInput

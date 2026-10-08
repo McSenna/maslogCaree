@@ -1,19 +1,17 @@
 import type { ReactNode } from "react";
-import Pagination from "@/components/ui/Pagination";
+import { Pagination } from "@/components/data-table";
 import { PAGE_SIZE } from "../constants/logsLayout";
 
 const MobileLogsView = ({
   content,
   showPagination,
   page,
-  totalPages,
   total,
   onPageChange,
 }: {
   content: ReactNode;
   showPagination: boolean;
   page: number;
-  totalPages: number;
   total: number;
   onPageChange: (page: number) => void;
 }) => (
@@ -22,10 +20,9 @@ const MobileLogsView = ({
     {showPagination ? (
       <Pagination
         page={page}
-        totalPages={totalPages}
         total={total}
         pageSize={PAGE_SIZE}
-        isDesktop={false}
+        compact
         noun="logs"
         onPageChange={onPageChange}
       />

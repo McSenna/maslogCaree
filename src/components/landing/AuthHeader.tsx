@@ -64,7 +64,7 @@ const AuthHeader = ({
             { fontSize: subtitleSize, lineHeight: subtitleLineHeight(subtitleSize) },
           ]}
         >
-          Sign in with your email or mobile number.
+          Sign in with your email address.
         </Text>
       </View>
     </View>

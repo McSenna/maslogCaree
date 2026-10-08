@@ -4,49 +4,15 @@ import { Pressable, Text, View } from "react-native";
 import PanelCard from "@/components/dashboard/admin/PanelCard";
 import { STATUS_LABELS } from "@/components/appointmentQueue/queueTheme";
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
-import { DataTable, SegmentedControl, type TableColumn } from "@/components/dashboard/kit";
+import { DataTable } from "@/components/data-table";
+import { SegmentedControl } from "@/components/dashboard/kit";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { StaffAppointment } from "@/services/staffDashboardService";
 import { byQueueTab, queueTabCounts, type QueueTab } from "../model/staffDashboardModel";
+import { PatientName, Position, queueColumns, slotTime, type QueueRow } from "./queueColumns";
 import ServiceBadge from "./ServiceBadge";
 
 const VISIBLE_ROWS = 8;
-
-type QueueRow = StaffAppointment & { position: number };
-
-const slotTime = (iso: string | null): string => {
-  if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-};
-
-const Position = ({ palette, value }: { palette: AdminDashboardPalette; value: number }) => (
-  <View className="h-7 w-7 items-center justify-center rounded-full" style={{ backgroundColor: palette.divider }}>
-    <Text className="text-[12.5px] font-bold" style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
-      {value}
-    </Text>
-  </View>
-);
-
-const PatientName = ({ palette, row }: { palette: AdminDashboardPalette; row: QueueRow }) => (
-  <View className="min-w-0 flex-row items-center gap-2" style={{ alignSelf: "stretch" }}>
-    <Text className="min-w-0 shrink text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
-      {row.patientName}
-    </Text>
-    {row.isUrgent ? (
-      <View
-        className="flex-row items-center rounded-full px-2"
-        style={{ height: 20, gap: 3, backgroundColor: palette.statusTones.danger.bg }}
-      >
-        <Feather name="alert-triangle" size={11} color={palette.statusTones.danger.fg} />
-        <Text className="text-[11.5px] font-bold" style={{ color: palette.statusTones.danger.fg }}>
-          Urgent
-        </Text>
-      </View>
-    ) : null}
-  </View>
-);
 
 const QueueTable = ({
   palette,
@@ -77,42 +43,7 @@ const QueueTable = ({
   const rows = filtered.slice(0, VISIBLE_ROWS);
   const hidden = filtered.length - rows.length;
 
-  const columns: TableColumn<QueueRow>[] = [
-    { key: "position", header: "#", width: 28, render: (row) => <Position palette={palette} value={row.position} /> },
-    { key: "patient", header: personNoun === "resident" ? "Resident" : "Patient", flex: 2, render: (row) => <PatientName palette={palette} row={row} /> },
-    ...(showService
-      ? [
-          {
-            key: "service",
-            header: "Service",
-            width: 140,
-            minTableWidth: 540,
-            render: (row: QueueRow) => <ServiceBadge serviceKey={row.consultationType} label={row.serviceLabel} compact />,
-          },
-        ]
-      : []),
-    {
-      key: "time",
-      header: "Slot",
-      width: 76,
-      render: (row) => (
-        <Text className="text-[13px] font-medium" numberOfLines={1} style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
-          {slotTime(row.slotStart)}
-        </Text>
-      ),
-    },
-    {
-      key: "status",
-      header: "Status",
-      width: 128,
-      align: "right",
-      render: (row) => (
-        <View className="items-end">
-          <AppointmentStatusBadge status={row.status} />
-        </View>
-      ),
-    },
-  ];
+  const columns = queueColumns({ palette, showService, personNoun });
 
   const tabs = (
     <SegmentedControl
@@ -153,18 +84,19 @@ const QueueTable = ({
     >
       {compact ? <View className="mb-3">{tabs}</View> : null}
       <DataTable
-        palette={palette}
         caption="Today's queue"
+        surface="plain"
+        density="compact"
+        layout={compact ? "cards" : "auto"}
         columns={columns}
-        rows={rows}
+        data={rows}
         rowKey={(row) => row._id}
         rowLabel={(row) =>
           `Number ${row.position}, ${row.patientName}${row.isUrgent ? ", urgent" : ""}, ${row.serviceLabel}, ${slotTime(row.slotStart)}, ${STATUS_LABELS[row.status]}`
         }
         onRowPress={onOpenQueue}
         rowHint="Opens the appointment queue"
-        stacked={compact}
-        renderStacked={(row) => (
+        renderMobileCard={(row) => (
           <View className="flex-row items-center gap-3">
             <Position palette={palette} value={row.position} />
             <View className="min-w-0 flex-1 gap-1">
@@ -180,7 +112,7 @@ const QueueTable = ({
           </View>
         )}
         emptyIcon="coffee"
-        emptyMessage={emptyMessage}
+        emptyTitle={emptyMessage}
       />
       {hidden > 0 ? (
         <Pressable

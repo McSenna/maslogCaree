@@ -19,7 +19,7 @@ type Input = {
 };
 
 export const useMissionRemovalActions = ({ catalogue, revalidate, setSaving, closeEdit }: Input) => {
-  const { loadMissionDetail, setSelectedMissionId } = catalogue;
+  const { removeMission } = catalogue;
 
   const deleteMission = useCallback(
     (missionId: string) => {
@@ -32,10 +32,10 @@ export const useMissionRemovalActions = ({ catalogue, revalidate, setSaving, clo
             setSaving(true);
             try {
               await deleteMissionSchedule(missionId);
-              await revalidate();
-              if (catalogue.selectedMissionId === missionId) setSelectedMissionId(null);
+              removeMission(missionId);
               closeEdit();
               toast.success("Mission schedule deleted", "Booked appointments were moved back to Pending.");
+              void revalidate();
             } catch (error: unknown) {
               toastError("Unable to delete schedule", error, { fallback: "The mission schedule could not be deleted." });
             } finally {
@@ -45,7 +45,7 @@ export const useMissionRemovalActions = ({ catalogue, revalidate, setSaving, clo
         },
       ]);
     },
-    [catalogue.selectedMissionId, closeEdit, revalidate, setSaving, setSelectedMissionId]
+    [closeEdit, removeMission, revalidate, setSaving]
   );
 
   const declineAppointment = useCallback(
@@ -58,11 +58,8 @@ export const useMissionRemovalActions = ({ catalogue, revalidate, setSaving, clo
           onPress: async () => {
             try {
               await rejectAppointment(appointment._id, "Declined by medical staff");
-              await revalidate();
-              if (catalogue.selectedMissionId) {
-                await loadMissionDetail(catalogue.selectedMissionId);
-              }
               toast.success("Appointment declined");
+              void revalidate();
             } catch (error: unknown) {
               toastError("Unable to decline appointment", error, { fallback: "The appointment could not be declined." });
             }
@@ -70,7 +67,7 @@ export const useMissionRemovalActions = ({ catalogue, revalidate, setSaving, clo
         },
       ]);
     },
-    [catalogue.selectedMissionId, loadMissionDetail, revalidate]
+    [revalidate]
   );
 
   return { deleteMission, declineAppointment };

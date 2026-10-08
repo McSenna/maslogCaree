@@ -10,7 +10,7 @@ import AdminSupportStats from "../admin/AdminSupportStats";
 import AdminSupportTable from "../admin/AdminSupportTable";
 import AdminSupportToolbar from "../admin/AdminSupportToolbar";
 import AdminTicketDetailsDialog from "../admin/AdminTicketDetailsDialog";
-import { SUPPORT_TABLE_MIN_WIDTH } from "../admin/adminSupportTableColumns";
+import { SUPPORT_TABLE_MIN_WIDTH } from "../admin/supportColumns";
 import SupportTicketList from "../support/SupportTicketList";
 import { useAdminSupportTickets } from "../hooks/useAdminSupportTickets";
 import { useResponsive } from "@/hooks/useResponsive";
@@ -78,7 +78,6 @@ const AdminSupportScreen = () => {
             error={support.error}
             total={support.total}
             page={support.page}
-            totalPages={support.totalPages}
             pageSize={support.pageSize}
             hasFilters={support.hasActiveFilters}
             onPageChange={support.setPage}

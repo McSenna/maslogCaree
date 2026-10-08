@@ -33,11 +33,10 @@ export const useMissionControl = () => {
     onDashboardChanged: dashboard.refreshAll,
   });
 
+  // Background reloads after a confirmed placement, side by side rather than one after another.
   const handleAssigned = useCallback(
     async (missionId: string) => {
-      await refreshLists();
-      await dashboard.refreshAll();
-      await loadMissionDetail(missionId);
+      await Promise.all([refreshLists(), dashboard.refreshAll(), loadMissionDetail(missionId)]);
     },
     [refreshLists, dashboard, loadMissionDetail]
   );
@@ -55,12 +54,11 @@ export const useMissionControl = () => {
   const placeWeekly = useWeeklyPlacement({
     setSaving: actions.setSaving,
     onPlaced: async () => {
-      await refreshLists();
-      await dashboard.refreshAll();
+      await Promise.all([refreshLists(), dashboard.refreshAll()]);
     },
   });
 
-  /** Immunization is placed on its own Wednesday schedule; everything else opens the mission slot dialog. */
+  /** Immunization is placed on its own Thursday schedule; everything else opens the mission slot dialog. */
   const openAssign = useCallback(
     (appointment: AppointmentRecord, mode: AssignMode) =>
       isWeeklyService(appointment.consultationType) ? void placeWeekly(appointment, mode) : assignment.openFor(appointment, mode),

@@ -11,7 +11,6 @@ export const useBhwResidentsScreen = () => {
   const residents = useResidents();
 
   const [contentWidth, setContentWidth] = useState(insets.width);
-  const [tableAreaWidth, setTableAreaWidth] = useState(0);
   const [detailsResidentId, setDetailsResidentId] = useState<string | null>(null);
 
   const detailsResident = useMemo(
@@ -42,8 +41,6 @@ export const useBhwResidentsScreen = () => {
     openDetails: setDetailsResidentId,
     closeDetails: useCallback(() => setDetailsResidentId(null), []),
 
-    tableAreaWidth,
-    setTableAreaWidth,
     measureContent,
 
     showTable: contentWidth >= RESIDENTS_LAYOUT.table,

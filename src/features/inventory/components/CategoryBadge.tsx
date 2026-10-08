@@ -1,33 +1,18 @@
-import { Text, View } from "react-native";
+import { Badge } from "@/components/data-table";
 import type { InventoryCategory } from "@/features/inventory/services/inventoryService";
-import { RADIUS, useInventoryPalette } from "./inventoryTheme";
+
+import { useInventoryPalette } from "./inventoryTheme";
 
 type CategoryBadgeProps = {
   category: InventoryCategory;
   size?: "sm" | "md";
 };
 
-const CategoryBadge = ({ category, size = "md" }: CategoryBadgeProps) => {
+/** An item's category in its own hue. Categories are not states, so the chip carries no icon. */
+const CategoryBadge = ({ category, size = "sm" }: CategoryBadgeProps) => {
   const palette = useInventoryPalette();
   const tone = palette.categories[category] ?? palette.categories.other;
-  const isSm = size === "sm";
-
-  return (
-    <View
-      accessibilityRole="text"
-      accessibilityLabel={`Category: ${tone.label}`}
-      className={`self-start ${isSm ? "px-2 py-1" : "px-2.5 py-1.5"}`}
-      style={{ backgroundColor: tone.bg, borderRadius: RADIUS.pill }}
-    >
-      <Text
-        numberOfLines={1}
-        className={isSm ? "text-[11px] font-semibold" : "text-[12px] font-semibold"}
-        style={{ color: tone.text }}
-      >
-        {tone.label}
-      </Text>
-    </View>
-  );
+  return <Badge tone={{ bg: tone.bg, fg: tone.text }} label={tone.label} spokenAs="Category" size={size} />;
 };
 
 export default CategoryBadge;

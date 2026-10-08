@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { ActivityIndicator, FlatList, RefreshControl, Text, View, type ListRenderItem } from "react-native";
 
-import UndoToast from "@/components/feedback/UndoToast";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { UsersScreenState } from "../../hooks/useUsersScreen";
@@ -18,7 +17,7 @@ type PhoneUsersViewProps = { screen: UsersScreenState; width: number; onExport: 
 
 const PhoneUsersView = ({ screen, width, onExport }: PhoneUsersViewProps) => {
   const palette = useAdminSurfacePalette();
-  const { view, filters, selection, menu, requestTab, undo, openMenu, openReview } = screen;
+  const { view, filters, selection, menu, requestTab, openMenu, openReview } = screen;
   const selecting = selection.count > 0;
   const reactivate = filters.tab === "deactivated";
   const { toggle, isSelected } = selection;
@@ -58,7 +57,7 @@ const PhoneUsersView = ({ screen, width, onExport }: PhoneUsersViewProps) => {
             <Text className="text-[12.5px] font-medium text-text2">{`${screen.loadedCount} of ${screen.total} ${requestTab ? "requests" : "users"}`}</Text>
           </View>
         ) : (
-          <ListState phone view={view} tab={filters.tab} onRetry={screen.retry} onClearFilters={filters.clearFilters} />
+          <ListState view={view} tab={filters.tab} onRetry={screen.retry} onClearFilters={filters.clearFilters} />
         )}
       </CardBottom>
     </View>
@@ -72,8 +71,7 @@ const PhoneUsersView = ({ screen, width, onExport }: PhoneUsersViewProps) => {
     refreshControl: (
       <RefreshControl refreshing={screen.users.isRefreshing || screen.requests.isRefreshing} onRefresh={screen.refreshAll} tintColor={palette.primary} colors={[palette.primary]} />
     ),
-    // Room for the toast so it never sits on the last row's buttons.
-    contentContainerClassName: undo.toast ? "pb-24" : "pb-6",
+    contentContainerClassName: "pb-6",
     keyboardShouldPersistTaps: "handled" as const,
     keyboardDismissMode: "on-drag" as const,
     showsVerticalScrollIndicator: false,
@@ -98,12 +96,6 @@ const PhoneUsersView = ({ screen, width, onExport }: PhoneUsersViewProps) => {
           {...shared}
         />
       )}
-      <UndoToast
-        message={undo.message}
-        onUndo={undo.toast?.kind === "pending" ? undo.undo : undefined}
-        onDismiss={undo.dismiss}
-        positionClassName="bottom-5 left-3 right-3"
-      />
     </View>
   );
 };

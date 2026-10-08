@@ -10,7 +10,7 @@ import ToastViewport from "@/components/feedback/toast/ToastViewport";
 const AppModal = ({ children, ...props }: ModalProps) => (
   <Modal {...props}>
     {children}
-    <ToastViewport layer="overlay" />
+    <ToastViewport layer="overlay" active={props.visible !== false} />
   </Modal>
 );
 

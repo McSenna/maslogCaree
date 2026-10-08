@@ -1,11 +1,10 @@
 import { PASSWORD_RULES, meetsAllPasswordRules } from "../forgotPassword/passwordRules";
+import { emailError } from "@/utils/emailAddress";
 import { EMPTY_REGISTRATION, type StepKey } from "./registrationOptions";
 
 export type RegistrationValues = typeof EMPTY_REGISTRATION;
 export type RegistrationField = keyof RegistrationValues;
 export type RegistrationErrors = Partial<Record<RegistrationField, string>>;
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const PH_MOBILE_PATTERN = /^(?:\+?63|0)9\d{9}$/;
 
@@ -94,9 +93,8 @@ export const validateField = (
 
     case "email":
       if (!value.trim()) return "Email address is required.";
-      return EMAIL_PATTERN.test(value.trim())
-        ? undefined
-        : "Please enter a valid email address.";
+      // Any provider; the message names what to fix in the address itself.
+      return emailError(value) ?? undefined;
 
     case "password":
       if (!value) return "Password is required.";

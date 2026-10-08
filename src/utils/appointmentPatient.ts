@@ -1,7 +1,3 @@
-/**
- * Who an appointment is for. Import-free so `node --test` can load it.
- * An immunization is for the child named on it; the account holder is the parent.
- */
 type PatientLike = {
   childName?: string | null;
   childDateOfBirth?: string | null;
@@ -13,7 +9,6 @@ export const isChildVisit = (appointment: PatientLike): boolean => Boolean(appoi
 export const appointmentPatientName = (appointment: PatientLike, fallback = "Unnamed patient"): string =>
   appointment.childName?.trim() || appointment.resident?.fullname?.trim() || fallback;
 
-/** The birth date that sets the patient's age: the child's for an immunization. */
 export const appointmentPatientBirthDate = (appointment: PatientLike): string | null =>
   (isChildVisit(appointment) ? appointment.childDateOfBirth : appointment.resident?.dateOfBirth) ?? null;
 

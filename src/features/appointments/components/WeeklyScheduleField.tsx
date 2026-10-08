@@ -19,7 +19,7 @@ const PICKER_PALETTE = residentDialogPalette(false);
 type Props = { weeklyDays: WeeklyBookingDays; serviceLabel: string; error?: string; onChange: () => void };
 
 /**
- * A Wednesday, never a time: the earliest open Wednesday is preselected, and the
+ * A Thursday, never a time: the earliest open Thursday is preselected, and the
  * card shows the time the next booking would get right now. The server assigns
  * the real time when the booking is confirmed.
  */
@@ -27,24 +27,24 @@ const WeeklyScheduleField = ({ weeklyDays, serviceLabel, error, onChange }: Prop
   const interval = weeklyDays.intervalMinutes ?? 10;
 
   const body = (() => {
-    if (weeklyDays.daysLoading) return <DialogStatus palette={PICKER_PALETTE} message="Checking open Wednesdays..." />;
+    if (weeklyDays.daysLoading) return <DialogStatus palette={PICKER_PALETTE} message="Checking open Thursdays..." />;
     if (weeklyDays.daysError) {
       return (
         <AppointmentAlert
           tone="danger"
           message={weeklyDays.daysError}
-          action={{ label: "Retry", accessibilityLabel: "Retry loading open Wednesdays", onPress: weeklyDays.reload }}
+          action={{ label: "Retry", accessibilityLabel: "Retry loading open Thursdays", onPress: weeklyDays.reload }}
         />
       );
     }
     return (
       <View className="gap-3">
-        <View accessibilityRole="radiogroup" accessibilityLabel="Wednesday">
+        <View accessibilityRole="radiogroup" accessibilityLabel="Thursday">
           <RescheduleDateList
             palette={PICKER_PALETTE}
             options={weeklyDayChoices(weeklyDays.days)}
             selectedId={weeklyDays.dateKey}
-            emptyMessage="Every Wednesday in the next 8 weeks is full. Please check again later."
+            emptyMessage="Every Thursday in the next 8 weeks is full. Please check again later."
             onSelect={(dateKey) => {
               weeklyDays.selectDay(dateKey);
               onChange();
@@ -70,10 +70,10 @@ const WeeklyScheduleField = ({ weeklyDays, serviceLabel, error, onChange }: Prop
       <FieldLabel label="Appointment Date" required />
       <AppointmentAlert
         tone="info"
-        message={`${serviceLabel} is every Wednesday morning, first come, first served. You pick the Wednesday; the time is assigned for you.`}
+        message={`${serviceLabel} is every Thursday morning, first come, first served. You pick the Thursday; the time is assigned for you.`}
       />
       {weeklyDays.days.length > 0 && !weeklyDays.daysLoading ? (
-        <Text style={[TYPE.caption, { color: APPOINTMENT_COLORS.mutedText }]}>The earliest Wednesday with open times is selected.</Text>
+        <Text style={[TYPE.caption, { color: APPOINTMENT_COLORS.mutedText }]}>The earliest Thursday with open times is selected.</Text>
       ) : null}
       {body}
       <FieldErrorText message={error} />

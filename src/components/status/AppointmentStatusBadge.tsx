@@ -1,10 +1,9 @@
 import { useEffect, useRef } from "react";
-import { Feather } from "@expo/vector-icons";
-import { Animated, Text } from "react-native";
+import { Animated } from "react-native";
+
+import { Badge, useCellSelfAlign } from "@/components/data-table";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
-import { useThemeColors } from "@/hooks/useThemeColors";
 import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
-import { RADII } from "@/theme/radius";
 import { getStatusMeta, type StatusAudience } from "./appointmentStatusModel";
 
 type AppointmentStatusBadgeProps = {
@@ -36,36 +35,15 @@ const useStatusChangePulse = (statusKey: string) => {
   };
 };
 
+/** An appointment's status as the shared badge, pulsing once when the status changes. */
 const AppointmentStatusBadge = ({ status, audience = "staff", size = "sm" }: AppointmentStatusBadgeProps) => {
-  const colors = useThemeColors();
   const meta = getStatusMeta(status, audience);
-  const tone = colors[meta.tone];
   const pulse = useStatusChangePulse(meta.key);
-  const compact = size === "sm";
+  const alignSelf = useCellSelfAlign();
 
   return (
-    <Animated.View
-      accessible
-      accessibilityRole="text"
-      accessibilityLabel={`Status: ${meta.label}`}
-      style={{
-        ...pulse,
-        alignSelf: "flex-start",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 4,
-        paddingHorizontal: compact ? 8 : 12,
-        paddingVertical: compact ? 4 : 6,
-        borderRadius: RADII.pill,
-        backgroundColor: tone.bg,
-        borderWidth: 1,
-        borderColor: tone.border,
-      }}
-    >
-      <Feather name={meta.icon} size={compact ? 12 : 14} color={tone.fg} />
-      <Text numberOfLines={1} style={{ color: tone.fg, fontSize: compact ? 12 : 13, fontWeight: "600" }}>
-        {meta.label}
-      </Text>
+    <Animated.View style={[pulse, { alignSelf, maxWidth: "100%" }]}>
+      <Badge tone={meta.tone} icon={meta.icon} label={meta.label} spokenAs="Status" size={size} />
     </Animated.View>
   );
 };

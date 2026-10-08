@@ -14,10 +14,10 @@ const newestFirst = (a: AppointmentRecord, b: AppointmentRecord) =>
  */
 export const useResidentAppointments = () => {
   const fetchAppointments = useCallback(() => fetchMyAppointments(), []);
-  const { items, loading, error, refresh, revalidate } = useRealtimeCollection("myAppointment", fetchAppointments, {
+  const { items, loading, error, refresh, revalidate, applyLocal } = useRealtimeCollection("myAppointment", fetchAppointments, {
     sort: newestFirst,
     errorMessage: "Unable to load your appointments.",
   });
 
-  return { appointments: items, loading, error, refresh, revalidate };
+  return { appointments: items, loading, error, refresh, revalidate, applyLocal };
 };

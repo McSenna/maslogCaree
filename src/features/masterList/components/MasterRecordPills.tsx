@@ -1,22 +1,17 @@
-import StatusPill from "@/components/dashboard/kit/StatusPill";
-import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import { Badge } from "@/components/data-table";
 
 /** Record status: colour, icon and word, never colour alone. */
-export const RecordStatusPill = ({ active }: { active: boolean }) => {
-  const palette = useAdminSurfacePalette();
-  return active ? (
-    <StatusPill palette={palette} tone="success" icon="check-circle" label="Active" />
+export const RecordStatusPill = ({ active }: { active: boolean }) =>
+  active ? (
+    <Badge tone="success" icon="check-circle" label="Active" spokenAs="Record status" />
   ) : (
-    <StatusPill palette={palette} tone="neutral" icon="slash" label="Inactive" />
+    <Badge tone="danger" icon="x-circle" label="Inactive" spokenAs="Record status" />
   );
-};
 
 /** Whether an app account points at this record. The record itself is never an account. */
-export const AccountLinkPill = ({ linked }: { linked: boolean }) => {
-  const palette = useAdminSurfacePalette();
-  return linked ? (
-    <StatusPill palette={palette} tone="info" icon="link" label="Has account" />
+export const AccountLinkPill = ({ linked }: { linked: boolean }) =>
+  linked ? (
+    <Badge tone="info" icon="link" label="Has account" spokenAs="Account status" />
   ) : (
-    <StatusPill palette={palette} tone="neutral" icon="minus" label="No account" />
+    <Badge tone="neutral" icon="minus" label="No account" spokenAs="Account status" />
   );
-};

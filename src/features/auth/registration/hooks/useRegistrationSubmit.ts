@@ -10,6 +10,7 @@ import {
   type RegistrationField,
   type RegistrationValues,
 } from "../registrationValidation";
+import { describeSubmitEmailFailure } from "../components/email/verificationCopy";
 import { buildRegistrationPayload } from "./buildRegistrationPayload";
 import { SERVER_FIELD_ALIASES, stepOwning } from "./registrationFieldMapping";
 import { toastError } from "@/utils/errorToast/toastError";
@@ -25,6 +26,8 @@ type Options = {
   >;
   setSubmitError: (message: string) => void;
   goToStep: (key: StepKey) => void;
+  /** Drops a verification the server refused, so the email step offers a new code. */
+  rejectEmailVerification: (message: string) => void;
 };
 
 export const useRegistrationSubmit = ({
@@ -36,6 +39,7 @@ export const useRegistrationSubmit = ({
   setTouched,
   setSubmitError,
   goToStep,
+  rejectEmailVerification,
 }: Options) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
@@ -94,11 +98,24 @@ export const useRegistrationSubmit = ({
       setRegisteredStatus(result.status);
       setRegisteredEmail(result.email);
     } catch (error: unknown) {
-      const { message, normalized } = getAuthErrorPresentation(
+      const { message, normalized, code } = getAuthErrorPresentation(
         error,
         "Registration Failed",
         "We could not create your account. Please try again."
       );
+      const emailFailure = describeSubmitEmailFailure(code);
+      if (emailFailure) {
+        // Both messages sit under the email field, where the fix happens.
+        if (emailFailure.kind === "reverify") {
+          rejectEmailVerification(emailFailure.message);
+        } else {
+          setErrors((previous) => ({ ...previous, email: emailFailure.message }));
+          setTouched((previous) => ({ ...previous, email: true }));
+        }
+        goToStep(stepOwning("email"));
+        toastError("Registration not submitted", error, { inline: true });
+        return;
+      }
       const placed = normalized.fieldErrors
         ? applyServerFieldErrors(normalized.fieldErrors)
         : false;
@@ -116,7 +133,9 @@ export const useRegistrationSubmit = ({
     goToStep,
     applyServerFieldErrors,
     setErrors,
+    setTouched,
     setSubmitError,
+    rejectEmailVerification,
   ]);
 
   const clearRegistration = useCallback(() => {

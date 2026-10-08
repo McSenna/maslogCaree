@@ -1,13 +1,10 @@
 import { useCallback, useRef, useState } from "react";
 import { useRouter } from "expo-router";
-import { toast } from "@/components/feedback/toast/toastStore";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPath } from "@/config/roleRoutes";
-import { ERROR_CODES, PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
-import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
-import { LOGIN_MESSAGES, checkIdentifier, checkPassword } from "../webLogin/loginIdentifier";
-import { toastError } from "@/utils/errorToast/toastError";
+import { PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
+import { checkLoginEmail, checkPassword } from "../webLogin/loginIdentifier";
+import { toastLoginFailed, toastLoginRefused } from "./loginFailureToast";
 
 export type LoginField = "email" | "password";
 
@@ -19,7 +16,6 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
   const [password, setPasswordValue] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [formError, setFormError] = useState<{ title: string; message: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPlatformNotice, setShowPlatformNotice] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -29,22 +25,19 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
   const setEmail = useCallback((value: string) => {
     setEmailValue(value);
     setEmailError(null);
-    setFormError(null);
   }, []);
 
   const setPassword = useCallback((value: string) => {
     setPasswordValue(value);
     setPasswordError(null);
-    setFormError(null);
   }, []);
 
   /** Returns the first invalid field so the caller can move focus to it. */
   const submit = useCallback(async (): Promise<LoginField | null> => {
     if (inFlight.current) return null;
 
-    // Same rules as the web login, so "0917 123 4567" and "+63 917..." reach
-    // the server in the 09 form instead of failing as unknown accounts.
-    const idCheck = checkIdentifier(email);
+    // Same rule as the web login: an email address only, never a mobile number.
+    const idCheck = checkLoginEmail(email);
     const nextPasswordError = checkPassword(password);
 
     setEmailError(idCheck.ok ? null : idCheck.message);
@@ -54,7 +47,6 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
     if (nextPasswordError) return "password";
 
     inFlight.current = true;
-    setFormError(null);
     setIsSubmitting(true);
     try {
       const result = await login(idCheck.value, password);
@@ -70,23 +62,9 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
         return null;
       }
 
-      // The alert under the fields explains what went wrong; the toast marks the failed attempt.
-      toast.error("Couldn't log in");
-      setFormError(
-        result.code === ERROR_CODES.INVALID_CREDENTIALS
-          ? { title: "Login failed", message: LOGIN_MESSAGES.credentialsMismatch }
-          : getAuthErrorPresentation(
-              { code: result.code, message: result.error },
-              "Login failed",
-              result.error ?? LOGIN_MESSAGES.credentialsMismatch
-            )
-      );
+      toastLoginRefused(result);
     } catch (error: unknown) {
-      toastError("Couldn't log in", error, { inline: true });
-      setFormError({
-        title: "Login failed",
-        message: getApiErrorMessage(error, "An unexpected error occurred. Please try again."),
-      });
+      toastLoginFailed(error);
     } finally {
       inFlight.current = false;
       setIsSubmitting(false);
@@ -103,7 +81,6 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
     setPassword,
     emailError,
     passwordError,
-    formError,
     isSubmitting,
     submit,
     forgotPassword,

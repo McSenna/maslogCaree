@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Badge } from "@/components/data-table";
 import { useTheme } from "@/contexts/ThemeContext";
 import {
   NEUTRAL_SERVICE_TONE_DARK,
@@ -7,36 +7,13 @@ import {
   SERVICE_TONES_LIGHT,
 } from "@/design/serviceColors";
 
-const ServiceBadge = ({
-  serviceKey,
-  label,
-  compact = false,
-}: {
-  serviceKey: string;
-  label: string;
-  compact?: boolean;
-}) => {
+/** A service in its own hue. Services are categories, not states, so the chip carries no icon. */
+const ServiceBadge = ({ serviceKey, label, compact = false }: { serviceKey: string; label: string; compact?: boolean }) => {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-
   const tones = isDark ? SERVICE_TONES_DARK : SERVICE_TONES_LIGHT;
-  const neutral = isDark ? NEUTRAL_SERVICE_TONE_DARK : NEUTRAL_SERVICE_TONE_LIGHT;
-  const tone = tones[serviceKey] ?? neutral;
-
-  return (
-    <View
-      className={compact ? "self-start rounded-full px-2 py-0.5" : "self-start rounded-full px-2.5 py-1"}
-      style={{ backgroundColor: tone.bg }}
-    >
-      <Text
-        className={compact ? "text-[11.5px] font-semibold" : "text-[12px] font-semibold"}
-        numberOfLines={1}
-        style={{ color: tone.fg }}
-      >
-        {label}
-      </Text>
-    </View>
-  );
+  const tone = tones[serviceKey] ?? (isDark ? NEUTRAL_SERVICE_TONE_DARK : NEUTRAL_SERVICE_TONE_LIGHT);
+  return <Badge tone={{ bg: tone.bg, fg: tone.fg }} label={label} spokenAs="Service" size={compact ? "sm" : "md"} />;
 };
 
 export default ServiceBadge;

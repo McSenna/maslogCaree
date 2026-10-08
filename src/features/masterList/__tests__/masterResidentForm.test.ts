@@ -8,7 +8,6 @@ import {
   formFromRecord,
   formatBirthDate,
   masterFullName,
-  recordRangeLine,
   toMasterInput,
   validateMasterForm,
 } from "../masterResidentForm.ts";
@@ -89,8 +88,6 @@ describe("display helpers", () => {
   it("formats names, dates and ranges", () => {
     assert.equal(masterFullName({ ...record, suffix: "Jr." }), "Testa Sample Fixture Jr.");
     assert.equal(formatBirthDate("1990-04-12"), "Apr 12, 1990");
-    assert.equal(recordRangeLine(2, 20, 5, 25), "Showing 21 to 25 of 25 records");
-    assert.equal(recordRangeLine(1, 20, 0, 0), "No records");
   });
 
   it("picks the list state", () => {

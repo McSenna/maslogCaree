@@ -9,7 +9,11 @@ import { SHEET_KEYBOARD_DISMISS_MODE } from "@/components/ui/sheetLayout/sheetSc
 import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import DateOfBirthPicker from "@/features/auth/components/datePicker/DateOfBirthPicker";
 import { DatePickerHostProvider, type DatePickerRequest } from "@/features/auth/registration/dialog/datePickerHost";
-import { DESKTOP_EDGE, dialogBackdropStyle, dialogSurfaceStyle } from "@/features/auth/registration/dialog/dialogSurface";
+import {
+  DESKTOP_EDGE,
+  dialogBackdropStyle,
+  dialogSurfaceStyle,
+} from "@/features/auth/registration/dialog/dialogSurface";
 import { useDialogDismiss } from "@/features/auth/registration/dialog/useDialogDismiss";
 import { REG_METRICS } from "@/features/auth/registration/registrationTheme";
 import { useResponsive } from "@/hooks/useResponsive";
@@ -95,7 +99,13 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
             accessibilityViewIsModal
             style={{ ...dialogSurfaceStyle(isSheet, sheetLayout), transform: [{ translateY: dragY }] }}
           >
-            <MasterEditorHeader form={form} isSheet={isSheet} horizontalPadding={horizontalPadding} onClose={requestClose} dragHandlers={dragHandlers} />
+            <MasterEditorHeader
+              form={form}
+              isSheet={isSheet}
+              horizontalPadding={horizontalPadding}
+              onClose={requestClose}
+              dragHandlers={dragHandlers}
+            />
             <ScrollView
               style={{ flexGrow: 1, flexShrink: 1 }}
               showsVerticalScrollIndicator={!isSheet}
@@ -107,7 +117,12 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
                 <MasterEditorBody form={form} inputHeight={inputHeight} twoColumn={width >= TWO_COLUMN_BREAKPOINT} />
               </DatePickerHostProvider>
             </ScrollView>
-            <MasterEditorFooter form={form} isSheet={isSheet} horizontalPadding={horizontalPadding} buttonHeight={buttonHeight} />
+            <MasterEditorFooter
+              form={form}
+              isSheet={isSheet}
+              horizontalPadding={horizontalPadding}
+              buttonHeight={buttonHeight}
+            />
           </Animated.View>
         </SheetViewport>
       </Modal>

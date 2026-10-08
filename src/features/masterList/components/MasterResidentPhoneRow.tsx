@@ -19,7 +19,9 @@ type Props = {
 const MasterResidentPhoneRow = ({ record, first, onEdit, onToggleActive }: Props) => {
   const palette = useAdminSurfacePalette();
   const name = masterFullName(record);
-  const facts = [formatBirthDate(record.dateOfBirth), capitalize(record.sex), capitalize(record.civilStatus)].join(" · ");
+  const facts = [formatBirthDate(record.dateOfBirth), capitalize(record.sex), capitalize(record.civilStatus)].join(
+    " · "
+  );
 
   return (
     <View className="mx-4">
@@ -39,7 +41,15 @@ const MasterResidentPhoneRow = ({ record, first, onEdit, onToggleActive }: Props
           </View>
           <View className="flex-row gap-2">
             <View className="flex-1">
-              <DashboardButton palette={palette} size="md" fullWidth icon="edit-2" label="Edit" accessibilityLabel={`Edit the record for ${name}`} onPress={() => onEdit(record)} />
+              <DashboardButton
+                palette={palette}
+                size="md"
+                fullWidth
+                icon="edit-2"
+                label="Edit"
+                accessibilityLabel={`Edit the record for ${name}`}
+                onPress={() => onEdit(record)}
+              />
             </View>
             <View className="flex-1">
               <DashboardButton

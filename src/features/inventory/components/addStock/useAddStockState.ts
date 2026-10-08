@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSyncOnChange } from "@/hooks/useSyncOnChange";
+import { todayDateKey } from "@/utils/dateFormatter";
 
 import type {
   InventoryItem,
@@ -11,37 +12,38 @@ const PERISHABLE: InventoryItem["category"][] = ["medicine", "vaccine", "materna
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-export const todayIso = () => new Date().toISOString().slice(0, 10);
-
 export const useAddStockState = (visible: boolean, item: InventoryItem | null) => {
   const [quantity, setQuantity] = useState("");
   const [batchNumber, setBatchNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
   const [supplier, setSupplier] = useState("none");
   const [source, setSource] = useState("");
-  const [receivedDate, setReceivedDate] = useState(todayIso());
+  // The local calendar day: a UTC date (toISOString) is still yesterday before 8 AM in Manila.
+  const [receivedDate, setReceivedDate] = useState(todayDateKey());
   const [storageCondition, setStorageCondition] = useState<StorageCondition>("room-temperature");
   const [remarks, setRemarks] = useState("");
 
-  useSyncOnChange([visible, item], () => {
+  // Keyed by id, not the object: realtime hands over a fresh copy of the item
+  // whenever anyone changes it, and resetting on that wiped what was typed.
+  useSyncOnChange([visible, item?._id], () => {
     if (!visible) return;
     setQuantity("");
     setBatchNumber("");
     setExpiryDate("");
     setSupplier(item?.supplier?._id ?? "none");
     setSource("");
-    setReceivedDate(todayIso());
+    setReceivedDate(todayDateKey());
     setStorageCondition((item?.storageCondition as StorageCondition) || "room-temperature");
     setRemarks("");
   });
 
   const quantityNumber = Number(quantity);
   const quantityValid =
-    quantity.trim() !== "" && Number.isInteger(quantityNumber) && quantityNumber > 0;
+    quantity.trim() !== "" && Number.isSafeInteger(quantityNumber) && quantityNumber > 0;
 
   const expiryRequired = item ? PERISHABLE.includes(item.category) : false;
   const expiryFormatValid = expiryDate === "" || ISO_DATE.test(expiryDate);
-  const expiryInPast = ISO_DATE.test(expiryDate) && expiryDate < todayIso();
+  const expiryInPast = ISO_DATE.test(expiryDate) && expiryDate < todayDateKey();
   const expiryValid =
     (!expiryRequired || ISO_DATE.test(expiryDate)) && expiryFormatValid && !expiryInPast;
 

@@ -3,7 +3,7 @@ import { SECURITY_NOTICE } from "@/config/landingContent";
 import ForgotPasswordFlow from "../forgotPassword/ForgotPasswordFlow";
 import PlatformAccessModal from "../components/PlatformAccessModal";
 import IdentifierField from "./IdentifierField";
-import { AlertCircleIcon, ShieldCheckIcon } from "./LoginIcons";
+import { ShieldCheckIcon } from "./LoginIcons";
 import LoginSuccess from "./LoginSuccess";
 import PasswordField from "./PasswordField";
 import { useWebLogin } from "./useWebLogin";
@@ -42,13 +42,6 @@ const WebLoginCard = ({ onOpenRegister, entranceStyle }: WebLoginCardProps) => {
         <WebLoginCardHeader />
 
         <div className={s.fields}>
-          {form.alert ? (
-            <div className={s.alert} role="alert">
-              <AlertCircleIcon className={s.alertIcon} />
-              <p>{form.alert}</p>
-            </div>
-          ) : null}
-
           <IdentifierField
             inputRef={identifierRef}
             value={form.identifier}

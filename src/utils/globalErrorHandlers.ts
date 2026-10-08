@@ -16,12 +16,6 @@ const isDev = typeof __DEV__ !== "undefined" && __DEV__;
 const allowNotice = createNoticeThrottle(30_000);
 let notifying = false;
 
-/**
- * Last line for failures no screen caught. A server error keeps its plain
- * reason; anything else is a code fault whose text means nothing to a
- * resident, so only the next step is shown. The guard stops a failure inside
- * the toast path from feeding back into these handlers.
- */
 const notifyUnexpected = (context: string, error: unknown): void => {
   if (notifying) return;
   notifying = true;

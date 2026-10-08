@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Pressable, Text, View } from "react-native";
-import { NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
+import { useNotificationPalette } from "../notification.theme";
 import type { NotificationFilter } from "../notification.types";
 import { PALETTE, withAlpha } from "@/theme/palette";
 

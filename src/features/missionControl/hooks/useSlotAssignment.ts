@@ -95,8 +95,8 @@ export const useSlotAssignment = ({
       else await reassignAppointment(target._id, body);
 
       setOpen(false);
-      await onAssigned(selectedMissionId);
       toast.success(mode === "assign" ? "Appointment confirmed" : "Appointment rescheduled");
+      void onAssigned(selectedMissionId);
     } catch (error: unknown) {
       toastError("Unable to schedule appointment", error, { fallback: "The appointment could not be scheduled." });
     } finally {

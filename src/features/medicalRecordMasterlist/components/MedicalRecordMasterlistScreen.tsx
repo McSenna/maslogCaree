@@ -12,16 +12,9 @@ import MasterlistOverlays from "./MasterlistOverlays";
 import MasterlistPhoneList from "./MasterlistPhoneList";
 import MasterlistWideList from "./MasterlistWideList";
 
-// The role shell's content padding on either side of the page from tablet width up.
 const SHELL_PADDING_X = 48;
-// Below this content width the table's columns no longer fit, so rows stack.
 const TABLE_MIN_WIDTH = 760;
 
-/**
- * Medical Records Masterlist, shared by admin, doctor, midwife and BHW. The
- * role only shapes the UI; the server decides which services each role sees.
- * The table needs the width beside the sidebar, so the page measures itself.
- */
 const MedicalRecordMasterlistScreen = () => {
   const theme = useUsersTheme();
   const insets = useRoleScreenInsets();

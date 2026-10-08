@@ -1,20 +1,15 @@
-import { useState, type ReactNode } from "react";
-import { View, type LayoutChangeEvent } from "react-native";
-import type { AppointmentRecord } from "@/services/appointments";
-import QueuePanel from "./QueuePanel";
-import { useQueuePalette, type AppointmentStatus } from "./queueTheme";
-import AppointmentCard from "./appointmentsPanel/AppointmentCard";
-import {
-  AppointmentsEmpty,
-  AppointmentsError,
-  AppointmentsSkeleton,
-} from "./appointmentsPanel/AppointmentsPanelStates";
-import AppointmentsTableHeader from "./appointmentsPanel/AppointmentsTableHeader";
-import AppointmentsTableRow from "./appointmentsPanel/AppointmentsTableRow";
-import StatusTabs from "./appointmentsPanel/StatusTabs";
+import { useMemo, type ReactNode } from "react";
+import { View } from "react-native";
 
-/** Narrowest panel whose seven table columns still read in full. */
-const TABLE_MIN_PANEL_WIDTH = 640;
+import { DataTable } from "@/components/data-table";
+import type { AppointmentRecord } from "@/services/appointments";
+import { appointmentPatientName } from "@/utils/appointmentPatient";
+
+import AppointmentCard from "./appointmentsPanel/AppointmentCard";
+import { appointmentColumns } from "./appointmentsPanel/appointmentColumns";
+import StatusTabs from "./appointmentsPanel/StatusTabs";
+import QueuePanel from "./QueuePanel";
+import { STATUS_LABELS, useQueuePalette, type AppointmentStatus } from "./queueTheme";
 
 type AppointmentsPanelProps = {
   appointments: AppointmentRecord[];
@@ -32,6 +27,7 @@ type AppointmentsPanelProps = {
   error: string | null;
   onRetry: () => void;
   emptyMessage: string;
+  /** Decided from the window; the table still turns into cards when the panel itself is too narrow for it. */
   asTable: boolean;
 };
 
@@ -55,77 +51,50 @@ const AppointmentsPanel = ({
 }: AppointmentsPanelProps) => {
   const palette = useQueuePalette();
   const actions = { onApprove, onMore, busyId, canAct, onRowPress };
-
-  // `asTable` is decided from the window, but beside the sidebar (and in a two-column
-  // layout) the panel can be far narrower. Below this the columns truncate to "Gen…",
-  // so the cards take over.
-  const [panelWidth, setPanelWidth] = useState<number | null>(null);
-  const showTable = asTable && (panelWidth === null || panelWidth >= TABLE_MIN_PANEL_WIDTH);
-  const onPanelLayout = (event: LayoutChangeEvent) => {
-    const next = Math.round(event.nativeEvent.layout.width);
-    setPanelWidth((current) => (current === next ? current : next));
-  };
-
-  const labelFor = (appointment: AppointmentRecord) =>
+  const serviceLabelOf = (appointment: AppointmentRecord) =>
     serviceLabels[appointment.consultationType] ?? appointment.consultationType;
 
-  const renderBody = () => {
-    if (error) return <AppointmentsError error={error} onRetry={onRetry} palette={palette} />;
-    if (loading) return <AppointmentsSkeleton palette={palette} />;
-    if (appointments.length === 0) {
-      return (
-        <AppointmentsEmpty
-          activeStatus={activeStatus}
-          message={emptyMessage}
-          palette={palette}
-        />
-      );
-    }
-
-    if (showTable) {
-      return (
-        <View className="w-full px-5 pb-2">
-          <AppointmentsTableHeader palette={palette} hasAction={canAct || Boolean(onRowPress)} />
-          {appointments.map((appointment, position) => (
-            <AppointmentsTableRow
-              key={appointment._id}
-              appointment={appointment}
-              index={position + 1}
-              serviceLabel={labelFor(appointment)}
-              isLast={position === appointments.length - 1}
-              palette={palette}
-              {...actions}
-            />
-          ))}
-        </View>
-      );
-    }
-
-    return (
-      <View className="w-full gap-2.5 p-4">
-        {appointments.map((appointment) => (
-          <AppointmentCard
-            key={appointment._id}
-            appointment={appointment}
-            serviceLabel={labelFor(appointment)}
-            palette={palette}
-            {...actions}
-          />
-        ))}
-      </View>
-    );
-  };
+  const columns = useMemo(
+    () =>
+      appointmentColumns({
+        palette,
+        onApprove,
+        onMore,
+        busyId,
+        canAct,
+        onRowPress,
+        serviceLabelOf: (appointment) => serviceLabels[appointment.consultationType] ?? appointment.consultationType,
+      }),
+    [palette, onApprove, onMore, busyId, canAct, onRowPress, serviceLabels]
+  );
 
   return (
-    <View onLayout={onPanelLayout} style={{ width: "100%", minWidth: 0 }}>
+    <View className="w-full min-w-0">
       <QueuePanel icon="calendar" title="Appointments" trailing={headerAction} bodyPadding={false}>
-        <StatusTabs
-          activeStatus={activeStatus}
-          onStatusChange={onStatusChange}
-          statusCounts={statusCounts}
-          palette={palette}
-        />
-        {renderBody()}
+        <StatusTabs activeStatus={activeStatus} onStatusChange={onStatusChange} statusCounts={statusCounts} palette={palette} />
+        <View className="w-full p-3">
+          <DataTable
+            caption="Appointments"
+            surface="plain"
+            layout={asTable ? "auto" : "cards"}
+            columns={columns}
+            data={appointments}
+            rowKey={(appointment) => appointment._id}
+            loading={loading}
+            error={error}
+            errorTitle="Unable to load appointments."
+            onRetry={onRetry}
+            emptyIcon="calendar"
+            emptyTitle={`No ${STATUS_LABELS[activeStatus].toLowerCase()} appointments.`}
+            emptyDescription={emptyMessage}
+            onRowPress={onRowPress}
+            rowPressMode={canAct ? "pointer" : "button"}
+            rowLabel={(appointment) => `View the medical record for ${appointmentPatientName(appointment, "this appointment")}`}
+            renderMobileCard={(appointment) => (
+              <AppointmentCard appointment={appointment} serviceLabel={serviceLabelOf(appointment)} palette={palette} {...actions} />
+            )}
+          />
+        </View>
       </QueuePanel>
     </View>
   );

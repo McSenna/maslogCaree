@@ -112,21 +112,21 @@ describe("classifyWeeklyFailure", () => {
 
 describe("keepOpenDay", () => {
   const days = [
-    { dateKey: "2026-10-07", openPositions: 0 },
-    { dateKey: "2026-10-14", openPositions: 3 },
-    { dateKey: "2026-10-21", openPositions: 24 },
+    { dateKey: "2026-10-08", openPositions: 0 },
+    { dateKey: "2026-10-15", openPositions: 3 },
+    { dateKey: "2026-10-22", openPositions: 24 },
   ];
 
-  it("preselects the earliest Wednesday that still has room", () => {
-    assert.equal(keepOpenDay(days, null), "2026-10-14");
+  it("preselects the earliest Thursday that still has room", () => {
+    assert.equal(keepOpenDay(days, null), "2026-10-15");
   });
 
   it("keeps a chosen day with room and moves off one that filled up", () => {
-    assert.equal(keepOpenDay(days, "2026-10-21"), "2026-10-21");
-    assert.equal(keepOpenDay(days, "2026-10-07"), "2026-10-14");
+    assert.equal(keepOpenDay(days, "2026-10-22"), "2026-10-22");
+    assert.equal(keepOpenDay(days, "2026-10-08"), "2026-10-15");
   });
 
   it("selects nothing when every day is full", () => {
-    assert.equal(keepOpenDay([{ dateKey: "2026-10-07", openPositions: 0 }], null), null);
+    assert.equal(keepOpenDay([{ dateKey: "2026-10-08", openPositions: 0 }], null), null);
   });
 });

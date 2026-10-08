@@ -10,7 +10,7 @@ import type { MenuAnchor, StatusAction, User, UserTab } from "../userAdmin.types
 import { applyStatusChanges } from "../userStatusOverlay";
 import { resolveView } from "./screenView";
 import { useRowSelection } from "./useRowSelection";
-import { useStatusUndo, type StatusBatch } from "./useStatusUndo";
+import { useStatusChange, type StatusBatch } from "./useStatusChange";
 import { useUserFilterState } from "./useUserFilterState";
 import { PAGE_SIZE, useSignupRequests, useUserSummary, useUsers } from "./useUserQueries";
 import { invalidateUsers } from "./usersVersion";
@@ -57,9 +57,9 @@ export const useUsersScreen = ({ isPhone }: { isPhone: boolean }) => {
     },
     [invalidate]
   );
-  const undo = useStatusUndo(commit, users.items);
+  const statusChange = useStatusChange(commit, users.items);
 
-  const rows = useMemo(() => applyStatusChanges(users.items, undo.batches, tab), [users.items, undo.batches, tab]);
+  const rows = useMemo(() => applyStatusChanges(users.items, statusChange.batches, tab), [users.items, statusChange.batches, tab]);
   const rowIds = useMemo(() => rows.map((user) => user.id), [rows]);
   const selection = useRowSelection(rowIds);
   const [menu, setMenu] = useState<RowMenu | null>(null);
@@ -86,7 +86,7 @@ export const useUsersScreen = ({ isPhone }: { isPhone: boolean }) => {
     }
     setMenu(null);
     selection.clear();
-    undo.request({ ids: targets.map((user) => user.id), names: targets.map((user) => user.fullName), action });
+    void statusChange.change({ ids: targets.map((user) => user.id), names: targets.map((user) => user.fullName), action });
   };
 
   // "Added this month": every account, newest first.
@@ -153,7 +153,6 @@ export const useUsersScreen = ({ isPhone }: { isPhone: boolean }) => {
     menuUser: menu ? rows.find((user) => user.id === menu.userId) ?? null : null,
     openMenu: setMenu,
     closeMenu: () => setMenu(null),
-    undo,
     changeStatus,
     details,
     review,

@@ -18,8 +18,8 @@ const MAX_WIDTH = 420;
  * above the bottom navigation; wider screens pin it to the bottom right. A
  * screen can ask for the top instead (setToastPlacement), centred at any width.
  */
-const ToastViewport = ({ layer = "root" }: { layer?: ToastLayerKind }) => {
-  const { message, bottomOffset, placement, setPaused } = useToastState(layer);
+const ToastViewport = ({ layer = "root", active = true }: { layer?: ToastLayerKind; active?: boolean }) => {
+  const { message, bottomOffset, placement, setPaused } = useToastState(layer, active);
   const { isMobile, pagePadding } = useResponsive();
   const { height: windowHeight } = useWindowDimensions();
   const insets = useSafeAreaInsets();
