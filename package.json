@@ -15,7 +15,9 @@
     "start:tunnel": "expo start --dev-client --tunnel",
     "android:local": "expo run:android",
     "typecheck": "tsc --noEmit",
-    "test:unit": "node --test \"src/**/__tests__/*.test.ts\""
+    "test:unit": "node --test \"src/**/__tests__/*.test.ts\"",
+    "deploy": "npx expo export -p web && wrangler deploy",
+    "preview": "npx expo export -p web && wrangler dev"
   },
   "dependencies": {
     "@expo-google-fonts/public-sans": "^0.4.2",
@@ -66,7 +68,8 @@
     "jest-axe": "^11.0.0",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "react-refresh": "^0.14.2",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "wrangler": "^4.148.0"
   },
   "private": true
 }
