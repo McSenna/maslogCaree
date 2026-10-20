@@ -89,12 +89,6 @@ export const useUsersScreen = ({ isPhone }: { isPhone: boolean }) => {
     void statusChange.change({ ids: targets.map((user) => user.id), names: targets.map((user) => user.fullName), action });
   };
 
-  // "Added this month": every account, newest first.
-  const showNewest = () => {
-    setTab("accounts");
-    filters.setSort("joined_desc");
-  };
-
   const openReview = (id: string, reject: boolean) => {
     setReviewTarget({ id, reject });
     void review.openReview(id);
@@ -138,7 +132,6 @@ export const useUsersScreen = ({ isPhone }: { isPhone: boolean }) => {
   return {
     filters,
     setTab,
-    showNewest,
     requestTab,
     masterTab,
     summary,

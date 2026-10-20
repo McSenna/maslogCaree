@@ -15,8 +15,8 @@ export const masterListEmptyCopy = (filtered: boolean, onClearFilters: () => voi
     ? {
         emptyIcon: "search",
         emptyTitle: "No records found",
-        emptyDescription: "Nothing matches this search. Check the spelling or search by record ID.",
-        emptyAction: { label: "Clear search", icon: "x", onPress: onClearFilters, variant: "outlined" },
+        emptyDescription: "Nothing matches this search and these filters. Change the filters or clear them to see all records.",
+        emptyAction: { label: "Clear filters", icon: "x", onPress: onClearFilters, variant: "outlined" },
       }
     : {
         emptyIcon: "users",

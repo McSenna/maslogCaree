@@ -1,5 +1,8 @@
 import { Badge } from "@/components/data-table";
 
+import type { MasterResidentRole } from "../masterList.types";
+import { masterRoleLabel } from "../masterResidentRoles";
+
 /** Record status: colour, icon and word, never colour alone. */
 export const RecordStatusPill = ({ active }: { active: boolean }) =>
   active ? (
@@ -15,3 +18,13 @@ export const AccountLinkPill = ({ linked }: { linked: boolean }) =>
   ) : (
     <Badge tone="neutral" icon="minus" label="No account" spokenAs="Account status" />
   );
+
+/** Classification on the official record, independent of account permissions. */
+export const ResidentRolePill = ({ role }: { role?: MasterResidentRole | null }) => (
+  <Badge
+    tone="neutral"
+    icon="user"
+    label={masterRoleLabel(role)}
+    accessibilityLabel={`Role: ${role === "bhw" ? "BHW (Barangay Health Worker)" : masterRoleLabel(role)}`}
+  />
+);

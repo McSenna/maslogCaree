@@ -1,5 +1,13 @@
-import { useCallback, useMemo, useState } from "react";
-import { Animated, Pressable, ScrollView } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  AccessibilityInfo,
+  Animated,
+  findNodeHandle,
+  Platform,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 
 import { toast } from "@/components/feedback";
 import Modal from "@/components/ui/AppModal";
@@ -8,7 +16,10 @@ import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
 import { SHEET_KEYBOARD_DISMISS_MODE } from "@/components/ui/sheetLayout/sheetScroll";
 import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
 import DateOfBirthPicker from "@/features/auth/components/datePicker/DateOfBirthPicker";
-import { DatePickerHostProvider, type DatePickerRequest } from "@/features/auth/registration/dialog/datePickerHost";
+import {
+  DatePickerHostProvider,
+  type DatePickerRequest,
+} from "@/features/auth/registration/dialog/datePickerHost";
 import {
   DESKTOP_EDGE,
   dialogBackdropStyle,
@@ -24,6 +35,9 @@ import type { MasterResidentRecord } from "../masterList.types";
 import MasterEditorBody from "./editor/MasterEditorBody";
 import MasterEditorFooter from "./editor/MasterEditorFooter";
 import MasterEditorHeader from "./editor/MasterEditorHeader";
+import type { FieldRegistry } from "./editor/MasterEditorField";
+import type { MasterFormField } from "../masterResidentForm";
+import { orderedMasterErrors } from "../masterResidentSections";
 
 const TWO_COLUMN_BREAKPOINT = 640;
 
@@ -33,12 +47,7 @@ type Props = {
   onSaved: () => void;
 };
 
-/**
- * Add or edit a master list record in the resident registration dialog's
- * design: a centred card on wide screens, a bottom sheet on phones, the same
- * header, step tracker, fields and footer. Mounted only while open, so each
- * opening starts from the record it was opened for.
- */
+/** One scrollable resident form in the shared responsive dialog/sheet. */
 const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
   const { width, isMobile: isSheet } = useResponsive();
   const sheetLayout = useSheetLayout({
@@ -50,18 +59,81 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
 
   const handleSaved = useCallback(
     (saved: MasterResidentRecord) => {
-      toast.success(editing ? "Record updated" : "Record added", `Master resident ID ${saved.masterResidentId}`);
+      toast.success(
+        editing ? "Record updated" : "Record added",
+        `Master resident ID ${saved.masterResidentId}`,
+      );
       onSaved();
       onClose();
     },
-    [editing, onClose, onSaved]
+    [editing, onClose, onSaved],
   );
   const form = useMasterResidentEditor({ editing, onSaved: handleSaved });
+  const scrollRef = useRef<ScrollView>(null);
+  const fields = useRef<FieldRegistry>({});
+  const registerField = useCallback(
+    (field: MasterFormField, node: View | null) => {
+      fields.current[field] = node;
+    },
+    [],
+  );
+  const focusField = useCallback((field: MasterFormField) => {
+    const node = fields.current[field];
+    if (!node) return;
+    if (Platform.OS === "web") {
+      const element = node as unknown as HTMLElement;
+      const control = element.querySelector<HTMLElement>(
+        'input, [role="button"], [role="radio"]',
+      );
+      control?.focus({ preventScroll: true });
+      element.scrollIntoView({ block: "center", behavior: "auto" });
+    } else {
+      node.measureLayout(
+        scrollRef.current?.getInnerViewNode(),
+        (_x, y) => {
+          scrollRef.current?.scrollTo({
+            y: Math.max(0, y - 16),
+            animated: true,
+          });
+        },
+        () => {},
+      );
+      const handle = findNodeHandle(node);
+      if (handle) AccessibilityInfo.setAccessibilityFocus(handle);
+    }
+  }, []);
+  useEffect(() => {
+    if (!form.errorRevision) return;
+    const first = orderedMasterErrors(form.errors)[0];
+    const frame = requestAnimationFrame(() => {
+      if (first) focusField(first.field);
+      else {
+        scrollRef.current?.scrollTo({ y: 0, animated: false });
+        if (Platform.OS === "web") {
+          const inner = scrollRef.current?.getInnerViewNode() as
+            HTMLElement | undefined;
+          const alert = inner?.querySelector<HTMLElement>('[role="alert"]');
+          if (alert) {
+            alert.tabIndex = -1;
+            alert.focus();
+          }
+        }
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+    // Reposition only for a new failed attempt, not while correcting fields.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.errorRevision, focusField]);
 
   // Held outside the `Modal` element so an Android dialog recreation cannot
   // reset it (see auth/registration/dialog/datePickerHost).
-  const [dateRequest, setDateRequest] = useState<DatePickerRequest | null>(null);
-  const datePickerHost = useMemo(() => ({ open: (request: DatePickerRequest) => setDateRequest(request) }), []);
+  const [dateRequest, setDateRequest] = useState<DatePickerRequest | null>(
+    null,
+  );
+  const datePickerHost = useMemo(
+    () => ({ open: (request: DatePickerRequest) => setDateRequest(request) }),
+    [],
+  );
 
   const { dragY, dragHandlers, requestClose } = useDialogDismiss({
     onClose,
@@ -75,8 +147,12 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
   const attachFocusTrap = useFocusTrap(true);
 
   const horizontalPadding = isSheet ? 20 : 32;
-  const inputHeight = isSheet ? REG_METRICS.sheetInputHeight : REG_METRICS.modalInputHeight;
-  const buttonHeight = isSheet ? REG_METRICS.buttonHeight.sheet : REG_METRICS.buttonHeight.modal;
+  const inputHeight = isSheet
+    ? REG_METRICS.sheetInputHeight
+    : REG_METRICS.modalInputHeight;
+  const buttonHeight = isSheet
+    ? REG_METRICS.buttonHeight.sheet
+    : REG_METRICS.buttonHeight.modal;
 
   return (
     <>
@@ -87,17 +163,29 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
         onRequestClose={backDismissesKeyboardFirst(sheetLayout, requestClose)}
         statusBarTranslucent
       >
-        <SheetViewport layout={sheetLayout} style={dialogBackdropStyle(isSheet)}>
+        <SheetViewport
+          layout={sheetLayout}
+          style={dialogBackdropStyle(isSheet)}
+        >
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Close the master list record"
             onPress={requestClose}
-            style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+            }}
           />
           <Animated.View
             ref={attachFocusTrap as never}
             accessibilityViewIsModal
-            style={{ ...dialogSurfaceStyle(isSheet, sheetLayout), transform: [{ translateY: dragY }] }}
+            style={{
+              ...dialogSurfaceStyle(isSheet, sheetLayout),
+              transform: [{ translateY: dragY }],
+            }}
           >
             <MasterEditorHeader
               form={form}
@@ -107,14 +195,25 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
               dragHandlers={dragHandlers}
             />
             <ScrollView
+              ref={scrollRef}
               style={{ flexGrow: 1, flexShrink: 1 }}
               showsVerticalScrollIndicator={!isSheet}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode={SHEET_KEYBOARD_DISMISS_MODE}
-              contentContainerStyle={{ paddingHorizontal: horizontalPadding, paddingTop: 20, paddingBottom: 20 }}
+              contentContainerStyle={{
+                paddingHorizontal: horizontalPadding,
+                paddingTop: 20,
+                paddingBottom: 20,
+              }}
             >
               <DatePickerHostProvider value={datePickerHost}>
-                <MasterEditorBody form={form} inputHeight={inputHeight} twoColumn={width >= TWO_COLUMN_BREAKPOINT} />
+                <MasterEditorBody
+                  form={form}
+                  inputHeight={inputHeight}
+                  twoColumn={width >= TWO_COLUMN_BREAKPOINT}
+                  registerField={registerField}
+                  onFieldPress={focusField}
+                />
               </DatePickerHostProvider>
             </ScrollView>
             <MasterEditorFooter
@@ -122,6 +221,7 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
               isSheet={isSheet}
               horizontalPadding={horizontalPadding}
               buttonHeight={buttonHeight}
+              onCancel={requestClose}
             />
           </Animated.View>
         </SheetViewport>

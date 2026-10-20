@@ -22,7 +22,7 @@ type Props = { screen: UsersScreenState; width: number; insets: RoleScreenInsets
 
 const MasterListWideList = ({ screen, width, insets }: Props) => {
   const palette = useAdminSurfacePalette();
-  const master = useMasterListScreen({ isPhone: false });
+  const master = useMasterListScreen({ isPhone: false, onChanged: screen.summary.refetch });
   const { list, openEdit, askToggle } = master;
   // A new page starts at its first row.
   const scrollRef = useScrollTopOnChange<ScrollView>(list.page);
@@ -55,13 +55,11 @@ const MasterListWideList = ({ screen, width, insets }: Props) => {
             summary={screen.summary.data}
             tab={screen.filters.tab}
             onSelectTab={screen.setTab}
-            onShowNewest={screen.showNewest}
-            newestSelected={screen.filters.tab === "accounts" && screen.filters.sort === "joined_desc"}
             columns={width >= 900 ? 4 : 2}
           />
-          <View className="flex-row flex-wrap items-center justify-between gap-3">
+          <View className="flex-row flex-wrap items-start justify-between gap-3">
             <UserTabs value={screen.filters.tab} summary={screen.summary.data} onChange={screen.setTab} />
-            <View className="ml-auto">
+            <View className="min-w-[300px] flex-1">
               <MasterListToolbar list={list} />
             </View>
           </View>

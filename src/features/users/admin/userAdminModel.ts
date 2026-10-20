@@ -103,12 +103,13 @@ export const toSummary = (raw: ApiUserSummary): UserSummary => ({
   residents: raw.residents,
   active: raw.active + raw.approved,
   addedThisMonth: raw.addedThisMonth,
+  masterlist: raw.masterlist,
   deactivated: raw.deactivated,
   pendingRequests: raw.pendingRequests,
   rejectedRequests: raw.rejectedRequests,
 });
 
-// The Masterlist tab counts official records, not accounts, so the account summary has no number for it.
+// Masterlist counts official records separately from user accounts.
 export const TAB_COUNT: Partial<Record<UserTab, (summary: UserSummary) => number>> = {
   active: (summary) => summary.active,
   requests: (summary) => summary.pendingRequests,

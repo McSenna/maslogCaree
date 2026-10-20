@@ -36,6 +36,7 @@ export interface UserSummary {
   /** Accounts that can sign in: staff marked active plus approved residents. */
   active: number;
   addedThisMonth: number;
+  masterlist: number;
   deactivated: number;
   pendingRequests: number;
   rejectedRequests: number;
@@ -90,6 +91,7 @@ export interface ApiUserSummary {
   approved: number;
   deactivated: number;
   addedThisMonth: number;
+  masterlist: number;
   pendingRequests: number;
   rejectedRequests: number;
 }

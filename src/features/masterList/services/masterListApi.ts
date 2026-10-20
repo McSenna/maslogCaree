@@ -4,6 +4,9 @@ import type {
   MasterListCounts,
   MasterListPage,
   MasterListStatus,
+  MasterCivilStatusFilter,
+  MasterListSort,
+  MasterListRoleFilter,
   MasterResidentInput,
   MasterResidentRecord,
 } from "../masterList.types";
@@ -22,6 +25,10 @@ type RecordResponse = { record: MasterResidentRecord; message?: string };
 export type MasterListParams = {
   search: string;
   status: MasterListStatus;
+  role?: MasterListRoleFilter;
+  sort?: MasterListSort;
+  civilStatus?: MasterCivilStatusFilter;
+  purok?: string;
   page: number;
   limit: number;
 };
@@ -30,7 +37,7 @@ const EMPTY_COUNTS: MasterListCounts = { active: 0, inactive: 0, total: 0 };
 
 export const fetchMasterResidents = async (params: MasterListParams): Promise<MasterListPage> => {
   const { data } = await api.get<ListResponse>(BASE, {
-    params: { search: params.search || undefined, status: params.status, page: params.page, limit: params.limit },
+    params: { search: params.search || undefined, status: params.status, role: params.role, sort: params.sort, civilStatus: params.civilStatus, purok: params.purok, page: params.page, limit: params.limit },
   });
   return {
     records: data.records ?? [],

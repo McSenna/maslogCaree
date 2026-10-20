@@ -1,5 +1,6 @@
 // Form rules for adding and editing master list records. Import-free so
 // `node --test` can load it; the server repeats every check.
+import { MASTER_ROLE_CHOICES } from "./masterResidentRoles.ts";
 import { formatTableDate } from "../../utils/dateFormatter.ts";
 import type { MasterResidentInput, MasterResidentRecord } from "./masterList.types.ts";
 
@@ -11,6 +12,21 @@ export const SEX_CHOICES = [
   { value: "male", label: "Male" },
 ] as const;
 
+// Keep both Purok 2 entries distinct, as listed in the barangay registry.
+export const PUROK_CHOICES = [
+  { value: "Purok 1, Centro", label: "Purok 1, Centro" },
+  { value: "Purok 2, Pangulo", label: "Purok 2, Pangulo" },
+  { value: "Purok 2, Pangulo 2", label: "Purok 2, Pangulo 2" },
+  { value: "Purok 3, Polique", label: "Purok 3, Polique" },
+  { value: "Purok 4, Gumihan", label: "Purok 4, Gumihan" },
+  { value: "Purok 5, East San Jose", label: "Purok 5, East San Jose" },
+  { value: "Purok 6, West San Jose", label: "Purok 6, West San Jose" },
+  { value: "Purok 7, West Pagbidayan", label: "Purok 7, West Pagbidayan" },
+  { value: "Purok 8, East Pagbidayan", label: "Purok 8, East Pagbidayan" },
+  { value: "Purok 9, Oraroy", label: "Purok 9, Oraroy" },
+  { value: "Purok 10, Macaradat", label: "Purok 10, Macaradat" },
+] as const;
+
 export const CIVIL_STATUS_CHOICES = [
   { value: "single", label: "Single" },
   { value: "married", label: "Married" },
@@ -19,7 +35,7 @@ export const CIVIL_STATUS_CHOICES = [
 ] as const;
 
 // Sex, birth date and civil status start blank: a wrong guess on an official
-// record is worse than an empty field. The barangay is the one safe default.
+// record is worse than an empty field. Role defaults to Resident.
 export const emptyMasterForm = (barangay: string): MasterResidentInput => ({
   masterResidentId: "",
   firstName: "",
@@ -31,6 +47,7 @@ export const emptyMasterForm = (barangay: string): MasterResidentInput => ({
   civilStatus: "",
   barangay,
   address: "",
+  role: "resident",
 });
 
 export const formFromRecord = (record: MasterResidentRecord): MasterResidentInput => ({
@@ -44,6 +61,7 @@ export const formFromRecord = (record: MasterResidentRecord): MasterResidentInpu
   civilStatus: record.civilStatus,
   barangay: record.barangay,
   address: record.address,
+  role: record.role || "resident",
 });
 
 const NAME = /^[\p{L}\p{M}][\p{L}\p{M}\s.'-]*$/u;
@@ -80,7 +98,10 @@ export const validateMasterForm = (
     sex: values.sex ? undefined : "Choose the sex on the official record.",
     civilStatus: values.civilStatus ? undefined : "Choose the civil status.",
     barangay: values.barangay.trim() ? undefined : "Enter the barangay.",
-    address: values.address.trim() ? undefined : "Enter the purok and street.",
+    address: values.address.trim() ? undefined : "Select the purok.",
+    role: MASTER_ROLE_CHOICES.some((option) => option.value === values.role)
+      ? undefined
+      : "Choose Resident, BHW, or Midwife.",
   };
 
   const recordId = (values.masterResidentId ?? "").trim();
@@ -103,6 +124,7 @@ export const toMasterInput = (values: MasterResidentInput, isEditing: boolean): 
     civilStatus: values.civilStatus,
     barangay: values.barangay.trim(),
     address: values.address.trim(),
+    role: values.role,
   };
   const recordId = (values.masterResidentId ?? "").trim();
   return !isEditing && recordId ? { ...input, masterResidentId: recordId } : input;

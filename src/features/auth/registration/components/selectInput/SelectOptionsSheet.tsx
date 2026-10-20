@@ -1,3 +1,6 @@
+import { useCallback, useState } from "react";
+import useSelectKeyboard from "./useSelectKeyboard";
+import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 import { Feather } from "@expo/vector-icons";
 import { Pressable, ScrollView, Text, View } from "react-native";
 import Modal from "@/components/ui/AppModal";
@@ -26,6 +29,17 @@ const SelectOptionsSheet = <T extends string>({
   onSelect: (value: T) => void;
   onClose: () => void;
 }) => {
+  useWebModalBehavior(open, onClose);
+  const attachFocusTrap = useFocusTrap(open);
+  const [container, setContainer] = useState<View | null>(null);
+  const attachContainer = useCallback(
+    (node: View | null) => {
+      setContainer(node);
+      attachFocusTrap(node);
+    },
+    [attachFocusTrap],
+  );
+  useSelectKeyboard(open, container, value);
   const layout = useSheetLayout({
     enabled: open,
     variant: isSheet ? "sheet" : "centered",
@@ -43,7 +57,10 @@ const SelectOptionsSheet = <T extends string>({
     >
       <SheetViewport
         layout={layout}
-        style={{ backgroundColor: REG_COLORS.overlay, paddingHorizontal: isSheet ? 0 : 24 }}
+        style={{
+          backgroundColor: REG_COLORS.overlay,
+          paddingHorizontal: isSheet ? 0 : 24,
+        }}
       >
         {/*
           The backdrop is its own layer behind the sheet. While the sheet sat
@@ -58,6 +75,7 @@ const SelectOptionsSheet = <T extends string>({
         />
 
         <View
+          ref={attachContainer}
           accessibilityViewIsModal
           style={{
             width: "100%",
@@ -90,38 +108,58 @@ const SelectOptionsSheet = <T extends string>({
             style={SHEET_SCROLL_STYLE}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{
-              paddingBottom: isSheet ? Math.max(layout.bottomInset, 12) + 8 : 10,
+              paddingBottom: isSheet
+                ? Math.max(layout.bottomInset, 12) + 8
+                : 10,
             }}
           >
-            {options.map((option) => {
-              const isSelected = option.value === value;
-              return (
-                <Pressable
-                  key={option.value}
-                  onPress={() => onSelect(option.value)}
-                  accessibilityRole="menuitem"
-                  accessibilityState={{ selected: isSelected }}
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    minHeight: 48,
-                    paddingHorizontal: 20,
-                  }}
-                >
-                  <Text
+            <View
+              accessibilityRole="radiogroup"
+              accessibilityLabel={`${label} options`}
+            >
+              {options.map((option) => {
+                const isSelected = option.value === value;
+                return (
+                  <Pressable
+                    key={option.value}
+                    onPress={() => onSelect(option.value)}
+                    aria-checked={isSelected}
+                    accessibilityRole="radio"
+                    accessibilityLabel={option.label}
+                    accessibilityState={{
+                      selected: isSelected,
+                      checked: isSelected,
+                    }}
                     style={{
-                      fontSize: 15.5,
-                      fontWeight: isSelected ? "600" : "400",
-                      color: isSelected ? REG_COLORS.primary : REG_COLORS.text,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      minHeight: 48,
+                      paddingHorizontal: 20,
                     }}
                   >
-                    {option.label}
-                  </Text>
-                  {isSelected ? <Feather name="check" size={18} color={REG_COLORS.primary} /> : null}
-                </Pressable>
-              );
-            })}
+                    <Text
+                      style={{
+                        fontSize: 15.5,
+                        fontWeight: isSelected ? "600" : "400",
+                        color: isSelected
+                          ? REG_COLORS.primary
+                          : REG_COLORS.text,
+                      }}
+                    >
+                      {option.label}
+                    </Text>
+                    {isSelected ? (
+                      <Feather
+                        name="check"
+                        size={18}
+                        color={REG_COLORS.primary}
+                      />
+                    ) : null}
+                  </Pressable>
+                );
+              })}
+            </View>
           </ScrollView>
         </View>
       </SheetViewport>

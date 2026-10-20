@@ -6,16 +6,11 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { UserSummary, UserTab } from "../../userAdmin.types";
 import { activeShareNote } from "../../userAdminModel";
-import { monthStartNote } from "../../userDates";
 
 type OverviewCardsProps = {
   summary: UserSummary | null;
   tab: UserTab;
   onSelectTab: (tab: UserTab) => void;
-  /** "Added this month": all accounts, newest first. */
-  onShowNewest: () => void;
-  /** True while that newest-first view is what the list shows. */
-  newestSelected: boolean;
   /** Four in a row when there is room, otherwise two by two (as on the dashboard). */
   columns: 2 | 4;
   /** Phone sizes: smaller type and padding. */
@@ -29,9 +24,7 @@ type CardSpec = Omit<MetricCardProps, "palette" | "compact" | "dense">;
 const buildCards = (
   summary: UserSummary,
   tab: UserTab,
-  onSelectTab: (tab: UserTab) => void,
-  onShowNewest: () => void,
-  newestSelected: boolean
+  onSelectTab: (tab: UserTab) => void
 ): CardSpec[] => [
   {
     tone: "primary",
@@ -41,7 +34,7 @@ const buildCards = (
     description: `${summary.staff} staff, ${summary.residents} residents`,
     onPress: () => onSelectTab("accounts"),
     accessibilityHint: "Shows every account",
-    selected: tab === "accounts" && !newestSelected,
+    selected: tab === "accounts",
   },
   {
     tone: "care",
@@ -55,13 +48,13 @@ const buildCards = (
   },
   {
     tone: "accent",
-    icon: "user-plus",
-    label: "Added this month",
-    value: summary.addedThisMonth,
-    description: monthStartNote(),
-    onPress: onShowNewest,
-    accessibilityHint: "Shows every account, newest first",
-    selected: newestSelected,
+    icon: "clipboard",
+    label: "Masterlist",
+    value: summary.masterlist,
+    description: "Official resident records",
+    onPress: () => onSelectTab("masterlist"),
+    accessibilityHint: "Shows the barangay master list",
+    selected: tab === "masterlist",
   },
   {
     tone: "neutral",
@@ -79,8 +72,6 @@ const OverviewCards = ({
   summary,
   tab,
   onSelectTab,
-  onShowNewest,
-  newestSelected,
   columns,
   compact = false,
   dense = false,
@@ -100,7 +91,7 @@ const OverviewCards = ({
 
   return (
     <MetricRow columns={columns} gap={gap}>
-      {buildCards(summary, tab, onSelectTab, onShowNewest, newestSelected).map((card) => (
+      {buildCards(summary, tab, onSelectTab).map((card) => (
         <MetricCard key={card.label} palette={palette} compact={compact} dense={dense} {...card} />
       ))}
     </MetricRow>

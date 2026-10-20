@@ -21,7 +21,7 @@ type Props = { screen: UsersScreenState; width: number };
 /** The Masterlist tab on phones: official records, never accounts. */
 const MasterListPhoneList = ({ screen, width }: Props) => {
   const palette = useAdminSurfacePalette();
-  const master = useMasterListScreen({ isPhone: true });
+  const master = useMasterListScreen({ isPhone: true, onChanged: screen.summary.refetch });
   const { list, view, openEdit, askToggle } = master;
   const firstId = list.records[0]?._id;
 
@@ -40,7 +40,7 @@ const MasterListPhoneList = ({ screen, width }: Props) => {
           subtitle={MASTER_LIST_SUBTITLE}
           primaryAction={{ key: "add", label: "Add record", icon: "plus", onPress: master.openNew }}
         />
-        <OverviewCards compact dense={width < 360} columns={2} summary={screen.summary.data} tab={screen.filters.tab} onSelectTab={screen.setTab} onShowNewest={screen.showNewest} newestSelected={screen.filters.tab === "accounts" && screen.filters.sort === "joined_desc"} />
+        <OverviewCards compact dense={width < 360} columns={2} summary={screen.summary.data} tab={screen.filters.tab} onSelectTab={screen.setTab} />
       </View>
       <UserTabs scroll value={screen.filters.tab} summary={screen.summary.data} onChange={screen.setTab} />
       <View className="px-4">
@@ -77,7 +77,7 @@ const MasterListPhoneList = ({ screen, width }: Props) => {
         ListFooterComponent={footer}
         onEndReached={list.loadMore}
         onEndReachedThreshold={0.4}
-        refreshControl={<RefreshControl refreshing={list.isRefreshing} onRefresh={list.refresh} tintColor={palette.primary} colors={[palette.primary]} />}
+        refreshControl={<RefreshControl refreshing={list.isRefreshing} onRefresh={() => { list.refresh(); screen.summary.refetch(); }} tintColor={palette.primary} colors={[palette.primary]} />}
         contentContainerClassName="pb-6"
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"

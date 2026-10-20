@@ -3,7 +3,7 @@ import { TablePrimaryCell, TableText, type CellContext, type Column } from "@/co
 import type { MasterResidentRecord } from "../masterList.types";
 import { capitalize, formatBirthDate, masterFullName } from "../masterResidentForm";
 import MasterRecordActions from "./MasterRecordActions";
-import { AccountLinkPill, RecordStatusPill } from "./MasterRecordPills";
+import { AccountLinkPill, RecordStatusPill, ResidentRolePill } from "./MasterRecordPills";
 
 type Handlers = {
   onEdit: (record: MasterResidentRecord) => void;
@@ -17,6 +17,7 @@ const folded = (record: MasterResidentRecord, { hiddenKeys }: CellContext) =>
     hiddenKeys.has("sex") ? capitalize(record.sex) : "",
     hiddenKeys.has("civilStatus") ? capitalize(record.civilStatus) : "",
     hiddenKeys.has("address") ? record.address : "",
+    hiddenKeys.has("appAccount") ? (record.linkedAccount ? "Has account" : "No account") : "",
   ]
     .filter(Boolean)
     .join(" · ");
@@ -32,6 +33,13 @@ const masterListColumns = ({ onEdit, onToggleActive }: Handlers): Column<MasterR
     render: (record, _index, context) => (
       <TablePrimaryCell title={masterFullName(record)} detail={folded(record, context)} />
     ),
+  },
+  {
+    key: "role",
+    header: "Role",
+    width: 120,
+    cardRole: "badge",
+    render: (record) => <ResidentRolePill role={record.role} />,
   },
   {
     key: "birthDate",
@@ -60,6 +68,7 @@ const masterListColumns = ({ onEdit, onToggleActive }: Handlers): Column<MasterR
     key: "appAccount",
     header: "App account",
     width: 148,
+    hideBelow: "md",
     cardRole: "badge",
     render: (record) => <AccountLinkPill linked={record.linkedAccount} />,
   },

@@ -52,7 +52,7 @@ const WideHeader = ({ screen, width, onExport }: WideHeaderProps) => {
         secondaryActions={requestTab ? [] : [{ key: "export", label: "Export CSV", icon: "download", onPress: onExport }]}
       />
 
-      <OverviewCards summary={screen.summary.data} tab={filters.tab} onSelectTab={screen.setTab} onShowNewest={screen.showNewest} newestSelected={screen.filters.tab === "accounts" && screen.filters.sort === "joined_desc"} columns={width >= 900 ? 4 : 2} />
+      <OverviewCards summary={screen.summary.data} tab={filters.tab} onSelectTab={screen.setTab} columns={width >= 900 ? 4 : 2} />
 
       <View className={oneRow ? "flex-row items-center justify-between gap-4" : "gap-3"}>
         <UserTabs value={filters.tab} summary={screen.summary.data} onChange={screen.setTab} />

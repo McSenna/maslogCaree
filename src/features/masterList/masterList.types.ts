@@ -1,8 +1,15 @@
 // Barangay Master List: official resident records. These are not user
 // accounts; `linkedAccount` only says whether some account points at a record.
 
+export type MasterResidentRole = "resident" | "bhw" | "midwife";
+
+export type MasterListSort = "name_asc" | "name_desc" | "newest" | "oldest";
+
+export type MasterListRoleFilter = MasterResidentRole | "all";
+
 export type MasterSex = "male" | "female";
 export type MasterCivilStatus = "single" | "married" | "widowed" | "separated";
+export type MasterCivilStatusFilter = MasterCivilStatus | "all";
 export type MasterListStatus = "active" | "inactive" | "all";
 
 export interface MasterResidentRecord {
@@ -18,7 +25,7 @@ export interface MasterResidentRecord {
   civilStatus: MasterCivilStatus;
   barangay: string;
   address: string;
-  role: "resident";
+  role?: MasterResidentRole | null;
   isActive: boolean;
   linkedAccount: boolean;
   createdAt?: string;
@@ -49,4 +56,5 @@ export interface MasterResidentInput {
   civilStatus: string;
   barangay: string;
   address: string;
+  role: string;
 }

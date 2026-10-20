@@ -1,20 +1,18 @@
 import { create as createAxios } from "axios";
 
+import { resolveApiBaseUrl } from "./apiBaseUrl";
+
 import { CLIENT_PLATFORM } from "@/config/platformAccess";
 import { getCachedAccessToken, getStoredUser } from "@/utils/storage";
 import { forceLogout } from "@/services/authEvents";
 import { ApiError, normalizeApiError } from "@/utils/apiErrorHandler";
 import { ERROR_CODES } from "@/utils/errorCodes";
 
-const RAW_API_URL = process.env.EXPO_PUBLIC_API_URL?.trim() || "";
-
-const normalized = RAW_API_URL.replace(/\/+$/, "");
-const baseURL =
-  normalized.length === 0
-    ? "http://localhost:5000/api"
-    : normalized.endsWith("/api")
-      ? normalized
-      : `${normalized}/api`;
+const baseURL = resolveApiBaseUrl(
+  process.env.EXPO_PUBLIC_API_URL,
+  __DEV__,
+  CLIENT_PLATFORM === "web" && typeof window !== "undefined" ? window.location?.hostname : undefined
+);
 
 const apiClient = createAxios({
   baseURL,

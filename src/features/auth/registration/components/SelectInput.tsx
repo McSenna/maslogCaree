@@ -12,13 +12,13 @@ type SelectInputProps<T extends string> = {
   onChange: (value: T) => void;
   placeholder: string;
   icon?: keyof typeof Feather.glyphMap;
+  disabled?: boolean;
   required?: boolean;
   optional?: boolean;
   helper?: string;
   error?: string;
   height: number;
 };
-
 
 const SelectInput = <T extends string>({
   label,
@@ -27,6 +27,7 @@ const SelectInput = <T extends string>({
   onChange,
   placeholder,
   icon,
+  disabled = false,
   required,
   optional,
   helper,
@@ -40,7 +41,13 @@ const SelectInput = <T extends string>({
   const selected = options.find((option) => option.value === value);
 
   return (
-    <FieldShell label={label} required={required} optional={optional} helper={helper} error={error}>
+    <FieldShell
+      label={label}
+      required={required}
+      optional={optional}
+      helper={helper}
+      error={error}
+    >
       <SelectTrigger
         label={label}
         selectedLabel={selected?.label}
@@ -49,6 +56,7 @@ const SelectInput = <T extends string>({
         open={open}
         error={error}
         height={height}
+        disabled={disabled}
         onPress={() => setOpen(true)}
       />
 
@@ -56,7 +64,7 @@ const SelectInput = <T extends string>({
         label={label}
         value={value}
         options={options}
-        open={open}
+        open={open && !disabled}
         isSheet={isSheet}
         onSelect={(next) => {
           onChange(next);

@@ -1,6 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
+import { ResidentRolePill } from "@/features/masterList/components/MasterRecordPills";
+
 import { DETAIL_RADIUS, useUserDetailsPalette } from "../../details/detailsTheme";
 import type {
   MasterListReason,
@@ -74,6 +76,7 @@ const MasterRecordComparison = ({ resident, record, reasons }: Props) => {
         <Text className="text-[12px] font-bold" style={{ color: palette.heading }} selectable>
           Record {record.masterResidentId}
         </Text>
+        {!record.missing ? <ResidentRolePill role={record.role} /> : null}
         {record.isActive === false ? (
           <Text className="text-[12px]" style={{ color: palette.subtle }}>
             Marked inactive

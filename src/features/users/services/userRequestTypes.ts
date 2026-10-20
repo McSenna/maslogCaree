@@ -1,3 +1,5 @@
+import type { MasterResidentRole } from "../../masterList/masterList.types";
+
 export interface UserRequestResident {
   fullname: string;
   firstName?: string;
@@ -59,6 +61,7 @@ export interface MasterResidentRecord {
   barangay?: string;
   address?: string;
   isActive?: boolean;
+  role?: MasterResidentRole | null;
 }
 
 /** Admin-only result of the master list check made at sign-up. */

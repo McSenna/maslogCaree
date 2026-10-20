@@ -33,7 +33,7 @@ const PhoneListHeader = ({ screen, width, onExport }: PhoneListHeaderProps) => {
           subtitle={USERS_SUBTITLE}
           secondaryActions={requestTab ? [] : [{ key: "export", label: "Export CSV", icon: "download", onPress: onExport, showOnPhone: true }]}
         />
-        <OverviewCards compact dense={width < 360} columns={2} summary={screen.summary.data} tab={filters.tab} onSelectTab={screen.setTab} onShowNewest={screen.showNewest} newestSelected={screen.filters.tab === "accounts" && screen.filters.sort === "joined_desc"} />
+        <OverviewCards compact dense={width < 360} columns={2} summary={screen.summary.data} tab={filters.tab} onSelectTab={screen.setTab} />
       </View>
 
       <UserTabs scroll value={filters.tab} summary={screen.summary.data} onChange={screen.setTab} />

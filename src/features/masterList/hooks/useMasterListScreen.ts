@@ -13,7 +13,7 @@ import { toastError } from "@/utils/errorToast/toastError";
 type EditorTarget = "new" | MasterResidentRecord | null;
 
 /** List, editor and activation state for the master list tab. */
-export const useMasterListScreen = ({ isPhone }: { isPhone: boolean }) => {
+export const useMasterListScreen = ({ isPhone, onChanged }: { isPhone: boolean; onChanged?: () => void }) => {
   const list = useMasterList({ append: isPhone });
   const [editor, setEditor] = useState<EditorTarget>(null);
   const [confirming, setConfirming] = useState<MasterResidentRecord | null>(null);
@@ -42,7 +42,7 @@ export const useMasterListScreen = ({ isPhone }: { isPhone: boolean }) => {
     }
   };
 
-  const clearFilters = () => list.setQuery("");
+  const clearFilters = list.clearFilters;
 
   return {
     list,
@@ -51,6 +51,10 @@ export const useMasterListScreen = ({ isPhone }: { isPhone: boolean }) => {
     openNew: () => setEditor("new"),
     openEdit: (record: MasterResidentRecord) => setEditor(record),
     closeEditor: () => setEditor(null),
+    saved: () => {
+      list.refresh();
+      onChanged?.();
+    },
     confirming,
     confirmName: confirming ? masterFullName(confirming) : "",
     askToggle: setConfirming,

@@ -21,6 +21,7 @@
       "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
+      "name": "MaslogCare",
       "output": "static",
       "favicon": "./assets/images/maslogicon.png"
     },

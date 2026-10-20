@@ -7,7 +7,7 @@ import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { MasterResidentRecord } from "../masterList.types";
 import { capitalize, formatBirthDate, masterFullName } from "../masterResidentForm";
-import { AccountLinkPill, RecordStatusPill } from "./MasterRecordPills";
+import { AccountLinkPill, RecordStatusPill, ResidentRolePill } from "./MasterRecordPills";
 
 type Props = {
   record: MasterResidentRecord;
@@ -36,6 +36,7 @@ const MasterResidentPhoneRow = ({ record, first, onEdit, onToggleActive }: Props
           <Text className="text-[13px] text-body">{facts}</Text>
           <Text className="text-[13px] text-body">{record.address}</Text>
           <View className="flex-row flex-wrap gap-2">
+            <ResidentRolePill role={record.role} />
             <RecordStatusPill active={record.isActive} />
             <AccountLinkPill linked={record.linkedAccount} />
           </View>

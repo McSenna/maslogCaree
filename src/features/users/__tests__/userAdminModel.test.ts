@@ -74,7 +74,7 @@ describe("initialsOf", () => {
 describe("summary", () => {
   const summary = toSummary({
     total: 10, staff: 4, residents: 6, active: 3, approved: 5, deactivated: 2,
-    addedThisMonth: 1, pendingRequests: 7, rejectedRequests: 9,
+    addedThisMonth: 1, masterlist: 23, pendingRequests: 7, rejectedRequests: 9,
   });
 
   it("counts approved residents as active", () => {
@@ -87,6 +87,10 @@ describe("summary", () => {
       [TAB_COUNT.requests(summary), TAB_COUNT.rejected(summary), TAB_COUNT.deactivated(summary), TAB_COUNT.accounts?.(summary)],
       [7, 9, 2, 10]
     );
+  });
+
+  it("keeps the masterlist total independent of account and monthly totals", () => {
+    assert.equal(summary.masterlist, 23);
   });
 
   it("rounds the active share and handles an empty system", () => {

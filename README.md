@@ -32,6 +32,15 @@ Run `npm run typecheck && npm run lint` before you push. Both should be clean.
 | `EXPO_PUBLIC_RESIDENT_BARANGAY` / `_CITY_MUNICIPALITY` / `_PROVINCE` | Locality shown on sign-up. Must match the backend's `RESIDENT_*` values |
 | `EXPO_PUBLIC_EAS_PROJECT_ID` | Optional fallback for the push-notification project id |
 
+For local **web development**, a local API URL (localhost or a private LAN IP)
+uses the browser page's hostname and keeps the configured API port. For example,
+`http://192.168.8.34:3000/api` becomes `http://localhost:3000/api` when opening
+Expo at `http://localhost:8081`. This avoids stale Wi-Fi addresses in development
+bundles. Hosted API URLs, production builds, and native clients retain the
+configured URL. Phones still need a reachable LAN address in `.env`. Restart
+Expo with `npm run start:clear` and reload open tabs after changing environment
+values; those values are bundled into JavaScript.
+
 Everything prefixed `EXPO_PUBLIC_` is bundled into the app, so never put secrets here.
 
 ## Project layout

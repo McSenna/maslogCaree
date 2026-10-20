@@ -14,7 +14,7 @@ const MasterListOverlays = ({ screen }: { screen: MasterListScreenState }) => {
         <MasterResidentEditorDialog
           editing={editor === "new" ? null : editor}
           onClose={screen.closeEditor}
-          onSaved={screen.list.refresh}
+          onSaved={screen.saved}
         />
       ) : null}
       <ConfirmationModal

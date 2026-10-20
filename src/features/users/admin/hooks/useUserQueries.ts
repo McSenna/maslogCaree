@@ -13,7 +13,7 @@ import { useRemoteData } from "./useRemoteData";
 
 export const PAGE_SIZE = 20;
 
-const SUMMARY_SOURCES = ["user", "userRequest"] as const;
+const SUMMARY_SOURCES = ["user", "userRequest", "masterResident"] as const;
 const USER_SOURCES = ["user"] as const;
 const REQUEST_SOURCES = ["userRequest"] as const;
 

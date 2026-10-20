@@ -3,19 +3,17 @@ import { useEffect, useState } from "react";
 import { useRemoteData } from "@/features/users/admin/hooks/useRemoteData";
 import { SEARCH_DEBOUNCE_MS } from "@/features/users/admin/hooks/useUserFilterState";
 import { usePersistedPagination } from "@/hooks/usePersistedPagination";
-import type { ListSchema } from "@/lib/listState/listStateCodec";
+import { useRealtimeRefetch } from "@/hooks/realtime/useRealtimeRefetch";
 
 import { replaceKnown } from "@/lib/realtime/collectionReducer";
 
 import type { MasterListPage } from "../masterList.types";
 import { fetchMasterResidents } from "../services/masterListApi";
 
-export const MASTER_PAGE_SIZE = 20;
+import { MASTER_LIST_SCHEMA, MASTER_PAGE_SIZE } from "../masterListFilters";
+export { MASTER_PAGE_SIZE } from "../masterListFilters";
 
 const MASTER_LIST_SOURCES = ["masterResident"] as const;
-
-/** Only the page is kept in the URL, under its own name: it shares the Users route with the account list. */
-const MASTER_LIST_SCHEMA: ListSchema<Record<string, never>> = { fields: {}, limits: [MASTER_PAGE_SIZE], pageParam: "mpage" };
 
 const appendPage = (previous: MasterListPage | null, next: MasterListPage): MasterListPage => {
   if (!previous) return next;
@@ -28,9 +26,8 @@ const refreshPage = (previous: MasterListPage | null, next: MasterListPage): Mas
   previous ? { ...next, records: replaceKnown(previous.records, next.records, (record) => record._id) } : next;
 
 /**
- * Search and paging for the master list. Every record shows, active or not,
- * so a deactivated one can still be found and reactivated; each row carries its
- * own status. Phones append pages (infinite scroll); wide layouts replace them.
+ * Search, role/civil status/purok filters and paging for the master list.
+ * Phones append pages (infinite scroll); wide layouts replace them.
  */
 export const useMasterList = ({ append }: { append: boolean }) => {
   // The count from the last load lets a page past the end move back onto the last page.
@@ -42,16 +39,23 @@ export const useMasterList = ({ append }: { append: boolean }) => {
     persistPage: !append,
     searchDebounceMs: SEARCH_DEBOUNCE_MS,
   });
-  const { page, setPage, search } = list;
+  const { page, setPage, search, filters } = list;
 
-  const query = { search, status: "all" as const, page, limit: MASTER_PAGE_SIZE };
+  const reloadFilteredPhone = append && (filters.role !== "all" || filters.civilStatus !== "all" || filters.purok !== "all");
+  const query = { search, status: "all" as const, ...filters, page, limit: MASTER_PAGE_SIZE };
   const result = useRemoteData({
     key: `master:${JSON.stringify(query)}`,
     load: () => fetchMasterResidents(query),
     merge: append && page > 1 ? appendPage : undefined,
-    live: MASTER_LIST_SOURCES,
+    live: reloadFilteredPhone ? [] : MASTER_LIST_SOURCES,
     liveMerge: refreshPage,
   });
+
+  // A deeper page cannot tell us which earlier rows stopped matching a filter.
+  useRealtimeRefetch(MASTER_LIST_SOURCES, () => {
+    setPage(1);
+    result.refetch();
+  }, { enabled: reloadFilteredPhone });
 
   const records = result.data?.records ?? [];
   const total = result.data?.total ?? 0;
@@ -77,7 +81,14 @@ export const useMasterList = ({ append }: { append: boolean }) => {
     setQuery: list.setSearchInput,
     page,
     setPage,
-    filtered: Boolean(search),
+    role: filters.role,
+    civilStatus: filters.civilStatus,
+    purok: filters.purok,
+    setRole: (role: typeof filters.role) => list.setFilters({ role }),
+    setCivilStatus: (civilStatus: typeof filters.civilStatus) => list.setFilters({ civilStatus }),
+    setPurok: (purok: string) => list.setFilters({ purok }),
+    clearFilters: list.reset,
+    filtered: Boolean(search) || filters.role !== "all" || filters.civilStatus !== "all" || filters.purok !== "all",
     records,
     total,
     counts: result.data?.counts ?? null,
