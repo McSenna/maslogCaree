@@ -3,6 +3,7 @@ import { Text, View } from "react-native";
 
 import DashboardButton from "@/components/dashboard/admin/DashboardButton";
 import { CardSide } from "@/components/dashboard/kit/TableCard";
+import { civilStatusLabel } from "@/config/civilStatus";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { MasterResidentRecord } from "../masterList.types";
@@ -19,9 +20,9 @@ type Props = {
 const MasterResidentPhoneRow = ({ record, first, onEdit, onToggleActive }: Props) => {
   const palette = useAdminSurfacePalette();
   const name = masterFullName(record);
-  const facts = [formatBirthDate(record.dateOfBirth), capitalize(record.sex), capitalize(record.civilStatus)].join(
-    " · "
-  );
+  const facts = [formatBirthDate(record.dateOfBirth), capitalize(record.sex), civilStatusLabel(record.civilStatus)]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <View className="mx-4">

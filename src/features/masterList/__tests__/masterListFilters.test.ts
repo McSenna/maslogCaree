@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import { defaultView, parseView, toParams, withFilters } from "../../../lib/listState/listStateCodec.ts";
-import { MASTER_LIST_SCHEMA } from "../masterListFilters.ts";
+import { MASTER_CIVIL_STATUS_FILTER_OPTIONS, MASTER_LIST_SCHEMA } from "../masterListFilters.ts";
 
 describe("Master List filter state", () => {
   it("defaults to all roles, civil statuses and puroks", () => {
@@ -22,6 +22,16 @@ describe("Master List filter state", () => {
     assert.deepEqual(toParams(MASTER_LIST_SCHEMA, view), {
       mpage: "2", limit: undefined, mrole: "bhw", mcivil: "married", mpurok: "Purok 2, Pangulo 2",
     });
+  });
+
+  it("offers every civil status after the all option and restores the single sub-statuses from the URL", () => {
+    assert.deepEqual(MASTER_CIVIL_STATUS_FILTER_OPTIONS.map((option) => option.value), [
+      "all", "single", "single_live_in", "single_solo_parent", "married", "widowed", "separated",
+    ]);
+    assert.equal(MASTER_CIVIL_STATUS_FILTER_OPTIONS[0].label, "All civil statuses");
+    for (const mcivil of ["single_live_in", "single_solo_parent", "single"]) {
+      assert.equal(parseView(MASTER_LIST_SCHEMA, { mcivil }).filters.civilStatus, mcivil);
+    }
   });
 
   it("rejects unknown restored values and ignores the removed status and sort controls", () => {

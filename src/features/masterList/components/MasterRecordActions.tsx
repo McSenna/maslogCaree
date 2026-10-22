@@ -8,7 +8,6 @@ import { masterFullName } from "../masterResidentForm";
 type Props = {
   record: MasterResidentRecord;
   onEdit: (record: MasterResidentRecord) => void;
-  /** Opens the confirmation; nothing changes until it is accepted. */
   onToggleActive: (record: MasterResidentRecord) => void;
 };
 

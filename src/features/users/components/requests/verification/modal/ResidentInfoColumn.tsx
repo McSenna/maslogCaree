@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Image, Text, View } from "react-native";
 
+import { civilStatusLabel } from "@/config/civilStatus";
 import { useTheme } from "@/contexts/ThemeContext";
 
 import type { UserRequestDetail } from "../../../../services/userRequestsService";
@@ -90,8 +91,7 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
           <InfoTile label="Contact Number" value={resident?.phone || "Not set"} className="flex-1" />
           <InfoTile
             label="Civil Status"
-            value={resident?.civilStatus || "Single"}
-            capitalize
+            value={civilStatusLabel(resident?.civilStatus) || "Not set"}
             className="flex-1"
           />
         </View>

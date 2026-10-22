@@ -1,18 +1,22 @@
 import { create as createAxios } from "axios";
+import Constants from "expo-constants";
 
-import { resolveApiBaseUrl } from "./apiBaseUrl";
+import { metroHostname, resolveApiBaseUrl } from "./apiBaseUrl";
 
 import { CLIENT_PLATFORM } from "@/config/platformAccess";
 import { getCachedAccessToken, getStoredUser } from "@/utils/storage";
 import { forceLogout } from "@/services/authEvents";
 import { ApiError, normalizeApiError } from "@/utils/apiErrorHandler";
+import { build, isUnreadableJsonBody, UNREADABLE_RESPONSE_MESSAGE } from "@/utils/apiError/errorClassification";
 import { ERROR_CODES } from "@/utils/errorCodes";
 
-const baseURL = resolveApiBaseUrl(
-  process.env.EXPO_PUBLIC_API_URL,
-  __DEV__,
-  CLIENT_PLATFORM === "web" && typeof window !== "undefined" ? window.location?.hostname : undefined
-);
+const devServerHost = (): string | undefined => {
+  if (!__DEV__) return undefined;
+  if (CLIENT_PLATFORM === "web") return typeof window !== "undefined" ? window.location?.hostname : undefined;
+  return metroHostname(Constants.expoConfig?.hostUri);
+};
+
+const baseURL = resolveApiBaseUrl(process.env.EXPO_PUBLIC_API_URL, __DEV__, devServerHost());
 
 const apiClient = createAxios({
   baseURL,
@@ -46,7 +50,19 @@ const AUTH_PATHS_NO_LOGOUT_ON_401 = [
 ];
 
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    if (!isUnreadableJsonBody(response.config.responseType, response.data)) return response;
+    return Promise.reject(
+      new ApiError(
+        build({
+          message: UNREADABLE_RESPONSE_MESSAGE,
+          code: ERROR_CODES.INVALID_RESPONSE,
+          status: response.status,
+          isNetworkError: true,
+        })
+      )
+    );
+  },
   (error) => {
     const normalizedError = normalizeApiError(error);
 

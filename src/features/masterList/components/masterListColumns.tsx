@@ -1,4 +1,5 @@
 import { TablePrimaryCell, TableText, type CellContext, type Column } from "@/components/data-table";
+import { civilStatusLabel } from "@/config/civilStatus";
 
 import type { MasterResidentRecord } from "../masterList.types";
 import { capitalize, formatBirthDate, masterFullName } from "../masterResidentForm";
@@ -15,7 +16,7 @@ const folded = (record: MasterResidentRecord, { hiddenKeys }: CellContext) =>
     record.masterResidentId,
     hiddenKeys.has("birthDate") ? `Born ${formatBirthDate(record.dateOfBirth)}` : "",
     hiddenKeys.has("sex") ? capitalize(record.sex) : "",
-    hiddenKeys.has("civilStatus") ? capitalize(record.civilStatus) : "",
+    hiddenKeys.has("civilStatus") ? civilStatusLabel(record.civilStatus) : "",
     hiddenKeys.has("address") ? record.address : "",
     hiddenKeys.has("appAccount") ? (record.linkedAccount ? "Has account" : "No account") : "",
   ]
@@ -52,9 +53,10 @@ const masterListColumns = ({ onEdit, onToggleActive }: Handlers): Column<MasterR
   {
     key: "civilStatus",
     header: "Civil status",
-    width: 110,
+    // Fits "Single - Solo Parent" in full.
+    width: 148,
     hideBelow: "lg",
-    accessor: (record) => capitalize(record.civilStatus),
+    accessor: (record) => civilStatusLabel(record.civilStatus) || "Not set",
   },
   {
     key: "address",

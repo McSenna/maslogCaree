@@ -16,8 +16,8 @@
     "android:local": "expo run:android",
     "typecheck": "tsc --noEmit",
     "test:unit": "node --test \"src/**/__tests__/*.test.ts\"",
-    "deploy": "npx expo export -p web && wrangler deploy",
-    "preview": "npx expo export -p web && wrangler dev"
+    "deploy": "npx expo export -p web --clear && wrangler deploy",
+    "preview": "npx expo export -p web --clear && wrangler dev"
   },
   "dependencies": {
     "@expo-google-fonts/public-sans": "^0.4.2",

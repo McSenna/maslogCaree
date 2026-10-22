@@ -11,9 +11,6 @@
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleDebug"
-      },
-      "env": {
-        "EXPO_PUBLIC_API_URL": "http://192.168.8.51:5000/api"
       }
     },
     "preview": {

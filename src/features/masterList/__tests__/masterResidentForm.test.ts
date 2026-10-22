@@ -228,6 +228,16 @@ describe("resident classification", () => {
     }
   });
 
+  it("preselects and submits every civil status, including the single sub-statuses", () => {
+    for (const civilStatus of ["single", "single_live_in", "single_solo_parent", "married", "widowed", "separated"] as const) {
+      const form = formFromRecord({ ...record, civilStatus });
+      assert.equal(form.civilStatus, civilStatus);
+      assert.deepEqual(validateMasterForm(form, { isEditing: true, today }), {});
+      assert.equal(toMasterInput(form, true).civilStatus, civilStatus);
+      assert.equal(toMasterInput(form, false).civilStatus, civilStatus);
+    }
+  });
+
   it("requires one allowed role and includes it in error navigation", async () => {
     const { orderedMasterErrors } = await import("../masterResidentSections.ts");
     for (const role of ["", "admin", "doctor", "BHW"]) {

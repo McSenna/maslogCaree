@@ -1,3 +1,4 @@
+import { CIVIL_STATUS_CHOICES } from "@/config/civilStatus";
 import { RESIDENCY } from "@/config/residency";
 
 export const REGISTRATION_STEPS = [
@@ -23,12 +24,7 @@ export const SEX_OPTIONS = [
   { value: "female", label: "Female" },
 ] as const;
 
-export const CIVIL_STATUS_OPTIONS = [
-  { value: "single", label: "Single" },
-  { value: "married", label: "Married" },
-  { value: "widowed", label: "Widowed" },
-  { value: "separated", label: "Separated" },
-] as const;
+export const CIVIL_STATUS_OPTIONS = CIVIL_STATUS_CHOICES;
 
 export const DEFAULT_ID_TYPES = [
   { value: "philsys", label: "PhilSys National ID" },

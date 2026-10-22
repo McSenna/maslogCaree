@@ -47,3 +47,5 @@ app-example
 .dev.vars*
 !.dev.vars.example
 !.env.example
+# Only public client configuration belongs in this production file.
+!.env.production

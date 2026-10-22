@@ -28,18 +28,37 @@ Run `npm run typecheck && npm run lint` before you push. Both should be clean.
 
 | Variable | Purpose |
 | --- | --- |
-| `EXPO_PUBLIC_API_URL` | API base URL. `/api` is appended if missing; defaults to `http://localhost:5000/api` |
+| `EXPO_PUBLIC_API_URL` | API base URL. `/api` is appended if missing; defaults to `http://localhost:3000/api` in development. Production requires a public HTTPS URL or a same-origin `/api` proxy |
 | `EXPO_PUBLIC_RESIDENT_BARANGAY` / `_CITY_MUNICIPALITY` / `_PROVINCE` | Locality shown on sign-up. Must match the backend's `RESIDENT_*` values |
 | `EXPO_PUBLIC_EAS_PROJECT_ID` | Optional fallback for the push-notification project id |
 
-For local **web development**, a local API URL (localhost or a private LAN IP)
-uses the browser page's hostname and keeps the configured API port. For example,
-`http://192.168.8.34:3000/api` becomes `http://localhost:3000/api` when opening
-Expo at `http://localhost:8081`. This avoids stale Wi-Fi addresses in development
-bundles. Hosted API URLs, production builds, and native clients retain the
-configured URL. Phones still need a reachable LAN address in `.env`. Restart
-Expo with `npm run start:clear` and reload open tabs after changing environment
-values; those values are bundled into JavaScript.
+### Which API the app calls
+
+`src/services/apiBaseUrl.ts` decides once, when the app loads. REST
+(`src/services/api.ts`) and Socket.IO (`src/lib/socket.ts`) both use the result.
+
+| Running | Value comes from | What the app calls |
+| --- | --- | --- |
+| `npm start`, web | `.env` (`http://localhost:3000/api`) | The browser page's host, on the API's port |
+| `npm start`, phone or emulator | `.env` | Metro's LAN address, on the API's port, so a Wi-Fi change needs no edit |
+| `npm run deploy`, EAS preview and production builds | `.env.production` | `https://backend-stus.onrender.com/api` |
+
+A shell or CI value of `EXPO_PUBLIC_API_URL` overrides both files. For a
+personal development target (a teammate's computer, or the hosted API), use
+`.env.development.local`. Do not use `.env.local`: Expo also loads it for
+production builds, where it overrides `.env.production`.
+
+Production builds stop with an error naming the value when the API address is
+missing, not HTTPS, or local, so a local address can never ship. Values are
+bundled into JavaScript: restart with `npm run start:clear` after changing them,
+and rebuild and redeploy to change a live site.
+
+### Deploying the web app
+
+`npm run deploy` exports the web build (clearing Metro's cache) and uploads
+`dist/` with Wrangler. The backend's `CLIENT_ORIGINS` on Render must list every
+address the site is served from, such as `https://maslogcare.com`, or browsers
+refuse both REST and WebSocket connections.
 
 Everything prefixed `EXPO_PUBLIC_` is bundled into the app, so never put secrets here.
 

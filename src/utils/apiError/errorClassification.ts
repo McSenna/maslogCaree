@@ -22,6 +22,16 @@ export const NETWORK_MESSAGE =
   "Unable to connect to the server. Please check your connection and try again.";
 export const TIMEOUT_MESSAGE = "The request took too long. Please try again.";
 export const UNKNOWN_MESSAGE = "An unexpected error occurred. Please try again.";
+export const UNREADABLE_RESPONSE_MESSAGE =
+  "The app could not reach MaslogCare. If you are on public Wi-Fi, sign in to it first, then try again.";
+
+// A JSON request answered with a web page never reached the API: a Wi-Fi
+// sign-in portal or a wrong API address. Services read response.data as the
+// API envelope, so passing it on would turn a failed save into a "success".
+export const isUnreadableJsonBody = (responseType: string | undefined, data: unknown): boolean =>
+  (responseType === undefined || responseType === "json") &&
+  typeof data === "string" &&
+  data.trim().length > 0;
 
 export const codeForStatus = (status: number): string => {
   if (status === 401) return ERROR_CODES.AUTHENTICATION_REQUIRED;

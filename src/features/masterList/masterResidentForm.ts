@@ -1,6 +1,7 @@
 // Form rules for adding and editing master list records. Import-free so
 // `node --test` can load it; the server repeats every check.
 import { MASTER_ROLE_CHOICES } from "./masterResidentRoles.ts";
+import { CIVIL_STATUS_CHOICES } from "../../config/civilStatus.ts";
 import { formatTableDate } from "../../utils/dateFormatter.ts";
 import type { MasterResidentInput, MasterResidentRecord } from "./masterList.types.ts";
 
@@ -27,12 +28,7 @@ export const PUROK_CHOICES = [
   { value: "Purok 10, Macaradat", label: "Purok 10, Macaradat" },
 ] as const;
 
-export const CIVIL_STATUS_CHOICES = [
-  { value: "single", label: "Single" },
-  { value: "married", label: "Married" },
-  { value: "widowed", label: "Widowed" },
-  { value: "separated", label: "Separated" },
-] as const;
+export { CIVIL_STATUS_CHOICES };
 
 // Sex, birth date and civil status start blank: a wrong guess on an official
 // record is worse than an empty field. Role defaults to Resident.

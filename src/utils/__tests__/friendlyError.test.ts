@@ -13,7 +13,7 @@ describe("friendlyErrorMessage", () => {
       "Request failed with status code 500",
       "Network Error",
       "TypeError: Cannot read properties of undefined (reading 'map')",
-      "connect ECONNREFUSED 127.0.0.1:5000",
+      "connect ECONNREFUSED 127.0.0.1:3000",
       "<!DOCTYPE html><html>502 Bad Gateway</html>",
       "    at fetchQueue (queue.ts:12:4)",
       "Internal error",
