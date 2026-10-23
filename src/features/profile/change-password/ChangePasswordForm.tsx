@@ -1,11 +1,10 @@
-import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
 import Button from "@/components/buttons/Button";
 import TextField from "@/components/forms/TextField";
 import { PASSWORD_MAX_LENGTH } from "@/features/auth/forgotPassword/passwordRules";
 import { useThemeColors } from "@/hooks/useThemeColors";
-import { RADII } from "@/theme/radius";
+import { ChangePasswordNotice } from "./ChangePasswordNotice";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
 import { useChangePassword } from "./useChangePassword";
 
@@ -26,24 +25,8 @@ export const ChangePasswordForm = ({ changePasswordState, onCancel, compact = fa
         Update your password to keep your MaslogCare account secure.
       </Text>
 
-      {errors.general ? (
-        <View
-          accessibilityRole="alert"
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-            padding: 12,
-            borderRadius: RADII.medium,
-            borderWidth: 1,
-            borderColor: colors.danger.border,
-            backgroundColor: colors.danger.bg,
-          }}
-        >
-          <Feather name="alert-circle" size={16} color={colors.danger.fg} />
-          <Text style={{ flex: 1, fontSize: 13, fontWeight: "500", color: colors.danger.fg }}>{errors.general}</Text>
-        </View>
-      ) : null}
+      {errors.unconfirmed ? <ChangePasswordNotice tone="warning" message={errors.unconfirmed} /> : null}
+      {errors.general ? <ChangePasswordNotice tone="danger" message={errors.general} /> : null}
 
       <TextField
         inputRef={currentRef}

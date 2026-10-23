@@ -9,6 +9,8 @@ type SearchFieldProps = {
   onChangeText: (value: string) => void;
   placeholder: string;
   accessibilityLabel: string;
+  /** What the search covers beyond the placeholder, read by screen readers. */
+  accessibilityHint?: string;
   style?: { flex?: number; width?: number | `${number}%`; minWidth?: number };
   /** A results list is attached below: square bottom corners and a steady focus border. */
   open?: boolean;
@@ -20,6 +22,7 @@ const SearchField = ({
   onChangeText,
   placeholder,
   accessibilityLabel,
+  accessibilityHint,
   style,
   open = false,
   onKeyPress,
@@ -52,6 +55,7 @@ const SearchField = ({
         placeholder={placeholder}
         placeholderTextColor={palette.subtle}
         accessibilityLabel={accessibilityLabel}
+        accessibilityHint={accessibilityHint}
         autoCapitalize="none"
         autoCorrect={false}
       />

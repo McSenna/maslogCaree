@@ -89,7 +89,7 @@ const UserProfileScreen = () => {
       <ChangePasswordDialog
         visible={state.changePasswordVisible}
         onClose={state.closeChangePassword}
-        onSuccess={() => toast.success("Password changed")}
+        onSuccess={() => toast.success("Password changed", "Use your new password the next time you sign in.")}
       />
 
     </View>

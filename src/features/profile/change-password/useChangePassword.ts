@@ -1,17 +1,19 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { TextInput } from "react-native";
 
-import {
-  PASSWORD_MAX_LENGTH,
-  PASSWORD_MIN_LENGTH,
-  meetsAllPasswordRules,
-  passwordStrength,
-  type PasswordStrength,
-} from "@/features/auth/forgotPassword/passwordRules";
-import { getApiErrorMessage } from "@/utils/apiErrorHandler";
+import { passwordStrength, type PasswordStrength } from "@/features/auth/forgotPassword/passwordRules";
+import { normalizeApiError } from "@/utils/apiErrorHandler";
+import { reportError } from "@/utils/errorReporting";
 
 import type { ChangePasswordErrors, ChangePasswordFormValues } from "./changePassword.types";
+import {
+  createSubmitGate,
+  outcomeForFailure,
+  outcomeForResponse,
+  type ChangePasswordOutcome,
+} from "./changePasswordOutcome";
 import { changePasswordApi } from "./changePasswordService";
+import { validateChangePassword } from "./changePasswordValidation";
 import { toastError } from "@/utils/errorToast/toastError";
 
 const INITIAL_VALUES: ChangePasswordFormValues = {
@@ -19,6 +21,13 @@ const INITIAL_VALUES: ChangePasswordFormValues = {
   newPassword: "",
   confirmPassword: "",
 };
+
+const FIELD_ORDER: (keyof ChangePasswordFormValues)[] = ["currentPassword", "newPassword", "confirmPassword"];
+
+// A retry after an unanswered attempt usually hears "Current password is
+// incorrect" because the first one went through, so the warning stays up.
+const keepUnconfirmed = (prev: ChangePasswordErrors): ChangePasswordErrors =>
+  prev.unconfirmed ? { unconfirmed: prev.unconfirmed } : {};
 
 export type UseChangePasswordOptions = {
   onSuccess?: () => void;
@@ -30,11 +39,15 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
   const [values, setValues] = useState<ChangePasswordFormValues>(INITIAL_VALUES);
   const [errors, setErrors] = useState<ChangePasswordErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const submitGate = useMemo(() => createSubmitGate(), []);
 
   const currentRef = useRef<TextInput>(null);
   const newRef = useRef<TextInput>(null);
   const confirmRef = useRef<TextInput>(null);
+  const fieldRefs = useMemo(
+    () => ({ currentPassword: currentRef, newPassword: newRef, confirmPassword: confirmRef }),
+    []
+  );
 
   const strength: PasswordStrength = useMemo(
     () => passwordStrength(values.newPassword),
@@ -44,6 +57,7 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
   const setValue = useCallback((field: keyof ChangePasswordFormValues, text: string) => {
     setValues((prev) => ({ ...prev, [field]: text }));
     setErrors((prev) => {
+      // `unconfirmed` stays: editing a field does not answer whether the last change went through.
       if (!prev[field] && !prev.general) return prev;
       const next = { ...prev };
       delete next[field];
@@ -59,81 +73,58 @@ export const useChangePassword = (options: UseChangePasswordOptions = {}) => {
   }, []);
 
   const validate = useCallback((): boolean => {
-    const newErrors: ChangePasswordErrors = {};
+    const newErrors = validateChangePassword(values);
+    setErrors((prev) => ({ ...keepUnconfirmed(prev), ...newErrors }));
 
-    if (!values.currentPassword.trim()) {
-      newErrors.currentPassword = "Current password is required.";
-    }
+    const firstInvalid = FIELD_ORDER.find((field) => newErrors[field]);
+    if (!firstInvalid) return true;
+    fieldRefs[firstInvalid].current?.focus();
+    return false;
+  }, [values, fieldRefs]);
 
-    if (!values.newPassword) {
-      newErrors.newPassword = "New password is required.";
-    } else if (values.currentPassword && values.newPassword === values.currentPassword) {
-      newErrors.newPassword = "Your new password must be different from your current password.";
-    } else if (!meetsAllPasswordRules(values.newPassword)) {
-      newErrors.newPassword =
-        `Password must be ${PASSWORD_MIN_LENGTH} to ${PASSWORD_MAX_LENGTH} characters with uppercase, lowercase, number, and special character.`;
-    }
-
-    if (!values.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your new password.";
-    } else if (values.newPassword !== values.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match.";
-    }
-
-    setErrors(newErrors);
-
-    if (newErrors.currentPassword) {
-      currentRef.current?.focus();
-      return false;
-    }
-    if (newErrors.newPassword) {
-      newRef.current?.focus();
-      return false;
-    }
-    if (newErrors.confirmPassword) {
-      confirmRef.current?.focus();
-      return false;
-    }
-
-    return Object.keys(newErrors).length === 0;
-  }, [values]);
-
-  const handleSubmit = useCallback(async () => {
-    if (isSubmitting) return;
-    if (!validate()) return;
-
+  const send = useCallback(async (): Promise<ChangePasswordOutcome> => {
     setIsSubmitting(true);
-    setErrors({});
-
+    setErrors(keepUnconfirmed);
     try {
-      await changePasswordApi({
-        currentPassword: values.currentPassword,
-        newPassword: values.newPassword,
-        confirmPassword: values.confirmPassword,
-      });
-      resetForm();
-      onSuccess?.();
+      return outcomeForResponse(
+        await changePasswordApi({
+          currentPassword: values.currentPassword,
+          newPassword: values.newPassword,
+          confirmPassword: values.confirmPassword,
+        })
+      );
     } catch (error) {
-      const message = getApiErrorMessage(error, "Unable to change your password. Please try again.");
-      const lower = message.toLowerCase();
-      toastError("Password not changed", error, { inline: true });
-
-      if (lower.includes("current password")) {
-        setErrors({ currentPassword: "Current password is incorrect." });
-        currentRef.current?.focus();
-      } else if (lower.includes("different")) {
-        setErrors({ newPassword: "Your new password must be different from your current password." });
-        newRef.current?.focus();
-      } else if (lower.includes("match")) {
-        setErrors({ confirmPassword: "Passwords do not match." });
-        confirmRef.current?.focus();
-      } else {
-        setErrors({ general: message });
-      }
+      const outcome = outcomeForFailure(normalizeApiError(error));
+      // Only a server refusal proves nothing changed. A refused session is
+      // explained by the sign-out notice the API client already raised.
+      if (outcome.kind === "rejected") toastError("Password not changed", error, { inline: true });
+      if (outcome.kind === "unconfirmed") reportError("Password change not confirmed", error);
+      return outcome;
     } finally {
       setIsSubmitting(false);
     }
-  }, [isSubmitting, validate, values, resetForm, onSuccess]);
+  }, [values]);
+
+  const handleSubmit = useCallback(async () => {
+    const outcome = await submitGate(async () => (validate() ? send() : undefined));
+    if (!outcome) return;
+
+    // Outside the request's catch, so a failing follow-up can never read as a failed change.
+    if (outcome.kind === "changed") {
+      resetForm();
+      onSuccess?.();
+      return;
+    }
+    if (outcome.kind === "unconfirmed") {
+      setErrors({ unconfirmed: outcome.message });
+      return;
+    }
+    if (outcome.kind !== "rejected") return;
+
+    const rejection = outcome.field ? { [outcome.field]: outcome.message } : { general: outcome.message };
+    setErrors((prev) => ({ ...keepUnconfirmed(prev), ...rejection }));
+    if (outcome.field) fieldRefs[outcome.field].current?.focus();
+  }, [submitGate, validate, send, resetForm, onSuccess, fieldRefs]);
 
   return {
     values,

@@ -28,8 +28,9 @@ export const MasterListSearch = ({ list, phone = false }: Props) => (
   <SearchField
     value={list.queryInput}
     onChangeText={list.setQuery}
-    placeholder="Search name, role or record ID"
+    placeholder="Search name, record ID or birth date"
     accessibilityLabel="Search the master list"
+    accessibilityHint="Birth dates can be typed as Mar 15, 1990, 03/15/1990, a month name, a day, or a year."
     style={phone ? undefined : SEARCH_STYLE}
   />
 );

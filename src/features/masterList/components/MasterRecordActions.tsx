@@ -11,7 +11,6 @@ type Props = {
   onToggleActive: (record: MasterResidentRecord) => void;
 };
 
-/** Edit, then Deactivate or Reactivate, 20px apart and starting at the column's left edge. */
 const MasterRecordActions = ({ record, onEdit, onToggleActive }: Props) => {
   const name = masterFullName(record);
   const toggle = record.isActive ? "Deactivate" : "Reactivate";

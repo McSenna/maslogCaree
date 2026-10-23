@@ -23,7 +23,7 @@ import {
 import {
   DESKTOP_EDGE,
   dialogBackdropStyle,
-  dialogSurfaceStyle,
+  dialogSurfaceStyle, 
 } from "@/features/auth/registration/dialog/dialogSurface";
 import { useDialogDismiss } from "@/features/auth/registration/dialog/useDialogDismiss";
 import { REG_METRICS } from "@/features/auth/registration/registrationTheme";
@@ -121,12 +121,9 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
       }
     });
     return () => cancelAnimationFrame(frame);
-    // Reposition only for a new failed attempt, not while correcting fields.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.errorRevision, focusField]);
 
-  // Held outside the `Modal` element so an Android dialog recreation cannot
-  // reset it (see auth/registration/dialog/datePickerHost).
   const [dateRequest, setDateRequest] = useState<DatePickerRequest | null>(
     null,
   );

@@ -46,7 +46,6 @@ const AUTH_PATHS_NO_LOGOUT_ON_401 = [
   "/register",
   "/send-otp",
   "/verify-otp",
-  "/change-password",
 ];
 
 apiClient.interceptors.response.use(
