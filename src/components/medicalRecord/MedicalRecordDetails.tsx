@@ -94,14 +94,14 @@ const MedicalRecordDetails = ({
             <View className="min-w-0 flex-1">
               <Text
                 accessibilityRole="header"
-                className="text-[17px] font-bold"
+                className="text-[19px] font-bold"
                 style={{ color: palette.heading }}
               >
                 Medical Record
               </Text>
               <Text
                 numberOfLines={1}
-                className="mt-0.5 text-[12.5px]"
+                className="mt-0.5 text-[14.5px]"
                 style={{ color: palette.muted }}
               >
                 {form?.label ?? record.serviceType}

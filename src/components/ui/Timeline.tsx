@@ -29,7 +29,7 @@ const Timeline = ({
   return (
     <View className="w-full gap-2">
       <Text
-        className="text-[11.5px] font-bold uppercase"
+        className="text-[13.5px] font-bold uppercase"
         style={{ color: palette.subtle, letterSpacing: 0.6 }}
       >
         {title}
@@ -75,7 +75,7 @@ const Timeline = ({
 
               <View className={last ? "min-w-0 flex-1 gap-0.5" : "min-w-0 flex-1 gap-0.5 pb-3.5"}>
                 <Text
-                  className="text-[12.5px] font-medium"
+                  className="text-[14.5px] font-medium"
                   style={{
                     color: declined
                       ? palette.statuses.declined.fg
@@ -86,7 +86,7 @@ const Timeline = ({
                 >
                   {step.label}
                 </Text>
-                <Text className="text-[11.5px]" style={{ color: palette.subtle }}>
+                <Text className="text-[13.5px]" style={{ color: palette.subtle }}>
                   {step.at ? (time ? `${date} • ${time}` : date) : undatedText}
                 </Text>
               </View>

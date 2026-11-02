@@ -53,8 +53,8 @@ const SupportDescriptionInput = ({
               minHeight: DESCRIPTION_MIN_HEIGHT,
               maxHeight: DESCRIPTION_MAX_HEIGHT,
               padding: 12,
-              fontSize: 14,
-              lineHeight: 20,
+              fontSize: 16,
+              lineHeight: 22,
               color: palette.body,
               outlineStyle: "none",
             } as never
@@ -65,7 +65,7 @@ const SupportDescriptionInput = ({
       <Text
         style={{
           alignSelf: "flex-end",
-          fontSize: 11.5,
+          fontSize: 13.5,
           color: remaining < 100 ? palette.warningFg : palette.muted,
         }}
       >

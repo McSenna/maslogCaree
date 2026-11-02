@@ -61,10 +61,10 @@ const BhwQueueScreen = () => {
         }}
       >
         <View ref={topRef}>
-          <Text className="text-[22px] font-bold" style={{ color: palette.heading }}>
+          <Text className="text-[24px] font-bold" style={{ color: palette.heading }}>
             Appointments &amp; Queue
           </Text>
-          <Text className="mt-1 text-[13px]" style={{ color: palette.muted }}>
+          <Text className="mt-1 text-[15px]" style={{ color: palette.muted }}>
             {queue.scopeDescription}
           </Text>
         </View>

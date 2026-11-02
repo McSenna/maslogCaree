@@ -23,8 +23,8 @@ const AboutHero = ({ wide }: AboutHeroProps) => (
 
       <Text
         style={{
-          fontSize: wide ? 25 : 21,
-          lineHeight: wide ? 32 : 28,
+          fontSize: wide ? 27 : 23,
+          lineHeight: wide ? 34 : 30,
           fontWeight: "800",
           letterSpacing: -0.6,
           color: LANDING_COLORS.navy,
@@ -38,8 +38,8 @@ const AboutHero = ({ wide }: AboutHeroProps) => (
 
       <Text
         style={{
-          fontSize: wide ? 14 : 13.5,
-          lineHeight: wide ? 21 : 20,
+          fontSize: wide ? 16 : 15.5,
+          lineHeight: wide ? 23 : 22,
           color: LANDING_COLORS.mutedText,
         }}
       >

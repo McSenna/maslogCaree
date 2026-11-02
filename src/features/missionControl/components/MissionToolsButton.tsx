@@ -22,7 +22,7 @@ const MissionToolsButton = ({ palette, onPress }: MissionToolsButtonProps) => {
       }}
     >
       <Feather name="sliders" size={15} color={palette.body} />
-      <Text className="text-[13.5px] font-semibold" style={{ color: palette.body }}>
+      <Text className="text-[15.5px] font-semibold" style={{ color: palette.body }}>
         Mission tools
       </Text>
     </Pressable>

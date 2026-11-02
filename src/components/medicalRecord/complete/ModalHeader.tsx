@@ -27,14 +27,14 @@ const ModalHeader = ({
     <View className="min-w-0 flex-1 gap-1">
       <Text
         accessibilityRole="header"
-        className="text-[17px] font-bold"
+        className="text-[19px] font-bold"
         style={{ color: palette.heading }}
         numberOfLines={1}
       >
         {title}
       </Text>
       {subtitle ? (
-        <Text className="text-[12.5px] font-medium" style={{ color: palette.muted }} numberOfLines={1}>
+        <Text className="text-[14.5px] font-medium" style={{ color: palette.muted }} numberOfLines={1}>
           {subtitle}
         </Text>
       ) : null}

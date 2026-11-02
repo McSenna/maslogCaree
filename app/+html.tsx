@@ -1,11 +1,12 @@
 import { ScrollViewStyleReset } from "expo-router/html";
 import type { PropsWithChildren } from "react";
 import { PALETTE } from "@/theme/palette";
+import { webFontFaceCss } from "@/theme/webFonts";
 
 /**
  * Web-only document shell for the static export. Same as Expo's default
- * (charset, viewport, scroll reset) plus the home-screen icons and manifest in
- * /public. The favicon itself comes from `web.favicon` in app.json.
+ * (charset, viewport, scroll reset) plus the home-screen icons, manifest and
+ * Inter font files in /public. The favicon itself comes from `web.favicon` in app.json.
  */
 const Root = ({ children }: PropsWithChildren) => (
   <html lang="en">
@@ -19,6 +20,7 @@ const Root = ({ children }: PropsWithChildren) => (
       <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
       <link rel="manifest" href="/manifest.json" />
       <ScrollViewStyleReset />
+      <style dangerouslySetInnerHTML={{ __html: webFontFaceCss() }} />
     </head>
     <body>{children}</body>
   </html>

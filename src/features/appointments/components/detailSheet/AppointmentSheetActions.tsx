@@ -47,7 +47,7 @@ const ActionButton = ({
     }}
   >
     <Feather name={icon} size={14} color={color} />
-    <Text style={{ fontSize: 13, fontWeight: "600", color }}>{label}</Text>
+    <Text style={{ fontSize: 15, fontWeight: "600", color }}>{label}</Text>
   </Pressable>
 );
 

@@ -48,9 +48,9 @@ const FeedbackState = ({
         </View>
 
         <View style={{ alignItems: "center", gap: 4, maxWidth: 420 }}>
-          <Text style={{ fontSize: 15, fontWeight: "700", color: colors.heading, textAlign: "center" }}>{title}</Text>
+          <Text style={{ fontSize: 17, fontWeight: "700", color: colors.heading, textAlign: "center" }}>{title}</Text>
           {description ? (
-            <Text style={{ fontSize: 13, lineHeight: 19, color: colors.muted, textAlign: "center" }}>{description}</Text>
+            <Text style={{ fontSize: 15, lineHeight: 21, color: colors.muted, textAlign: "center" }}>{description}</Text>
           ) : null}
         </View>
 

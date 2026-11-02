@@ -54,7 +54,7 @@ const SegmentedInput = <T extends string>({
           >
             <Text
               style={{
-                fontSize: 14.5,
+                fontSize: 16.5,
                 fontWeight: selected ? "700" : "500",
                 color: selected ? REG_COLORS.surface : REG_COLORS.muted,
               }}

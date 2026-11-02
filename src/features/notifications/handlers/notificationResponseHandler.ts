@@ -1,3 +1,4 @@
+import { openImmunizationBaby } from "@/features/immunization/selection";
 import type { NotificationResponse } from "expo-notifications";
 import { loadNotificationsModule } from "../services/notificationModule";
 import { getNotificationRoute } from "../utils/notificationNavigation";
@@ -29,6 +30,7 @@ export const processNotificationResponse = (
   const targetRoute = getNotificationRoute(data, role);
 
   if (targetRoute) {
+    if (role === "resident" && typeof data?.immunizationBabyId === "string") openImmunizationBaby(data.immunizationBabyId);
     router.push(targetRoute as never);
   }
 };

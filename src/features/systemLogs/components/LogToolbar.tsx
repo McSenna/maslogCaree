@@ -108,7 +108,7 @@ const LogToolbar = ({
               ) : (
                 <Feather name="download" size={17} color={PALETTE.white} />
               )}
-              <Text className="text-[14px] font-semibold text-white">Export Logs</Text>
+              <Text className="text-[16px] font-semibold text-white">Export Logs</Text>
             </Pressable>
           </>
         )}

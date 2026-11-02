@@ -16,7 +16,7 @@ const AboutSecurityNote = ({ isTablet }: { isTablet: boolean }) => {
       <View style={{ borderRadius: 50, padding: 6, backgroundColor: HC.tealPale }}>
         <Feather name="lock" size={11} color={HC.teal} />
       </View>
-      <Text style={{ color: HC.slateLight, fontSize: isTablet ? 12 : 11 }}>
+      <Text style={{ color: HC.slateLight, fontSize: isTablet ? 14 : 13 }}>
         Secure &amp; exclusively for Barangay Maslog residents
       </Text>
     </View>

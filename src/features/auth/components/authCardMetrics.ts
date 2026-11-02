@@ -45,8 +45,8 @@ export const desktopAuthCardMetrics = (density: number): AuthCardMetrics =>
 const FORGOT_LINK_LINE_HEIGHT = 18;
 const FIELD_COUNT = 2;
 const DIVIDER_LABEL_LINE_HEIGHT = 17;
-export const SECURITY_NOTICE_FONT_SIZE = 12.5;
-export const SECURITY_NOTICE_LINE_HEIGHT = 16;
+export const SECURITY_NOTICE_FONT_SIZE = 14.5;
+export const SECURITY_NOTICE_LINE_HEIGHT = 18;
 export const EYEBROW_LINE_HEIGHT = TYPE.caption.lineHeight;
 export const EYEBROW_PADDING_VERTICAL = SPACING.xs;
 

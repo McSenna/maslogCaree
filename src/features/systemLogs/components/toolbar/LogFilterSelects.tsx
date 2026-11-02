@@ -44,7 +44,7 @@ const LogFilterSelects = ({
         displayValue={dateRangeLabel}
         icon="calendar-blank-outline"
         height={CONTROL_HEIGHT}
-        style={isDesktop ? { flex: 18, minWidth: 178 } : { flex: 1, minWidth: 150 }}
+        style={isDesktop ? { flex: 18, minWidth: 204 } : { flex: 1, minWidth: 172 }}
       />
       <SelectMenu
         label="Filter by role"
@@ -52,7 +52,7 @@ const LogFilterSelects = ({
         options={ROLE_OPTIONS}
         onChange={onRoleChange}
         height={CONTROL_HEIGHT}
-        style={isDesktop ? { flex: 14, minWidth: 140 } : { flex: 1, minWidth: 118 }}
+        style={isDesktop ? { flex: 14, minWidth: 162 } : { flex: 1, minWidth: 136 }}
       />
       <SelectMenu
         label="Filter by log type"
@@ -60,7 +60,7 @@ const LogFilterSelects = ({
         options={LOG_TYPE_SELECT_OPTIONS}
         onChange={onLogTypeChange}
         height={CONTROL_HEIGHT}
-        style={isDesktop ? { flex: 16, minWidth: 158 } : { flex: 1, minWidth: 140 }}
+        style={isDesktop ? { flex: 16, minWidth: 206 } : { flex: 1, minWidth: 162 }}
       />
       <SelectMenu
         label="Filter by severity"
@@ -68,7 +68,7 @@ const LogFilterSelects = ({
         options={SEVERITY_SELECT_OPTIONS}
         onChange={onSeverityChange}
         height={CONTROL_HEIGHT}
-        style={isDesktop ? { flex: 15, minWidth: 150 } : { flex: 1, minWidth: 132 }}
+        style={isDesktop ? { flex: 15, minWidth: 172 } : { flex: 1, minWidth: 152 }}
       />
     </>
   );

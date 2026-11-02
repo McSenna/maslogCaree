@@ -67,7 +67,7 @@ export const authCardStyles = StyleSheet.create({
   },
   loginButtonText: {
     color: LANDING_COLORS.white,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
     fontFamily: FONT_FAMILY,
     letterSpacing: 0.1,
@@ -99,7 +99,7 @@ export const authCardStyles = StyleSheet.create({
   },
   forgotText: {
     color: LANDING_COLORS.primaryBlue,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: "600",
     fontFamily: FONT_FAMILY,
   },
@@ -113,7 +113,7 @@ export const authCardStyles = StyleSheet.create({
   },
   createButtonText: {
     color: LANDING_COLORS.white,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "700",
     fontFamily: FONT_FAMILY,
     letterSpacing: 0.1,

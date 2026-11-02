@@ -23,7 +23,7 @@ const DetailsModalHeader = ({
   title,
   subtitle,
   titleId,
-  titleSize = 24,
+  titleSize = 26,
   trailing,
   closeLabel,
   onClose,
@@ -49,7 +49,7 @@ const DetailsModalHeader = ({
             {title}
           </Text>
           {subtitle ? (
-            <Text className="mt-0.5 text-[13.5px]" style={{ color: palette.muted }}>
+            <Text className="mt-0.5 text-[15.5px]" style={{ color: palette.muted }}>
               {subtitle}
             </Text>
           ) : null}

@@ -38,7 +38,7 @@ const FieldLabel = ({
   palette: ResidentDialogPalette;
   children: string;
 }) => (
-  <Text style={{ fontSize: 13, fontWeight: "600", color: palette.heading, marginBottom: 8 }}>
+  <Text style={{ fontSize: 15, fontWeight: "600", color: palette.heading, marginBottom: 8 }}>
     {children}
   </Text>
 );
@@ -74,7 +74,7 @@ export const RescheduleSelectStep = ({
       >
         <Text
           style={{
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: "600",
             color: palette.muted,
             textTransform: "uppercase",
@@ -83,12 +83,12 @@ export const RescheduleSelectStep = ({
         >
           Current Appointment
         </Text>
-        <Text style={{ fontSize: 16, fontWeight: "700", color: palette.heading, marginTop: 2 }}>
+        <Text style={{ fontSize: 18, fontWeight: "700", color: palette.heading, marginTop: 2 }}>
           {appointmentServiceLabel(appointment)}
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 }}>
           <Feather name="clock" size={13} color={palette.muted} />
-          <Text style={{ fontSize: 13, color: palette.body }}>{appointmentWhen(appointment)}</Text>
+          <Text style={{ fontSize: 15, color: palette.body }}>{appointmentWhen(appointment)}</Text>
         </View>
       </View>
 

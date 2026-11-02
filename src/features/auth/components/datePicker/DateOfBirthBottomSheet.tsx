@@ -28,7 +28,7 @@ const SheetHeader = ({ title }: { title: string }) => (
   >
     <Text
       accessibilityRole="header"
-      style={{ fontSize: 16.5, fontWeight: "800", color: REG_COLORS.text }}
+      style={{ fontSize: 18.5, fontWeight: "800", color: REG_COLORS.text }}
     >
       {title}
     </Text>

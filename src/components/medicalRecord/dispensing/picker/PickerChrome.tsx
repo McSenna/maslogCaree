@@ -14,7 +14,7 @@ export const PickerHeader = ({ title, onClose }: { title: string; onClose: () =>
     >
       <Text
         accessibilityRole="header"
-        className="min-w-0 flex-1 text-[16px] font-bold"
+        className="min-w-0 flex-1 text-[18px] font-bold"
         style={{ color: palette.heading }}
       >
         {title}
@@ -67,7 +67,7 @@ export const PickerSearchBar = ({
           accessibilityLabel="Search inventory by name, category or batch"
           autoCapitalize="none"
           autoCorrect={false}
-          className="min-w-0 flex-1 text-[14px]"
+          className="min-w-0 flex-1 text-[16px]"
           style={{ color: palette.body, outlineStyle: "none" } as never}
         />
         {loading ? <ActivityIndicator size="small" color={palette.primary} /> : null}
@@ -82,11 +82,11 @@ export const PickerEmptyState = ({ category }: { category?: InventoryCategory })
   return (
     <View className="items-center gap-2 px-6 py-12">
       <Feather name="search" size={22} color={palette.subtle} />
-      <Text className="text-center text-[13.5px] font-semibold" style={{ color: palette.body }}>
+      <Text className="text-center text-[15.5px] font-semibold" style={{ color: palette.body }}>
         No inventory items found.
       </Text>
       <Text
-        className="text-center text-[12.5px] leading-[18px]"
+        className="text-center text-[14.5px] leading-[20px]"
         style={{ color: palette.muted }}
       >
         {category

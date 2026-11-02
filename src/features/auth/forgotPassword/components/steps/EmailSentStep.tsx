@@ -20,7 +20,7 @@ export const EmailSentStep = ({ flow }: { flow: ForgotPasswordController }) => (
     >
       <Feather name="check-circle" size={15} color={C.primary} />
       <Text
-        className="text-[13.5px] font-semibold"
+        className="text-[15.5px] font-semibold"
         style={{ color: C.primary }}
         numberOfLines={1}
       >
@@ -30,7 +30,7 @@ export const EmailSentStep = ({ flow }: { flow: ForgotPasswordController }) => (
 
     <View className="w-full flex-row items-start gap-2">
       <Feather name="shield" size={13} color={C.muted} style={{ marginTop: 2 }} />
-      <Text className="min-w-0 flex-1 text-[12px] leading-[17px]" style={{ color: C.muted }}>
+      <Text className="min-w-0 flex-1 text-[14px] leading-[19px]" style={{ color: C.muted }}>
         The verification code will expire shortly for your security.
       </Text>
     </View>

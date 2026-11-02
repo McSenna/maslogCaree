@@ -16,6 +16,7 @@ const AUTH_REFUSALS = new Set([
   "ACCOUNT_UNVERIFIED",
   "ACCOUNT_DISABLED",
   "PLATFORM_ACCESS_DENIED",
+  "DEVICE_CREDENTIAL_REQUIRED",
   "RESIDENT_WEB_ACCESS_DENIED",
   "PLATFORM_CONTEXT_MISMATCH",
 ]);
@@ -82,6 +83,9 @@ const attachHandlers = (instance: Socket) => {
     handleRefusal(instance, error, failedAttempts);
   });
 
+  instance.on("access:revoked", (payload: { code?: string }) => {
+    if (payload?.code && AUTH_REFUSALS.has(payload.code)) void forceLogout(payload.code);
+  });
   instance.on(RESYNC_EVERYTHING, () => requestResync());
   instance.onAny((eventName: string, payload: unknown) => dispatchRealtimeEvent(eventName, payload));
 };

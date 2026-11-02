@@ -31,12 +31,12 @@ export const SKELETON_ROWS = 5;
 export const ROW_HOVER_MS = 120;
 
 export const TABLE_TEXT = {
-  header: { fontSize: 13, lineHeight: 18, fontWeight: "600" },
-  cell: { fontSize: 13, lineHeight: 18, fontWeight: "400" },
-  primary: { fontSize: 14, lineHeight: 20, fontWeight: "600" },
-  secondary: { fontSize: 12, lineHeight: 16, fontWeight: "400" },
-  badge: { fontSize: 12, lineHeight: 16, fontWeight: "600" },
-  badgeLarge: { fontSize: 13, lineHeight: 18, fontWeight: "600" },
-  button: { fontSize: 13, lineHeight: 18, fontWeight: "600" },
-  emptyTitle: { fontSize: 15, lineHeight: 22, fontWeight: "600" },
+  header: { fontSize: 15, lineHeight: 20, fontWeight: "600" },
+  cell: { fontSize: 15, lineHeight: 20, fontWeight: "400" },
+  primary: { fontSize: 16, lineHeight: 22, fontWeight: "600" },
+  secondary: { fontSize: 14, lineHeight: 18, fontWeight: "400" },
+  badge: { fontSize: 14, lineHeight: 18, fontWeight: "600" },
+  badgeLarge: { fontSize: 15, lineHeight: 20, fontWeight: "600" },
+  button: { fontSize: 15, lineHeight: 20, fontWeight: "600" },
+  emptyTitle: { fontSize: 17, lineHeight: 24, fontWeight: "600" },
 } as const;

@@ -9,8 +9,9 @@ import { ROLES } from "../userAdminModel";
 export const SEARCH_DEBOUNCE_MS = 300;
 
 const USER_TABS: readonly UserTab[] = ["active", "requests", "rejected", "deactivated", "accounts", "masterlist"];
-const USER_SORTS: readonly UserSort[] = ["last_login_desc", "last_login_asc", "name_asc", "joined_desc"];
-const STATUSES: readonly StatusFilter[] = ["all", "active", "approved", "deactivated"];
+// Normalize older saved sort choices to the screen's fixed newest-joined order.
+const USER_SORTS: readonly UserSort[] = ["joined_desc"];
+const STATUSES: readonly StatusFilter[] = ["all", "requested", "approved", "active", "rejected", "deactivated"];
 const ROLE_PARAMS = ["all", ...ROLES.map((role) => role.toLowerCase())];
 
 type UserListFilters = { tab: string; role: string; status: string; sort: string };
@@ -25,7 +26,7 @@ const USER_LIST_SCHEMA: ListSchema<UserListFilters> = {
     tab: { kind: "enum", values: USER_TABS, fallback: "active", param: "section" },
     role: { kind: "enum", values: ROLE_PARAMS, fallback: "all" },
     status: { kind: "enum", values: STATUSES, fallback: "all" },
-    sort: { kind: "enum", values: USER_SORTS, fallback: "last_login_desc" },
+    sort: { kind: "enum", values: USER_SORTS, fallback: "joined_desc" },
   },
   limits: [20],
 };
@@ -58,10 +59,10 @@ export const useUserFilterState = ({ appendPages, total }: Options) => {
   const status = filters.status as StatusFilter;
   const sort = filters.sort as UserSort;
 
-  const setTab = useCallback((next: UserTab) => setFilters({ tab: next }), [setFilters]);
+  // A status from another list would match nothing here.
+  const setTab = useCallback((next: UserTab) => setFilters({ tab: next, status: "all" }), [setFilters]);
   const setRole = useCallback((next: RoleFilter) => setFilters({ role: next.toLowerCase() }), [setFilters]);
   const setStatus = useCallback((next: StatusFilter) => setFilters({ status: next }), [setFilters]);
-  const setSort = useCallback((next: UserSort) => setFilters({ sort: next }), [setFilters]);
 
   const clearFilters = useCallback(() => {
     replaceSearch("");
@@ -79,7 +80,6 @@ export const useUserFilterState = ({ appendPages, total }: Options) => {
     status,
     setStatus,
     sort,
-    setSort,
     page: list.page,
     setPage: list.setPage,
     isClamping: list.isClamping,

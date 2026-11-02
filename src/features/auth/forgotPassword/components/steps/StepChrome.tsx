@@ -22,12 +22,12 @@ export const StepHeading = ({ title, subtitle }: { title: string; subtitle: stri
   <View className="w-full items-center gap-1.5">
     <Text
       accessibilityRole="header"
-      className="text-center text-[20px] font-bold"
+      className="text-center text-[22px] font-bold"
       style={{ color: C.text }}
     >
       {title}
     </Text>
-    <Text className="text-center text-[13.5px] leading-[20px]" style={{ color: C.muted }}>
+    <Text className="text-center text-[15.5px] leading-[22px]" style={{ color: C.muted }}>
       {subtitle}
     </Text>
   </View>

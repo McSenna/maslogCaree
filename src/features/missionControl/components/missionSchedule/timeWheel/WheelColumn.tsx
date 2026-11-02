@@ -38,7 +38,7 @@ const WheelColumn = <T extends string | number,>({
 
   return (
     <View style={{ flex }}>
-      <Text className="mb-1.5 text-center text-[11px] font-medium" style={{ color: palette.muted }}>
+      <Text className="mb-1.5 text-center text-[13px] font-medium" style={{ color: palette.muted }}>
         {label}
       </Text>
       <View
@@ -74,7 +74,7 @@ const WheelColumn = <T extends string | number,>({
                 }}
               >
                 <Text
-                  className={`text-[16px] tabular-nums ${isSelected ? "font-bold" : "font-medium"}`}
+                  className={`text-[18px] tabular-nums ${isSelected ? "font-bold" : "font-medium"}`}
                   style={{ color: isSelected ? PALETTE.white : palette.body }}
                 >
                   {render(option)}

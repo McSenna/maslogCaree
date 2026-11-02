@@ -46,7 +46,7 @@ const ResidentSummary = ({ resident, confirmed, onConfirmedChange, onChange }: P
               accessibilityLabel={`The name and birth date match the paper record for ${resident.fullName}`}
             />
           </View>
-          <Text className="min-w-0 flex-1 text-[13px] leading-[19px]" style={{ color: palette.body }} onPress={() => onConfirmedChange(!confirmed)}>
+          <Text className="min-w-0 flex-1 text-[15px] leading-[21px]" style={{ color: palette.body }} onPress={() => onConfirmedChange(!confirmed)}>
             The name and birth date match the paper record.
           </Text>
         </View>

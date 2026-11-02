@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 
+import { useCellSelfAlign, useCellTextAlign } from "@/components/data-table/TablePlacement";
 import { TABLE_TEXT } from "@/components/data-table/tableTokens";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
@@ -10,6 +11,8 @@ type Props = { item: Announcement; expanded: boolean; onToggle: (id: string) => 
 /** The title opens and closes the full message; the line under it previews the message. */
 const AnnouncementTitle = ({ item, expanded, onToggle }: Props) => {
   const colors = useThemeColors();
+  const alignSelf = useCellSelfAlign();
+  const textAlign = useCellTextAlign();
   return (
     <View className="min-w-0 gap-0.5 self-stretch">
       <Pressable
@@ -18,21 +21,22 @@ const AnnouncementTitle = ({ item, expanded, onToggle }: Props) => {
         accessibilityState={{ expanded }}
         aria-expanded={expanded}
         accessibilityHint={expanded ? "Hides the full message" : "Shows the full message"}
-        className="max-w-full self-start web:cursor-pointer"
+        className="max-w-full web:cursor-pointer"
+        style={{ alignSelf }}
       >
         {({ hovered, pressed }) => (
           <Text
             numberOfLines={1}
             style={[
               TABLE_TEXT.primary,
-              { color: hovered || pressed ? colors.primary : colors.heading, textDecorationLine: hovered ? "underline" : "none" },
+              { textAlign, color: hovered || pressed ? colors.primary : colors.heading, textDecorationLine: hovered ? "underline" : "none" },
             ]}
           >
             {item.title}
           </Text>
         )}
       </Pressable>
-      <Text numberOfLines={1} style={[TABLE_TEXT.secondary, { color: colors.muted }]}>
+      <Text numberOfLines={1} style={[TABLE_TEXT.secondary, { color: colors.muted, textAlign }]}>
         {item.body}
       </Text>
     </View>

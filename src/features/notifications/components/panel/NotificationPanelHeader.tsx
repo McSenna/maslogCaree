@@ -40,11 +40,11 @@ const NotificationPanelHeader = ({
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text
             accessibilityRole="header"
-            style={{ fontSize: 15.5, fontWeight: "800", letterSpacing: -0.2, color: palette.heading }}
+            style={{ fontSize: 17.5, fontWeight: "800", letterSpacing: -0.2, color: palette.heading }}
           >
             Notifications
           </Text>
-          <Text style={{ marginTop: 1, fontSize: 12, color: palette.muted }}>
+          <Text style={{ marginTop: 1, fontSize: 14, color: palette.muted }}>
             {unreadCount > 0 ? `${unreadCount} unread` : "You're all caught up"}
           </Text>
         </View>
@@ -65,7 +65,7 @@ const NotificationPanelHeader = ({
               opacity: pressed ? 0.8 : 1,
             })}
           >
-            <Text style={{ fontSize: 12, fontWeight: "700", color: palette.primary }}>
+            <Text style={{ fontSize: 14, fontWeight: "700", color: palette.primary }}>
               Mark all read
             </Text>
           </Pressable>

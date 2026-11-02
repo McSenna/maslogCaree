@@ -20,7 +20,7 @@ const AnnouncementSectionLabel = ({
       />
       <Text
         className="font-black uppercase tracking-widest text-slate-500"
-        style={{ fontSize: isTablet ? 11 : 9.5 }}
+        style={{ fontSize: isTablet ? 13 : 11.5 }}
       >
         {label}
       </Text>

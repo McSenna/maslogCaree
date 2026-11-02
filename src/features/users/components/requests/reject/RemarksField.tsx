@@ -17,7 +17,7 @@ const RemarksField = ({
   textPrimary: string;
 }) => (
   <View className="mt-1">
-    <Text className={`text-[12.5px] font-semibold mb-1 ${textPrimary}`}>
+    <Text className={`text-[14.5px] font-semibold mb-1 ${textPrimary}`}>
       {required ? "Remarks / Detailed Explanation *" : "Remarks (Optional)"}
     </Text>
     <TextInput
@@ -32,7 +32,7 @@ const RemarksField = ({
         textAlignVertical: "top",
       }}
       className={[
-        "w-full p-3 rounded-xl border text-[13px]",
+        "w-full p-3 rounded-xl border text-[15px]",
         error
           ? "border-red-500 bg-red-50/20"
           : isDark
@@ -40,7 +40,7 @@ const RemarksField = ({
             : "border-slate-200 bg-white text-slate-900",
       ].join(" ")}
     />
-    {error ? <Text className="text-red-500 text-[11px] mt-1 font-medium">{error}</Text> : null}
+    {error ? <Text className="text-red-500 text-[13px] mt-1 font-medium">{error}</Text> : null}
   </View>
 );
 

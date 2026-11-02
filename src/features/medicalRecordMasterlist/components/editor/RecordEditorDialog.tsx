@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import Button from "@/components/buttons/Button";
+import ClinicalSaveBoundary from "@/features/immunization/components/ClinicalSaveBoundary";
+import { useCallback, useRef, useState } from "react";
 
 import CompleteModalShell, { PANEL_TWO_COLUMN_WIDTH } from "@/components/medicalRecord/complete/CompleteModalShell";
 import { CompletionPlaceholder } from "@/components/medicalRecord/complete/CompletionChrome";
@@ -18,6 +21,7 @@ type Props = {
   onClose: () => void;
   onSaved: (detail: MasterlistDetail) => void;
   onViewRecord: (id: string) => void;
+  initialServiceType?: string;
 };
 
 // A visit is recent more often than not, so the calendar opens on this month.
@@ -29,13 +33,33 @@ const thisMonth = () => ({ year: new Date().getFullYear(), monthIndex: new Date(
  * starts clean. The calendar is a sibling of the shell, not a child, so an
  * Android dialog recreation cannot reset it.
  */
-const RecordEditorDialog = ({ editing, forms, formsLoading, onClose, onSaved, onViewRecord }: Props) => {
-  const editor = useRecordEditor({ editing, forms, onSaved, onDone: onClose });
+const RecordEditorDialog = ({ editing, forms, formsLoading, onClose, onSaved, onViewRecord, initialServiceType }: Props) => {
+  const editor = useRecordEditor({ editing, forms, onSaved, onDone: onClose, initialServiceType });
+  const { user } = useAuth();
+  const [clinicalSaving, setClinicalSaving] = useState(false);
+  const [clinicalDirty, setClinicalDirty] = useState(false);
+  const [contentVersion, setContentVersion] = useState(0);
+  const clinicalTop = useRef(0);
+  const [scrollToY, setScrollToY] = useState(0);
+  const clinicalLayout = useCallback((y: number) => {
+    clinicalTop.current = y;
+    setScrollToY(previous => previous > 0 ? y : 0);
+  }, []);
+  const contentChanged = useCallback(() => {
+    setScrollToY(clinicalTop.current);
+    setContentVersion(version => version + 1);
+  }, []);
+  const immunization = (!editing || Boolean(editing.baby)) && editor.serviceType === "immunization" && user?.role === "midwife";
+  const busy = editor.saving || clinicalSaving;
   const [panelWidth, setPanelWidth] = useState(0);
   const [pickingDate, setPickingDate] = useState(false);
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
   // Readings typed from a paper record are easy to lose; ask before dropping them.
-  const requestClose = () => (editor.hasUnsavedInput ? setConfirmingDiscard(true) : onClose());
+  const requestClose = () => {
+    if (busy) return;
+    if (immunization ? clinicalDirty : editor.hasUnsavedInput) setConfirmingDiscard(true);
+    else onClose();
+  };
   const duplicate = editor.duplicate;
   const waitingForForms = formsLoading && !editing && forms.length === 0;
 
@@ -44,18 +68,21 @@ const RecordEditorDialog = ({ editing, forms, formsLoading, onClose, onSaved, on
       <CompleteModalShell
         visible
         onRequestClose={requestClose}
-        dismissible={!editor.saving}
+        dismissible={!busy}
         closeLabel="Close without saving"
         onLayoutWidth={setPanelWidth}
-        scrollToTopKey={editor.nextCount}
+        scrollToTopKey={editor.nextCount + contentVersion}
+        scrollToY={immunization ? scrollToY : 0}
         title={editing ? "Edit medical record" : "Add medical record"}
         subtitle={editor.resident?.fullName ?? "A record from the health center's files"}
-        footer={<EditorFooter editor={editor} onClose={requestClose} />}
+        footer={immunization ? <Button label="Close medical record" variant="secondary" disabled={busy} onPress={requestClose} /> : <EditorFooter editor={editor} onClose={requestClose} />}
       >
         {waitingForForms ? (
           <CompletionPlaceholder message="Loading the record forms." />
         ) : (
-          <RecordEditorForm editor={editor} forms={forms} twoColumn={panelWidth >= PANEL_TWO_COLUMN_WIDTH} onOpenDate={() => setPickingDate(true)} />
+          <ClinicalSaveBoundary onBusyChange={setClinicalSaving} onDraftChange={setClinicalDirty}>
+            <RecordEditorForm editor={editor} forms={forms} busy={busy} onContentChange={contentChanged} onClinicalLayout={clinicalLayout} twoColumn={panelWidth >= PANEL_TWO_COLUMN_WIDTH} onOpenDate={() => setPickingDate(true)} />
+          </ClinicalSaveBoundary>
         )}
       </CompleteModalShell>
 
@@ -71,8 +98,8 @@ const RecordEditorDialog = ({ editing, forms, formsLoading, onClose, onSaved, on
 
       <ConfirmationModal
         visible={confirmingDiscard}
-        title={editing ? "Discard your changes?" : "Discard this record?"}
-        message="The details you have entered will not be saved."
+        title={immunization || editing ? "Discard your unsaved changes?" : "Discard this record?"}
+        message={immunization ? "Saved vaccine records remain on file. Any unsaved entry details will be discarded." : "The details you have entered will not be saved."}
         confirmLabel="Discard"
         cancelLabel="Keep editing"
         destructive

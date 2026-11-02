@@ -8,7 +8,6 @@ import AppointmentAlert from "./AppointmentAlert";
 import BookingActionButton from "./BookingActionButton";
 import ConfirmationCheckbox from "./ConfirmationCheckbox";
 import FormSelectField from "./FormSelectField";
-import ImmunizationVisitFields from "./ImmunizationVisitFields";
 import MissionVisitFields from "./MissionVisitFields";
 import ResidentInfoCard from "./ResidentInfoCard";
 
@@ -26,7 +25,7 @@ const BookingRequestStep = ({ booking }: BookingRequestStepProps) => {
       <View style={{ gap: 12 }}>
         <Text
           accessibilityRole="header"
-          style={{ fontSize: 18, fontWeight: "800", color: APPOINTMENT_COLORS.primary }}
+          style={{ fontSize: 20, fontWeight: "800", color: APPOINTMENT_COLORS.primary }}
         >
           Appointment Details
         </Text>
@@ -63,7 +62,7 @@ const BookingRequestStep = ({ booking }: BookingRequestStepProps) => {
           helperText={booking.selectedService?.helper ?? null}
         />
 
-        {booking.weekly ? <ImmunizationVisitFields booking={booking} /> : <MissionVisitFields booking={booking} />}
+        <MissionVisitFields booking={booking} />
       </View>
 
       <ConfirmationCheckbox

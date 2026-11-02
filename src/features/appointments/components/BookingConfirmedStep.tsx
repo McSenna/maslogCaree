@@ -42,13 +42,13 @@ const BookingConfirmedStep = ({ appointment, onClose }: BookingConfirmedStepProp
         <Text
           accessibilityRole="header"
           className="text-center"
-          style={{ fontSize: 19, fontWeight: "800", color: APPOINTMENT_COLORS.primary }}
+          style={{ fontSize: 21, fontWeight: "800", color: APPOINTMENT_COLORS.primary }}
         >
           Appointment Confirmed
         </Text>
         <Text
           className="text-center"
-          style={{ fontSize: 13.5, lineHeight: 20, color: APPOINTMENT_COLORS.mutedText }}
+          style={{ fontSize: 15.5, lineHeight: 22, color: APPOINTMENT_COLORS.mutedText }}
         >
           {CONFIRMED_MESSAGE}
         </Text>

@@ -35,7 +35,7 @@ const TableSkeleton = <T,>({
           <View style={[styles.cells, { minHeight: ROW_MIN_HEIGHT[density] }]}>
             {columns.map((column, index) => (
               <TableCell key={column.key} column={column} debug={debug}>
-                <View className="w-full gap-2" style={column.align === "right" ? styles.end : null}>
+                <View className="w-full gap-2" style={column.align === "right" ? styles.end : column.align === "center" ? styles.center : null}>
                   <Skeleton className={index === 0 ? "h-3.5 w-[70%] rounded-xs" : "h-3 w-[60%] rounded-xs"} />
                   {index === 0 && density === "regular" ? <Skeleton className="h-3 w-[40%] rounded-xs" /> : null}
                 </View>
@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   divided: { borderBottomWidth: 1 },
   cells: { flexDirection: "row", paddingVertical: 8 },
   end: { alignItems: "flex-end" },
+  center: { alignItems: "center" },
 });
 
 export default TableSkeleton;

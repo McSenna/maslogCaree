@@ -15,7 +15,7 @@ const SectionLabel = ({ children }: { children: string }) => (
     <Text
       accessibilityRole="header"
       style={{
-        fontSize: 11.5,
+        fontSize: 13.5,
         fontWeight: "800",
         letterSpacing: 1,
         textTransform: "uppercase",

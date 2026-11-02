@@ -30,7 +30,7 @@ const CompactHero = ({ profile, photo, size, onLayout, surface }: Props) => {
               numberOfLines={1}
               maxFontSizeMultiplier={1.2}
               style={{
-                fontSize: 11,
+                fontSize: 13,
                 fontWeight: "700",
                 letterSpacing: 1,
                 textTransform: "uppercase",
@@ -46,7 +46,7 @@ const CompactHero = ({ profile, photo, size, onLayout, surface }: Props) => {
               accessibilityRole="header"
               style={{
                 fontSize: PROFILE_TYPE.nameCompact,
-                lineHeight: 27,
+                lineHeight: 29,
                 fontWeight: "800",
                 letterSpacing: -0.4,
                 color: PROFILE_COLORS.navy,
@@ -61,7 +61,7 @@ const CompactHero = ({ profile, photo, size, onLayout, surface }: Props) => {
               numberOfLines={1}
               maxFontSizeMultiplier={1.2}
               style={{
-                fontSize: 13.5,
+                fontSize: 15.5,
                 fontWeight: "500",
                 color: PROFILE_COLORS.muted,
               }}
@@ -76,7 +76,7 @@ const CompactHero = ({ profile, photo, size, onLayout, surface }: Props) => {
           maxFontSizeMultiplier={1.2}
           style={{
             fontSize: PROFILE_TYPE.meta,
-            lineHeight: 18,
+            lineHeight: 20,
             fontStyle: "italic",
             color: PROFILE_COLORS.muted,
           }}

@@ -71,7 +71,7 @@ const NavItemLink = ({ label, icon, isActive, isDesktop }: NavItemLinkProps) => 
         <Feather name={icon} size={13} color={tint} />
         <Text
           style={{
-            fontSize: isDesktop ? 13 : 12,
+            fontSize: isDesktop ? 15 : 14,
             fontWeight: isActive ? "700" : "500",
             color: tint,
           }}

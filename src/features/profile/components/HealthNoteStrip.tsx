@@ -30,10 +30,10 @@ const HealthNoteStrip = () => (
     </View>
 
     <View style={{ flex: 1, minWidth: 0 }}>
-      <Text style={{ fontSize: 14.5, fontWeight: "700", color: PALETTE.success[700] }}>
+      <Text style={{ fontSize: 16.5, fontWeight: "700", color: PALETTE.success[700] }}>
         Your health matters.
       </Text>
-      <Text style={{ marginTop: 2, fontSize: 12.5, color: PALETTE.success[700] }}>
+      <Text style={{ marginTop: 2, fontSize: 14.5, color: PALETTE.success[700] }}>
         Keep your information updated for a smoother healthcare experience.
       </Text>
     </View>

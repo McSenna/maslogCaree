@@ -1,3 +1,5 @@
+import ImmunizationVisitHandoff from "@/features/immunization/components/ImmunizationVisitHandoff";
+import { useAuth } from "@/contexts/AuthContext";
 import { useState } from "react";
 
 import type { AppointmentRecord } from "@/services/appointments";
@@ -5,7 +7,9 @@ import type { CompletionForm } from "@/services/medicalRecords";
 
 import { useMedicalRecordForm } from "./MedicalRecordForm";
 import { useDispensedItems } from "./dispensing/useDispensedItems";
-import CompleteModalShell, { PANEL_TWO_COLUMN_WIDTH } from "./complete/CompleteModalShell";
+import CompleteModalShell, {
+  PANEL_TWO_COLUMN_WIDTH,
+} from "./complete/CompleteModalShell";
 import CompletionBody from "./complete/CompletionBody";
 import { ErrorBanner } from "./complete/CompletionChrome";
 import CompletionSuccess from "./complete/CompletionSuccess";
@@ -39,6 +43,7 @@ const CompleteAppointmentModal = ({
   onCompleted: (result: CompletionResult) => void;
   onViewRecord?: (appointment: AppointmentRecord) => void;
 }) => {
+  const { user } = useAuth();
   const medicalForm = useMedicalRecordForm(form);
   const { values, errors, onChange } = medicalForm;
   const dispensed = useDispensedItems();
@@ -52,23 +57,35 @@ const CompleteAppointmentModal = ({
 
   const [panelWidth, setPanelWidth] = useState(0);
 
-  const { step, setStep, saving, submitError, result, handleReview, handleConfirm } =
-    useCompletionFlow({
-      visible,
-      appointment,
-      form,
-      medicalForm,
-      dispensed,
-      vaccineReset: vaccine.reset,
-      onCompleted,
-    });
+  const {
+    step,
+    setStep,
+    saving,
+    submitError,
+    result,
+    handleReview,
+    handleConfirm,
+  } = useCompletionFlow({
+    visible,
+    appointment,
+    form,
+    medicalForm,
+    dispensed,
+    vaccineReset: vaccine.reset,
+    onCompleted,
+  });
 
   if (!appointment) return null;
 
   const patient = patientFactsOf(appointment);
   const twoColumn = panelWidth >= PANEL_TWO_COLUMN_WIDTH;
 
-  const fieldOverrides = buildVaccineFieldOverride({ vaccine, values, errors, saving });
+  const fieldOverrides = buildVaccineFieldOverride({
+    vaccine,
+    values,
+    errors,
+    saving,
+  });
 
   const footer = buildCompletionFooter({
     step,
@@ -80,14 +97,34 @@ const CompleteAppointmentModal = ({
     onConfirm: () => void handleConfirm(),
   });
 
+  if (form?.categoryKey === "immunization" && user?.role === "midwife")
+    return (
+      <CompleteModalShell
+        visible={visible}
+        onRequestClose={onClose}
+        dismissible
+        title="Complete immunization visit"
+        subtitle={patient.name}
+      >
+        <ImmunizationVisitHandoff
+          appointmentId={appointment._id}
+          onClose={onClose}
+        />
+      </CompleteModalShell>
+    );
+
   return (
     <CompleteModalShell
       visible={visible}
       onRequestClose={onClose}
       dismissible={!saving}
       onLayoutWidth={setPanelWidth}
-      title={step === "success" ? "Appointment completed" : "Complete Appointment"}
-      subtitle={step === "success" ? undefined : `${patient.name} · ${serviceLabel}`}
+      title={
+        step === "success" ? "Appointment completed" : "Complete Appointment"
+      }
+      subtitle={
+        step === "success" ? undefined : `${patient.name} · ${serviceLabel}`
+      }
       footer={footer}
     >
       {step === "success" && result ? (
@@ -95,7 +132,9 @@ const CompleteAppointmentModal = ({
           patientName={patient.name}
           serviceLabel={serviceLabel}
           movements={result.inventoryTransactions}
-          canViewRecord={Boolean(onViewRecord && result.appointment?.medicalRecord)}
+          canViewRecord={Boolean(
+            onViewRecord && result.appointment?.medicalRecord,
+          )}
           onViewRecord={() => {
             onClose();
             if (result.appointment) onViewRecord?.(result.appointment);

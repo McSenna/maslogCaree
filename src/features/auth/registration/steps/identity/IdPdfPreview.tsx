@@ -35,16 +35,16 @@ const IdPdfPreview = ({ fileName, formattedFileSize }: Props) => {
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text
           numberOfLines={1}
-          style={{ fontSize: 14, fontWeight: "700", color: REG_COLORS.heading }}
+          style={{ fontSize: 16, fontWeight: "700", color: REG_COLORS.heading }}
         >
           {fileName || "Government_ID.pdf"}
         </Text>
-        <Text style={{ fontSize: 12, color: REG_COLORS.muted, marginTop: 2 }}>
+        <Text style={{ fontSize: 14, color: REG_COLORS.muted, marginTop: 2 }}>
           PDF Document {formattedFileSize ? `• ${formattedFileSize}` : ""}
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 }}>
           <Feather name="check" size={13} color={PALETTE.success[600]} />
-          <Text style={{ fontSize: 11.5, color: PALETTE.success[600], fontWeight: "600" }}>
+          <Text style={{ fontSize: 13.5, color: PALETTE.success[600], fontWeight: "600" }}>
             Valid PDF attached
           </Text>
         </View>

@@ -30,13 +30,13 @@ const VerificationResidentHeader = ({
       />
       <View className="min-w-0 flex-1 gap-1">
         <Text
-          className="text-[16px] font-bold"
+          className="text-[18px] font-bold"
           numberOfLines={1}
           style={{ color: palette.heading }}
         >
           {resident?.fullname || "Resident"}
         </Text>
-        <Text className="text-[12.5px]" numberOfLines={1} style={{ color: palette.muted }}>
+        <Text className="text-[14.5px]" numberOfLines={1} style={{ color: palette.muted }}>
           Registered {registeredLabel}
         </Text>
         {verification ? (

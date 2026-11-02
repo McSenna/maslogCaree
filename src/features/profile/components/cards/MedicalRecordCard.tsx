@@ -54,14 +54,14 @@ const MedicalRecordCard = ({ record }: MedicalRecordCardProps) => {
           <Text
             numberOfLines={1}
             maxFontSizeMultiplier={1.2}
-            style={{ fontSize: 15, fontWeight: "700", color: colors.heading }}
+            style={{ fontSize: 17, fontWeight: "700", color: colors.heading }}
           >
             {title}
           </Text>
           <Text
             numberOfLines={1}
             maxFontSizeMultiplier={1.2}
-            style={{ fontSize: 12.5, color: colors.muted }}
+            style={{ fontSize: 14.5, color: colors.muted }}
           >
             {provider ? `${recordDate(record)} · ${provider}` : recordDate(record)}
           </Text>
@@ -73,8 +73,8 @@ const MedicalRecordCard = ({ record }: MedicalRecordCardProps) => {
           numberOfLines={3}
           maxFontSizeMultiplier={1.2}
           style={{
-            fontSize: 13.5,
-            lineHeight: 19,
+            fontSize: 15.5,
+            lineHeight: 21,
             color: colors.body,
             borderTopWidth: 1,
             borderTopColor: colors.divider,
@@ -86,7 +86,7 @@ const MedicalRecordCard = ({ record }: MedicalRecordCardProps) => {
       ) : null}
 
       {followUp ? (
-        <Text style={{ fontSize: 12.5, fontWeight: "600", color: colors.primary }}>
+        <Text style={{ fontSize: 14.5, fontWeight: "600", color: colors.primary }}>
           {followUp}
         </Text>
       ) : null}

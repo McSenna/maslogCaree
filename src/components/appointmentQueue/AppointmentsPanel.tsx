@@ -19,7 +19,7 @@ type AppointmentsPanelProps = {
   serviceLabels: Record<string, string>;
   headerAction?: ReactNode;
   onApprove?: (appointment: AppointmentRecord) => void;
-  onMore?: (appointment: AppointmentRecord) => void;
+  onReschedule?: (appointment: AppointmentRecord) => void;
   busyId: string | null;
   canAct: boolean;
   onRowPress?: (appointment: AppointmentRecord) => void;
@@ -39,7 +39,7 @@ const AppointmentsPanel = ({
   serviceLabels,
   headerAction,
   onApprove,
-  onMore,
+  onReschedule,
   busyId,
   canAct,
   onRowPress,
@@ -50,7 +50,7 @@ const AppointmentsPanel = ({
   asTable,
 }: AppointmentsPanelProps) => {
   const palette = useQueuePalette();
-  const actions = { onApprove, onMore, busyId, canAct, onRowPress };
+  const actions = { onApprove, onReschedule, busyId, canAct, onRowPress };
   const serviceLabelOf = (appointment: AppointmentRecord) =>
     serviceLabels[appointment.consultationType] ?? appointment.consultationType;
 
@@ -59,13 +59,13 @@ const AppointmentsPanel = ({
       appointmentColumns({
         palette,
         onApprove,
-        onMore,
+        onReschedule,
         busyId,
         canAct,
         onRowPress,
         serviceLabelOf: (appointment) => serviceLabels[appointment.consultationType] ?? appointment.consultationType,
       }),
-    [palette, onApprove, onMore, busyId, canAct, onRowPress, serviceLabels]
+    [palette, onApprove, onReschedule, busyId, canAct, onRowPress, serviceLabels]
   );
 
   return (

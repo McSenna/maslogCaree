@@ -103,7 +103,7 @@ const InventoryPickerSheet = ({
 
           {picker.error ? (
             <View className="px-4 py-3">
-              <Text className="text-[12.5px] font-medium" style={{ color: PALETTE.red[600] }}>
+              <Text className="text-[14.5px] font-medium" style={{ color: PALETTE.red[600] }}>
                 {picker.error}
               </Text>
             </View>

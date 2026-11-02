@@ -63,11 +63,11 @@ export const InfoRow = ({
       </View>
 
       <View className="min-w-0 flex-1">
-        <Text className="text-[12px]" style={{ color: palette.subtle }}>
+        <Text className="text-[14px]" style={{ color: palette.subtle }}>
           {row.label}
         </Text>
         <Text
-          className="mt-0.5 text-[14px] font-semibold"
+          className="mt-0.5 text-[16px] font-semibold"
           numberOfLines={2}
           style={{ color: palette.heading }}
         >

@@ -13,7 +13,7 @@ const SeverityIndicator = ({ severity }: { severity: SystemLogSeverity }) => {
       className="flex-row items-center gap-1.5"
     >
       <View className="h-2 w-2 rounded-full" style={{ backgroundColor: tone.dot }} />
-      <Text className="text-[13px] font-medium" style={{ color: palette.body }}>
+      <Text className="text-[15px] font-medium" style={{ color: palette.body }}>
         {tone.label}
       </Text>
     </View>

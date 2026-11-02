@@ -75,8 +75,8 @@ const StatCard = ({
 
       <View className={compact ? "w-full min-w-0" : "min-w-0 flex-1"}>
         <Text
-          numberOfLines={compact ? 2 : 1}
-          className="text-[13px] font-medium"
+          numberOfLines={2}
+          className="text-[15px] font-medium"
           style={{ color: palette.muted }}
         >
           {label}
@@ -87,13 +87,13 @@ const StatCard = ({
             style={{ height: 26, width: 48, borderRadius: 7, backgroundColor: palette.skeleton }}
           />
         ) : (
-          <Text className="mt-0.5 text-[28px] font-bold" style={{ color: palette.heading }}>
+          <Text className="mt-0.5 text-[30px] font-bold" style={{ color: palette.heading }}>
             {value}
           </Text>
         )}
         <Text
-          numberOfLines={compact ? 2 : 1}
-          className="mt-0.5 text-[12px]"
+          numberOfLines={2}
+          className="mt-0.5 text-[14px]"
           style={{ color: palette.subtle }}
         >
           {caption}

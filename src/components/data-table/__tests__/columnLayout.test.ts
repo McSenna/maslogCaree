@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import { cellSizing, minTableWidth, planColumns, type ColumnSizing } from "../columnLayout.ts";
+import { cellSizing, centerColumns, minTableWidth, planColumns, type ColumnSizing } from "../columnLayout.ts";
 
 const RESIDENT_RECORDS: ColumnSizing[] = [
   { key: "record", flex: 2.2, minWidth: 240 },
@@ -69,5 +69,21 @@ describe("planColumns", () => {
     const plan = planColumns(RESIDENT_RECORDS, 1280, 700);
     assert.equal(plan.scrolls, true);
     assert.equal(plan.contentWidth, 820);
+  });
+});
+
+describe("centerColumns", () => {
+  it("centres every value under its column title, whatever the column asked for", () => {
+    const columns = [{ key: "visit", align: "left" as const }, { key: "stock", align: "right" as const }, { key: "date" }];
+    assert.deepEqual(centerColumns(columns).map((column) => column.align), ["center", "center", "center"]);
+  });
+
+  it("keeps a name column on the left edge, wherever it sits in the table", () => {
+    const columns = [{ key: "position" }, { key: "patient", nameColumn: true }, { key: "status" }];
+    assert.deepEqual(centerColumns(columns).map((column) => column.align), ["center", "left", "center"]);
+  });
+
+  it("keeps the rest of each column", () => {
+    assert.deepEqual(centerColumns([{ key: "date", width: 120 }]), [{ key: "date", width: 120, align: "center" }]);
   });
 });

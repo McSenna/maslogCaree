@@ -88,7 +88,7 @@ export const DeclineReasonSection = ({
   return (
     <View className="w-full gap-2">
       <Text
-        className="text-[11.5px] font-bold uppercase"
+        className="text-[13.5px] font-bold uppercase"
         style={{ color: palette.subtle, letterSpacing: 0.6 }}
       >
         Reason
@@ -97,7 +97,7 @@ export const DeclineReasonSection = ({
         className="w-full px-3.5 py-3"
         style={{ borderRadius: QUEUE_RADIUS.control, backgroundColor: tone.bg }}
       >
-        <Text className="text-[13.5px] leading-[20px]" style={{ color: tone.fg }}>
+        <Text className="text-[15.5px] leading-[22px]" style={{ color: tone.fg }}>
           {reason}
         </Text>
       </View>

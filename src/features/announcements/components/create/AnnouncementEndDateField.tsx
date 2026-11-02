@@ -73,7 +73,7 @@ const AnnouncementEndDateField = ({ value, eventDate, onChange, error, disabled 
               className="min-h-11 items-center justify-center border-t"
               style={{ borderTopColor: colors.border }}
             >
-              <Text className="text-[15px] font-semibold" style={{ color: colors.primary }}>
+              <Text className="text-[17px] font-semibold" style={{ color: colors.primary }}>
                 Done
               </Text>
             </Pressable>

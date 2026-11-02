@@ -27,14 +27,14 @@ const HelpCenterHeader = ({ query, onQueryChange }: HelpCenterHeaderProps) => {
       <View style={{ gap: 6 }}>
         <Text
           accessibilityRole="header"
-          style={{ fontSize: 22, fontWeight: "700", color: palette.heading }}
+          style={{ fontSize: 24, fontWeight: "700", color: palette.heading }}
         >
           MaslogCare Help Center
         </Text>
-        <Text style={{ fontSize: 15, fontWeight: "600", color: palette.primary }}>
+        <Text style={{ fontSize: 17, fontWeight: "600", color: palette.primary }}>
           How can we help you today?
         </Text>
-        <Text style={{ fontSize: 13.5, lineHeight: 20, color: palette.muted }}>
+        <Text style={{ fontSize: 15.5, lineHeight: 22, color: palette.muted }}>
           Find answers, learn how to use MaslogCare, or contact our support team if you need
           additional assistance.
         </Text>

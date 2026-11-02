@@ -74,13 +74,13 @@ const MedicalRecordEmptyState = ({
       <View className="items-center gap-1.5">
         <Text
           accessibilityRole="header"
-          className="text-center text-[15px] font-bold"
+          className="text-center text-[17px] font-bold"
           style={{ color: isError ? tint!.fg : palette.heading }}
         >
           {copy.title}
         </Text>
         <Text
-          className="max-w-[320px] text-center text-[13px] leading-[19px]"
+          className="max-w-[320px] text-center text-[15px] leading-[21px]"
           style={{ color: isError ? tint!.fg : palette.muted }}
         >
           {copy.body}
@@ -102,7 +102,7 @@ const MedicalRecordEmptyState = ({
         >
           {isError ? <Feather name="refresh-cw" size={14} color={tint!.fg} /> : null}
           <Text
-            className="text-[13.5px] font-semibold"
+            className="text-[15.5px] font-semibold"
             style={{ color: isError ? tint!.fg : palette.primary }}
           >
             {action.label}

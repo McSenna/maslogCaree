@@ -47,7 +47,7 @@ const IdImagePreview = ({ uri, formattedFileSize, onZoom }: Props) => {
         }}
       >
         <View style={overlayChip}>
-          <Text style={{ color: PALETTE.white, fontSize: 11, fontWeight: "600" }}>
+          <Text style={{ color: PALETTE.white, fontSize: 13, fontWeight: "600" }}>
             ID Preview {formattedFileSize ? `(${formattedFileSize})` : ""}
           </Text>
         </View>
@@ -59,7 +59,7 @@ const IdImagePreview = ({ uri, formattedFileSize, onZoom }: Props) => {
           style={{ ...overlayChip, flexDirection: "row", alignItems: "center", gap: 4 }}
         >
           <Feather name="maximize-2" size={12} color={PALETTE.white} />
-          <Text style={{ color: PALETTE.white, fontSize: 11, fontWeight: "600" }}>Zoom</Text>
+          <Text style={{ color: PALETTE.white, fontSize: 13, fontWeight: "600" }}>Zoom</Text>
         </Pressable>
       </View>
     </View>

@@ -1,5 +1,6 @@
+import { useRef } from "react";
 import { Feather } from "@expo/vector-icons";
-import { ActivityIndicator, Animated, Pressable, Text, View, type StyleProp, type ViewStyle } from "react-native";
+import { AccessibilityInfo, ActivityIndicator, Animated, findNodeHandle, Platform, Pressable, Text, View, type StyleProp, type ViewStyle } from "react-native";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { useInteractionState } from "@/hooks/useInteractionState";
 import { webTransition } from "@/theme/motion";
@@ -30,6 +31,8 @@ export type ButtonProps = {
   accessibilityHint?: string;
   style?: StyleProp<ViewStyle>;
   testID?: string;
+  /** Opt into initial keyboard and assistive focus in a confirmation dialog. */
+  initialFocus?: boolean;
 };
 
 const BUTTON_WEB = webStyle({ cursor: "pointer", transition: webTransition("background-color", "border-color") });
@@ -49,7 +52,10 @@ const Button = ({
   accessibilityHint,
   style,
   testID,
+  initialFocus = false,
 }: ButtonProps) => {
+  const focusTarget = useRef<View>(null);
+  const focusedInitially = useRef(false);
   const colors = useThemeColors();
   const inactive = disabled || loading;
   const { hovered, pressed, focused, scaleStyle, handlers } = useInteractionState({ disabled: inactive });
@@ -60,6 +66,16 @@ const Button = ({
   return (
     <Animated.View style={[fullWidth ? { alignSelf: "stretch" } : { alignSelf: "flex-start" }, scaleStyle, style]}>
       <Pressable
+        ref={focusTarget}
+        {...(Platform.OS === "web" && initialFocus ? { dataSet: { initialFocus: "true" } } : {})}
+        onLayout={() => {
+          // Web focus is owned by the dialog trap, after it records the opener.
+          if (Platform.OS === "web" || !initialFocus || focusedInitially.current) return;
+          focusedInitially.current = true;
+          focusTarget.current?.focus();
+          const handle = findNodeHandle(focusTarget.current);
+          if (handle) AccessibilityInfo.setAccessibilityFocus(handle);
+        }}
         {...handlers}
         onPress={inactive ? undefined : onPress}
         disabled={inactive}

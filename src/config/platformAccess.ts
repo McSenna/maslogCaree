@@ -12,7 +12,7 @@ export const PLATFORM_ACCESS: Record<UserRole, ClientPlatform[]> = {
   doctor: ["web", "mobile"],
   midwife: ["web", "mobile"],
   bhw: ["web", "mobile"],
-  resident: ["mobile"],
+  resident: ["web", "mobile"],
 };
 
 const FALLBACK_ALLOWED: ClientPlatform[] = ["mobile"];
@@ -53,10 +53,8 @@ export const describePlatformAccess = (
 };
 
 export const MOBILE_ONLY_NOTICE = {
-  title: "Mobile App Required",
-  message:
-    "Resident accounts cannot access MaslogCare through the web platform.\n\nPlease use the MaslogCare mobile application to continue.",
-  supporting:
-    "MaslogCare Resident services are available exclusively through the mobile application.",
-  action: "Got It",
+  title: "Resident web access disabled",
+  message: "Your resident web access is disabled. Contact the barangay health center to request access.",
+  supporting: "The MaslogCare mobile app is not affected. Sign in there with the same email and password.",
+  action: "Close notice",
 } as const;

@@ -16,6 +16,7 @@ export type PushNotificationData = {
   notificationId?: string;
   type?: string;
   appointmentId?: string;
+  immunizationBabyId?: string;
   resourceId?: string;
 };
 

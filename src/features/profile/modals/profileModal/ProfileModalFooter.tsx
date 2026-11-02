@@ -9,14 +9,14 @@ const FooterBrand = () => (
   <View style={{ flexDirection: "row", alignItems: "center", gap: 9 }}>
     <MaslogCareLogo size={32} />
     <View>
-      <Text style={{ fontSize: 16.5, fontWeight: "800", letterSpacing: -0.3 }}>
+      <Text style={{ fontSize: 18.5, fontWeight: "800", letterSpacing: -0.3 }}>
         <Text style={{ color: LANDING_COLORS.navy }}>Maslog</Text>
         <Text style={{ color: LANDING_COLORS.primaryBlue }}>Care</Text>
       </Text>
       <Text
         style={{
-          fontSize: 9.5,
-          lineHeight: 12,
+          fontSize: 11.5,
+          lineHeight: 14,
           fontWeight: "600",
           color: PROFILE_COLORS.subtle,
         }}

@@ -42,20 +42,20 @@ const DonutLegend = ({
           >
             <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
             <Text
-              className="min-w-0 flex-1 text-[13px] font-medium"
+              className="min-w-0 flex-1 text-[15px] font-medium"
               numberOfLines={1}
               style={{ color: palette.body }}
             >
               {entry.label}
             </Text>
             <Text
-              className="text-[13px] font-bold tabular-nums"
+              className="text-[15px] font-bold tabular-nums"
               style={{ color: palette.heading }}
             >
               {percent}%
             </Text>
             <Text
-              className="text-right text-[12px] font-medium tabular-nums"
+              className="text-right text-[14px] font-medium tabular-nums"
               style={{ color: palette.subtle, minWidth: 24 }}
             >
               {entry.count}

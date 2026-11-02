@@ -22,7 +22,7 @@ const ChoiceGroup = <T extends string,>({
   return (
     <View className="w-full gap-2">
       <Text
-        className="text-[12px] font-bold uppercase"
+        className="text-[14px] font-bold uppercase"
         style={{ color: palette.subtle, letterSpacing: 0.5 }}
       >
         {label}
@@ -46,7 +46,7 @@ const ChoiceGroup = <T extends string,>({
               }}
             >
               <Text
-                className="text-[13.5px] font-semibold"
+                className="text-[15.5px] font-semibold"
                 style={{ color: active ? palette.primary : palette.body }}
               >
                 {option.label}

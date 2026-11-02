@@ -33,7 +33,7 @@ const InfoRow = ({
         accessibilityLabel={`${label}: ${value}`}
         numberOfLines={1}
         className="min-w-0 flex-1"
-        style={{ fontSize: 14, color: APPOINTMENT_COLORS.bodyText }}
+        style={{ fontSize: 16, color: APPOINTMENT_COLORS.bodyText }}
       >
         {value}
       </Text>
@@ -60,7 +60,7 @@ const ResidentInfoCard = ({ resident }: { resident: ResidentInfo }) => {
           />
           <Text
             accessibilityRole="header"
-            style={{ fontSize: 15.5, fontWeight: "700", color: APPOINTMENT_COLORS.primary }}
+            style={{ fontSize: 17.5, fontWeight: "700", color: APPOINTMENT_COLORS.primary }}
           >
             Resident Information
           </Text>
@@ -77,7 +77,7 @@ const ResidentInfoCard = ({ resident }: { resident: ResidentInfo }) => {
           }}
         >
           <Feather name="check-circle" size={12} color={APPOINTMENT_COLORS.success} />
-          <Text style={{ fontSize: 11.5, fontWeight: "600", color: PALETTE.success[700] }}>
+          <Text style={{ fontSize: 13.5, fontWeight: "600", color: PALETTE.success[700] }}>
             Auto-filled from your profile
           </Text>
         </View>

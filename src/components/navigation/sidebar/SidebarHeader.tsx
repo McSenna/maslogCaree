@@ -12,7 +12,7 @@ const SidebarHeader = ({
     <View style={{ paddingHorizontal: SIDEBAR_METRICS.itemPaddingX }}>
       <Text
         accessibilityRole="header"
-        className="text-[11.5px] font-semibold uppercase"
+        className="text-[13.5px] font-semibold uppercase"
         style={{ color: palette.eyebrow, letterSpacing: 2 }}
       >
         {roleLabel}

@@ -36,7 +36,7 @@ const ReasonList = ({
           </View>
           <Text
             className={[
-              "text-[13px] flex-1",
+              "text-[15px] flex-1",
               isSelected ? "font-bold text-red-700 dark:text-red-300" : textPrimary,
             ].join(" ")}
           >

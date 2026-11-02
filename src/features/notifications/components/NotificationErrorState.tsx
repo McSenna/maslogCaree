@@ -22,7 +22,7 @@ const NotificationErrorState = ({ onRetry }: { onRetry: () => void }) => {
         <Feather name="wifi-off" size={20} color={palette.danger} />
       </View>
 
-      <Text style={{ fontSize: 15, fontWeight: "700", color: palette.heading }}>
+      <Text style={{ fontSize: 17, fontWeight: "700", color: palette.heading }}>
         Unable to load notifications
       </Text>
 
@@ -31,8 +31,8 @@ const NotificationErrorState = ({ onRetry }: { onRetry: () => void }) => {
           marginTop: 6,
           maxWidth: 300,
           textAlign: "center",
-          fontSize: 13,
-          lineHeight: 19,
+          fontSize: 15,
+          lineHeight: 21,
           color: palette.muted,
         }}
       >
@@ -54,7 +54,7 @@ const NotificationErrorState = ({ onRetry }: { onRetry: () => void }) => {
           opacity: pressed ? 0.85 : 1,
         })}
       >
-        <Text style={{ fontSize: 13.5, fontWeight: "700", color: palette.onPrimary }}>Try again</Text>
+        <Text style={{ fontSize: 15.5, fontWeight: "700", color: palette.onPrimary }}>Try again</Text>
       </Pressable>
     </View>
   );

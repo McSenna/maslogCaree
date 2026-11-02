@@ -21,7 +21,7 @@ const NotificationPanelFooter = ({ onPress }: { onPress: () => void }) => {
           backgroundColor: pressed ? palette.divider : "transparent",
         })}
       >
-        <Text style={{ fontSize: 13, fontWeight: "700", color: palette.primary }}>
+        <Text style={{ fontSize: 15, fontWeight: "700", color: palette.primary }}>
           View all notifications
         </Text>
         <Feather name="arrow-right" size={13} color={palette.primary} />

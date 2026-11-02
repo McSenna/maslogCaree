@@ -20,17 +20,18 @@ type Handlers = {
 /** Announcements, declared once for the header, rows, skeleton and phone cards. */
 export const announcementColumns = ({ expandedId, onToggle, onEdit, onDelete }: Handlers): Column<Announcement>[] => [
   {
-    key: "title",
+    key: "title", nameColumn: true,
     header: "Title",
     flex: 3,
     minWidth: 240,
     render: (item) => <AnnouncementTitle item={item} expanded={item.id === expandedId} onToggle={onToggle} />,
   },
-  { key: "audience", header: "Audience", flex: 1, minWidth: 120, accessor: (item) => item.audience },
-  { key: "status", header: "Status", width: 130, cardRole: "badge", render: (item) => <StatusLabel status={statusOf(item)} /> },
+  { key: "audience", header: "Audience", align: "center", flex: 1, minWidth: 120, accessor: (item) => item.audience },
+  { key: "status", header: "Status", align: "center", width: 146, cardRole: "badge", render: (item) => <StatusLabel status={statusOf(item)} /> },
   {
     key: "posted",
     header: "Posted",
+    align: "center",
     flex: 1,
     minWidth: 150,
     hideBelow: "lg",
@@ -39,7 +40,8 @@ export const announcementColumns = ({ expandedId, onToggle, onEdit, onDelete }: 
   {
     key: "expires",
     header: "Expires",
-    width: 130,
+    align: "center",
+    width: 146,
     hideBelow: "lg",
     render: (item) => {
       const muted = !item.expiresAt || statusOf(item) === "expired";
@@ -49,6 +51,7 @@ export const announcementColumns = ({ expandedId, onToggle, onEdit, onDelete }: 
   {
     key: "actions",
     header: "Actions",
+    align: "center",
     width: 160,
     render: (item) => {
       const expanded = item.id === expandedId;

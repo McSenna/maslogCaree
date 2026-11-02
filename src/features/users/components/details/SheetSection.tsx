@@ -17,7 +17,7 @@ const SheetSection = ({
     <View className="w-full px-4">
       <Text
         accessibilityRole="header"
-        className={`${quiet ? "text-[12px]" : "text-[13px]"} font-bold uppercase`}
+        className={`${quiet ? "text-[14px]" : "text-[15px]"} font-bold uppercase`}
         style={{ color: quiet ? palette.subtle : palette.muted, letterSpacing: 0.7 }}
       >
         {title}

@@ -41,8 +41,8 @@ const DonutRings = ({
   onHideTooltip,
 }: Props) => {
   const { stroke, radius, center } = geometry;
-  const countFontSize = Math.round(size * 0.2);
-  const labelFontSize = Math.max(11, Math.round(size * 0.072));
+  const countFontSize = Math.round(size * 0.2) + 2;
+  const labelFontSize = Math.max(13, Math.round(size * 0.072) + 2);
 
   return (
     <View style={{ width: size, height: size }} className="items-center justify-center">

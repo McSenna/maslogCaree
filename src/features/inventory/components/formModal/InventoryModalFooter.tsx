@@ -50,7 +50,7 @@ const InventoryModalFooter = ({
           borderColor: palette.cardBorder,
         }}
       >
-        <Text className="text-[14px] font-semibold" style={{ color: palette.body }}>
+        <Text className="text-[16px] font-semibold" style={{ color: palette.body }}>
           Cancel
         </Text>
       </Pressable>
@@ -70,7 +70,7 @@ const InventoryModalFooter = ({
         }}
       >
         {submitting ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
-        <Text className="text-[14px] font-semibold text-white">
+        <Text className="text-[16px] font-semibold text-white">
           {submitting ? "Saving…" : submitLabel}
         </Text>
       </Pressable>

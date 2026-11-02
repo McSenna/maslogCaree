@@ -9,6 +9,8 @@ const APPROVE_GREEN = PALETTE.success[600];
 
 type Props = {
   residentName?: string;
+  /** A rejected request can still be approved, never rejected again. */
+  canReject: boolean;
   approving: boolean;
   rejecting: boolean;
   onApprove: () => void;
@@ -17,6 +19,7 @@ type Props = {
 
 const VerificationSheetActions = ({
   residentName,
+  canReject,
   approving,
   rejecting,
   onApprove,
@@ -54,36 +57,38 @@ const VerificationSheetActions = ({
         ) : (
           <Feather name="check-circle" size={16} color={PALETTE.white} />
         )}
-        <Text className="text-[14.5px] font-bold text-white">
+        <Text className="text-[16.5px] font-bold text-white">
           {approving ? "Approving…" : "Approve Resident"}
         </Text>
       </Pressable>
 
-      <Pressable
-        onPress={onReject}
-        disabled={busy}
-        accessibilityRole="button"
-        accessibilityState={{ disabled: busy }}
-        accessibilityLabel={`Reject the registration of ${residentName ?? "this resident"}`}
-        className="w-full flex-row items-center justify-center gap-2 active:opacity-85"
-        style={{
-          height: 52,
-          borderRadius: DETAIL_RADIUS.control,
-          backgroundColor: palette.dangerBg,
-          borderWidth: 1,
-          borderColor: palette.dangerBorder,
-          opacity: busy ? 0.7 : 1,
-        }}
-      >
-        {rejecting ? (
-          <ActivityIndicator size="small" color={palette.dangerText} />
-        ) : (
-          <Feather name="x-circle" size={16} color={palette.dangerText} />
-        )}
-        <Text className="text-[14.5px] font-bold" style={{ color: palette.dangerText }}>
-          {rejecting ? "Rejecting…" : "Reject Request"}
-        </Text>
-      </Pressable>
+      {canReject ? (
+        <Pressable
+          onPress={onReject}
+          disabled={busy}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: busy }}
+          accessibilityLabel={`Reject the registration of ${residentName ?? "this resident"}`}
+          className="w-full flex-row items-center justify-center gap-2 active:opacity-85"
+          style={{
+            height: 52,
+            borderRadius: DETAIL_RADIUS.control,
+            backgroundColor: palette.dangerBg,
+            borderWidth: 1,
+            borderColor: palette.dangerBorder,
+            opacity: busy ? 0.7 : 1,
+          }}
+        >
+          {rejecting ? (
+            <ActivityIndicator size="small" color={palette.dangerText} />
+          ) : (
+            <Feather name="x-circle" size={16} color={palette.dangerText} />
+          )}
+          <Text className="text-[16.5px] font-bold" style={{ color: palette.dangerText }}>
+            {rejecting ? "Rejecting…" : "Reject Request"}
+          </Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 };

@@ -1,3 +1,5 @@
+import ResidentWebAccessControl from "@/features/webAccess/ResidentWebAccessControl";
+import ManagedDevicesControl from "@/features/webAccess/ManagedDevicesControl";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { describePlatformAccess } from "@/config/platformAccess";
@@ -29,11 +31,11 @@ const AccessRow = ({
       style={divided ? { borderBottomWidth: 1, borderBottomColor: palette.divider } : undefined}
     >
       <Feather name={icon} size={17} color={palette.subtle} />
-      <Text className="min-w-0 flex-1 text-[13.5px]" style={{ color: palette.body }}>
+      <Text className="min-w-0 flex-1 text-[15.5px]" style={{ color: palette.body }}>
         {label}
       </Text>
       <Feather name={tone.icon} size={17} color={tone.color} />
-      <Text className="text-[13.5px] font-semibold" style={{ color: tone.color }}>
+      <Text className="text-[15.5px] font-semibold" style={{ color: tone.color }}>
         {tone.value}
       </Text>
     </View>
@@ -41,6 +43,7 @@ const AccessRow = ({
 };
 
 export const PlatformAccessRows = ({ user }: { user: AdminUser }) => {
+  if (user.role === "resident") return <><ResidentWebAccessControl key={`web-${user._id}`} residentId={user._id} /><ManagedDevicesControl key={`devices-${user._id}`} residentId={user._id} /></>;
   const access = user.platformAccess ?? describePlatformAccess(user.role);
 
   return (

@@ -31,7 +31,7 @@ const RoleBadge = ({ label, style, compact = false }: RoleBadgeProps) => (
       numberOfLines={1}
       maxFontSizeMultiplier={1.2}
       style={{
-        fontSize: compact ? 12 : 13,
+        fontSize: compact ? 14 : 15,
         fontWeight: "700",
         color: style.text,
       }}

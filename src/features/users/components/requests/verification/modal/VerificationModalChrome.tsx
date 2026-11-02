@@ -15,10 +15,10 @@ export const VerificationModalHeader = ({ onClose }: { onClose: () => void }) =>
           <Feather name="shield" size={20} color={PALETTE.blue[600]} />
         </View>
         <View>
-          <Text className={`text-[17px] font-extrabold ${classes.textPrimary}`}>
+          <Text className={`text-[19px] font-extrabold ${classes.textPrimary}`}>
             Resident Identity Verification
           </Text>
-          <Text className={`text-[12px] ${classes.textMuted}`}>
+          <Text className={`text-[14px] ${classes.textMuted}`}>
             Compare registration information against submitted Government ID
           </Text>
         </View>

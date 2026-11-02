@@ -115,7 +115,7 @@ const NotificationBell = ({
                 backgroundColor: palette.danger,
               }}
             >
-              <Text allowFontScaling={false} style={{ fontSize: 9.5, fontWeight: "800", color: palette.onPrimary }}>
+              <Text allowFontScaling={false} style={{ fontSize: 11.5, fontWeight: "800", color: palette.onPrimary }}>
                 {badge}
               </Text>
             </Animated.View>

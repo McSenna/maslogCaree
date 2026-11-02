@@ -33,7 +33,7 @@ const Title = ({ palette, children, past = false }: { palette: Palette; children
     <Text
       accessibilityRole="header"
       selectable
-      style={{ flex: 1, minWidth: 0, fontSize: 20, lineHeight: 26, fontWeight: "700", letterSpacing: -0.2, color: palette.heading }}
+      style={{ flex: 1, minWidth: 0, fontSize: 22, lineHeight: 28, fontWeight: "700", letterSpacing: -0.2, color: palette.heading }}
     >
       {children}
     </Text>
@@ -49,7 +49,7 @@ const Title = ({ palette, children, past = false }: { palette: Palette; children
           backgroundColor: palette.card,
         }}
       >
-        <Text style={{ fontSize: 11.5, fontWeight: "600", color: palette.muted }}>Past event</Text>
+        <Text style={{ fontSize: 13.5, fontWeight: "600", color: palette.muted }}>Past event</Text>
       </View>
     ) : null}
   </View>
@@ -86,11 +86,11 @@ const Fact = ({
       <Feather name={icon} size={17} color={palette.accent} />
     </View>
     <View style={{ flex: 1, minWidth: 0, gap: 2 }}>
-      <Text style={{ fontSize: 12, fontWeight: "600", color: palette.muted }}>{label}</Text>
-      <Text selectable style={{ fontSize: 15, lineHeight: 21, fontWeight: "600", color: palette.heading }}>
+      <Text style={{ fontSize: 14, fontWeight: "600", color: palette.muted }}>{label}</Text>
+      <Text selectable style={{ fontSize: 17, lineHeight: 23, fontWeight: "600", color: palette.heading }}>
         {primary}
       </Text>
-      {secondary ? <Text style={{ fontSize: 14, lineHeight: 20, color: palette.body }}>{secondary}</Text> : null}
+      {secondary ? <Text style={{ fontSize: 16, lineHeight: 22, color: palette.body }}>{secondary}</Text> : null}
     </View>
   </View>
 );
@@ -114,7 +114,7 @@ const Divider = ({ palette }: { palette: Palette }) => (
 );
 
 const Message = ({ palette, children }: { palette: Palette; children: string }) => (
-  <Text selectable style={{ fontSize: 15, lineHeight: 23, color: palette.body }}>
+  <Text selectable style={{ fontSize: 17, lineHeight: 25, color: palette.body }}>
     {children}
   </Text>
 );
@@ -144,7 +144,7 @@ const Details = ({ palette, announcement }: { palette: Palette; announcement: An
 
       <Message palette={palette}>{announcement.message}</Message>
 
-      {posted ? <Text style={{ fontSize: 12.5, color: palette.muted }}>{posted}</Text> : null}
+      {posted ? <Text style={{ fontSize: 14.5, color: palette.muted }}>{posted}</Text> : null}
     </View>
   );
 };
@@ -194,7 +194,7 @@ const UnavailableNote = ({ palette, hasPreview }: { palette: Palette; hasPreview
     }}
   >
     <Feather name="info" size={16} color={palette.muted} style={{ marginTop: 1 }} />
-    <Text style={{ flex: 1, minWidth: 0, fontSize: 13.5, lineHeight: 19, color: palette.body }}>
+    <Text style={{ flex: 1, minWidth: 0, fontSize: 15.5, lineHeight: 21, color: palette.body }}>
       {hasPreview
         ? "The full announcement is no longer available. Below is the notification you received."
         : "This announcement is no longer available. It may have been removed by the health center."}

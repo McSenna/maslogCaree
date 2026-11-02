@@ -47,7 +47,7 @@ const ToolbarButton = ({
     >
       <Feather name={icon} size={15} color={active ? palette.primary : palette.body} />
       <Text
-        className="text-[13.5px] font-semibold"
+        className="text-[15.5px] font-semibold"
         numberOfLines={1}
         style={{ color: active ? palette.primary : palette.body }}
       >
@@ -58,7 +58,7 @@ const ToolbarButton = ({
           className="items-center justify-center px-1.5"
           style={{ minWidth: 20, height: 20, borderRadius: 10, backgroundColor: palette.primary }}
         >
-          <Text className="text-[11px] font-bold text-white">{badgeCount}</Text>
+          <Text className="text-[13px] font-bold text-white">{badgeCount}</Text>
         </View>
       ) : null}
     </Pressable>
@@ -108,7 +108,7 @@ const InventoryMobileToolbar = ({
       </View>
 
       <View className="w-full flex-row items-center justify-between gap-3">
-        <Text className="text-[15px] font-semibold" style={{ color: palette.heading }}>
+        <Text className="text-[17px] font-semibold" style={{ color: palette.heading }}>
           {resultCount.toLocaleString()} {resultCount === 1 ? "item" : "items"}
         </Text>
         {canAddItem ? (
@@ -124,7 +124,7 @@ const InventoryMobileToolbar = ({
             }}
           >
             <Feather name="plus" size={17} color={PALETTE.white} />
-            <Text className="text-[14px] font-semibold text-white">Add Item</Text>
+            <Text className="text-[16px] font-semibold text-white">Add Item</Text>
           </Pressable>
         ) : null}
       </View>

@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { ActivityIndicator, Pressable, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, Platform, Pressable, StyleSheet, Text } from "react-native";
 
 import { focusRing } from "./focusRing";
 import { useInteractionState } from "@/hooks/useInteractionState";
@@ -25,6 +25,8 @@ type TableButtonProps = {
   iconOnly?: boolean;
   disabled?: boolean;
   loading?: boolean;
+  /** Comfortable controls retain a 44px target inside desktop tables. */
+  size?: "default" | "comfortable";
 };
 
 const WEB = webStyle({
@@ -47,6 +49,7 @@ const TableButton = ({
   iconOnly = false,
   disabled = false,
   loading = false,
+  size = "default",
 }: TableButtonProps) => {
   const colors = useThemeColors();
   const onCard = useTablePlacement() === "card";
@@ -55,31 +58,36 @@ const TableButton = ({
     disabled: inactive,
   });
   const { foreground, background, border } = tableButtonColors(colors, variant, tone, hovered || pressed);
-  const size = onCard ? TAP_TARGET : CONTROL_HEIGHT;
+  const controlSize = onCard || size === "comfortable" ? TAP_TARGET : CONTROL_HEIGHT;
   const bare = variant === "text" && !onCard;
 
-  return (
+  const button = (
     <Pressable
       {...handlers}
-      onPress={onPress}
+      onPress={(event) => {
+        event.stopPropagation();
+        onPress();
+      }}
       disabled={inactive}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: inactive, busy: loading }}
+      aria-busy={loading}
       hitSlop={bare ? { top: 4, bottom: 4, left: 8, right: 8 } : undefined}
       style={[
         styles.base,
         {
-          height: size,
+          height: controlSize,
+          minHeight: controlSize,
           backgroundColor: background,
           borderColor: border,
           opacity: inactive ? 0.4 : pressed ? 0.8 : 1,
         },
-        iconOnly ? { width: size } : bare ? styles.bare : styles.padded,
+        iconOnly ? { width: controlSize } : bare ? styles.bare : styles.padded,
         onCard && !iconOnly ? styles.fill : null,
         focused
-          ? focusRing(colors.focusRing)
+          ? focusRing(colors.focusRing, iconOnly ? -2 : 2)
           : null,
         WEB,
       ]}
@@ -89,6 +97,9 @@ const TableButton = ({
       {iconOnly ? null : <Text style={[TABLE_TEXT.button, { color: foreground }]}>{label}</Text>}
     </Pressable>
   );
+
+  // React Native Web filters `title` on Pressable, so use the existing DOM hint pattern.
+  return Platform.OS === "web" && iconOnly ? <div title={accessibilityLabel}>{button}</div> : button;
 };
 
 const styles = StyleSheet.create({

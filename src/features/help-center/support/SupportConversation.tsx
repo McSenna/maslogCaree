@@ -14,12 +14,12 @@ const SupportConversation = ({ messages }: SupportConversationProps) => {
 
   return (
     <View style={{ gap: 10 }}>
-      <Text style={{ fontSize: 13, fontWeight: "700", color: palette.heading }}>
+      <Text style={{ fontSize: 15, fontWeight: "700", color: palette.heading }}>
         Conversation
       </Text>
 
       {messages.length === 0 ? (
-        <Text style={{ fontSize: 13, lineHeight: 19, color: palette.muted }}>
+        <Text style={{ fontSize: 15, lineHeight: 21, color: palette.muted }}>
           No replies yet. The MaslogCare support team will respond to this request.
         </Text>
       ) : (

@@ -57,11 +57,11 @@ const VaccineField = ({
   return (
     <View className="w-full">
       <View className="mb-1.5 flex-row items-center gap-1">
-        <Text className="text-[13px] font-semibold" style={{ color: palette.body }}>
+        <Text className="text-[15px] font-semibold" style={{ color: palette.body }}>
           {field.label}
         </Text>
         {field.required ? (
-          <Text className="text-[13px] font-semibold" style={{ color: PALETTE.red[600] }}>
+          <Text className="text-[15px] font-semibold" style={{ color: PALETTE.red[600] }}>
             *
           </Text>
         ) : null}
@@ -86,7 +86,7 @@ const VaccineField = ({
         <Feather name={filled ? "shield" : "search"} size={16} color={filled ? palette.primary : palette.subtle} />
         <Text
           numberOfLines={1}
-          className="min-w-0 flex-1 text-[14px]"
+          className="min-w-0 flex-1 text-[16px]"
           style={{ color: filled ? palette.heading : palette.subtle, fontWeight: filled ? "600" : "400" }}
         >
           {filled ? value : "Choose a vaccine from inventory"}
@@ -97,7 +97,7 @@ const VaccineField = ({
       {linkedItem ? (
         <View className="mt-1.5 flex-row items-center gap-2">
           <Feather name="link" size={11} color={palette.primary} />
-          <Text className="min-w-0 flex-1 text-[11.5px]" style={{ color: palette.muted }}>
+          <Text className="min-w-0 flex-1 text-[13.5px]" style={{ color: palette.muted }}>
             Linked to inventory · one {linkedItem.unit} will be deducted on completion.
           </Text>
           <Pressable
@@ -107,13 +107,13 @@ const VaccineField = ({
             accessibilityLabel="Unlink this vaccine from inventory"
             hitSlop={10}
           >
-            <Text className="text-[11.5px] font-semibold" style={{ color: palette.primary }}>
+            <Text className="text-[13.5px] font-semibold" style={{ color: palette.primary }}>
               Unlink
             </Text>
           </Pressable>
         </View>
       ) : helper ? (
-        <Text className="mt-1 text-[11.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
+        <Text className="mt-1 text-[13.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
           {helper}
         </Text>
       ) : null}

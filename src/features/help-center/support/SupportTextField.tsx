@@ -68,7 +68,7 @@ const SupportTextField = ({
           onSubmitEditing={onSubmitEditing}
           submitBehavior={returnKeyType === "next" ? "submit" : undefined}
           autoCapitalize={keyboardType === "email-address" ? "none" : "sentences"}
-          style={{ fontSize: 14, color: readOnly ? palette.muted : palette.body, outlineStyle: "none" } as never}
+          style={{ fontSize: 16, color: readOnly ? palette.muted : palette.body, outlineStyle: "none" } as never}
         />
       </View>
     </SupportFieldShell>

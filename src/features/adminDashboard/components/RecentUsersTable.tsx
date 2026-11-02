@@ -88,7 +88,7 @@ const RecentUsersTable = ({
             <View className="flex-row items-center gap-2" style={{ paddingLeft: 48 }}>
               <DashboardRoleBadge role={user.role} palette={palette} isDark={isDark} />
               <AccountBadge verified={user.verified} />
-              <Text className="ml-auto text-[12px] font-medium" style={{ color: palette.subtle }}>
+              <Text className="ml-auto text-[14px] font-medium" style={{ color: palette.subtle }}>
                 {joinedLabel(user.createdAt)}
               </Text>
             </View>

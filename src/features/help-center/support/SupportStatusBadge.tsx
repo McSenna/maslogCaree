@@ -34,7 +34,7 @@ const SupportStatusBadge = ({ status }: SupportStatusBadgeProps) => {
         borderColor: tone.border,
       }}
     >
-      <Text style={{ fontSize: 11.5, fontWeight: "700", color: tone.fg }}>
+      <Text style={{ fontSize: 13.5, fontWeight: "700", color: tone.fg }}>
         {supportStatusLabel(status)}
       </Text>
     </View>

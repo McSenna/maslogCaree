@@ -23,7 +23,7 @@ const AuthField = ({
   label,
   helperText,
   error,
-  labelSize = 13,
+  labelSize = 15,
   labelGap = 7,
   ...inputProps
 }: AuthFieldProps) => {
@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
     color: AUTH_INPUT_COLORS.error,
   },
   helper: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 14,
+    lineHeight: 18,
     color: PALETTE.slate[500],
     fontFamily: FONT_FAMILY,
     marginBottom: 6,
@@ -85,8 +85,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     flex: 1,
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 14,
+    lineHeight: 18,
     color: AUTH_INPUT_COLORS.error,
     fontWeight: "500",
     fontFamily: FONT_FAMILY,

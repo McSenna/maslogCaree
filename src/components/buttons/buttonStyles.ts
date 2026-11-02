@@ -2,7 +2,7 @@ import type { ThemeColors } from "@/theme/colors";
 import { PALETTE } from "@/theme/palette";
 
 /**
- * primary: Healthcare Blue fill, the one main action. secondary: neutral
+ * primary: primary blue fill, the one main action. secondary: neutral
  * outline for the alternative. outline: blue outline for a supporting action
  * that should still read as brand. danger: destructive. ghost and text: low
  * emphasis.
@@ -19,7 +19,7 @@ export const BUTTON_HEIGHT: Record<ButtonSize, number> = { sm: 36, md: 44, lg: 5
 
 export const BUTTON_PADDING_X: Record<ButtonSize, number> = { sm: 12, md: 16, lg: 20 };
 
-export const BUTTON_FONT: Record<ButtonSize, number> = { sm: 13, md: 14, lg: 15 };
+export const BUTTON_FONT: Record<ButtonSize, number> = { sm: 15, md: 16, lg: 17 };
 
 export const BUTTON_ICON: Record<ButtonSize, number> = { sm: 15, md: 16, lg: 18 };
 

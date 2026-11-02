@@ -25,7 +25,7 @@ const FieldShell = ({
   <View style={{ width: "100%", gap: 6 }}>
     <Text
       style={{
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: "600",
         color: REG_COLORS.heading,
         letterSpacing: 0.1,
@@ -52,12 +52,12 @@ const FieldShell = ({
           color={REG_COLORS.error}
           style={{ marginTop: 1 }}
         />
-        <Text style={{ flex: 1, fontSize: 12.5, lineHeight: 17, color: REG_COLORS.error }}>
+        <Text style={{ flex: 1, fontSize: 14.5, lineHeight: 19, color: REG_COLORS.error }}>
           {error}
         </Text>
       </View>
     ) : helper ? (
-      <Text style={{ fontSize: 12.5, lineHeight: 17, color: REG_COLORS.muted }}>
+      <Text style={{ fontSize: 14.5, lineHeight: 19, color: REG_COLORS.muted }}>
         {helper}
       </Text>
     ) : null}

@@ -3,10 +3,10 @@
 .page {
   --ink: #1f2933; /* ink */
   --ink-soft: #3a4757; /* slate-700 */
-  --brand: #2d5bff; /* blue-600 */
-  --brand-hover: #1e45d9; /* blue-700 */
-  --brand-tint: #e5ecff; /* blue-100 */
-  --brand-tint-strong: #cad8ff; /* blue-200 */
+  --brand: #1557d6; /* blue-600 */
+  --brand-hover: #0043bf; /* blue-700 */
+  --brand-tint: #e6effe; /* blue-100 */
+  --brand-tint-strong: #cddfff; /* blue-200 */
   --brand-rgb: 45, 91, 255;
   --care: #038751; /* green-600: white text 4.6:1 */
   --care-hover: #016d40; /* green-700 */
@@ -28,11 +28,11 @@
   --divider: #e2e8f0; /* slate-200 */
   --readonly: #f8fafc; /* slate-50 */
   --surface: #ffffff;
-  --haze: #f0f4ff; /* blue-50 */
+  --haze: #f3f7ff; /* blue-50 */
   --haze-rgb: 240, 244, 255;
   --haze-deep-rgb: 229, 236, 255; /* blue-100 */
   --shadow-rgb: 31, 41, 51; /* ink */
-  --photo-tint: #507bff; /* blue-500 */
+  --photo-tint: #3c7efd; /* blue-500 */
 
   container: page / inline-size;
   height: 100dvh;
@@ -161,9 +161,9 @@
 }
 
 .wordmark {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 800;
-  line-height: 36px;
+  line-height: 38px;
   letter-spacing: -0.8px;
   white-space: nowrap;
 }
@@ -198,7 +198,7 @@
   border: 1.5px solid transparent;
   border-radius: 8px;
   font: inherit;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
@@ -315,15 +315,15 @@
 
 .featureTitle {
   color: var(--ink);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 22px;
+  line-height: 24px;
 }
 
 .featureDescription {
   color: var(--ink-soft);
-  font-size: 15px;
-  line-height: 21px;
+  font-size: 17px;
+  line-height: 23px;
 }
 
 /* ---------- Card ---------- */
@@ -363,9 +363,9 @@
 }
 
 .title {
-  font-size: 23px;
+  font-size: 25px;
   font-weight: 700;
-  line-height: 28px;
+  line-height: 30px;
   letter-spacing: -0.3px;
   text-align: center;
   color: var(--ink);
@@ -373,8 +373,8 @@
 
 .subtitle {
   margin-top: 6px;
-  font-size: 15px;
-  line-height: 22px;
+  font-size: 17px;
+  line-height: 24px;
   text-align: center;
   text-wrap: balance;
   color: var(--ink-soft);
@@ -400,9 +400,9 @@
   align-self: flex-start;
   margin-bottom: 6px;
   color: var(--label);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
-  line-height: 20px;
+  line-height: 22px;
   cursor: default;
 }
 
@@ -473,8 +473,8 @@
   background: transparent;
   color: var(--ink);
   font: inherit;
-  font-size: 16px;
-  line-height: 22px;
+  font-size: 18px;
+  line-height: 24px;
 }
 
 .fieldWithToggle .input {
@@ -528,8 +528,8 @@
   gap: 6px;
   margin-top: 6px;
   color: var(--error-text);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px;
+  line-height: 22px;
 }
 
 .fieldError:empty {
@@ -546,8 +546,8 @@
 .capsHint {
   margin-top: 6px;
   color: var(--warning-text);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 16px;
+  line-height: 22px;
 }
 
 .capsHint:empty {
@@ -567,7 +567,7 @@
   border-radius: 8px;
   color: var(--surface);
   font: inherit;
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 600;
   cursor: pointer;
   transition:
@@ -640,7 +640,7 @@
   background: transparent;
   color: var(--brand);
   font: inherit;
-  font-size: 15px;
+  font-size: 17px;
   cursor: pointer;
 }
 
@@ -659,15 +659,15 @@
 
 .dividerText {
   color: var(--ink-soft);
-  font-size: 15px;
-  line-height: 24px;
+  font-size: 17px;
+  line-height: 26px;
 }
 
 .security {
   margin-top: 12px;
   color: var(--ink-soft);
-  font-size: 13.5px;
-  line-height: 20px;
+  font-size: 15.5px;
+  line-height: 22px;
   text-align: center;
   text-wrap: balance;
 }
@@ -732,15 +732,15 @@
 }
 
 .successTitle {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
-  line-height: 28px;
+  line-height: 30px;
 }
 
 .successText {
   color: var(--ink-soft);
-  font-size: 16px;
-  line-height: 22px;
+  font-size: 18px;
+  line-height: 24px;
 }
 
 /* ---------- Phones ---------- */
@@ -817,7 +817,7 @@
   }
 
   .wordmark {
-    font-size: 27px;
+    font-size: 29px;
   }
 }
 
@@ -853,16 +853,16 @@
   }
 
   .wordmark {
-    font-size: 36px;
-    line-height: 40px;
+    font-size: 38px;
+    line-height: 42px;
   }
 
   .tagline {
     display: block;
     margin-top: 2px;
     color: var(--ink-soft);
-    font-size: 16px;
-    line-height: 22px;
+    font-size: 18px;
+    line-height: 24px;
   }
 
   .card {
@@ -1159,7 +1159,7 @@
     color: var(--ink-soft);
     font-size: clamp(13px, calc(15 * var(--s)), 17px);
     font-weight: 500;
-    line-height: 20px;
+    line-height: 22px;
     backdrop-filter: blur(8px);
   }
 

@@ -30,7 +30,7 @@ export const PanelBody = ({ resident, loading, error, onRetry, compact }: Props)
         <UserDetailsError onRetry={onRetry} message={error} />
       ) : !resident || loading ? (
         <View className="w-full items-center py-16">
-          <Text className="text-[14px]" style={{ color: palette.muted }}>
+          <Text className="text-[16px]" style={{ color: palette.muted }}>
             Loading resident details…
           </Text>
         </View>

@@ -1,3 +1,4 @@
+import type { ImmunizationProgramProgress } from "@/services/immunizationRecordProgress";
 import type { CompletionForm, MedicalRecord } from "@/services/medicalRecords";
 
 export type MasterlistSource = "appointment" | "historical_masterlist" | "walk_in" | "medical_mission" | "manual_entry";
@@ -17,7 +18,11 @@ export type ResidentIdentity = {
   missing?: boolean;
 };
 
-export type MasterlistRow = {
+export type MasterlistRow = ImmunizationProgramProgress & {
+  createdById?: string | null;
+  providerId?: string | null;
+  updatedAt?: string;
+  baby?: { _id: string; name: string; dateOfBirth: string } | null;
   _id: string;
   source: MasterlistSource;
   serviceType: string;

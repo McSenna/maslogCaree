@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { TablePrimaryCell, TableText, TableTwoLine, type Column } from "@/components/data-table";
+import { TableCellRow, TablePrimaryCell, TableText, TableTwoLine, type Column } from "@/components/data-table";
 import UserAvatar, { initialsFrom } from "@/components/ui/UserAvatar";
 import UserStatusBadge from "@/features/users/components/UserStatusBadge";
 import { useUsersPalette } from "@/features/users/components/usersTheme";
@@ -12,7 +12,7 @@ import { NOT_PROVIDED, formatContactNumber, residentAddress } from "./residentDi
 const ResidentIdentity = ({ resident, detail }: { resident: ResidentRecord; detail: string }) => {
   const palette = useUsersPalette();
   return (
-    <View className="min-w-0 flex-row items-center gap-3 self-stretch">
+    <TableCellRow className="gap-3">
       <UserAvatar
         size={40}
         imageUrl={resident.profilePhoto}
@@ -20,17 +20,17 @@ const ResidentIdentity = ({ resident, detail }: { resident: ResidentRecord; deta
         accessibilityLabel=""
         fallbackBackgroundColor={palette.primary}
       />
-      <View className="min-w-0 flex-1">
+      <View className="min-w-0 shrink">
         <TablePrimaryCell title={resident.fullname} detail={detail} />
       </View>
-    </View>
+    </TableCellRow>
   );
 };
 
 /** BHW residents, declared once for the header, rows, skeleton and phone cards. */
 export const residentColumns: Column<ResidentRecord>[] = [
   {
-    key: "resident",
+    key: "resident", nameColumn: true,
     header: "Resident",
     flex: 2.5,
     minWidth: 240,
@@ -60,9 +60,10 @@ export const residentColumns: Column<ResidentRecord>[] = [
   {
     key: "status",
     header: "Status",
-    width: 140,
+    align: "center",
+    width: 156,
     cardRole: "badge",
     render: (resident) => <UserStatusBadge status={resident.status} compact />,
   },
-  { key: "registered", header: "Date registered", width: 140, accessor: (resident) => formatTableDate(resident.createdAt) },
+  { key: "registered", header: "Date registered", align: "center", width: 156, accessor: (resident) => formatTableDate(resident.createdAt) },
 ];

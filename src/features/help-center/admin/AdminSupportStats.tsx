@@ -120,7 +120,7 @@ const AdminSupportStats = ({ counts, activeStatus, onSelectStatus }: AdminSuppor
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
               <Text
                 numberOfLines={1}
-                style={{ fontSize: 12, fontWeight: "600", color: palette.muted }}
+                style={{ fontSize: 14, fontWeight: "600", color: palette.muted }}
               >
                 {item.label}
               </Text>
@@ -141,7 +141,7 @@ const AdminSupportStats = ({ counts, activeStatus, onSelectStatus }: AdminSuppor
             <View style={{ gap: 2 }}>
               <Text
                 style={{
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: "700",
                   color: palette.heading,
                   fontVariant: ["tabular-nums"],
@@ -149,7 +149,7 @@ const AdminSupportStats = ({ counts, activeStatus, onSelectStatus }: AdminSuppor
               >
                 {item.count}
               </Text>
-              <Text numberOfLines={1} style={{ fontSize: 11, color: palette.subtle }}>
+              <Text numberOfLines={1} style={{ fontSize: 13, color: palette.subtle }}>
                 {item.context}
               </Text>
             </View>

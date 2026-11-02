@@ -51,11 +51,11 @@ const AboutFeature = ({ feature, stacked }: AboutFeatureProps) => {
         <Ionicons name={feature.icon} size={20} color={palette.fg} />
       </View>
 
-      <Text style={{ fontSize: 14.5, fontWeight: "700", color: LANDING_COLORS.navy }}>
+      <Text style={{ fontSize: 16.5, fontWeight: "700", color: LANDING_COLORS.navy }}>
         {feature.title}
       </Text>
 
-      <Text style={{ fontSize: 13, lineHeight: 19, color: LANDING_COLORS.mutedText }}>
+      <Text style={{ fontSize: 15, lineHeight: 21, color: LANDING_COLORS.mutedText }}>
         {feature.description}
       </Text>
 

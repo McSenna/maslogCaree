@@ -1,3 +1,4 @@
+import ManagedDeviceSetup from "@/features/webAccess/ManagedDeviceSetup";
 import { Feather } from "@expo/vector-icons";
 import { ScrollView, Text, View } from "react-native";
 import Modal from "@/components/ui/AppModal";
@@ -93,6 +94,8 @@ const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
               error={form.passwordError}
             />
 
+
+            <ManagedDeviceSetup disabled={form.isSubmitting} />
 
             <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between" }}>
               <Button variant="text" size="sm" label="Forgot password?" onPress={form.forgotPassword} />

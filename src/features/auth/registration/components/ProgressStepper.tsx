@@ -77,7 +77,7 @@ const ProgressStepper = ({
               ) : (
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: "700",
                     color: isCurrent ? REG_COLORS.surface : REG_COLORS.subtle,
                   }}
@@ -104,7 +104,7 @@ const ProgressStepper = ({
           <Text
             numberOfLines={1}
             style={{
-              fontSize: compact ? 11.5 : 12.5,
+              fontSize: compact ? 13.5 : 14.5,
               fontWeight: isCurrent ? "700" : "500",
               color: isCurrent
                 ? REG_COLORS.primary

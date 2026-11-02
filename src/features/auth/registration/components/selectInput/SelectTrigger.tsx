@@ -63,7 +63,7 @@ const SelectTrigger = ({
         numberOfLines={1}
         style={{
           flex: 1,
-          fontSize: 15,
+          fontSize: 17,
           color: selectedLabel ? REG_COLORS.text : REG_COLORS.subtle,
         }}
       >

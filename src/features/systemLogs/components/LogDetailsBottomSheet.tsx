@@ -37,7 +37,7 @@ const LogDetailsBottomSheet = ({ visible, log, onClose }: LogDetailsBottomSheetP
               <View className="flex-1 flex-row flex-wrap items-center gap-2">
                 <Text
                   accessibilityRole="header"
-                  className="text-[16px] font-bold"
+                  className="text-[18px] font-bold"
                   style={{ color: palette.heading }}
                 >
                   {formatSystemLogActionLabel(log)}
@@ -58,7 +58,7 @@ const LogDetailsBottomSheet = ({ visible, log, onClose }: LogDetailsBottomSheetP
 
             {log.description ? (
               <Text
-                className="mt-1.5 text-[13px] leading-relaxed"
+                className="mt-1.5 text-[15px] leading-relaxed"
                 style={{ color: palette.muted }}
               >
                 {log.description}

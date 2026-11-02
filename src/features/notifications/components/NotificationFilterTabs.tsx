@@ -49,7 +49,7 @@ const Tab = ({
       <Text
         maxFontSizeMultiplier={1.2}
         style={{
-          fontSize: compact ? 12.5 : 13,
+          fontSize: compact ? 14.5 : 15,
           fontWeight: active ? "700" : "500",
           color: active ? palette.primary : palette.muted,
         }}
@@ -68,7 +68,7 @@ const Tab = ({
         <Text
           maxFontSizeMultiplier={1.2}
           style={{
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: active ? "700" : "600",
             color: active ? palette.primary : palette.muted,
           }}

@@ -30,7 +30,7 @@ const FlowHeader = ({
       <View className="h-9 w-9" />
     )}
 
-    <Text className="text-[11px] font-bold uppercase" style={{ color: C.muted, letterSpacing: 1 }}>
+    <Text className="text-[13px] font-bold uppercase" style={{ color: C.muted, letterSpacing: 1 }}>
       Account Recovery
     </Text>
 

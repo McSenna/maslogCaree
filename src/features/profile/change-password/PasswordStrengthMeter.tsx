@@ -29,7 +29,7 @@ const PasswordStrengthMeter = ({ strength }: { strength: PasswordStrengthLevel }
           />
         ))}
       </View>
-      <Text style={{ fontSize: 12, fontWeight: "600", color }}>{level.label} password</Text>
+      <Text style={{ fontSize: 14, fontWeight: "600", color }}>{level.label} password</Text>
     </View>
   );
 };

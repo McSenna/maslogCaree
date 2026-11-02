@@ -69,7 +69,7 @@ const QuantityStepper = ({
         keyboardType="number-pad"
         inputMode="numeric"
         accessibilityLabel={`Quantity of ${itemName} in ${unit}`}
-        className="text-center text-[15px] font-bold"
+        className="text-center text-[17px] font-bold"
         style={{
           minWidth: 56,
           height: STEP_SIZE,
@@ -87,7 +87,7 @@ const QuantityStepper = ({
 
       <Text
         numberOfLines={1}
-        className="min-w-0 flex-1 text-[12px] font-medium"
+        className="min-w-0 flex-1 text-[14px] font-medium"
         style={{ color: palette.muted }}
       >
         {unit}

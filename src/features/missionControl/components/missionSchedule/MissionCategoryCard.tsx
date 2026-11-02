@@ -65,7 +65,7 @@ const MissionCategoryCard = ({
         opacity: isOn ? 1 : 0.6,
       }}
     >
-      <Text className="text-[13.5px] font-semibold tabular-nums" style={{ color: palette.body }}>
+      <Text className="text-[15.5px] font-semibold tabular-nums" style={{ color: palette.body }}>
         {duration} min
       </Text>
     </View>
@@ -96,7 +96,7 @@ const MissionCategoryCard = ({
         <View className="min-w-0 flex-1 gap-0.5">
           <Text
             numberOfLines={1}
-            className="text-[15px] font-bold"
+            className="text-[17px] font-bold"
             style={{ color: isOn ? palette.heading : palette.body }}
           >
             {category.label}
@@ -106,7 +106,7 @@ const MissionCategoryCard = ({
               {offDayNote ? <Feather name="calendar" size={12} color={palette.muted} /> : null}
               <Text
                 numberOfLines={compact ? 2 : 1}
-                className="min-w-0 flex-shrink text-[12.5px]"
+                className="min-w-0 flex-shrink text-[14.5px]"
                 style={{ color: palette.muted }}
               >
                 {caption}

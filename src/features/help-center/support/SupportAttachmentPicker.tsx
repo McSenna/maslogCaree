@@ -80,7 +80,7 @@ const SupportAttachmentPicker = ({
           }}
         >
           <Feather name="paperclip" size={15} color={palette.accent} />
-          <Text style={{ fontSize: 13, fontWeight: "600", color: palette.accent }}>
+          <Text style={{ fontSize: 15, fontWeight: "600", color: palette.accent }}>
             {atLimit ? "Attachment limit reached" : "Add attachment"}
           </Text>
         </Pressable>

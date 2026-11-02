@@ -23,7 +23,7 @@ const PhoneInput = (props: PhoneInputProps) => (
           borderLeftColor: REG_COLORS.border,
         }}
       >
-        <Text style={{ fontSize: 13, fontWeight: "600", color: REG_COLORS.muted }}>PH +63</Text>
+        <Text style={{ fontSize: 15, fontWeight: "600", color: REG_COLORS.muted }}>PH +63</Text>
       </View>
     }
   />

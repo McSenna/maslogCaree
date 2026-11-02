@@ -27,7 +27,7 @@ const MaslogCareBrand = ({
   const isDesktop = variant === "desktop";
 
   const logoSize = logoSizeProp ?? (isDesktop ? (compact ? 84 : 112) : 66);
-  const titleFontSize = titleFontSizeProp ?? (isDesktop ? (compact ? 44 : 58) : 35);
+  const titleFontSize = titleFontSizeProp ?? (isDesktop ? (compact ? 46 : 60) : 37);
   const rowGap = isDesktop ? (compact ? 11 : 14) : Math.round(logoSize * 0.15);
 
   return (
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
     color: LANDING_COLORS.primaryBlue,
   },
   subtitle: {
-    fontSize: 24,
-    lineHeight: 33,
+    fontSize: 26,
+    lineHeight: 35,
     color: PALETTE.slate[600],
     fontWeight: "400",
     letterSpacing: -0.2,
@@ -91,8 +91,8 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   subtitleCompact: {
-    fontSize: 19,
-    lineHeight: 26,
+    fontSize: 21,
+    lineHeight: 28,
   },
 });
 

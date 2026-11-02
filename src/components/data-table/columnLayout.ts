@@ -69,6 +69,14 @@ export type ColumnPlan<C extends ColumnSizing> = {
  * Whatever remains keeps its minimum widths and scrolls sideways.
  * A `tableWidth` of 0 means "not measured yet": only the window rule applies.
  */
+/**
+ * Every table centres its values under their column titles, except a name
+ * column, which reads from the left edge. Phone cards have no titles, so they
+ * do not use this.
+ */
+export const centerColumns = <C extends { align?: "left" | "center" | "right"; nameColumn?: boolean }>(columns: readonly C[]): C[] =>
+  columns.map((column) => ({ ...column, align: column.nameColumn ? "left" : "center" }));
+
 export const planColumns = <C extends ColumnSizing>(
   columns: C[],
   windowWidth: number,

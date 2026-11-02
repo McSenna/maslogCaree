@@ -34,8 +34,8 @@ const AnalyticsSummary = ({
     <View className="min-w-0 gap-1.5">
       <Text
         accessibilityLabel={accessibilityLabel}
-        className="text-[30px] font-bold"
-        style={{ color: palette.heading, lineHeight: 36, fontVariant: ["tabular-nums"] }}
+        className="text-[32px] font-bold"
+        style={{ color: palette.heading, lineHeight: 38, fontVariant: ["tabular-nums"] }}
       >
         {value}
       </Text>
@@ -47,7 +47,7 @@ const AnalyticsSummary = ({
             value={delta.value}
             accessibilityLabel={delta.accessibilityLabel}
           />
-          <Text className="text-[12.5px] font-medium" style={{ color: palette.muted }}>
+          <Text className="text-[14.5px] font-medium" style={{ color: palette.muted }}>
             {delta.comparison}
           </Text>
         </View>

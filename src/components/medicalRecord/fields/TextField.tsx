@@ -42,11 +42,11 @@ const TextField = ({
         <View className="h-11 flex-row items-center overflow-hidden" style={shellStyle}>
           <TextInput
             {...shared}
-            className="min-w-0 flex-1 px-3 text-[14px]"
+            className="min-w-0 flex-1 px-3 text-[16px]"
             style={{ color: palette.heading, outlineStyle: "none" } as never}
           />
           <Text
-            className="pr-3 text-[12px] font-semibold"
+            className="pr-3 text-[14px] font-semibold"
             style={{ color: palette.subtle }}
             accessibilityElementsHidden
             importantForAccessibility="no"
@@ -66,7 +66,7 @@ const TextField = ({
         {...shared}
         multiline={isMultiline}
         numberOfLines={isMultiline ? 4 : 1}
-        className={`px-3 text-[14px] ${isMultiline ? "py-2.5" : "h-11"}`}
+        className={`px-3 text-[16px] ${isMultiline ? "py-2.5" : "h-11"}`}
         style={[boxStyle, isMultiline ? { minHeight: 88, textAlignVertical: "top" } : null]}
       />
       <FieldHelper helper={helper} error={error} palette={palette} />

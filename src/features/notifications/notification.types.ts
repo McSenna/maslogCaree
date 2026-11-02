@@ -26,6 +26,8 @@ export type NotificationItem = {
   isRead: boolean;
   createdAt?: string | null;
   appointmentId?: string | null;
+  immunizationBabyId?: string | null;
+  immunizationDetail?: { babyName: string; scheduledOn: string; vaccines: { key: string; name: string; label: string }[] } | null;
   /** Set on `announcement` notifications; opens the shared announcement. */
   announcementId?: string | null;
 };

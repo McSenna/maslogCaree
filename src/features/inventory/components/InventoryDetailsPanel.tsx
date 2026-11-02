@@ -42,10 +42,10 @@ const InventoryDetailsPanel = ({
           >
             <Feather name="package" size={20} color={palette.subtle} />
           </View>
-          <Text className="text-center text-[14px] font-semibold" style={{ color: palette.heading }}>
+          <Text className="text-center text-[16px] font-semibold" style={{ color: palette.heading }}>
             No item selected
           </Text>
-          <Text className="text-center text-[12.5px]" style={{ color: palette.muted }}>
+          <Text className="text-center text-[14.5px]" style={{ color: palette.muted }}>
             Select an inventory item to see its batch, expiry and stock details.
           </Text>
         </View>
@@ -61,7 +61,7 @@ const InventoryDetailsPanel = ({
         className="flex-row items-center justify-between px-4 py-3"
         style={{ borderBottomWidth: 1, borderBottomColor: palette.divider }}
       >
-        <Text accessibilityRole="header" className="text-[15px] font-bold" style={{ color: palette.heading }}>
+        <Text accessibilityRole="header" className="text-[17px] font-bold" style={{ color: palette.heading }}>
           Inventory Item Details
         </Text>
         <View className="flex-row items-center gap-2">

@@ -17,6 +17,7 @@ export const getNotificationRoute = (
   data: PushNotificationData | undefined,
   role?: string | null
 ): string | null => {
+  if (role === "resident" && data?.immunizationBabyId) return "/resident/medical-records";
   const category = resolvePushCategory(data?.type);
   return (category && routeForCategory(role, category)) || getNotificationsRoute(role);
 };

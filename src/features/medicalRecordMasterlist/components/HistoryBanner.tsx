@@ -25,8 +25,8 @@ const HistoryBanner = ({ resident, total, serviceCounts, serviceLabel, onClear }
   return (
     <View className="flex-row flex-wrap items-center justify-between gap-3 rounded-panel border px-4 py-3" style={surface}>
       <View className="min-w-0 flex-1 gap-0.5" accessibilityRole="summary">
-        <Text className="text-[14px] font-semibold text-ink">{`Medical history of ${resident.fullName}`}</Text>
-        <Text className="text-[12.5px] text-text2">
+        <Text className="text-[16px] font-semibold text-ink">{`Medical history of ${resident.fullName}`}</Text>
+        <Text className="text-[14.5px] text-text2">
           {[`Born ${formatCalendarDay(resident.dateOfBirth)}`, `${total} ${total === 1 ? "record" : "records"}`, breakdown]
             .filter(Boolean)
             .join(". ")}

@@ -22,6 +22,8 @@ type DashboardButtonProps = {
   accessibilityHint?: string;
   /** "md" is the page-level action size (dashboard header); "sm" sits inside panels. */
   size?: "sm" | "md";
+  /** Match the height of adjacent toolbar controls. */
+  height?: number;
   /** Stretch across the parent (phone header actions). */
   fullWidth?: boolean;
 };
@@ -46,9 +48,10 @@ const DashboardButton = ({
   accessibilityLabel,
   accessibilityHint,
   size = "sm",
+  height,
   fullWidth = false,
 }: DashboardButtonProps) => {
-  const HEIGHT = HEIGHTS[size];
+  const HEIGHT = height ?? HEIGHTS[size];
   const inactive = disabled || loading;
   const { hovered, focused, pressed, scaleStyle, handlers } = useInteractionState({ disabled: inactive });
 
@@ -98,9 +101,9 @@ const DashboardButton = ({
         {content}
         {!iconOnly ? (
           <Text
-            className={size === "md" ? "text-[14px] font-semibold" : "text-[13px] font-semibold"}
+            className="font-semibold"
             numberOfLines={1}
-            style={{ color: foreground }}
+            style={{ color: foreground, fontSize: size === "md" ? 16 : 15 }}
           >
             {label}
           </Text>

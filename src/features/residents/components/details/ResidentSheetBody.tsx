@@ -18,7 +18,7 @@ const ResidentSheetBody = ({
   if (!resident || loading) {
     return (
       <View className="w-full items-center py-16">
-        <Text className="text-[14px]" style={{ color: muted }}>
+        <Text className="text-[16px]" style={{ color: muted }}>
           Loading resident details…
         </Text>
       </View>

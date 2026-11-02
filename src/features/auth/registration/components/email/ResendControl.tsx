@@ -18,7 +18,7 @@ const ResendControl = ({
         style={{ minHeight: REG_METRICS.touchTarget, flexDirection: "row", alignItems: "center", gap: 8 }}
       >
         <ActivityIndicator size="small" color={REG_COLORS.primary} />
-        <Text style={{ fontSize: 13.5, color: REG_COLORS.muted }}>Sending a new code…</Text>
+        <Text style={{ fontSize: 15.5, color: REG_COLORS.muted }}>Sending a new code…</Text>
       </View>
     );
   }
@@ -31,7 +31,7 @@ const ResendControl = ({
         style={{ minHeight: REG_METRICS.touchTarget, flexDirection: "row", alignItems: "center", gap: 6 }}
       >
         <Feather name="clock" size={14} color={REG_COLORS.muted} />
-        <Text style={{ fontSize: 13.5, color: REG_COLORS.muted }}>
+        <Text style={{ fontSize: 15.5, color: REG_COLORS.muted }}>
           Resend code in{" "}
           <Text style={{ fontWeight: "600", ...Platform.select({ web: { fontVariantNumeric: "tabular-nums" } as object }) }}>
             {formatCountdown(cooldown)}

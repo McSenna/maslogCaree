@@ -70,7 +70,7 @@ export const StaleBanner = ({ message, onRetry, retrying }: { message: string; o
       }}
     >
       <Feather name="alert-circle" size={16} color={colors.warning.fg} />
-      <Text style={{ flex: 1, minWidth: 180, fontSize: 13, lineHeight: 18, color: colors.warning.fg }}>
+      <Text style={{ flex: 1, minWidth: 180, fontSize: 15, lineHeight: 20, color: colors.warning.fg }}>
         {friendlyErrorMessage(message)} Showing the last announcements loaded.
       </Text>
       <Button label="Retry" size="sm" variant="secondary" onPress={onRetry} loading={retrying} />

@@ -27,12 +27,12 @@ const RecordHistoryBlock = ({ detail }: { detail: MasterlistDetail }) => {
       ) : null}
       {revisions.map((revision, index) => (
         <View key={`${revision.editedAt}-${index}`} className="gap-1 border-t py-2.5" style={{ borderColor: palette.divider }}>
-          <Text className="text-[12.5px] font-semibold" style={heading}>
+          <Text className="text-[14.5px] font-semibold" style={heading}>
             {`Changed ${formatWhen(revision.editedAt)} by ${byLine(revision.editedBy, revision.editedByRole)}`}
           </Text>
-          <Text className="text-[12.5px]" style={muted}>{`Reason: ${revision.reason}`}</Text>
+          <Text className="text-[14.5px]" style={muted}>{`Reason: ${revision.reason}`}</Text>
           {revision.changes.map((change) => (
-            <Text key={change.field} className="text-[12.5px]" style={muted}>
+            <Text key={change.field} className="text-[14.5px]" style={muted}>
               {`${changedFieldLabel(change.field, form)} was ${previousValueText(change.field, change.previous)}`}
             </Text>
           ))}

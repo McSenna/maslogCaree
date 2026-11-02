@@ -26,7 +26,7 @@ const MasterLinkRows = ({ user }: { user: AdminUser }) => {
     <View className="gap-3 py-3">
       <View className="flex-row items-start gap-3" accessibilityRole="text">
         <Feather name={linked ? "link" : "minus-circle"} size={17} color={linked ? palette.enabled : palette.subtle} />
-        <Text className="min-w-0 flex-1 text-[13.5px] leading-[19px]" style={{ color: palette.body }}>
+        <Text className="min-w-0 flex-1 text-[15.5px] leading-[21px]" style={{ color: palette.body }}>
           {linked
             ? `Linked to record ${user.masterResidentId}. Medical records filed under it show in this account.`
             : "Not linked. Medical records encoded from the barangay's files do not show in this account."}

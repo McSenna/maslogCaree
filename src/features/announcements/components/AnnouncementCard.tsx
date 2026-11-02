@@ -36,18 +36,18 @@ const AnnouncementCard = ({
               label={tag}
               color={color}
               background={bg}
-              fontSize={isTablet ? 9 : 8}
+              fontSize={isTablet ? 11 : 10}
             />
           </View>
           <Text
             className="font-bold text-slate-800 leading-snug"
-            style={{ fontSize: isTablet ? 14 : 13 }}
+            style={{ fontSize: isTablet ? 16 : 15 }}
           >
             {title}
           </Text>
           <Text
             className="text-slate-500 leading-relaxed mt-0.5"
-            style={{ fontSize: isTablet ? 12 : 11 }}
+            style={{ fontSize: isTablet ? 14 : 13 }}
           >
             {description}
           </Text>
@@ -61,7 +61,7 @@ const AnnouncementCard = ({
         <Feather name="calendar" size={11} color={PALETTE.slate[500]} />
         <Text
           className="font-semibold text-slate-500"
-          style={{ fontSize: isTablet ? 12 : 10.5 }}
+          style={{ fontSize: isTablet ? 14 : 12.5 }}
         >
           {date}
         </Text>

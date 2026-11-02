@@ -21,7 +21,7 @@ export const ChangePasswordForm = ({ changePasswordState, onCancel, compact = fa
 
   return (
     <View style={{ width: "100%", gap: compact ? 14 : 16 }}>
-      <Text style={{ fontSize: compact ? 13 : 14, lineHeight: compact ? 18 : 20, color: colors.muted }}>
+      <Text style={{ fontSize: compact ? 15 : 16, lineHeight: compact ? 20 : 22, color: colors.muted }}>
         Update your password to keep your MaslogCare account secure.
       </Text>
 

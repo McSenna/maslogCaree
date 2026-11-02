@@ -26,7 +26,7 @@ const ResidentDropdown = ({ results, searching, error, activeIndex, onHover, onP
   const note = (message: string, color = palette.muted) => (
     <View className="flex-row items-center gap-2.5 px-3.5 py-3">
       {searching && results.length === 0 ? <ActivityIndicator size="small" color={palette.primary} /> : null}
-      <Text className="min-w-0 flex-1 text-[12.5px] leading-[18px]" style={{ color }}>
+      <Text className="min-w-0 flex-1 text-[14.5px] leading-[20px]" style={{ color }}>
         {message}
       </Text>
     </View>
@@ -54,10 +54,10 @@ const ResidentDropdown = ({ results, searching, error, activeIndex, onHover, onP
             borderTopColor: palette.divider,
           }}
         >
-          <Text className="text-[14px] font-semibold" style={{ color: active ? palette.primary : palette.heading }}>
+          <Text className="text-[16px] font-semibold" style={{ color: active ? palette.primary : palette.heading }}>
             {identity.fullName}
           </Text>
-          <Text className="text-[12.5px] leading-[18px]" style={{ color: palette.muted }}>
+          <Text className="text-[14.5px] leading-[20px]" style={{ color: palette.muted }}>
             {identityFacts(identity)}
           </Text>
         </Pressable>
@@ -81,7 +81,7 @@ const ResidentDropdown = ({ results, searching, error, activeIndex, onHover, onP
       <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator>
         {body()}
         {capped && results.length > 0 ? (
-          <Text className="px-3.5 pb-2.5 pt-2 text-[11.5px]" style={{ color: palette.subtle, borderTopWidth: 1, borderTopColor: palette.divider }}>
+          <Text className="px-3.5 pb-2.5 pt-2 text-[13.5px]" style={{ color: palette.subtle, borderTopWidth: 1, borderTopColor: palette.divider }}>
             Showing the first {results.length} matches. Type more of the name to narrow the list.
           </Text>
         ) : null}

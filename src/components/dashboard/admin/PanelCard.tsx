@@ -61,16 +61,16 @@ const PanelCard = ({
             <Text
               accessibilityRole="header"
               aria-level={2}
-              className="min-w-0 text-[15px] font-bold"
-              numberOfLines={1}
+              className="min-w-0 text-[17px] font-bold"
+              numberOfLines={2}
               style={{ color: palette.heading }}
             >
               {title}
             </Text>
             {subtitle ? (
               <Text
-                className="mt-0.5 text-[12px] font-medium"
-                numberOfLines={1}
+                className="mt-0.5 text-[14px] font-medium"
+                numberOfLines={2}
                 style={{ color: palette.muted }}
               >
                 {subtitle}

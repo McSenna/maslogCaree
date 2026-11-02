@@ -53,7 +53,7 @@ const NotificationPageHeader = ({
               accessibilityRole="header"
               maxFontSizeMultiplier={1.3}
               style={{
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: "700",
                 letterSpacing: -0.4,
                 color: palette.heading,
@@ -66,7 +66,7 @@ const NotificationPageHeader = ({
               maxFontSizeMultiplier={1.3}
               style={{
                 marginTop: 2,
-                fontSize: 13,
+                fontSize: 15,
                 fontWeight: "500",
                 color: palette.muted,
               }}
@@ -98,7 +98,7 @@ const NotificationPageHeader = ({
             <Text
               maxFontSizeMultiplier={1.2}
               style={{
-                fontSize: 12.5,
+                fontSize: 14.5,
                 fontWeight: "600",
                 color: palette.primary,
               }}

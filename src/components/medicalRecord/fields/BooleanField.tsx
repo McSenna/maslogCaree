@@ -41,7 +41,7 @@ const BooleanField = ({
             style={{ backgroundColor: option.selected ? palette.primary : "transparent" }}
           >
             <Text
-              className="text-[13.5px] font-semibold"
+              className="text-[15.5px] font-semibold"
               style={{ color: option.selected ? PALETTE.white : palette.muted }}
             >
               {option.label}

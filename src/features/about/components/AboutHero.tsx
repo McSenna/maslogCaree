@@ -29,7 +29,7 @@ const AboutHero = ({ isTablet }: { isTablet: boolean }) => {
         <View style={{ flexShrink: 1 }}>
           <Text
             style={{
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: "700",
               color: withAlpha(PALETTE.white, 0.8),
               letterSpacing: 1.2,
@@ -40,7 +40,7 @@ const AboutHero = ({ isTablet }: { isTablet: boolean }) => {
           </Text>
           <Text
             accessibilityRole="header"
-            style={{ fontSize: isTablet ? 28 : 24, fontWeight: "800", color: PALETTE.white, letterSpacing: -0.4 }}
+            style={{ fontSize: isTablet ? 30 : 26, fontWeight: "800", color: PALETTE.white, letterSpacing: -0.4 }}
           >
             MaslogCare
           </Text>
@@ -50,8 +50,8 @@ const AboutHero = ({ isTablet }: { isTablet: boolean }) => {
       <Text
         style={{
           maxWidth: 640,
-          fontSize: isTablet ? 16 : 15,
-          lineHeight: isTablet ? 24 : 22,
+          fontSize: isTablet ? 18 : 17,
+          lineHeight: isTablet ? 26 : 24,
           color: withAlpha(PALETTE.white, 0.92),
         }}
       >
@@ -62,7 +62,7 @@ const AboutHero = ({ isTablet }: { isTablet: boolean }) => {
 
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
         <Feather name="map-pin" size={15} color={withAlpha(PALETTE.white, 0.85)} />
-        <Text style={{ flexShrink: 1, color: withAlpha(PALETTE.white, 0.85), fontSize: 14, fontWeight: "600" }}>
+        <Text style={{ flexShrink: 1, color: withAlpha(PALETTE.white, 0.85), fontSize: 16, fontWeight: "600" }}>
           Barangay 61 Maslog, Legazpi City
         </Text>
       </View>

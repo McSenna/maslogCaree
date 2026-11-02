@@ -14,7 +14,7 @@ const SupportRequestsHeader = ({ onContactSupport }: SupportRequestsHeaderProps)
 
   return (
     <View style={{ gap: 12 }}>
-      <Text style={{ fontSize: 13.5, lineHeight: 20, color: palette.muted }}>
+      <Text style={{ fontSize: 15.5, lineHeight: 22, color: palette.muted }}>
         Track the status of concerns you sent to the MaslogCare support team.
       </Text>
 
@@ -33,7 +33,7 @@ const SupportRequestsHeader = ({ onContactSupport }: SupportRequestsHeaderProps)
         }}
       >
         <Feather name="plus" size={16} color={PALETTE.white} />
-        <Text style={{ fontSize: 14, fontWeight: "700", color: PALETTE.white }}>
+        <Text style={{ fontSize: 16, fontWeight: "700", color: PALETTE.white }}>
           New Support Request
         </Text>
       </Pressable>

@@ -16,11 +16,11 @@ const SummaryLine = ({ label, value, danger = false }: { label: string; value: s
 
   return (
     <View className="flex-row items-center gap-1.5">
-      <Text className="text-[12.5px]" style={{ color: palette.muted }}>
+      <Text className="text-[14.5px]" style={{ color: palette.muted }}>
         {label}:
       </Text>
       <Text
-        className="min-w-0 flex-1 text-[12.5px] font-semibold"
+        className="min-w-0 flex-1 text-[14.5px] font-semibold"
         numberOfLines={1}
         style={{ color: danger ? palette.danger : palette.heading }}
       >
@@ -75,13 +75,13 @@ const InventoryMobileCard = ({
       <View className="min-w-0 flex-1 gap-1.5">
         <View className="min-w-0">
           <Text
-            className={dense ? "text-[15px] font-bold" : "text-[16px] font-bold"}
+            className={dense ? "text-[17px] font-bold" : "text-[18px] font-bold"}
             numberOfLines={1}
             style={{ color: palette.heading }}
           >
             {item.name}
           </Text>
-          <Text className="mt-0.5 text-[12px]" numberOfLines={1} style={{ color: palette.muted }}>
+          <Text className="mt-0.5 text-[14px]" numberOfLines={1} style={{ color: palette.muted }}>
             {subtitle}
           </Text>
         </View>

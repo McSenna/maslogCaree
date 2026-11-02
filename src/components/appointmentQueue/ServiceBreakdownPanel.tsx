@@ -49,7 +49,7 @@ const ServiceBreakdownPanel = ({
               />
               <Text
                 numberOfLines={1}
-                className="text-[13.5px] font-medium"
+                className="text-[15.5px] font-medium"
                 style={{ color: palette.body, width: 132 }}
               >
                 {row.label}
@@ -70,7 +70,7 @@ const ServiceBreakdownPanel = ({
               </View>
 
               <Text
-                className="w-7 text-right text-[13.5px] font-bold"
+                className="w-7 text-right text-[15.5px] font-bold"
                 style={{ color: palette.heading }}
               >
                 {row.count}

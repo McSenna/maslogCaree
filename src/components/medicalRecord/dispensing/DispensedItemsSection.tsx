@@ -38,10 +38,10 @@ const DispensedItemsSection = ({
             backgroundColor: palette.rowHover,
           }}
         >
-          <Text className="text-center text-[13px] font-semibold" style={{ color: palette.body }}>
+          <Text className="text-center text-[15px] font-semibold" style={{ color: palette.body }}>
             No medicines or supplies added.
           </Text>
-          <Text className="text-center text-[12px] leading-[17px]" style={{ color: palette.muted }}>
+          <Text className="text-center text-[14px] leading-[19px]" style={{ color: palette.muted }}>
             Medicines and healthcare supplies given to the patient can be recorded here.
           </Text>
         </View>
@@ -74,7 +74,7 @@ const DispensedItemsSection = ({
         }}
       >
         <Feather name="plus" size={16} color={palette.primary} />
-        <Text className="text-[13.5px] font-semibold" style={{ color: palette.primary }}>
+        <Text className="text-[15.5px] font-semibold" style={{ color: palette.primary }}>
           Add Inventory Item
         </Text>
       </Pressable>

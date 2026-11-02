@@ -40,7 +40,7 @@ const ImagePreview = ({
             className="flex-row items-center gap-1.5 rounded-lg bg-black/75 px-3 py-1.5 active:opacity-85"
           >
             <Feather name="zoom-in" size={13} color={PALETTE.white} />
-            <Text className="text-[11.5px] font-bold text-white">Zoom ID</Text>
+            <Text className="text-[13.5px] font-bold text-white">Zoom ID</Text>
           </Pressable>
 
           {canOpenExternally ? (
@@ -51,7 +51,7 @@ const ImagePreview = ({
               className="flex-row items-center gap-1.5 rounded-lg bg-black/75 px-3 py-1.5 active:opacity-85"
             >
               <Feather name="external-link" size={13} color={PALETTE.white} />
-              <Text className="text-[11.5px] font-bold text-white">Full Window</Text>
+              <Text className="text-[13.5px] font-bold text-white">Full Window</Text>
             </Pressable>
           ) : null}
         </View>

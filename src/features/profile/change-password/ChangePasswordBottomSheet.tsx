@@ -68,7 +68,7 @@ export const ChangePasswordBottomSheet = ({
             </View>
             <Text
               accessibilityRole="header"
-              style={{ fontSize: 17, fontWeight: "700", color: C.heading }}
+              style={{ fontSize: 19, fontWeight: "700", color: C.heading }}
             >
               Change Password
             </Text>

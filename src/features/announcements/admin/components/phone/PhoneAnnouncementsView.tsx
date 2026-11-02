@@ -49,7 +49,7 @@ const PhoneAnnouncementsView = ({ screen, onExport }: PhoneAnnouncementsViewProp
           <View className="mx-4 mb-6">
             <CardBottom>
               {view === "list" ? (
-                <Text className="border-t border-divider px-1 pt-3 text-[12.5px] font-medium text-text2">
+                <Text className="border-t border-divider px-1 pt-3 text-[14.5px] font-medium text-text2">
                   {`${countLine(screen.visible.length, screen.total)}.${updated}`}
                 </Text>
               ) : (

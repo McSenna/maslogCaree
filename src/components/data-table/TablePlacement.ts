@@ -1,5 +1,7 @@
 import { createContext, useContext } from "react";
 
+import type { Align } from "./types";
+
 /**
  * Where a cell's content is drawn. The same column render serves the table row
  * and the phone card; buttons read this to grow to full-width 44px targets on cards.
@@ -19,3 +21,9 @@ type SelfAlign = "flex-start" | "center" | "flex-end";
 export const CellAlignContext = createContext<SelfAlign>("flex-start");
 
 export const useCellSelfAlign = (): SelfAlign => useContext(CellAlignContext);
+
+/** Text renders inherit the same alignment as their header, including multiline values. */
+export const useCellTextAlign = (): Align => {
+  const align = useCellSelfAlign();
+  return align === "flex-start" ? "left" : align === "flex-end" ? "right" : "center";
+};

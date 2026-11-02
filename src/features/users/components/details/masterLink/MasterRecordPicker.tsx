@@ -27,10 +27,10 @@ const MasterRecordPicker = ({ picked, onPick }: Props) => {
   const note = { color: palette.muted };
 
   const results = () => {
-    if (search.tooShort) return <Text className="text-[12.5px]" style={note}>Type at least two letters of the name or the record ID.</Text>;
+    if (search.tooShort) return <Text className="text-[14.5px]" style={note}>Type at least two letters of the name or the record ID.</Text>;
     if (search.error) return <ErrorBanner message={search.error} />;
     if (search.loading && search.records.length === 0) return <CompletionPlaceholder message="Searching the master list." />;
-    if (search.records.length === 0) return <Text className="text-[12.5px]" style={note}>No active record without an account matches.</Text>;
+    if (search.records.length === 0) return <Text className="text-[14.5px]" style={note}>No active record without an account matches.</Text>;
     return (
       <View accessibilityRole="radiogroup" className="gap-2">
         {search.records.map((record) => (

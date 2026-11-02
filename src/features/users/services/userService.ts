@@ -1,5 +1,6 @@
-import api from "@/services/api";
 import type { PlatformAccessSummary } from "@/config/platformAccess";
+
+import type { PortalAccess } from "../admin/userAdmin.types";
 
 export type UserStatus =
   | "active"
@@ -18,6 +19,7 @@ export const DISABLED_STATUSES: readonly UserStatus[] = [
   "suspended",
 ];
 
+/** GET /users/:id: what the View drawer and Edit dialog read. */
 export interface AdminUser {
   _id: string;
   fullname: string;
@@ -32,39 +34,12 @@ export interface AdminUser {
   role: "admin" | "doctor" | "midwife" | "bhw" | "resident";
   lastLogin?: string | null;
   platformAccess?: PlatformAccessSummary;
+  portalAccess?: PortalAccess;
   /** Resident accounts only: the Barangay Master List record this account holds. */
   masterResidentId?: string;
   createdAt: string;
   updatedAt: string;
 }
-
-interface GetAllUsersResponse {
-  success: boolean;
-  count: number;
-  users: AdminUser[];
-}
-
-interface UpdateUserStatusResponse {
-  success: boolean;
-  message: string;
-  user: AdminUser;
-}
-
-export const getAllUsers = async (): Promise<{ count: number; users: AdminUser[] }> => {
-  const { data } = await api.get<GetAllUsersResponse>("/users");
-  return {
-    count: data.count ?? 0,
-    users: data.users ?? [],
-  };
-};
-
-export const updateUserStatus = async (
-  userId: string,
-  status: UserStatus
-): Promise<{ user: AdminUser; message: string }> => {
-  const { data } = await api.patch<UpdateUserStatusResponse>(`/users/${userId}/status`, { status });
-  return { user: data.user, message: data.message };
-};
 
 export const USER_STATUS_LABELS: Record<UserStatus, string> = {
   active: "Active",
@@ -76,54 +51,20 @@ export const USER_STATUS_LABELS: Record<UserStatus, string> = {
   deactivated: "Deactivated",
 };
 
-export type StatusAction = {
-  next: UserStatus;
+export type StatusActionLabel = {
+  action: "deactivate" | "reactivate";
   label: string;
   pendingLabel: string;
   destructive: boolean;
 };
 
-const readyStatusFor = (role: AdminUser["role"]): UserStatus =>
-  role === "resident" ? "approved" : "active";
-
-export const statusActionFor = (user: Pick<AdminUser, "status" | "role">): StatusAction => {
-  const ready = readyStatusFor(user.role);
-
-  switch (user.status) {
-    case "active":
-    case "approved":
-      return {
-        next: user.role === "resident" ? "deactivated" : "inactive",
-        label: "Deactivate User",
-        pendingLabel: "Deactivating…",
-        destructive: true,
-      };
-
-    case "inactive":
-    case "deactivated":
-      return {
-        next: ready,
-        label: "Activate User",
-        pendingLabel: "Activating…",
-        destructive: false,
-      };
-
-    case "suspended":
-      return {
-        next: ready,
-        label: "Restore Account",
-        pendingLabel: "Restoring…",
-        destructive: false,
-      };
-
-    case "pending":
-    case "rejected":
-    default:
-      return {
-        next: ready,
-        label: "Approve User",
-        pendingLabel: "Approving…",
-        destructive: false,
-      };
+/** The drawer's status button. Requests are decided in the ID review, so they have none. */
+export const statusActionFor = (user: Pick<AdminUser, "status">): StatusActionLabel | null => {
+  if (SIGN_IN_READY_STATUSES.includes(user.status)) {
+    return { action: "deactivate", label: "Deactivate account", pendingLabel: "Deactivating", destructive: true };
   }
+  if (DISABLED_STATUSES.includes(user.status)) {
+    return { action: "reactivate", label: "Reactivate account", pendingLabel: "Reactivating", destructive: false };
+  }
+  return null;
 };

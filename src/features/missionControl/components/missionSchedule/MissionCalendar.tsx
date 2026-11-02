@@ -75,7 +75,7 @@ const MissionCalendar = ({
         {arrow("chevron-left", -1, "Previous month")}
         <Text
           accessibilityLiveRegion="polite"
-          className="text-[14.5px] font-bold"
+          className="text-[16.5px] font-bold"
           style={{ color: palette.heading }}
         >
           {monthLabel}
@@ -86,7 +86,7 @@ const MissionCalendar = ({
       <View className="flex-row">
         {WEEKDAYS.map((weekday) => (
           <View key={weekday} className="flex-1 items-center py-1.5">
-            <Text className="text-[11px] font-semibold" style={{ color: palette.faint }}>
+            <Text className="text-[13px] font-semibold" style={{ color: palette.faint }}>
               {weekday}
             </Text>
           </View>
@@ -130,7 +130,7 @@ const MissionCalendar = ({
                 }}
               >
                 <Text
-                  className={`text-[14px] tabular-nums ${isSelected || isToday ? "font-bold" : "font-medium"}`}
+                  className={`text-[16px] tabular-nums ${isSelected || isToday ? "font-bold" : "font-medium"}`}
                   style={{
                     color: isSelected ? PALETTE.white : isToday ? palette.primary : palette.body,
                   }}

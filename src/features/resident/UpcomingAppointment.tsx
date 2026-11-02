@@ -43,13 +43,13 @@ const DateTile = ({ palette, date }: { palette: AdminDashboardPalette; date: Dat
   >
     {date ? (
       <>
-        <Text className="text-[12px] font-bold" style={{ color: palette.primary, letterSpacing: 0.4 }}>
+        <Text className="text-[14px] font-bold" style={{ color: palette.primary, letterSpacing: 0.4 }}>
           {date.toLocaleDateString(undefined, { month: "short" })}
         </Text>
-        <Text className="text-[28px] font-bold" style={{ color: palette.heading, lineHeight: 32, fontVariant: ["tabular-nums"] }}>
+        <Text className="text-[30px] font-bold" style={{ color: palette.heading, lineHeight: 34, fontVariant: ["tabular-nums"] }}>
           {date.getDate()}
         </Text>
-        <Text className="text-[12px] font-semibold" style={{ color: palette.muted }}>
+        <Text className="text-[14px] font-semibold" style={{ color: palette.muted }}>
           {date.toLocaleDateString(undefined, { weekday: "short" })}
         </Text>
       </>
@@ -62,7 +62,7 @@ const DateTile = ({ palette, date }: { palette: AdminDashboardPalette; date: Dat
 const Meta = ({ palette, icon, text }: { palette: AdminDashboardPalette; icon: keyof typeof Feather.glyphMap; text: string }) => (
   <View className="flex-row items-center gap-1.5">
     <Feather name={icon} size={14} color={palette.subtle} />
-    <Text className="text-[13.5px]" numberOfLines={1} style={{ color: palette.body }}>
+    <Text className="text-[15.5px]" numberOfLines={1} style={{ color: palette.body }}>
       {text}
     </Text>
   </View>
@@ -103,9 +103,9 @@ const UpcomingAppointment = ({
             <DateTile palette={palette} date={date} />
             <View className="min-w-0 flex-1 gap-1.5">
               <Text
-                className="text-[17px] font-bold"
+                className="text-[19px] font-bold"
                 numberOfLines={2}
-                style={{ color: palette.heading, lineHeight: 22 }}
+                style={{ color: palette.heading, lineHeight: 24 }}
                 accessibilityLabel={`${service}${date ? ` on ${date.toDateString()} at ${time}` : ", not scheduled yet"}`}
               >
                 {service}

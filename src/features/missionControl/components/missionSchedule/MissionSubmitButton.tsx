@@ -37,7 +37,7 @@ const MissionSubmitButton = ({
       }}
     >
       {saving ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
-      <Text className="text-[15px] font-bold text-white">{saving ? loadingLabel : label}</Text>
+      <Text className="text-[17px] font-bold text-white">{saving ? loadingLabel : label}</Text>
       {saving ? null : <Feather name="arrow-right" size={17} color={PALETTE.white} />}
     </Pressable>
   );
@@ -49,7 +49,7 @@ export const MissionSecurityNote = () => {
   return (
     <View className="w-full flex-row items-center justify-center gap-1.5 pt-2.5">
       <Feather name="lock" size={11} color={palette.faint} />
-      <Text className="text-center text-[11.5px]" style={{ color: palette.faint }}>
+      <Text className="text-center text-[13.5px]" style={{ color: palette.faint }}>
         Your data is secure and used only for community health services.
       </Text>
     </View>

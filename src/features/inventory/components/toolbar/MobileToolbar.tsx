@@ -60,7 +60,7 @@ const MobileToolbar = (props: InventoryToolbarFilters & { resultCount: number })
       </View>
 
       <View className="w-full flex-row items-center justify-between gap-3">
-        <Text className="text-[15px] font-semibold" style={{ color: palette.heading }}>
+        <Text className="text-[17px] font-semibold" style={{ color: palette.heading }}>
           {props.resultCount.toLocaleString()} {props.resultCount === 1 ? "item" : "items"}
         </Text>
         {props.canAddItem ? <AddItemButton onPress={props.onAddItem} /> : null}

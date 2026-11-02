@@ -28,7 +28,7 @@ const DetailRow = ({
         <Feather name={icon} size={13} color={palette.muted} />
       </View>
       <View className="flex-1">
-        <Text className="text-[11px] font-medium uppercase tracking-wide" style={{ color: palette.muted }}>
+        <Text className="text-[13px] font-medium uppercase tracking-wide" style={{ color: palette.muted }}>
           {label}
         </Text>
         <View className="mt-0.5">{children}</View>
@@ -49,7 +49,7 @@ const RowText = ({
   const palette = useSystemLogsPalette();
   return (
     <Text
-      className={`font-medium ${mono ? "text-[13px]" : "text-sm"}`}
+      className={`font-medium ${mono ? "text-[15px]" : "text-sm"}`}
       style={{ color: muted ? palette.muted : palette.heading, ...(mono ? { fontFamily: "monospace" } : null) }}
     >
       {children}

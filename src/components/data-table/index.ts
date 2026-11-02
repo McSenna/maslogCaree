@@ -7,7 +7,7 @@ export { default as TableButton } from "./TableButton";
 export { default as TableEmptyState } from "./TableEmptyState";
 export { default as TableLink } from "./TableLink";
 export { default as TableErrorState } from "./TableErrorState";
-export { TablePrimaryCell, TableText, TableTwoLine } from "./TableText";
+export { TableCellRow, TablePrimaryCell, TableText, TableTwoLine } from "./TableText";
 export { default as TableSkeleton } from "./TableSkeleton";
 export { useCellSelfAlign, useTablePlacement } from "./TablePlacement";
 export type { Align, CellContext, Column, DataTableProps, FeatherName, TablePagination } from "./types";

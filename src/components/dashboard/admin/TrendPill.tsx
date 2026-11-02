@@ -47,7 +47,7 @@ const TrendPill = ({
         color={tone.text}
       />
       <Text
-        className={compact ? "text-[11px] font-semibold" : "text-[12px] font-semibold"}
+        className={compact ? "text-[13px] font-semibold" : "text-[14px] font-semibold"}
         style={{ color: tone.text }}
       >
         {Math.abs(growth)}%

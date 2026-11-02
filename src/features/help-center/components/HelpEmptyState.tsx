@@ -27,11 +27,11 @@ const HelpEmptyState = ({ onContactSupport }: HelpEmptyStateProps) => {
       <Feather name="search" size={26} color={palette.subtle} />
       <Text
         accessibilityRole="header"
-        style={{ fontSize: 16, fontWeight: "700", color: palette.heading, textAlign: "center" }}
+        style={{ fontSize: 18, fontWeight: "700", color: palette.heading, textAlign: "center" }}
       >
         No help articles found
       </Text>
-      <Text style={{ fontSize: 13, lineHeight: 19, color: palette.muted, textAlign: "center" }}>
+      <Text style={{ fontSize: 15, lineHeight: 21, color: palette.muted, textAlign: "center" }}>
         We couldn&apos;t find an article matching your search.
       </Text>
 
@@ -47,7 +47,7 @@ const HelpEmptyState = ({ onContactSupport }: HelpEmptyStateProps) => {
           backgroundColor: palette.primary,
         }}
       >
-        <Text style={{ fontSize: 14, fontWeight: "700", color: PALETTE.white }}>Contact Support</Text>
+        <Text style={{ fontSize: 16, fontWeight: "700", color: PALETTE.white }}>Contact Support</Text>
       </Pressable>
     </View>
   );

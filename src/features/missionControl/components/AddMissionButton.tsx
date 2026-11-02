@@ -18,7 +18,7 @@ const AddMissionButton = ({ palette, onPress }: AddMissionButtonProps) => {
       style={{ borderRadius: 12, backgroundColor: palette.primary }}
     >
       <Feather name="plus" size={16} color={PALETTE.white} />
-      <Text className="text-[13.5px] font-semibold text-white">Add Mission</Text>
+      <Text className="text-[15.5px] font-semibold text-white">Add Mission</Text>
     </Pressable>
   );
 };

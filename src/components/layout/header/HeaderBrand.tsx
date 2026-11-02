@@ -31,9 +31,9 @@ const HeaderBrand = ({ isMobile, logoSize }: Props) => {
           style={{
             color: PALETTE.white,
             fontWeight: "600",
-            fontSize: isMobile ? 15 : 18,
+            fontSize: isMobile ? 17 : 20,
             letterSpacing: 0.3,
-            lineHeight: isMobile ? 22 : 24,
+            lineHeight: isMobile ? 24 : 26,
           }}
         >
           MaslogCare
@@ -41,7 +41,7 @@ const HeaderBrand = ({ isMobile, logoSize }: Props) => {
         <Text
           style={{
             color: withAlpha(PALETTE.white, 0.50),
-            fontSize: 9,
+            fontSize: 11,
             fontWeight: "600",
             letterSpacing: 1.8,
             textTransform: "uppercase",

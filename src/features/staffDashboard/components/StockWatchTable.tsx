@@ -20,10 +20,10 @@ const expiryLabel = (iso: string | null): string => {
 
 const ItemCell = ({ palette, item }: { palette: AdminDashboardPalette; item: InventoryAlert }) => (
   <View className="min-w-0" style={{ alignSelf: "stretch" }}>
-    <Text className="text-[13.5px] font-semibold" numberOfLines={2} style={{ color: palette.heading }}>
+    <Text className="text-[15.5px] font-semibold" numberOfLines={2} style={{ color: palette.heading }}>
       {item.name}
     </Text>
-    <Text className="text-[12px]" numberOfLines={1} style={{ color: palette.muted }}>
+    <Text className="text-[14px]" numberOfLines={1} style={{ color: palette.muted }}>
       {stockIssueOf(item) === "expiring" ? expiryLabel(item.nearestExpiry) : item.specification || item.category}
     </Text>
   </View>
@@ -47,19 +47,19 @@ const StockWatchTable = ({
   fill?: boolean;
 }) => {
   const columns: Column<InventoryAlert>[] = [
-    { key: "item", header: "Item", flex: 1, minWidth: 140, render: (item) => <ItemCell palette={palette} item={item} /> },
+    { key: "item", nameColumn: true, header: "Item", flex: 1, minWidth: 140, render: (item) => <ItemCell palette={palette} item={item} /> },
     {
       key: "stock",
       header: "In stock",
-      width: 92,
+      width: 102,
       align: "right",
       render: (item) => (
-        <Text className="text-[13.5px] font-bold" style={{ color: palette.heading, fontVariant: ["tabular-nums"] }}>
+        <Text className="text-[15.5px] font-bold" style={{ color: palette.heading, fontVariant: ["tabular-nums"] }}>
           {item.currentStock.toLocaleString()}
         </Text>
       ),
     },
-    { key: "issue", header: "Status", width: 152, align: "right", cardRole: "badge", render: (item) => <IssuePill item={item} /> },
+    { key: "issue", header: "Status", width: 170, align: "center", cardRole: "badge", render: (item) => <IssuePill item={item} /> },
   ];
 
   return (

@@ -9,10 +9,10 @@ import { describeFieldValue, hasValue } from "./describeValue";
 const Row = ({ label, value, palette }: { label: string; value: string; palette: QueuePalette }) => {
   return (
     <View className="w-full flex-row items-start gap-3 py-1.5">
-      <Text className="text-[12px] font-medium" style={{ color: palette.muted, width: 124 }}>
+      <Text className="text-[14px] font-medium" style={{ color: palette.muted, width: 124 }}>
         {label}
       </Text>
-      <Text className="min-w-0 flex-1 text-[12.5px] leading-[18px]" style={{ color: palette.heading }}>
+      <Text className="min-w-0 flex-1 text-[14.5px] leading-[20px]" style={{ color: palette.heading }}>
         {value}
       </Text>
     </View>
@@ -32,7 +32,7 @@ const Block = ({
   return (
     <View className="w-full gap-0.5">
       <Text
-        className="mb-1 text-[11px] font-bold uppercase"
+        className="mb-1 text-[13px] font-bold uppercase"
         style={{ color: palette.subtle, letterSpacing: 0.5 }}
       >
         {title}
@@ -111,15 +111,15 @@ const CompletionReview = ({
             backgroundColor: palette.rowHover,
           }}
         >
-          <Text className="text-[11px] font-bold uppercase" style={{ color: palette.subtle, letterSpacing: 0.5 }}>
+          <Text className="text-[13px] font-bold uppercase" style={{ color: palette.subtle, letterSpacing: 0.5 }}>
             Will be deducted from inventory
           </Text>
           {lines.map((line) => (
             <View key={line.item._id} className="flex-row items-center gap-3">
-              <Text numberOfLines={1} className="min-w-0 flex-1 text-[12.5px]" style={{ color: palette.body }}>
+              <Text numberOfLines={1} className="min-w-0 flex-1 text-[14.5px]" style={{ color: palette.body }}>
                 {line.item.name}
               </Text>
-              <Text className="text-[12.5px] font-semibold" style={{ color: palette.heading }}>
+              <Text className="text-[14.5px] font-semibold" style={{ color: palette.heading }}>
                 {line.quantity} {line.item.unit}
               </Text>
             </View>
@@ -129,7 +129,7 @@ const CompletionReview = ({
 
       <View className="w-full flex-row items-start gap-2.5">
         <Feather name="info" size={14} color={palette.muted} style={{ marginTop: 1 }} />
-        <Text className="min-w-0 flex-1 text-[12px] leading-[17px]" style={{ color: palette.muted }}>
+        <Text className="min-w-0 flex-1 text-[14px] leading-[19px]" style={{ color: palette.muted }}>
           Completing files this record against the patient&apos;s history, marks the appointment as completed and
           removes the patient from the active queue.
         </Text>

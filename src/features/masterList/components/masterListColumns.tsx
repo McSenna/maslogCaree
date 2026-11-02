@@ -1,36 +1,33 @@
+import type { ComponentProps } from "react";
+
 import { TablePrimaryCell, TableText, type CellContext, type Column } from "@/components/data-table";
 import { civilStatusLabel } from "@/config/civilStatus";
 
 import type { MasterResidentRecord } from "../masterList.types";
 import { capitalize, formatBirthDate, masterFullName } from "../masterResidentForm";
 import MasterRecordActions from "./MasterRecordActions";
-import { AccountLinkPill, RecordStatusPill, ResidentRolePill } from "./MasterRecordPills";
+import { ResidentRolePill } from "./MasterRecordPills";
 
-type Handlers = {
-  onEdit: (record: MasterResidentRecord) => void;
-  onToggleActive: (record: MasterResidentRecord) => void;
-};
+type Handlers = Omit<ComponentProps<typeof MasterRecordActions>, "record">;
 
 const folded = (record: MasterResidentRecord, { hiddenKeys }: CellContext) =>
   [
-    record.masterResidentId,
     hiddenKeys.has("birthDate") ? `Born ${formatBirthDate(record.dateOfBirth)}` : "",
     hiddenKeys.has("sex") ? capitalize(record.sex) : "",
     hiddenKeys.has("civilStatus") ? civilStatusLabel(record.civilStatus) : "",
     hiddenKeys.has("address") ? record.address : "",
-    hiddenKeys.has("appAccount") ? (record.linkedAccount ? "Has account" : "No account") : "",
   ]
     .filter(Boolean)
     .join(" · ");
 
 /** The Resident Records table, declared once for its header, rows, skeleton and phone cards. */
-const masterListColumns = ({ onEdit, onToggleActive }: Handlers): Column<MasterResidentRecord>[] => [
+const masterListColumns = (handlers: Handlers): Column<MasterResidentRecord>[] => [
   {
-    key: "record",
+    key: "record", nameColumn: true,
     header: "Resident record",
+    align: "left",
     flex: 2.2,
-    // 200, not 240: with it the essential columns fit beside the sidebar at a 1024px window.
-    minWidth: 200,
+    minWidth: 180,
     render: (record, _index, context) => (
       <TablePrimaryCell title={masterFullName(record)} detail={folded(record, context)} />
     ),
@@ -38,54 +35,45 @@ const masterListColumns = ({ onEdit, onToggleActive }: Handlers): Column<MasterR
   {
     key: "role",
     header: "Role",
-    width: 120,
+    align: "center",
+    width: 130,
     cardRole: "badge",
     render: (record) => <ResidentRolePill role={record.role} />,
   },
   {
     key: "birthDate",
     header: "Birth date",
-    width: 120,
+    align: "center",
+    width: 124,
     hideBelow: "md",
     render: (record) => <TableText value={formatBirthDate(record.dateOfBirth)} />,
   },
-  { key: "sex", header: "Sex", width: 90, hideBelow: "lg", accessor: (record) => capitalize(record.sex) },
+  { key: "sex", header: "Sex", align: "center", width: 90, hideBelow: "lg", accessor: (record) => capitalize(record.sex) },
   {
     key: "civilStatus",
     header: "Civil status",
+    align: "center",
     // Fits "Single - Solo Parent" in full.
-    width: 148,
+    width: 176,
     hideBelow: "lg",
     accessor: (record) => civilStatusLabel(record.civilStatus) || "Not set",
   },
   {
     key: "address",
     header: "Purok and street",
+    align: "left",
     flex: 1.8,
     minWidth: 150,
     hideBelow: "md",
     accessor: (record) => record.address,
   },
   {
-    key: "appAccount",
-    header: "App account",
-    width: 148,
-    hideBelow: "md",
-    cardRole: "badge",
-    render: (record) => <AccountLinkPill linked={record.linkedAccount} />,
-  },
-  {
-    key: "status",
-    header: "Status",
-    width: 120,
-    cardRole: "badge",
-    render: (record) => <RecordStatusPill active={record.isActive} />,
-  },
-  {
     key: "actions",
     header: "Actions",
-    width: 200,
-    render: (record) => <MasterRecordActions record={record} onEdit={onEdit} onToggleActive={onToggleActive} />,
+    align: "center",
+    width: 184,
+    cardRole: "actions",
+    render: (record) => <MasterRecordActions record={record} {...handlers} />,
   },
 ];
 

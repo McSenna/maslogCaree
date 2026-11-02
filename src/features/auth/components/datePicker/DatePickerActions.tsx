@@ -34,7 +34,7 @@ const DatePickerActions = ({
         backgroundColor: REG_COLORS.surface,
       }}
     >
-      <Text style={{ fontSize: 15, fontWeight: "600", color: REG_COLORS.text }}>Cancel</Text>
+      <Text style={{ fontSize: 17, fontWeight: "600", color: REG_COLORS.text }}>Cancel</Text>
     </Pressable>
 
     <Pressable
@@ -53,7 +53,7 @@ const DatePickerActions = ({
         opacity: canConfirm ? 1 : 0.5,
       }}
     >
-      <Text style={{ fontSize: 15, fontWeight: "700", color: PALETTE.white }}>Confirm</Text>
+      <Text style={{ fontSize: 17, fontWeight: "700", color: PALETTE.white }}>Confirm</Text>
     </Pressable>
   </View>
 );

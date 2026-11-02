@@ -38,7 +38,7 @@ const LineChartLegend = ({ series, padLeft, tickColor }: Props) => {
                 opacity: s.dashed ? 0.7 : 1,
               }}
             />
-            <Text style={{ fontSize: 10, color: tickColor }}>{s.label}</Text>
+            <Text style={{ fontSize: 12, color: tickColor }}>{s.label}</Text>
           </View>
         ))}
     </View>

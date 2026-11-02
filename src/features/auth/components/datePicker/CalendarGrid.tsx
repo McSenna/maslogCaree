@@ -27,7 +27,7 @@ const CalendarGrid = ({ year, monthIndex, selected, onSelect, cellSize, bounds }
             style={{
               width: `${100 / 7}%`,
               textAlign: "center",
-              fontSize: 11.5,
+              fontSize: 13.5,
               fontWeight: "700",
               color: REG_COLORS.subtle,
             }}
@@ -64,7 +64,7 @@ const CalendarGrid = ({ year, monthIndex, selected, onSelect, cellSize, bounds }
               >
                 <Text
                   style={{
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: isSelected ? "800" : "500",
                     color: isSelected ? PALETTE.white : REG_COLORS.text,
                   }}

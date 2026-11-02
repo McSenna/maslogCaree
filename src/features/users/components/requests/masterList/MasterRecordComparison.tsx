@@ -30,25 +30,25 @@ const ComparisonLine = ({ row, divided }: { row: ComparisonRow; divided: boolean
       style={divided ? { borderTopWidth: 1, borderTopColor: palette.divider } : undefined}
     >
       <View role="rowheader" className="flex-row flex-wrap items-center gap-2">
-        <Text className="text-[12px] font-semibold" style={{ color: palette.muted }}>
+        <Text className="text-[14px] font-semibold" style={{ color: palette.muted }}>
           {row.label}
         </Text>
         {row.differs ? (
           <View className="flex-row items-center gap-1">
             <Feather name="alert-circle" size={12} color={flag.text} />
-            <Text className="text-[12px] font-semibold" style={{ color: flag.text }}>
+            <Text className="text-[14px] font-semibold" style={{ color: flag.text }}>
               Differs
             </Text>
           </View>
         ) : null}
       </View>
       <View className="flex-row gap-3">
-        <Text role="cell" className="min-w-0 flex-1 text-[13px]" style={{ color: palette.body }}>
+        <Text role="cell" className="min-w-0 flex-1 text-[15px]" style={{ color: palette.body }}>
           {row.submitted}
         </Text>
         <Text
           role="cell"
-          className="min-w-0 flex-1 text-[13px] font-semibold"
+          className="min-w-0 flex-1 text-[15px] font-semibold"
           style={{ color: palette.heading }}
         >
           {row.record}
@@ -73,19 +73,19 @@ const MasterRecordComparison = ({ resident, record, reasons }: Props) => {
       }}
     >
       <View className="flex-row flex-wrap items-center justify-between gap-2 pb-1">
-        <Text className="text-[12px] font-bold" style={{ color: palette.heading }} selectable>
+        <Text className="text-[14px] font-bold" style={{ color: palette.heading }} selectable>
           Record {record.masterResidentId}
         </Text>
         {!record.missing ? <ResidentRolePill role={record.role} /> : null}
         {record.isActive === false ? (
-          <Text className="text-[12px]" style={{ color: palette.subtle }}>
+          <Text className="text-[14px]" style={{ color: palette.subtle }}>
             Marked inactive
           </Text>
         ) : null}
       </View>
 
       {record.missing ? (
-        <Text className="py-2 text-[13px]" style={{ color: palette.body }}>
+        <Text className="py-2 text-[15px]" style={{ color: palette.body }}>
           This record is no longer on the master list.
         </Text>
       ) : (
@@ -94,10 +94,10 @@ const MasterRecordComparison = ({ resident, record, reasons }: Props) => {
             <Text role="columnheader" className="absolute h-px w-px overflow-hidden">
               Detail
             </Text>
-            <Text role="columnheader" className="flex-1 text-[12px] font-semibold" style={{ color: palette.subtle }}>
+            <Text role="columnheader" className="flex-1 text-[14px] font-semibold" style={{ color: palette.subtle }}>
               Registration
             </Text>
-            <Text role="columnheader" className="flex-1 text-[12px] font-semibold" style={{ color: palette.subtle }}>
+            <Text role="columnheader" className="flex-1 text-[14px] font-semibold" style={{ color: palette.subtle }}>
               Master list
             </Text>
           </View>

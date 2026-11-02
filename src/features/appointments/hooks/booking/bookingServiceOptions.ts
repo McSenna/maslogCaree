@@ -11,12 +11,12 @@ const withHandler = (description?: string, queueRole?: string): string | undefin
 
 export const buildServiceOptions = (categories: ConsultationCategory[]): SelectOption[] =>
   categories.length
-    ? categories.map((category) => ({
+    ? categories.filter(category => category.key !== "immunization").map((category) => ({
         id: category.key,
         label: category.label,
         helper: withHandler(category.description, category.queueRole),
       }))
-    : SERVICE_TYPES.map((service) => ({
+    : SERVICE_TYPES.filter(service => service.id !== "immunization").map((service) => ({
         id: service.id,
         label: service.label,
         helper: withHandler(service.description, service.queueRole),

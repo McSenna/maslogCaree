@@ -58,7 +58,7 @@ const ResidentPicker = ({ onPick }: { onPick: (identity: ResidentIdentity) => vo
           capped={search.results.length >= RESULT_CAP}
         />
       ) : (
-        <Text className="pt-2 text-[12.5px] leading-[18px]" style={{ color: palette.muted }}>
+        <Text className="pt-2 text-[14.5px] leading-[20px]" style={{ color: palette.muted }}>
           Type at least two letters of the name, the master list ID, or a birth date as YYYY-MM-DD.
         </Text>
       )}

@@ -62,20 +62,20 @@ const LogSummaryCard = ({
         </View>
 
         <Text
-          className="mt-2.5 text-[13px] font-semibold"
+          className="mt-2.5 text-[15px] font-semibold"
           numberOfLines={1}
           style={{ color: palette.heading }}
         >
           {label}
         </Text>
         <Text
-          className="mt-0.5 text-[26px] font-extrabold"
-          style={{ color: palette.heading, lineHeight: 32 }}
+          className="mt-0.5 text-[28px] font-extrabold"
+          style={{ color: palette.heading, lineHeight: 34 }}
         >
           {formatStatValue(metric.value)}
         </Text>
         <Text
-          className="mt-0.5 text-[11px] font-medium"
+          className="mt-0.5 text-[13px] font-medium"
           numberOfLines={1}
           style={{ color: palette.muted }}
         >
@@ -102,7 +102,7 @@ const LogSummaryCard = ({
       <View className="min-w-0 flex-1">
         <View className="flex-row items-center gap-1.5">
           <Text
-            className="min-w-0 flex-1 text-[14px] font-semibold"
+            className="min-w-0 flex-1 text-[16px] font-semibold"
             numberOfLines={2}
             style={{ color: palette.heading }}
           >
@@ -112,13 +112,13 @@ const LogSummaryCard = ({
         </View>
 
         <Text
-          className="mt-0.5 text-[30px] font-extrabold"
-          style={{ color: palette.heading, lineHeight: 36 }}
+          className="mt-0.5 text-[32px] font-extrabold"
+          style={{ color: palette.heading, lineHeight: 38 }}
         >
           {formatStatValue(metric.value)}
         </Text>
         <Text
-          className="mt-0.5 text-[12px] font-medium"
+          className="mt-0.5 text-[14px] font-medium"
           numberOfLines={1}
           style={{ color: palette.muted }}
         >

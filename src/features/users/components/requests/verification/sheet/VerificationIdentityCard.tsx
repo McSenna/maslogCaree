@@ -29,10 +29,10 @@ const VerificationIdentityCard = ({
         }}
       >
         <View>
-          <Text className="text-[12px]" style={{ color: palette.subtle }}>
+          <Text className="text-[14px]" style={{ color: palette.subtle }}>
             ID Document Type
           </Text>
-          <Text className="mt-0.5 text-[14px] font-bold" style={{ color: palette.headerIcon }}>
+          <Text className="mt-0.5 text-[16px] font-bold" style={{ color: palette.headerIcon }}>
             {verification?.idTypeName || verification?.idType}
           </Text>
         </View>
@@ -42,11 +42,11 @@ const VerificationIdentityCard = ({
           style={{ borderTopWidth: 1, borderTopColor: palette.divider }}
         >
           <View className="min-w-0 flex-1">
-            <Text className="text-[12px]" style={{ color: palette.subtle }}>
+            <Text className="text-[14px]" style={{ color: palette.subtle }}>
               ID Number
             </Text>
             <Text
-              className="mt-0.5 text-[15px] font-bold"
+              className="mt-0.5 text-[17px] font-bold"
               numberOfLines={1}
               style={{
                 color: palette.heading,
@@ -76,7 +76,7 @@ const VerificationIdentityCard = ({
               size={13}
               color={palette.headerIcon}
             />
-            <Text className="text-[12px] font-semibold" style={{ color: palette.headerIcon }}>
+            <Text className="text-[14px] font-semibold" style={{ color: palette.headerIcon }}>
               {showFullIdNumber ? "Mask" : "Reveal"}
             </Text>
           </Pressable>
@@ -94,16 +94,16 @@ const VerificationIdentityCard = ({
           }}
         >
           <Text
-            className="text-[12px] font-bold uppercase"
+            className="text-[14px] font-bold uppercase"
             style={{ color: palette.dangerText, letterSpacing: 0.6 }}
           >
             Rejection Reason
           </Text>
-          <Text className="text-[13.5px] font-semibold" style={{ color: palette.dangerText }}>
+          <Text className="text-[15.5px] font-semibold" style={{ color: palette.dangerText }}>
             {verification.rejectionReason}
           </Text>
           {verification.rejectionRemarks ? (
-            <Text className="text-[12.5px]" style={{ color: palette.body }}>
+            <Text className="text-[14.5px]" style={{ color: palette.body }}>
               {verification.rejectionRemarks}
             </Text>
           ) : null}

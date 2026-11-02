@@ -54,11 +54,11 @@ const InventoryPickerRow = ({
       }}
     >
       <View className="min-w-0 flex-1 gap-1">
-        <Text numberOfLines={1} className="text-[14px] font-semibold" style={{ color: palette.heading }}>
+        <Text numberOfLines={1} className="text-[16px] font-semibold" style={{ color: palette.heading }}>
           {item.name}
         </Text>
         {subtitle ? (
-          <Text numberOfLines={1} className="text-[12px] capitalize" style={{ color: palette.muted }}>
+          <Text numberOfLines={1} className="text-[14px] capitalize" style={{ color: palette.muted }}>
             {subtitle}
           </Text>
         ) : null}
@@ -66,13 +66,13 @@ const InventoryPickerRow = ({
           {resolveStatusBadges(item).map((status) => (
             <StockStatusBadge key={status} status={status} compact />
           ))}
-          <Text className="text-[12px] font-medium" style={{ color: palette.body }}>
+          <Text className="text-[14px] font-medium" style={{ color: palette.body }}>
             {blocked === "Expired"
               ? "Cannot be dispensed"
               : `Available: ${item.currentStock} ${item.unit}`}
           </Text>
           {expiry ? (
-            <Text className="text-[12px]" style={{ color: palette.muted }}>
+            <Text className="text-[14px]" style={{ color: palette.muted }}>
               Exp. {expiry}
             </Text>
           ) : null}

@@ -15,7 +15,7 @@ const SelectField = ({
   return (
     <View className="w-full">
       <FieldLabel field={field} palette={palette} />
-      <View className="flex-row flex-wrap gap-2">
+      <View accessibilityRole="radiogroup" accessibilityLabel={field.label} className="flex-row flex-wrap gap-2">
         {(field.options ?? []).map((option) => {
           const selected = value === option.value;
           return (
@@ -24,7 +24,10 @@ const SelectField = ({
               onPress={() => !disabled && onChange(selected ? null : option.value)}
               hitSlop={{ top: 6, bottom: 6 }}
               accessibilityRole="radio"
-              accessibilityState={{ selected, disabled }}
+              disabled={disabled}
+              accessibilityState={{ checked: selected, disabled }}
+              aria-checked={selected}
+              aria-disabled={disabled}
               accessibilityLabel={option.label}
               className="h-9 items-center justify-center px-3.5"
               style={{
@@ -35,7 +38,7 @@ const SelectField = ({
               }}
             >
               <Text
-                className={`text-[13px] ${selected ? "font-semibold" : "font-medium"}`}
+                className={`text-[15px] ${selected ? "font-semibold" : "font-medium"}`}
                 style={{ color: selected ? palette.primary : palette.muted }}
               >
                 {option.label}

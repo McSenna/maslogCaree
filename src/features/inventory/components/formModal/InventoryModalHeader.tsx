@@ -34,13 +34,13 @@ const InventoryModalHeader = ({
       <View className="min-w-0 flex-1">
         <Text
           accessibilityRole="header"
-          className="text-[16px] font-bold"
+          className="text-[18px] font-bold"
           style={{ color: palette.heading }}
         >
           {title}
         </Text>
         {subtitle ? (
-          <Text className="mt-0.5 text-[12.5px]" numberOfLines={2} style={{ color: palette.muted }}>
+          <Text className="mt-0.5 text-[14.5px]" numberOfLines={2} style={{ color: palette.muted }}>
             {subtitle}
           </Text>
         ) : null}

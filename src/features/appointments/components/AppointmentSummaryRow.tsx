@@ -12,7 +12,7 @@ const AppointmentSummaryRow = ({
     <View style={{ gap: 2 }}>
       <Text
         style={{
-          fontSize: 11,
+          fontSize: 13,
           fontWeight: "700",
           letterSpacing: 0.6,
           textTransform: "uppercase",
@@ -21,7 +21,7 @@ const AppointmentSummaryRow = ({
       >
         {label}
       </Text>
-      <Text style={{ fontSize: 14, fontWeight: "500", color: APPOINTMENT_COLORS.bodyText }}>
+      <Text style={{ fontSize: 16, fontWeight: "500", color: APPOINTMENT_COLORS.bodyText }}>
         {value}
       </Text>
     </View>

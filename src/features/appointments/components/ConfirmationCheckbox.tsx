@@ -41,7 +41,7 @@ const ConfirmationCheckbox = ({
 
         <Text
           className="min-w-0 flex-1"
-          style={{ fontSize: 13.5, lineHeight: 19, color: APPOINTMENT_COLORS.bodyText }}
+          style={{ fontSize: 15.5, lineHeight: 21, color: APPOINTMENT_COLORS.bodyText }}
         >
           I confirm that the appointment details provided are correct.
           <Text style={{ color: APPOINTMENT_COLORS.danger }}> *</Text>
@@ -53,7 +53,7 @@ const ConfirmationCheckbox = ({
           <Feather name="alert-circle" size={13} color={APPOINTMENT_COLORS.danger} />
           <Text
             accessibilityRole="alert"
-            style={{ fontSize: 12.5, color: APPOINTMENT_COLORS.danger }}
+            style={{ fontSize: 14.5, color: APPOINTMENT_COLORS.danger }}
           >
             {error}
           </Text>

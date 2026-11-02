@@ -26,7 +26,7 @@ const DesktopToolbar = (props: InventoryToolbarFilters) => (
       options={CATEGORY_FILTER_OPTIONS}
       onChange={props.onCategoryChange}
       height={CONTROL_HEIGHT}
-      style={{ flex: 14, minWidth: 152 }}
+      style={{ flex: 14, minWidth: 176 }}
     />
     <SelectMenu
       label="Filter by stock status"
@@ -34,7 +34,7 @@ const DesktopToolbar = (props: InventoryToolbarFilters) => (
       options={STOCK_STATUS_FILTER_OPTIONS}
       onChange={props.onStockStatusChange}
       height={CONTROL_HEIGHT}
-      style={{ flex: 14, minWidth: 172 }}
+      style={{ flex: 14, minWidth: 198 }}
     />
     <SelectMenu
       label="Filter by expiry status"
@@ -42,7 +42,7 @@ const DesktopToolbar = (props: InventoryToolbarFilters) => (
       options={EXPIRY_STATUS_FILTER_OPTIONS}
       onChange={props.onExpiryStatusChange}
       height={CONTROL_HEIGHT}
-      style={{ flex: 14, minWidth: 176 }}
+      style={{ flex: 14, minWidth: 204 }}
     />
     <SelectMenu
       label="Sort inventory"
@@ -51,7 +51,7 @@ const DesktopToolbar = (props: InventoryToolbarFilters) => (
       onChange={props.onSortChange}
       icon="swap-vertical"
       height={CONTROL_HEIGHT}
-      style={{ flex: 17, minWidth: 205 }}
+      style={{ flex: 17, minWidth: 262 }}
     />
     {props.canAddItem ? <AddItemButton onPress={props.onAddItem} /> : null}
   </View>

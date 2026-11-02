@@ -16,7 +16,7 @@ const MasterListSection = ({ request }: Props) => (
       <Feather name="list" size={15} color={PALETTE.blue[600]} />
       <Text
         accessibilityRole="header"
-        className="text-[14px] font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider"
+        className="text-[16px] font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider"
       >
         Barangay Master List
       </Text>

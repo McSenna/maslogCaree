@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: PALETTE.blue[100],
   },
   text: {
-    fontSize: 13,
+    fontSize: 15,
     color: LANDING_COLORS.mutedText,
     fontWeight: "500",
     fontFamily: FONT_FAMILY,

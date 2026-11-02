@@ -10,7 +10,7 @@ const AnnouncementsFooterNote = ({ isTablet }: { isTablet: boolean }) => {
       <View className="rounded-full p-1.5" style={{ backgroundColor: PALETTE.slate[100] }}>
         <Feather name="info" size={11} color={PALETTE.slate[500]} />
       </View>
-      <Text className="text-slate-500" style={{ fontSize: isTablet ? 12 : 11 }}>
+      <Text className="text-slate-500" style={{ fontSize: isTablet ? 14 : 13 }}>
         All events are free for Barangay Maslog residents
       </Text>
     </View>

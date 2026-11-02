@@ -41,8 +41,8 @@ const NotificationBadge = ({ count, palette, surface }: NotificationBadgeProps) 
         numberOfLines={1}
         allowFontScaling={false}
         style={{
-          fontSize: 8.5,
-          lineHeight: 10,
+          fontSize: 10.5,
+          lineHeight: 12,
           fontWeight: "700",
           color: palette.badgeText,
         }}

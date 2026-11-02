@@ -56,7 +56,7 @@ const RegistrationFooter = ({
           }}
         >
           <Feather name="arrow-left" size={16} color={REG_COLORS.muted} />
-          <Text style={{ fontSize: 14.5, fontWeight: "600", color: REG_COLORS.muted }}>Back</Text>
+          <Text style={{ fontSize: 16.5, fontWeight: "600", color: REG_COLORS.muted }}>Back</Text>
         </Pressable>
       ) : null}
 
@@ -78,7 +78,7 @@ const RegistrationFooter = ({
         }}
       >
         {isSubmitting ? <ActivityIndicator size="small" color={REG_COLORS.surface} /> : null}
-        <Text style={{ fontSize: 15, fontWeight: "700", color: REG_COLORS.surface }}>{label}</Text>
+        <Text style={{ fontSize: 17, fontWeight: "700", color: REG_COLORS.surface }}>{label}</Text>
         {!isSubmitting ? (
           <Feather
             name={isFinalStep ? finalIcon : "arrow-right"}

@@ -28,10 +28,10 @@ const Option = ({ selected, label, detail, onPress }: { selected: boolean; label
         <Feather name={selected ? "check-circle" : "circle"} size={16} color={selected ? palette.primary : palette.muted} />
       </View>
       <View className="min-w-0 flex-1 gap-0.5">
-        <Text className="text-[13.5px] font-semibold" style={{ color: palette.heading }}>
+        <Text className="text-[15.5px] font-semibold" style={{ color: palette.heading }}>
           {label}
         </Text>
-        <Text className="text-[12.5px] leading-[18px]" style={{ color: palette.body }}>
+        <Text className="text-[14.5px] leading-[20px]" style={{ color: palette.body }}>
           {detail}
         </Text>
       </View>
@@ -52,7 +52,7 @@ const LinkChoicePicker = ({ candidates }: { candidates: MasterResidentRecord[] }
 
   return (
     <View className="gap-2" accessibilityRole="radiogroup">
-      <Text className="text-[13px] font-semibold" style={{ color: palette.heading }}>
+      <Text className="text-[15px] font-semibold" style={{ color: palette.heading }}>
         Link this account to a master list record?
       </Text>
       <Option

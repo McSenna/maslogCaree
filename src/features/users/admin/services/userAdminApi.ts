@@ -1,43 +1,25 @@
 import api from "@/services/api";
 
-import { getUserRequests } from "../../services/userRequestsService";
 import type { AdminUser } from "../../services/userService";
-import type {
-  ApiSignupRequest,
-  ApiUserSummary,
-  Role,
-  SignupRequest,
-  StatusAction,
-  User,
-  UserListParams,
-  UserSummary,
-} from "../userAdmin.types";
-import { roleToApi, toSignupRequest, toSummary, toUsers } from "../userAdminModel";
+import type { ApiUser, ApiUserSummary, Role, StatusAction, User, UserListParams, UserSummary, WebOverride } from "../userAdmin.types";
+import { roleToApi, segmentOf, statusParamOf, toSummary, toUsers } from "../userAdminModel";
 
 export type Page<T> = { items: T[]; total: number };
+export type UsersPage = Page<User>;
 
-type UsersPageResponse = {
-  users: AdminUser[];
-  pagination: { total: number };
-};
-
-/** `records` keeps the full accounts for the profile panel, which shows more than the table. */
-export type UsersPage = Page<User> & { records: AdminUser[] };
+const listParams = (params: Omit<UserListParams, "page" | "pageSize">) => ({
+  segment: segmentOf(params.tab),
+  search: params.query || undefined,
+  role: params.role === "all" ? undefined : roleToApi(params.role),
+  status: statusParamOf(params.status),
+  sort: params.sort,
+});
 
 export const fetchUsersPage = async (params: UserListParams): Promise<UsersPage> => {
-  const { data } = await api.get<UsersPageResponse>("/users", {
-    params: {
-      tab: params.tab,
-      query: params.query || undefined,
-      role: params.role === "all" ? undefined : roleToApi(params.role),
-      status: params.status === "all" ? undefined : params.status,
-      sort: params.sort,
-      page: params.page,
-      pageSize: params.pageSize,
-    },
+  const { data } = await api.get<{ users: ApiUser[]; pagination: { total: number } }>("/users", {
+    params: { ...listParams(params), page: params.page, per_page: params.pageSize },
   });
-  const records = data.users ?? [];
-  return { items: toUsers(records), records, total: data.pagination?.total ?? 0 };
+  return { items: toUsers(data.users ?? []), total: data.pagination?.total ?? 0 };
 };
 
 export const fetchUserSummary = async (): Promise<UserSummary> => {
@@ -45,39 +27,37 @@ export const fetchUserSummary = async (): Promise<UserSummary> => {
   return toSummary(data.summary);
 };
 
-export type SignupRequestParams = { status: "pending" | "rejected"; query: string; page: number; pageSize: number };
-
-export const fetchSignupRequests = async (params: SignupRequestParams): Promise<Page<SignupRequest>> => {
-  const result = await getUserRequests({
-    status: params.status,
-    search: params.query || undefined,
-    page: params.page,
-    limit: params.pageSize,
-  });
-  // The request list types its rows more loosely than the fields read here.
-  const rows: ApiSignupRequest[] = result.requests;
-  return { items: rows.map(toSignupRequest), total: result.pagination.total };
+export const fetchUserDetail = async (id: string): Promise<AdminUser> => {
+  const { data } = await api.get<{ user: AdminUser }>(`/users/${id}`);
+  return data.user;
 };
 
-/** Returns the ids the server changed; already-changed accounts and the admin's own are skipped. */
-const setUsersStatus = async (ids: readonly string[], action: StatusAction): Promise<string[]> => {
-  const { data } = await api.patch<{ updatedIds: string[] }>("/users/status", { ids, action });
-  return data.updatedIds ?? [];
+export const setUserStatus = async (id: string, action: StatusAction, rejection?: { reason: string; remarks?: string }): Promise<void> => {
+  await api.patch(`/users/${id}/status`, { action, ...rejection });
 };
 
-export const deactivateUsers = (ids: readonly string[]) => setUsersStatus(ids, "deactivate");
-export const reactivateUsers = (ids: readonly string[]) => setUsersStatus(ids, "reactivate");
+export type UserEdit = { fullname?: string; phone?: string; address?: string };
 
-// NOTE: the backend has no role-change or admin password-reset endpoint yet.
-// Both touch roles and sign-in, so they wait for the rules to be agreed; the
-// menu shows them disabled until then.
-export const changeRole = async (_ids: readonly string[], _role: Role): Promise<never> => {
-  throw new Error("TODO: connect changeRole");
+/** Returns the new version, which a role change saved straight after needs. */
+export const updateUser = async (id: string, edit: UserEdit, updatedAt: string | null): Promise<string | null> => {
+  const { data } = await api.patch<{ user: ApiUser }>(`/users/${id}`, { ...edit, updatedAt });
+  return data.user.updatedAt;
 };
 
-export const resetPassword = async (_id: string): Promise<never> => {
-  throw new Error("TODO: connect resetPassword");
+export const changeUserRole = async (id: string, role: Role, updatedAt: string | null): Promise<void> => {
+  await api.patch(`/users/${id}/role`, { role: roleToApi(role), updatedAt });
 };
 
-export const ROLE_CHANGE_AVAILABLE = false;
-export const PASSWORD_RESET_AVAILABLE = false;
+export const sendPasswordReset = async (id: string): Promise<string> => {
+  const { data } = await api.post<{ message: string }>(`/users/${id}/password-reset`, {});
+  return data.message;
+};
+
+export const setWebOverride = async (id: string, override: WebOverride, revision: number): Promise<void> => {
+  await api.patch(`/admin/users/${id}/web-access`, { override, revision });
+};
+
+export const exportUsers = async (params: Omit<UserListParams, "page" | "pageSize">): Promise<{ csv: string; truncated: boolean }> => {
+  const response = await api.get<string>("/users/export", { params: listParams(params), responseType: "text" });
+  return { csv: response.data, truncated: response.headers["x-export-truncated"] === "true" };
+};

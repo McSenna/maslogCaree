@@ -52,7 +52,7 @@ const BookingActionButton = ({
       {icon}
       <Text
         style={{
-          fontSize: 15.5,
+          fontSize: 17.5,
           fontWeight: "700",
           color: isPrimary ? PALETTE.white : APPOINTMENT_COLORS.primaryBright,
         }}

@@ -34,7 +34,7 @@ const DetailCard = ({ icon, title, children, grow = false }: DetailCardProps) =>
         >
           <Feather name={icon} size={15} color={palette.infoIcon} />
         </View>
-        <Text className="text-[15px] font-bold" style={{ color: palette.heading }}>
+        <Text className="text-[17px] font-bold" style={{ color: palette.heading }}>
           {title}
         </Text>
       </View>

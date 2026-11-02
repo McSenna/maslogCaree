@@ -46,6 +46,7 @@ export const resolveNotificationDestination = (
   item: NotificationItem,
   role?: string | null
 ): string | null => {
+  if (role === "resident" && item.immunizationBabyId) return "/resident/medical-records";
   const { category } = resolveNotificationVisual(item);
   return routeForCategory(role, category);
 };

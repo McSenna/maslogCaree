@@ -28,14 +28,14 @@ const FAQAccordionItem = ({ faq, expanded, onToggle }: FAQAccordionItemProps) =>
           paddingVertical: 14,
         }}
       >
-        <Text style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: "600", color: palette.heading }}>
+        <Text style={{ flex: 1, minWidth: 0, fontSize: 16, fontWeight: "600", color: palette.heading }}>
           {faq.question}
         </Text>
         <Feather name={expanded ? "minus" : "plus"} size={17} color={palette.subtle} />
       </Pressable>
 
       {expanded ? (
-        <Text style={{ fontSize: 13, lineHeight: 20, color: palette.muted, paddingBottom: 14 }}>
+        <Text style={{ fontSize: 15, lineHeight: 22, color: palette.muted, paddingBottom: 14 }}>
           {faq.answer}
         </Text>
       ) : null}

@@ -23,19 +23,9 @@ const InventoryDesktopLayout = ({ controller }: InventoryDesktopLayoutProps) => 
   // A new page starts at its first row.
   const scrollRef = useScrollTopOnChange<ScrollView>(query.page);
 
-  const checkedOnPage = data.items.filter((item) => selection.checkedIds.has(item._id)).length;
-  const allChecked = data.items.length > 0 && checkedOnPage === data.items.length;
   const columns = useMemo(
-    () =>
-      inventoryColumns({
-        checkedIds: selection.checkedIds,
-        allChecked,
-        someChecked: checkedOnPage > 0 && !allChecked,
-        onToggleItem: selection.toggleItem,
-        onToggleAll: selection.toggleAllOnPage,
-        onOpen: selection.selectItem,
-      }),
-    [selection.checkedIds, allChecked, checkedOnPage, selection.toggleItem, selection.toggleAllOnPage, selection.selectItem]
+    () => inventoryColumns({ onOpen: selection.selectItem }),
+    [selection.selectItem]
   );
   const empty = inventoryEmptyCopy(query.hasActiveFilters);
   const emptyAction = query.hasActiveFilters

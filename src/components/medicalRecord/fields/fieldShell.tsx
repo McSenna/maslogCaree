@@ -14,6 +14,7 @@ export type FieldPartProps = {
   helper?: string;
   error?: string;
   disabled?: boolean;
+  boundsOverride?: { min: string | null; max: string | null };
 };
 
 export const toDateKey = (d: Date): string => {
@@ -50,11 +51,11 @@ export const FieldLabel = ({
   palette: QueuePalette;
 }) => (
   <View className="mb-1.5 flex-row items-center gap-1">
-    <Text className="text-[13px] font-semibold" style={{ color: palette.body }}>
+    <Text className="text-[15px] font-semibold" style={{ color: palette.body }}>
       {field.label}
     </Text>
     {field.required ? (
-      <Text className="text-[13px] font-semibold" style={{ color: PALETTE.red[600] }}>
+      <Text className="text-[15px] font-semibold" style={{ color: PALETTE.red[600] }}>
         *
       </Text>
     ) : null}
@@ -72,7 +73,7 @@ export const FieldHelper = ({
 }) => {
   if (!helper) return null;
   return (
-    <Text className="mt-1 text-[11.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
+    <Text className="mt-1 text-[13.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
       {helper}
     </Text>
   );

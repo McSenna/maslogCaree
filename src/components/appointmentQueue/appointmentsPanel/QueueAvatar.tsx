@@ -13,7 +13,7 @@ const QueueAvatar = ({
       className="h-9 w-9 items-center justify-center rounded-full"
       style={{ backgroundColor: palette.primarySoft }}
     >
-      <Text className="text-[12px] font-bold" style={{ color: palette.primary }}>
+      <Text className="text-[14px] font-bold" style={{ color: palette.primary }}>
         {initialsOf(name)}
       </Text>
     </View>

@@ -3,8 +3,8 @@
  * not import it directly; they read semantic roles from `useThemeColors()` or
  * the console palette (`design/adminDashboard`), which are built on it.
  *
- * Brand anchors (2026-10-02 healthcare redesign) and where they sit:
- *   Healthcare Blue  #2D5BFF  blue[600]    primary action, links, focus
+ * Brand anchors (2026-10-02 healthcare redesign, blue changed 2026-11-02) and where they sit:
+ *   Primary Blue     #1557D6  blue[600]    primary action, links, focus
  *   Healthcare Green #2BB673  green[500]   healthcare and positive accents
  *   Warm Orange      #FFA726  orange[400]  selective attention, sparingly
  *   Soft Gray        #F5F7FA  canvas       page background
@@ -18,7 +18,7 @@
  *
  * The other steps are derived from those anchors in OKLCH (same hue, stepped
  * lightness) wherever an anchor cannot meet WCAG on its own. Contrast notes:
- * - blue[600] carries white text at 5.2:1 and reads as link text on canvas at 4.8:1.
+ * - blue[600] carries white text at 6.2:1 and reads as link text on canvas at 5.8:1.
  * - green[500], orange[400], success[500] and amber[500] are 1.9 to 2.6:1 on
  *   white: fills, dots and tints only. Their text-safe steps are 700 (6.4:1+),
  *   their icon-safe steps 600 (4.5:1+).
@@ -30,16 +30,16 @@
  */
 export const PALETTE = {
   blue: {
-    50: "#F0F4FF",
-    100: "#E5ECFF",
-    200: "#CAD8FF",
-    300: "#A4BDFF",
-    400: "#7A9DFF",
-    500: "#507BFF",
-    600: "#2D5BFF",
-    700: "#1E45D9",
-    800: "#1836B0",
-    900: "#172C80",
+    50: "#F3F7FF",
+    100: "#E6EFFE",
+    200: "#CDDFFF",
+    300: "#A5C5FE",
+    400: "#71A3FF",
+    500: "#3C7EFD",
+    600: "#1557D6",
+    700: "#0043BF",
+    800: "#01369C",
+    900: "#002776",
   },
   green: {
     50: "#ECF8F2",

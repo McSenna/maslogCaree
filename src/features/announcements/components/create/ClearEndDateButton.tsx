@@ -14,7 +14,7 @@ const ClearEndDateButton = ({ onPress, disabled }: { onPress: () => void; disabl
       className="min-h-11 justify-center self-start web:cursor-pointer"
     >
       {({ pressed }) => (
-        <Text className={`text-[14px] font-semibold ${pressed ? "underline" : ""}`} style={{ color: colors.primary }}>
+        <Text className={`text-[16px] font-semibold ${pressed ? "underline" : ""}`} style={{ color: colors.primary }}>
           Remove end date
         </Text>
       )}

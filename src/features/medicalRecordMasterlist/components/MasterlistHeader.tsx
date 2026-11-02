@@ -21,6 +21,7 @@ const MasterlistHeader = ({ screen, phone, width }: Props) => {
   return (
     <View className={phone ? "gap-3" : "gap-4"}>
       <DashboardHeader
+        hideHeading
         palette={palette}
         compact={phone}
         title={MASTERLIST_TITLE}

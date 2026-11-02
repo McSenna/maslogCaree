@@ -61,7 +61,7 @@ const DateInput = ({
         />
         <Text
           numberOfLines={1}
-          style={{ flex: 1, fontSize: 15, color: value ? REG_COLORS.text : REG_COLORS.subtle }}
+          style={{ flex: 1, fontSize: 17, color: value ? REG_COLORS.text : REG_COLORS.subtle }}
         >
           {value ? formatBirthDate(value) : placeholder}
         </Text>

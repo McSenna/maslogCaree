@@ -26,8 +26,8 @@ const VerificationStatusLine = ({ statusId, feedback, hint }: VerificationStatus
           <Text
             style={{
               flexShrink: 1,
-              fontSize: 13,
-              lineHeight: 19,
+              fontSize: 15,
+              lineHeight: 21,
               fontWeight: feedback.tone === "info" ? "400" : "600",
               color: status.color,
               textAlign: "center",
@@ -37,7 +37,7 @@ const VerificationStatusLine = ({ statusId, feedback, hint }: VerificationStatus
           </Text>
         </>
       ) : (
-        <Text style={{ fontSize: 12.5, lineHeight: 18, color: REG_COLORS.muted, textAlign: "center" }}>
+        <Text style={{ fontSize: 14.5, lineHeight: 20, color: REG_COLORS.muted, textAlign: "center" }}>
           {hint}
         </Text>
       )}

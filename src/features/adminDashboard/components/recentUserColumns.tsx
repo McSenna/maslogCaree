@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-import { Badge, type Column } from "@/components/data-table";
+import { TableCellRow, Badge, type Column } from "@/components/data-table";
 import DashboardRoleBadge from "@/components/dashboard/admin/DashboardRoleBadge";
 import UserAvatar from "@/components/ui/UserAvatar";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
@@ -29,7 +29,7 @@ export const UserCell = ({
   user: DashboardUser;
   size?: number;
 }) => (
-  <View className="min-w-0 flex-row items-center gap-3" style={{ alignSelf: "stretch" }}>
+  <TableCellRow className="gap-3">
     <UserAvatar
       size={size}
       imageUrl={user.profilePhoto}
@@ -37,15 +37,15 @@ export const UserCell = ({
       fallbackBackgroundColor={palette.divider}
       fallbackIconColor={palette.subtle}
     />
-    <View className="min-w-0 flex-1">
-      <Text className="text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+    <View className="min-w-0 shrink">
+      <Text className="text-[15.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
         {user.fullname}
       </Text>
-      <Text className="text-[12px]" numberOfLines={1} style={{ color: palette.muted }}>
+      <Text className="text-[14px]" numberOfLines={1} style={{ color: palette.muted }}>
         {user.email}
       </Text>
     </View>
-  </View>
+  </TableCellRow>
 );
 
 /** Newest accounts, declared once for the header, rows and skeleton. */
@@ -57,7 +57,7 @@ export const recentUserColumns = ({
   isDark: boolean;
 }): Column<DashboardUser>[] => [
   {
-    key: "user",
+    key: "user", nameColumn: true,
     header: "User",
     flex: 2.4,
     minWidth: 200,
@@ -66,25 +66,27 @@ export const recentUserColumns = ({
   {
     key: "role",
     header: "Role",
-    width: 120,
+    align: "center",
+    width: 134,
     render: (user) => <DashboardRoleBadge role={user.role} palette={palette} isDark={isDark} />,
   },
   {
     key: "status",
     header: "Status",
-    width: 120,
+    align: "center",
+    width: 134,
     hideBelow: "lg",
     render: (user) => <AccountBadge verified={user.verified} />,
   },
   {
     key: "joined",
     header: "Joined",
-    width: 96,
-    align: "right",
+    width: 106,
+    align: "center",
     hideBelow: "md",
     render: (user) => (
       <Text
-        className="text-[12.5px] font-medium"
+        className="text-[14.5px] font-medium"
         numberOfLines={1}
         style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}
       >

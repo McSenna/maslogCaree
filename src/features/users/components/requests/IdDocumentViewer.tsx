@@ -43,7 +43,7 @@ const IdDocumentViewer = ({
     return (
       <View className={frameClass} style={{ minHeight: height }}>
         <ActivityIndicator size="large" color={PALETTE.blue[600]} />
-        <Text className={`mt-2 text-[12px] ${classes.textMuted}`}>
+        <Text className={`mt-2 text-[14px] ${classes.textMuted}`}>
           Loading secure document…
         </Text>
       </View>
@@ -54,7 +54,7 @@ const IdDocumentViewer = ({
     return (
       <View className={frameClass} style={{ minHeight: height }}>
         <Feather name="alert-circle" size={28} color={PALETTE.red[500]} />
-        <Text className="mt-2 px-6 text-center text-[12.5px] font-semibold text-red-500">
+        <Text className="mt-2 px-6 text-center text-[14.5px] font-semibold text-red-500">
           {document.error || "The ID document could not be loaded."}
         </Text>
       </View>

@@ -91,12 +91,12 @@ const MissionScheduleSheet = ({
             <View className="min-w-0 flex-1">
               <Text
                 accessibilityRole="header"
-                className={isSheet ? "text-[24px] font-bold" : "text-[27px] font-bold"}
+                className={isSheet ? "text-[26px] font-bold" : "text-[29px] font-bold"}
                 style={{ color: palette.heading, letterSpacing: -0.4 }}
               >
                 {title}
               </Text>
-              <Text className="mt-1.5 text-[13.5px] leading-[19px]" style={{ color: palette.muted }}>
+              <Text className="mt-1.5 text-[15.5px] leading-[21px]" style={{ color: palette.muted }}>
                 {subtitle}
               </Text>
             </View>

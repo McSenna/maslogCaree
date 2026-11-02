@@ -83,10 +83,10 @@ const ResidentAppointmentsTable = ({
           return (
             <View className="flex-row items-center gap-3">
               <View className="min-w-0 flex-1 gap-0.5">
-                <Text className="text-[14px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+                <Text className="text-[16px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
                   {formatConsultationTypeLabel(row.consultationType)}
                 </Text>
-                <Text className="text-[12.5px]" numberOfLines={1} style={{ color: palette.muted }}>
+                <Text className="text-[14.5px]" numberOfLines={1} style={{ color: palette.muted }}>
                   {time ? `${date}, ${time}` : date}
                 </Text>
               </View>

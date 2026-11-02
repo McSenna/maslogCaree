@@ -65,7 +65,7 @@ const OtpInput = ({
             maxLength={OTP_LENGTH}
             selectTextOnFocus
             accessibilityLabel={`Digit ${index + 1} of ${OTP_LENGTH}`}
-            className="h-14 w-[14%] text-center text-[20px] font-bold"
+            className="h-14 w-[14%] text-center text-[22px] font-bold"
             style={{
               borderRadius: 14,
               borderWidth: filled || hasError ? 1.5 : 1,

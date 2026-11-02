@@ -37,7 +37,7 @@ const YearPicker = ({ year, onSelect, height, years }: YearPickerProps) => (
         >
           <Text
             style={{
-              fontSize: 13.5,
+              fontSize: 15.5,
               fontWeight: isSelected ? "800" : "500",
               color: isSelected ? REG_COLORS.primary : REG_COLORS.text,
             }}

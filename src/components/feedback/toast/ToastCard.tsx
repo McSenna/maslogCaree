@@ -94,7 +94,7 @@ const ToastCard = ({ message, onPauseChange }: ToastCardProps) => {
 
   return (
     <View
-      accessibilityRole={message.tone === "error" ? "alert" : "summary"}
+      role={message.tone === "error" ? "alert" : "status"}
       accessibilityLiveRegion={message.tone === "error" ? "assertive" : "polite"}
       // Reading or reaching for the toast holds it on screen.
       onPointerEnter={() => onPauseChange(true)}

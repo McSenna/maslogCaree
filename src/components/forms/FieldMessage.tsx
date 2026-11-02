@@ -19,7 +19,7 @@ const FieldMessage = ({ nativeID, error, helper }: FieldMessageProps) => {
       style={{ flexDirection: "row", alignItems: "flex-start", gap: 6 }}
     >
       {error ? <Feather name="alert-circle" size={13} color={colors.danger.fg} style={{ marginTop: 2 }} /> : null}
-      <Text style={{ flex: 1, fontSize: 12.5, lineHeight: 17, color: error ? colors.danger.fg : colors.muted }}>
+      <Text style={{ flex: 1, fontSize: 14.5, lineHeight: 19, color: error ? colors.danger.fg : colors.muted }}>
         {error || helper}
       </Text>
     </View>

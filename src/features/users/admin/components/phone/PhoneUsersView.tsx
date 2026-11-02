@@ -1,60 +1,47 @@
 import { useCallback } from "react";
 import { ActivityIndicator, FlatList, RefreshControl, Text, View, type ListRenderItem } from "react-native";
 
+import { CardBottom } from "@/components/dashboard/kit/TableCard";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { UsersScreenState } from "../../hooks/useUsersScreen";
-import type { MenuAnchor, SignupRequest, User } from "../../userAdmin.types";
-import ListState from "../shared/ScreenStates";
-import { CardBottom } from "@/components/dashboard/kit/TableCard";
-import PhoneListHeader from "./PhoneListHeader";
-import PhoneRequestRow from "./PhoneRequestRow";
-import PhoneUserRow from "./PhoneUserRow";
+import type { User } from "../../userAdmin.types";
 import MasterListPhoneList from "../masterList/MasterListPhoneList";
-import SelectionBar from "./SelectionBar";
+import ListState from "../shared/ScreenStates";
+import PhoneListHeader from "./PhoneListHeader";
+import PhoneUserRow from "./PhoneUserRow";
 
-type PhoneUsersViewProps = { screen: UsersScreenState; width: number; onExport: () => void };
+type PhoneUsersViewProps = { screen: UsersScreenState; width: number };
 
-const PhoneUsersView = ({ screen, width, onExport }: PhoneUsersViewProps) => {
+const PhoneUsersView = ({ screen, width }: PhoneUsersViewProps) => {
   const palette = useAdminSurfacePalette();
-  const { view, filters, selection, menu, requestTab, openMenu, openReview } = screen;
-  const selecting = selection.count > 0;
-  const reactivate = filters.tab === "deactivated";
-  const { toggle, isSelected } = selection;
+  const { view, filters, users, actions, selfId } = screen;
   const openProfile = screen.details.openDetails;
-  const firstUserId = screen.rows[0]?.id;
-  const firstRequestId = screen.requests.items[0]?.id;
+  const firstUserId = users.items[0]?.id;
 
-  const onOpenMenu = useCallback((userId: string, anchor: MenuAnchor) => openMenu({ userId, anchor }), [openMenu]);
   const renderUser: ListRenderItem<User> = useCallback(
     ({ item }) => (
       <PhoneUserRow
         user={item}
         first={item.id === firstUserId}
-        selecting={selecting}
-        selected={isSelected(item.id)}
-        menuOpen={menu?.userId === item.id}
-        onToggle={toggle}
+        selfId={selfId}
+        savingOverrideId={actions.savingOverrideId}
         onOpenProfile={openProfile}
-        onOpenMenu={onOpenMenu}
+        onAction={actions.run}
       />
     ),
-    [firstUserId, selecting, isSelected, menu, toggle, openProfile, onOpenMenu]
-  );
-  const renderRequest: ListRenderItem<SignupRequest> = useCallback(
-    ({ item }) => <PhoneRequestRow request={item} first={item.id === firstRequestId} onReview={openReview} />,
-    [firstRequestId, openReview]
+    [firstUserId, selfId, openProfile, actions.savingOverrideId, actions.run]
   );
 
-  if (screen.masterTab) return <MasterListPhoneList screen={screen} width={width} />;
+  if (screen.masterTab) return <MasterListPhoneList screen={screen} />;
 
   const footer = (
     <View className="mx-4">
       <CardBottom>
         {view === "list" ? (
           <View className="items-center gap-2 border-t border-divider pt-3">
-            {screen.isLoadingMore ? <ActivityIndicator color={palette.primary} accessibilityLabel="Loading more users" /> : null}
-            <Text className="text-[12.5px] font-medium text-text2">{`${screen.loadedCount} of ${screen.total} ${requestTab ? "requests" : "users"}`}</Text>
+            {screen.isLoadingMore ? <ActivityIndicator color={palette.primary} accessibilityLabel="Loading more accounts" /> : null}
+            <Text className="font-medium text-text2" style={{ fontSize: 14.5 }}>{`${screen.loadedCount} of ${screen.total} accounts`}</Text>
           </View>
         ) : (
           <ListState view={view} tab={filters.tab} onRetry={screen.retry} onClearFilters={filters.clearFilters} />
@@ -63,39 +50,23 @@ const PhoneUsersView = ({ screen, width, onExport }: PhoneUsersViewProps) => {
     </View>
   );
 
-  const shared = {
-    ListHeaderComponent: <PhoneListHeader screen={screen} width={width} onExport={onExport} />,
-    ListFooterComponent: footer,
-    onEndReached: screen.loadMore,
-    onEndReachedThreshold: 0.4,
-    refreshControl: (
-      <RefreshControl refreshing={screen.users.isRefreshing || screen.requests.isRefreshing} onRefresh={screen.refreshAll} tintColor={palette.primary} colors={[palette.primary]} />
-    ),
-    contentContainerClassName: "pb-6",
-    keyboardShouldPersistTaps: "handled" as const,
-    keyboardDismissMode: "on-drag" as const,
-    showsVerticalScrollIndicator: false,
-  };
-
   return (
     <View className="flex-1">
-      <SelectionBar
-        selectedCount={selection.count}
-        reactivate={reactivate}
-        onClearSelection={selection.clear}
-        onStatus={() => screen.changeStatus(screen.selectedUsers, reactivate ? "reactivate" : "deactivate")}
+      <FlatList
+        data={view === "list" ? users.items : []}
+        keyExtractor={(item) => item.id}
+        renderItem={renderUser}
+        extraData={actions.savingOverrideId}
+        ListHeaderComponent={<PhoneListHeader screen={screen} width={width} />}
+        ListFooterComponent={footer}
+        onEndReached={screen.loadMore}
+        onEndReachedThreshold={0.4}
+        refreshControl={<RefreshControl refreshing={users.isRefreshing} onRefresh={screen.refreshAll} tintColor={palette.primary} colors={[palette.primary]} />}
+        contentContainerClassName="pb-6"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        showsVerticalScrollIndicator={false}
       />
-      {requestTab ? (
-        <FlatList data={view === "list" ? screen.requests.items : []} keyExtractor={(item) => item.id} renderItem={renderRequest} {...shared} />
-      ) : (
-        <FlatList
-          data={view === "list" ? screen.rows : []}
-          keyExtractor={(item) => item.id}
-          renderItem={renderUser}
-          extraData={`${selection.count}:${menu?.userId}`}
-          {...shared}
-        />
-      )}
     </View>
   );
 };

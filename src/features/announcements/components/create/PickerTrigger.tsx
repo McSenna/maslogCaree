@@ -71,7 +71,7 @@ const PickerTrigger = ({
         <Feather name={icon} size={16} color={look.icon} />
         <Text
           numberOfLines={1}
-          style={{ flex: 1, minWidth: 0, fontSize: 15, color: display ? colors.heading : colors.subtle }}
+          style={{ flex: 1, minWidth: 0, fontSize: 17, color: display ? colors.heading : colors.subtle }}
         >
           {display || placeholder}
         </Text>

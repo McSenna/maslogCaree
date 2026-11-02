@@ -4,7 +4,6 @@ import { useRealtimeItem } from "@/hooks/realtime/useRealtimeItem";
 import { fetchInventoryItem, type InventoryItem } from "../services/inventoryService";
 
 export const useInventorySelection = (items: InventoryItem[]) => {
-  const [checkedIds, setCheckedIds] = useState<ReadonlySet<string>>(new Set());
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // What the panel shows until the full record (with batches) arrives: the table
   // row, or the item a save just returned.
@@ -35,26 +34,6 @@ export const useInventorySelection = (items: InventoryItem[]) => {
     setPreview(null);
   }, []);
 
-  const toggleItem = useCallback((itemId: string, next: boolean) => {
-    setCheckedIds((previous) => {
-      const draft = new Set(previous);
-      if (next) draft.add(itemId);
-      else draft.delete(itemId);
-      return draft;
-    });
-  }, []);
-
-  const toggleAllOnPage = useCallback(
-    (next: boolean) => {
-      setCheckedIds((previous) => {
-        const draft = new Set(previous);
-        items.forEach((item) => (next ? draft.add(item._id) : draft.delete(item._id)));
-        return draft;
-      });
-    },
-    [items]
-  );
-
   const { mutate } = detail;
   const showItem = useCallback(
     (item: InventoryItem) => {
@@ -66,14 +45,11 @@ export const useInventorySelection = (items: InventoryItem[]) => {
   );
 
   return {
-    checkedIds,
     selectedId,
     panelItem,
     detailLoading: detail.loading,
     selectItem,
     closeDetails,
-    toggleItem,
-    toggleAllOnPage,
     showItem,
   };
 };

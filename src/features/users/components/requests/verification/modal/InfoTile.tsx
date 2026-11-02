@@ -24,12 +24,12 @@ const InfoTile = ({
       className={`p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-slate-100 dark:border-slate-800 ${className}`}
     >
       <Text
-        className={`text-[11px] font-semibold uppercase tracking-wider ${classes.textMuted}`}
+        className={`text-[13px] font-semibold uppercase tracking-wider ${classes.textMuted}`}
       >
         {label}
       </Text>
       <Text
-        className={`${size === "md" ? "text-[13.5px]" : "text-[13px]"} font-medium mt-0.5 ${
+        className={`${size === "md" ? "text-[15.5px]" : "text-[15px]"} font-medium mt-0.5 ${
           capitalize ? "capitalize " : ""
         }${classes.textPrimary}`}
       >

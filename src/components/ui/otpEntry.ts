@@ -144,5 +144,5 @@ export const otpBoxMetrics = (containerWidth: number, length: number): OtpBoxMet
   const boxWidth = Math.max(1, Math.min(MAX_BOX_WIDTH, fitted));
   const boxHeight = Math.max(MIN_TOUCH_HEIGHT, Math.min(MAX_BOX_HEIGHT, Math.round(boxWidth * 1.14)));
 
-  return { gap, boxWidth, boxHeight, fontSize: boxWidth >= 48 ? 22 : 20 };
+  return { gap, boxWidth, boxHeight, fontSize: boxWidth >= 50 ? 24 : 22 };
 };

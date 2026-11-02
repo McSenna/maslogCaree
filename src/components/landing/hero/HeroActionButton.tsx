@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     }),
   },
   label: {
-    fontSize: 15.5,
+    fontSize: 17.5,
     fontWeight: "700",
     letterSpacing: 0.1,
   },

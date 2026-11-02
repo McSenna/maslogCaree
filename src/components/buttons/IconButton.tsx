@@ -98,7 +98,7 @@ const IconButton = ({
               backgroundColor: colors.scheme === "dark" ? PALETTE.slate[200] : PALETTE.slate[800],
             }}
           >
-            <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: "500", color: colors.scheme === "dark" ? PALETTE.slate[800] : PALETTE.white }}>
+            <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: "500", color: colors.scheme === "dark" ? PALETTE.slate[800] : PALETTE.white }}>
               {label}
             </Text>
           </View>

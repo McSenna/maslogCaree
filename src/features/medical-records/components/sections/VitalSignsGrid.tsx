@@ -32,11 +32,11 @@ export const VitalSignsGrid = ({ palette, entries }: Props) => {
               borderWidth: 1,
             }}
           >
-            <Text style={{ fontSize: 12, color: palette.muted, fontWeight: "500" }}>
+            <Text style={{ fontSize: 14, color: palette.muted, fontWeight: "500" }}>
               {vital.label}
             </Text>
             <Text
-              style={{ fontSize: 16, fontWeight: "700", color: palette.heading, marginTop: 4 }}
+              style={{ fontSize: 18, fontWeight: "700", color: palette.heading, marginTop: 4 }}
             >
               {vital.value}
             </Text>

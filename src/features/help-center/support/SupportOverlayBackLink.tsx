@@ -27,7 +27,7 @@ const SupportOverlayBackLink = ({ label, onPress }: SupportOverlayBackLinkProps)
       }}
     >
       <Feather name="chevron-left" size={17} color={palette.accent} />
-      <Text style={{ fontSize: 13.5, fontWeight: "600", color: palette.accent }}>{label}</Text>
+      <Text style={{ fontSize: 15.5, fontWeight: "600", color: palette.accent }}>{label}</Text>
     </Pressable>
   );
 };

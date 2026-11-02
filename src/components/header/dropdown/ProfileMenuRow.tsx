@@ -39,7 +39,7 @@ export const ProfileMenuRow = ({
       <Text
         style={{
           fontFamily: HEADER_FONT,
-          fontSize: 13.5,
+          fontSize: 15.5,
           fontWeight: "500",
           color: tint ?? palette.title,
         }}

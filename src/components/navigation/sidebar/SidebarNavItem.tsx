@@ -60,7 +60,7 @@ const SidebarNavItem = ({
         <Feather name={icon} size={SIDEBAR_METRICS.iconSize} color={foreground} />
         <Text
           numberOfLines={2}
-          className={`min-w-0 flex-1 text-[15px] leading-[20px] ${isActive ? "font-semibold" : "font-normal"}`}
+          className={`min-w-0 flex-1 text-[17px] leading-[22px] ${isActive ? "font-semibold" : "font-normal"}`}
           style={{ color: foreground, marginLeft: SIDEBAR_METRICS.iconGap }}
         >
           {label}

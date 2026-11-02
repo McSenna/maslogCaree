@@ -55,12 +55,12 @@ const DatePickerPanel = ({ draft, cellSize }: DatePickerPanelProps) => {
           borderTopColor: REG_COLORS.border,
         }}
       >
-        <Text style={{ fontSize: 12, fontWeight: "600", color: REG_COLORS.subtle }}>
+        <Text style={{ fontSize: 14, fontWeight: "600", color: REG_COLORS.subtle }}>
           Selected Date
         </Text>
         <Text
           accessibilityLiveRegion="polite"
-          style={{ fontSize: 15.5, fontWeight: "700", color: REG_COLORS.text }}
+          style={{ fontSize: 17.5, fontWeight: "700", color: REG_COLORS.text }}
         >
           {draft.selected ? formatBirthDate(draft.selected) : "No date selected"}
         </Text>

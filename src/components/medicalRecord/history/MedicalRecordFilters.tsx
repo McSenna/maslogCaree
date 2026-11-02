@@ -39,7 +39,7 @@ const MedicalRecordFilters = ({
       >
         <Feather name="search" size={16} color={palette.subtle} />
         <TextInput
-          className="min-w-0 flex-1 text-[14px]"
+          className="min-w-0 flex-1 text-[16px]"
           style={{ color: palette.body, outlineStyle: "none" } as never}
           value={value.query}
           onChangeText={(query) => onChange({ ...value, query })}
@@ -91,7 +91,7 @@ const MedicalRecordFilters = ({
               }}
             >
               <Text
-                className="text-[12.5px] font-semibold"
+                className="text-[14.5px] font-semibold"
                 style={{ color: active ? palette.primary : palette.muted }}
               >
                 {filter.shortLabel}
@@ -102,7 +102,7 @@ const MedicalRecordFilters = ({
       </ScrollView>
 
       <View className="w-full flex-row flex-wrap items-center justify-between gap-2">
-        <Text className="text-[12px]" style={{ color: palette.muted }}>
+        <Text className="text-[14px]" style={{ color: palette.muted }}>
           {resultCount === 1 ? "1 record" : `${resultCount} records`}
         </Text>
 
@@ -124,7 +124,7 @@ const MedicalRecordFilters = ({
                 }}
               >
                 <Text
-                  className="text-[11.5px] font-semibold"
+                  className="text-[13.5px] font-semibold"
                   style={{ color: active ? palette.primary : palette.subtle }}
                 >
                   {range.label}

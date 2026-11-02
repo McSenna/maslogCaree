@@ -26,11 +26,11 @@ const EmergencyNotice = () => {
       <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
         <Text
           accessibilityRole="header"
-          style={{ fontSize: 14.5, fontWeight: "700", color: palette.warningFg }}
+          style={{ fontSize: 16.5, fontWeight: "700", color: palette.warningFg }}
         >
           Medical Emergency
         </Text>
-        <Text style={{ fontSize: 13, lineHeight: 19, color: palette.body }}>
+        <Text style={{ fontSize: 15, lineHeight: 21, color: palette.body }}>
           MaslogCare Contact Support is intended for system-related concerns and non-emergency
           assistance. Do not use the support form for medical emergencies requiring immediate
           attention. Contact the appropriate emergency service or proceed to the nearest healthcare

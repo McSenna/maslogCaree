@@ -24,16 +24,16 @@ const AdminSupportRequestDetails = ({
   return (
     <View style={{ gap: 14 }}>
       <View style={{ gap: 4 }}>
-        <Text style={{ fontSize: 11.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
+        <Text style={{ fontSize: 13.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
           Subject
         </Text>
-        <Text style={{ fontSize: 16, fontWeight: "700", color: palette.heading, lineHeight: 22 }}>
+        <Text style={{ fontSize: 18, fontWeight: "700", color: palette.heading, lineHeight: 24 }}>
           {subject}
         </Text>
       </View>
 
       <View style={{ gap: 6 }}>
-        <Text style={{ fontSize: 11.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
+        <Text style={{ fontSize: 13.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
           Description
         </Text>
         <View
@@ -45,7 +45,7 @@ const AdminSupportRequestDetails = ({
             borderColor: palette.cardBorder,
           }}
         >
-          <Text style={{ fontSize: 13.5, lineHeight: 21, color: palette.body }}>
+          <Text style={{ fontSize: 15.5, lineHeight: 23, color: palette.body }}>
             {description}
           </Text>
         </View>
@@ -53,7 +53,7 @@ const AdminSupportRequestDetails = ({
 
       {attachments.length > 0 ? (
         <View style={{ gap: 8 }}>
-          <Text style={{ fontSize: 11.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
+          <Text style={{ fontSize: 13.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
             Attachments ({attachments.length})
           </Text>
           <View style={{ gap: 8 }}>
@@ -90,10 +90,10 @@ const AdminSupportRequestDetails = ({
                     />
                   </View>
                   <View style={{ flex: 1, minWidth: 0 }}>
-                    <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "600", color: palette.heading }}>
+                    <Text numberOfLines={1} style={{ fontSize: 15, fontWeight: "600", color: palette.heading }}>
                       {file.fileName}
                     </Text>
-                    <Text style={{ fontSize: 11.5, color: palette.muted }}>
+                    <Text style={{ fontSize: 13.5, color: palette.muted }}>
                       {ext} · {formatFileSize(file.fileSize)}
                     </Text>
                   </View>

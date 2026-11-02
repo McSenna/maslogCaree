@@ -77,7 +77,7 @@ const MissionToolsSheet = ({
           >
             <Text
               accessibilityRole="header"
-              className="text-[17px] font-bold"
+              className="text-[19px] font-bold"
               style={{ color: palette.heading }}
             >
               Mission Scheduling

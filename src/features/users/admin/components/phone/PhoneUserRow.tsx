@@ -2,61 +2,65 @@ import { memo } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import DashboardRoleBadge from "@/components/dashboard/admin/DashboardRoleBadge";
-import Checkbox from "@/components/ui/Checkbox";
+import { CardSide } from "@/components/dashboard/kit/TableCard";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
-import type { MenuAnchor, User } from "../../userAdmin.types";
-import { ACCESS_LABELS, roleToApi } from "../../userAdminModel";
+import type { User } from "../../userAdmin.types";
+import { roleToApi } from "../../userAdminModel";
+import { lastLoginLines } from "../../userDates";
+import PortalAccessCell from "../shared/PortalAccessCell";
+import UserRowActions, { type UserRowActionHandlers } from "../shared/UserRowActions";
 import UserIdentity from "../ui/UserIdentity";
 import UserStatusPill from "../ui/UserStatusPill";
-import { CardSide } from "@/components/dashboard/kit/TableCard";
-import RowMenuButton from "../wide/RowMenuButton";
 
-type PhoneUserRowProps = {
+type PhoneUserRowProps = UserRowActionHandlers & {
   user: User;
   first: boolean;
-  selecting: boolean;
-  selected: boolean;
-  menuOpen: boolean;
-  onToggle: (id: string) => void;
-  onOpenProfile: (id: string) => void;
-  onOpenMenu: (id: string, anchor: MenuAnchor) => void;
 };
 
-/**
- * A stacked row inside the list card, as the dashboard's tables stack on
- * phones. Tap opens the profile; long press starts selecting, and while
- * selecting a tap checks or unchecks the row instead.
- */
-const PhoneUserRow = ({ user, first, selecting, selected, menuOpen, onToggle, onOpenProfile, onOpenMenu }: PhoneUserRowProps) => {
+const Field = ({ label, children }: { label: string; children: React.ReactNode }) => {
+  return (
+    <View className="items-start gap-1">
+      <Text className="font-medium text-text2" style={{ fontSize: 14 }}>{label}</Text>
+      {children}
+    </View>
+  );
+};
+
+/** The table's columns stacked in a card: a wide table is never squeezed onto a phone. */
+const PhoneUserRow = ({ user, first, ...handlers }: PhoneUserRowProps) => {
   const palette = useAdminSurfacePalette();
+  const login = lastLoginLines(user.lastLoginAt);
   return (
     <View className="mx-4">
       <CardSide>
-        <View className={`flex-row items-center gap-1 rounded-sm py-3 pl-1 ${first ? "" : "border-t border-divider"} ${selected ? "bg-selected" : ""}`}>
-          {selecting ? (
-            <View className="mr-2">
-              <Checkbox checked={selected} onChange={() => onToggle(user.id)} accessibilityLabel={`Select ${user.fullName}`} />
-            </View>
-          ) : null}
+        <View className={`gap-3 rounded-sm py-4 pl-1 ${first ? "" : "border-t border-divider"}`}>
           <Pressable
-            onPress={() => (selecting ? onToggle(user.id) : onOpenProfile(user.id))}
-            onLongPress={() => onToggle(user.id)}
+            onPress={() => handlers.onOpenProfile(user.id)}
             accessibilityRole="button"
             accessibilityLabel={user.fullName}
-            accessibilityHint={selecting ? "Selects or clears this user" : "Opens the profile. Long press to select"}
-            className="min-w-0 flex-1 gap-2 web:cursor-pointer"
+            accessibilityHint="Opens the account"
+            className="min-w-0 gap-3 web:cursor-pointer"
           >
-            <UserIdentity large name={user.fullName} avatarUrl={user.avatarUrl} detail={user.email} />
-            <View className="flex-row flex-wrap items-center gap-2 pl-[52px]">
-              <DashboardRoleBadge role={roleToApi(user.role)} palette={palette} isDark={palette.isDark} />
-              <UserStatusPill status={user.status} />
-              <Text className="text-[12px] font-medium text-text2">{ACCESS_LABELS[user.access]}</Text>
+            <UserIdentity large name={user.fullName} avatarUrl={user.avatarUrl} />
+            <View className="flex-row flex-wrap gap-x-6 gap-y-3 pl-[52px]">
+              <Field label="Role">
+                <DashboardRoleBadge role={roleToApi(user.role)} palette={palette} isDark={palette.isDark} />
+              </Field>
+              <Field label="Account status">
+                <UserStatusPill status={user.status} />
+              </Field>
+              <Field label="Portal access">
+                <PortalAccessCell state={user.portalAccess.state} />
+              </Field>
+              <Field label="Last login">
+                <Text className="text-body" style={{ fontSize: 15 }}>{login.time ? `${login.date}, ${login.time}` : login.date}</Text>
+              </Field>
             </View>
           </Pressable>
-          {selecting ? null : (
-            <RowMenuButton name={user.fullName} open={menuOpen} onOpen={(anchor) => onOpenMenu(user.id, anchor)} />
-          )}
+          <View className="pl-[52px]">
+            <UserRowActions user={user} touch {...handlers} />
+          </View>
         </View>
       </CardSide>
     </View>

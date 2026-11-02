@@ -19,7 +19,7 @@ const AboutSectionHeader = ({
         <MedicalCross size={14} color={HC.teal} />
         <Text
           style={{
-            fontSize: isTablet ? 10 : 9,
+            fontSize: isTablet ? 12 : 11,
             fontWeight: "800",
             color: HC.teal,
             letterSpacing: 2,
@@ -29,7 +29,7 @@ const AboutSectionHeader = ({
           {eyebrow}
         </Text>
       </View>
-      <Text style={{ fontSize: isTablet ? 22 : 18, fontWeight: "900", color: HC.navy }}>
+      <Text style={{ fontSize: isTablet ? 24 : 20, fontWeight: "900", color: HC.navy }}>
         {title}
       </Text>
     </View>

@@ -6,6 +6,8 @@ import { PALETTE } from "@/theme/palette";
 
 type Props = {
   isPending: boolean;
+  /** A rejected request can still be approved, never rejected again. */
+  canApprove: boolean;
   approving: boolean;
   rejecting: boolean;
   onClose: () => void;
@@ -15,6 +17,7 @@ type Props = {
 
 const VerificationModalFooter = ({
   isPending,
+  canApprove,
   approving,
   rejecting,
   onClose,
@@ -36,37 +39,36 @@ const VerificationModalFooter = ({
 
       <View className="flex-row items-center gap-3">
         {isPending && (
-          <>
-            <Pressable
-              onPress={onReject}
-              disabled={busy}
-              accessibilityRole="button"
-              className="h-11 px-4 flex-row items-center gap-2 rounded-xl border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/30"
-              style={{ opacity: busy ? 0.6 : 1 }}
-            >
-              <Feather name="x-circle" size={15} color={PALETTE.red[600]} />
-              <Text className="text-sm font-bold text-red-600 dark:text-red-400">
-                Reject Request
-              </Text>
-            </Pressable>
-
-            <Pressable
-              onPress={onApprove}
-              disabled={busy}
-              accessibilityRole="button"
-              className="h-11 px-5 flex-row items-center gap-2 rounded-xl bg-green-600 shadow-sm"
-              style={{ opacity: busy ? 0.75 : 1 }}
-            >
-              {approving ? (
-                <ActivityIndicator size="small" color={PALETTE.white} />
-              ) : (
-                <Feather name="check-circle" size={15} color={PALETTE.white} />
-              )}
-              <Text className="text-sm font-bold text-white">
-                {approving ? "Approving..." : "Approve Resident"}
-              </Text>
-            </Pressable>
-          </>
+          <Pressable
+            onPress={onReject}
+            disabled={busy}
+            accessibilityRole="button"
+            className="h-11 px-4 flex-row items-center gap-2 rounded-xl border border-red-300 dark:border-red-800 bg-red-50 dark:bg-red-950/30"
+            style={{ opacity: busy ? 0.6 : 1 }}
+          >
+            <Feather name="x-circle" size={15} color={PALETTE.red[600]} />
+            <Text className="text-sm font-bold text-red-600 dark:text-red-400">
+              Reject Request
+            </Text>
+          </Pressable>
+        )}
+        {canApprove && (
+          <Pressable
+            onPress={onApprove}
+            disabled={busy}
+            accessibilityRole="button"
+            className="h-11 px-5 flex-row items-center gap-2 rounded-xl bg-green-600 shadow-sm"
+            style={{ opacity: busy ? 0.75 : 1 }}
+          >
+            {approving ? (
+              <ActivityIndicator size="small" color={PALETTE.white} />
+            ) : (
+              <Feather name="check-circle" size={15} color={PALETTE.white} />
+            )}
+            <Text className="text-sm font-bold text-white">
+              {approving ? "Approving..." : "Approve Resident"}
+            </Text>
+          </Pressable>
         )}
       </View>
     </View>

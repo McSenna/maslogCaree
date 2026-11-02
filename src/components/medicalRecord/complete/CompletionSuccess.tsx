@@ -39,10 +39,10 @@ const CompletionSuccess = ({
       </View>
 
       <View className="items-center gap-1.5">
-        <Text accessibilityRole="header" className="text-center text-[18px] font-bold" style={{ color: palette.heading }}>
+        <Text accessibilityRole="header" className="text-center text-[20px] font-bold" style={{ color: palette.heading }}>
           Appointment completed
         </Text>
-        <Text className="text-center text-[13px] leading-[19px]" style={{ color: palette.muted }}>
+        <Text className="text-center text-[15px] leading-[21px]" style={{ color: palette.muted }}>
           The medical record was saved successfully.
         </Text>
       </View>
@@ -59,7 +59,7 @@ const CompletionSuccess = ({
         {outcomes.map((line) => (
           <View key={line} className="flex-row items-start gap-2.5">
             <Feather name="check-circle" size={14} color={green.fg} style={{ marginTop: 1.5 }} />
-            <Text className="min-w-0 flex-1 text-[12.5px] leading-[18px]" style={{ color: palette.body }}>
+            <Text className="min-w-0 flex-1 text-[14.5px] leading-[20px]" style={{ color: palette.body }}>
               {line}
             </Text>
           </View>
@@ -79,7 +79,7 @@ const CompletionSuccess = ({
               borderColor: palette.panelBorder,
             }}
           >
-            <Text className="text-[14px] font-semibold" style={{ color: palette.body }}>
+            <Text className="text-[16px] font-semibold" style={{ color: palette.body }}>
               View Record
             </Text>
           </Pressable>
@@ -96,7 +96,7 @@ const CompletionSuccess = ({
             backgroundColor: palette.primary,
           }}
         >
-          <Text className="text-[14px] font-semibold text-white">Return to Queue</Text>
+          <Text className="text-[16px] font-semibold text-white">Return to Queue</Text>
         </Pressable>
       </View>
     </View>

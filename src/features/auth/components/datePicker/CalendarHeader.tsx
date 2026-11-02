@@ -78,7 +78,7 @@ const CalendarHeader = ({
         borderRadius: 12,
       }}
     >
-      <Text style={{ fontSize: 16, fontWeight: "800", color: REG_COLORS.text }}>
+      <Text style={{ fontSize: 18, fontWeight: "800", color: REG_COLORS.text }}>
         {monthLabel(year, monthIndex)}
       </Text>
       <Feather

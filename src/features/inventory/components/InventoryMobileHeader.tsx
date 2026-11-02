@@ -24,12 +24,12 @@ const InventoryMobileHeader = ({
       <View className="w-full gap-1">
         <Text
           accessibilityRole="header"
-          className="text-[26px] font-extrabold"
+          className="text-[28px] font-extrabold"
           style={{ color: palette.heading }}
         >
           Inventory Management
         </Text>
-        <Text className="text-[14px] font-medium" style={{ color: palette.muted }}>
+        <Text className="text-[16px] font-medium" style={{ color: palette.muted }}>
           Manage medicines, vaccines, supplies and equipment
         </Text>
       </View>

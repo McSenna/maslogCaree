@@ -42,7 +42,7 @@ const SelectOptionSheet = ({
         <View className="flex-row items-center justify-between px-5 pb-3 pt-2">
           <Text
             accessibilityRole="header"
-            style={{ fontSize: 16, fontWeight: "700", color: APPOINTMENT_COLORS.primaryDeep }}
+            style={{ fontSize: 18, fontWeight: "700", color: APPOINTMENT_COLORS.primaryDeep }}
           >
             {sheetTitle ?? label}
           </Text>
@@ -70,7 +70,7 @@ const SelectOptionSheet = ({
         />
         <Text
           className="mt-2 text-center"
-          style={{ fontSize: 13.5, color: APPOINTMENT_COLORS.mutedText }}
+          style={{ fontSize: 15.5, color: APPOINTMENT_COLORS.mutedText }}
         >
           {emptyText}
         </Text>

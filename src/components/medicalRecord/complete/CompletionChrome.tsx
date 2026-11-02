@@ -17,7 +17,7 @@ export const ErrorBanner = ({ message }: { message: string }) => {
       }}
     >
       <Feather name="alert-circle" size={15} color={PALETTE.red[600]} style={{ marginTop: 1 }} />
-      <Text className="min-w-0 flex-1 text-[12.5px] font-medium leading-[17px]" style={{ color: PALETTE.red[600] }}>
+      <Text className="min-w-0 flex-1 text-[14.5px] font-medium leading-[19px]" style={{ color: PALETTE.red[600] }}>
         {message}
       </Text>
     </View>
@@ -39,7 +39,7 @@ export const CompletionPlaceholder = ({
       ) : (
         <ActivityIndicator size="small" color={palette.primary} />
       )}
-      <Text className="text-center text-[12.5px] leading-[18px]" style={{ color: palette.muted }}>
+      <Text className="text-center text-[14.5px] leading-[20px]" style={{ color: palette.muted }}>
         {message}
       </Text>
     </View>
@@ -77,7 +77,7 @@ export const FooterButtons = ({
           opacity: busy ? 0.5 : 1,
         }}
       >
-        <Text className="text-[14px] font-semibold" style={{ color: palette.body }}>
+        <Text className="text-[16px] font-semibold" style={{ color: palette.body }}>
           {backLabel}
         </Text>
       </Pressable>
@@ -97,7 +97,7 @@ export const FooterButtons = ({
         }}
       >
         {busy ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
-        <Text className="text-[14px] font-semibold text-white">{nextLabel}</Text>
+        <Text className="text-[16px] font-semibold text-white">{nextLabel}</Text>
       </Pressable>
     </View>
   );

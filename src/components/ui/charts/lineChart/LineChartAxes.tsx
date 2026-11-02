@@ -48,7 +48,7 @@ const LineChartAxes = ({
                 left: 0,
                 right: 0,
                 textAlign: "right",
-                fontSize: 10,
+                fontSize: 12,
                 fontVariant: ["tabular-nums"],
                 color: tickColor,
               }}
@@ -74,7 +74,7 @@ const LineChartAxes = ({
                 left,
                 width: boxW,
                 textAlign: "center",
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: i === activeIndex || i === emphasisIndex ? "600" : "400",
                 color: i === emphasisIndex && emphasisColor ? emphasisColor : tickColor,
               }}

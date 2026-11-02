@@ -1,6 +1,6 @@
 /**
  * Metric and category accents, named by meaning so a colour is never picked for
- * looks: primary (Healthcare Blue) for core counts, care (Healthcare Green) for
+ * looks: primary (primary blue) for core counts, care (Healthcare Green) for
  * healthcare and positive measures, accent (Warm Orange) for what needs a look,
  * danger for failures, neutral for everything else.
  */

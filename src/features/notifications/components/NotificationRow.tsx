@@ -28,7 +28,11 @@ const NotificationRow = ({
   const palette = useNotificationPalette();
   const visual = resolveNotificationVisual(item, palette);
   const timestamp = formatNotificationTime(item, now);
-  const displayBody = useMemo(() => formatNotificationMessage(item.body), [item.body]);
+  const displayBody = useMemo(() => {
+    const detail = !compact ? item.immunizationDetail : null;
+    if (detail) return `${formatNotificationMessage(item.body)} ${detail.babyName}: ${detail.vaccines.map((vaccine) => `${vaccine.name} ${vaccine.label}`).join(", ")}. Scheduled: ${detail.scheduledOn.slice(0, 10)}. Contact or visit the health center.`;
+    return formatNotificationMessage(item.body);
+  }, [compact, item.body, item.immunizationDetail]);
   const iconSize = compact ? NOTIFICATION_METRICS.compactIconSize : NOTIFICATION_METRICS.iconSize;
 
   const handlePress = useCallback(() => onPress(item), [item, onPress]);
@@ -93,8 +97,8 @@ const NotificationRow = ({
             style={{
               flex: 1,
               minWidth: 0,
-              fontSize: compact ? 13.5 : 15,
-              lineHeight: compact ? 18 : 20,
+              fontSize: compact ? 15.5 : 17,
+              lineHeight: compact ? 20 : 22,
               fontWeight: item.isRead ? "600" : "700",
               color: palette.heading,
             }}
@@ -122,8 +126,8 @@ const NotificationRow = ({
           maxFontSizeMultiplier={1.3}
           style={{
             marginTop: NOTIFICATION_METRICS.titleDescGap,
-            fontSize: compact ? 12.5 : 13.5,
-            lineHeight: compact ? 17 : 19,
+            fontSize: compact ? 14.5 : 15.5,
+            lineHeight: compact ? 19 : 21,
             color: item.isRead ? palette.muted : palette.body,
           }}
         >
@@ -135,7 +139,7 @@ const NotificationRow = ({
             maxFontSizeMultiplier={1.3}
             style={{
               marginTop: NOTIFICATION_METRICS.descTimeGap,
-              fontSize: compact ? 11.5 : 12,
+              fontSize: compact ? 13.5 : 14,
               fontWeight: "500",
               color: palette.subtle,
             }}

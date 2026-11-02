@@ -15,7 +15,7 @@ const BhwGrid = ({ members, isTablet }: BhwGridProps) => {
       <Text
         style={{
           color: HC.slateLight,
-          fontSize: 14,
+          fontSize: 16,
           textAlign: "center",
           paddingVertical: 20,
         }}

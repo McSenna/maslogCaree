@@ -54,20 +54,20 @@ export const computeDesktopLandingLayout = ({
 
     brand: {
       logoSize: scale(64, 110),
-      titleFontSize: scale(34, 56),
+      titleFontSize: scale(36, 58),
     },
 
     headline: {
-      headlineSize: scale(30, 46),
-      descriptionSize: scale(15, 19),
+      headlineSize: scale(32, 48),
+      descriptionSize: scale(17, 21),
       gap: scale(8, 12),
     },
 
     features: {
       iconBox: scale(44, 60),
       iconSize: scale(22, 30),
-      titleSize: scale(15.5, 19),
-      descriptionSize: scale(13, 15.5),
+      titleSize: scale(17.5, 21),
+      descriptionSize: scale(15, 17.5),
       rowGap: scale(8, 16),
       rowPadding: scale(6, 10),
       panelGap: scale(10, 16),

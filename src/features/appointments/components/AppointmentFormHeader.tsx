@@ -32,11 +32,11 @@ const AppointmentFormHeader = ({
       <View className="min-w-0 flex-1">
         <Text
           accessibilityRole="header"
-          style={{ fontSize: 21, fontWeight: "800", color: APPOINTMENT_COLORS.primary }}
+          style={{ fontSize: 23, fontWeight: "800", color: APPOINTMENT_COLORS.primary }}
         >
           Book an Appointment
         </Text>
-        <Text style={{ fontSize: 13.5, color: APPOINTMENT_COLORS.mutedText }}>
+        <Text style={{ fontSize: 15.5, color: APPOINTMENT_COLORS.mutedText }}>
           Resident Appointment Form
         </Text>
       </View>

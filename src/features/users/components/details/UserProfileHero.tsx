@@ -104,9 +104,9 @@ const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
 
           <View className={`min-w-0 ${compact ? "items-center" : "flex-1"}`}>
             <Text
-              className={compact ? "text-[24px] font-bold" : "text-[30px] font-bold"}
+              className={compact ? "text-[26px] font-bold" : "text-[32px] font-bold"}
               numberOfLines={2}
-              style={{ color: palette.heading, lineHeight: compact ? 30 : 36 }}
+              style={{ color: palette.heading, lineHeight: compact ? 32 : 38 }}
             >
               {user.fullname}
             </Text>
@@ -120,7 +120,7 @@ const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
             </View>
 
             <Text
-              className={`mt-3 text-[13px] italic ${compact ? "text-center" : ""}`}
+              className={`mt-3 text-[15px] italic ${compact ? "text-center" : ""}`}
               style={{ color: palette.muted }}
             >
               {HERO_TAGLINE}
@@ -131,10 +131,10 @@ const UserProfileHero = ({ user, compact }: UserProfileHeroProps) => {
         <View className={`flex-row items-center gap-2.5 ${compact ? "" : "pl-6"}`}>
           <MaslogCareLogo size={44} />
           <View>
-            <Text className="text-[19px] font-bold" style={{ color: palette.primary }}>
+            <Text className="text-[21px] font-bold" style={{ color: palette.primary }}>
               MaslogCare
             </Text>
-            <Text className="mt-0.5 text-[10.5px] font-medium" style={{ color: palette.subtle }}>
+            <Text className="mt-0.5 text-[12.5px] font-medium" style={{ color: palette.subtle }}>
               People • Health • Community
             </Text>
           </View>

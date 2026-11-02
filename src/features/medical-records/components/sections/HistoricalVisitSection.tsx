@@ -1,3 +1,4 @@
+import { immunizationProgressLabel } from "@/services/immunizationRecordProgress";
 import { View } from "react-native";
 
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
@@ -10,7 +11,11 @@ type Props = { palette: ResidentDialogPalette; record: MedicalRecord; serviceLab
 
 /** In place of appointment details: a record the health center had on file before it was added here. */
 export const HistoricalVisitSection = ({ palette, record, serviceLabel }: Props) => {
+  const baby = typeof record.immunizationBabyId === "object" ? record.immunizationBabyId : null;
   const rows = [
+    { label: "Baby", value: baby?.name || "" },
+    { label: "Baby ID", value: baby?._id || "" },
+    { label: "Status", value: immunizationProgressLabel(record) || "" },
     { label: "Service", value: serviceLabel },
     { label: "Visit date", value: formatDate(record.completedAt) },
     { label: "Source", value: "From barangay health center records" },

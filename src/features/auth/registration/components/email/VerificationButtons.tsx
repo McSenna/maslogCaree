@@ -35,7 +35,7 @@ export const LinkButton = ({ label, accessibilityLabel, icon, onPress }: LinkBut
       <Feather name={icon} size={14} color={REG_COLORS.primary} />
       <Text
         style={{
-          fontSize: 13.5,
+          fontSize: 15.5,
           fontWeight: "600",
           color: REG_COLORS.primary,
           textDecorationLine: hovered ? "underline" : "none",
@@ -91,7 +91,7 @@ export const PrimaryButton = ({
     })}
   >
     {busy ? <ActivityIndicator size="small" color={REG_COLORS.surface} /> : null}
-    <Text style={{ fontSize: 15, fontWeight: "700", color: REG_COLORS.surface }}>
+    <Text style={{ fontSize: 17, fontWeight: "700", color: REG_COLORS.surface }}>
       {busy && busyLabel ? busyLabel : label}
     </Text>
   </Pressable>

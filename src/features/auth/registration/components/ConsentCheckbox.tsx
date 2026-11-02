@@ -52,8 +52,8 @@ const ConsentCheckbox = ({ checked, onChange }: ConsentCheckboxProps) => {
         <Text
           style={{
             flex: 1,
-            fontSize: 13.5,
-            lineHeight: 20,
+            fontSize: 15.5,
+            lineHeight: 22,
             color: REG_COLORS.text,
           }}
         >

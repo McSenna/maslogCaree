@@ -19,7 +19,7 @@ const PickerFieldShell = ({ label, messageId, error, helper, required = false, c
 
   return (
     <View style={{ width: "100%", gap: 6 }}>
-      <Text style={{ fontSize: 13, fontWeight: "600", color: colors.heading }}>
+      <Text style={{ fontSize: 15, fontWeight: "600", color: colors.heading }}>
         {label}
         {required ? <Text style={{ color: colors.danger.fg }}> *</Text> : null}
       </Text>

@@ -18,12 +18,12 @@ const ResidentSheetHeader = ({
       <Text
         nativeID={TITLE_ID}
         accessibilityRole="header"
-        className="text-[17px] font-bold"
+        className="text-[19px] font-bold"
         style={{ color: palette.heading }}
       >
         Resident Details
       </Text>
-      <Text className="mt-0.5 text-[12.5px]" style={{ color: palette.muted }}>
+      <Text className="mt-0.5 text-[14.5px]" style={{ color: palette.muted }}>
         Registered resident information
       </Text>
     </View>

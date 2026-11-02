@@ -55,13 +55,13 @@ const FormSelectField = ({
           <Text
             accessibilityRole="alert"
             className="flex-1"
-            style={{ fontSize: 12.5, color: APPOINTMENT_COLORS.danger }}
+            style={{ fontSize: 14.5, color: APPOINTMENT_COLORS.danger }}
           >
             {error}
           </Text>
         </View>
       ) : helperText ? (
-        <Text className="mt-1.5" style={{ fontSize: 12.5, color: APPOINTMENT_COLORS.mutedText }}>
+        <Text className="mt-1.5" style={{ fontSize: 14.5, color: APPOINTMENT_COLORS.mutedText }}>
           {helperText}
         </Text>
       ) : null}

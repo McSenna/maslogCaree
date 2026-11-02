@@ -1,156 +1,133 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
-import type { ApiUser } from "../admin/userAdmin.types.ts";
-import {
-  TAB_COUNT,
-  activeShareNote,
-  initialsOf,
-  toSignupRequest,
-  toSummary,
-  toUser,
-  toUsers,
-} from "../admin/userAdminModel.ts";
-import { buildUsersCsv } from "../admin/userCsv.ts";
-import { lastLoginLines, monthStartNote } from "../admin/userDates.ts";
-import { applyStatusChanges, statusToastMessage } from "../admin/userStatusOverlay.ts";
+import type { ApiUser, ApiUserSummary } from "../admin/userAdmin.types.ts";
+import { TAB_COUNT, activeShareNote, initialsOf, pageAfterChange, segmentOf, statusOptionsFor, statusParamOf, toSummary, toUser, toUsers } from "../admin/userAdminModel.ts";
+import { lastLoginLines } from "../admin/userDates.ts";
 
 // Test fixtures only: invented values, never real residents.
 const apiUser = (overrides: Partial<ApiUser> = {}): ApiUser => ({
-  _id: "u1",
+  id: "u1",
   fullname: "Test Person Alpha",
   email: "alpha@example.test",
   role: "doctor",
   status: "active",
-  address: "  Purok 1  ",
-  profilePhoto: "",
-  platformAccess: { web: true, mobile: true },
-  createdAt: "2026-09-01T00:00:00.000Z",
+  statusGroup: "active",
+  location: "  Purok 1  ",
+  avatarUrl: "",
   lastLogin: null,
+  createdAt: "2026-09-01T00:00:00.000Z",
+  updatedAt: "2026-09-02T00:00:00.000Z",
+  verificationId: null,
+  portalAccess: { web: true, mobile: true, override: null, globalEnabled: false, eligible: true, revision: 0, state: "staff" },
   ...overrides,
 });
 
+const summary: ApiUserSummary = { total: 10, staff: 3, residents: 7, active: 6, approved: 1, requests: 1, rejected: 1, deactivated: 2, activePercent: 60, masterlist: 40 };
+
 describe("toUser", () => {
   it("maps API fields to the display type", () => {
-    assert.deepEqual(toUser(apiUser()), {
-      id: "u1",
-      fullName: "Test Person Alpha",
-      email: "alpha@example.test",
-      role: "Doctor",
-      access: "web_and_mobile",
-      location: "Purok 1",
-      status: "active",
-      avatarUrl: null,
-      createdAt: "2026-09-01T00:00:00.000Z",
-      lastLoginAt: null,
-    });
+    const user = toUser(apiUser());
+    assert.equal(user?.id, "u1");
+    assert.equal(user?.fullName, "Test Person Alpha");
+    assert.equal(user?.role, "Doctor");
+    assert.equal(user?.status, "active");
+    assert.equal(user?.location, "Purok 1");
+    assert.equal(user?.avatarUrl, null);
+    assert.equal(user?.lastLoginAt, null);
+    assert.equal(user?.updatedAt, "2026-09-02T00:00:00.000Z");
+    assert.equal(user?.portalAccess.state, "staff");
   });
 
-  it("folds older status names into deactivated", () => {
-    for (const status of ["inactive", "suspended", "deactivated"]) {
-      assert.equal(toUser(apiUser({ status }))?.status, "deactivated");
-    }
+  it("reads the status from the server's group, so older stored names read as Deactivated", () => {
+    assert.equal(toUser(apiUser({ status: "suspended", statusGroup: "deactivated" }))?.status, "deactivated");
+    assert.equal(toUser(apiUser({ status: "pending", statusGroup: "requested", verificationId: "v1" }))?.verificationId, "v1");
   });
 
-  it("drops pending and rejected accounts, which belong to the request queue", () => {
-    assert.equal(toUsers([apiUser({ status: "pending" }), apiUser({ status: "rejected" }), apiUser()]).length, 1);
-  });
-
-  it("marks residents mobile only and uppercases BHW", () => {
-    const resident = toUser(apiUser({ role: "resident", status: "approved", platformAccess: { web: false, mobile: true } }));
-    assert.equal(resident?.access, "mobile_only");
-    assert.equal(toUser(apiUser({ role: "bhw" }))?.role, "BHW");
+  it("drops a record with an unknown role", () => {
+    assert.deepEqual(toUsers([apiUser({ role: "owner" }), apiUser({ id: "u2" })]).map((user) => user.id), ["u2"]);
   });
 });
 
 describe("initialsOf", () => {
-  it("takes the first letter of the first two words", () => {
+  it("uses the first letters of the first two words", () => {
     assert.equal(initialsOf("test person alpha"), "TP");
-    assert.equal(initialsOf("  Single  "), "S");
-    assert.equal(initialsOf(""), "");
+    assert.equal(initialsOf("  Solo  "), "S");
   });
 });
 
 describe("summary", () => {
-  const summary = toSummary({
-    total: 10, staff: 4, residents: 6, active: 3, approved: 5, deactivated: 2,
-    addedThisMonth: 1, masterlist: 23, pendingRequests: 7, rejectedRequests: 9,
+  it("keeps the server's own counts", () => {
+    const mapped = toSummary(summary);
+    assert.equal(mapped.active, 6);
+    assert.equal(mapped.requests, 1);
+    assert.equal(mapped.activePercent, 60);
   });
 
-  it("counts approved residents as active", () => {
-    assert.equal(summary.active, 8);
-    assert.equal(TAB_COUNT.active(summary), 8);
+  it("counts each segment from its own number", () => {
+    const mapped = toSummary(summary);
+    assert.equal(TAB_COUNT.active?.(mapped), 6);
+    assert.equal(TAB_COUNT.requests?.(mapped), 1);
+    assert.equal(TAB_COUNT.rejected?.(mapped), 1);
+    assert.equal(TAB_COUNT.deactivated?.(mapped), 2);
+    assert.equal(TAB_COUNT.accounts?.(mapped), 10);
   });
 
-  it("feeds every tab badge", () => {
-    assert.deepEqual(
-      [TAB_COUNT.requests(summary), TAB_COUNT.rejected(summary), TAB_COUNT.deactivated(summary), TAB_COUNT.accounts?.(summary)],
-      [7, 9, 2, 10]
-    );
-  });
-
-  it("keeps the masterlist total independent of account and monthly totals", () => {
-    assert.equal(summary.masterlist, 23);
-  });
-
-  it("rounds the active share and handles an empty system", () => {
-    assert.equal(activeShareNote(summary), "80% of all accounts");
-    assert.equal(activeShareNote({ ...summary, total: 0, active: 0 }), "No accounts yet");
+  it("words the Active card's chip", () => {
+    assert.equal(activeShareNote(toSummary(summary)), "60% of accounts");
+    assert.equal(activeShareNote(toSummary({ ...summary, total: 0 })), "No accounts yet");
   });
 });
 
-describe("toSignupRequest", () => {
-  it("maps a pending verification", () => {
-    const request = toSignupRequest({
-      _id: "r1",
-      verificationStatus: "pending",
-      registeredAt: "2026-09-30T02:00:00.000Z",
-      resident: { fullname: "Test Applicant", email: "applicant@example.test", address: "Purok 3" },
-    });
-    assert.equal(request.role, "Resident");
-    assert.equal(request.status, "pending");
-    assert.equal(request.avatarUrl, null);
+describe("API parameters", () => {
+  it("keeps ?section=accounts links working by sending the all segment", () => {
+    assert.equal(segmentOf("accounts"), "all");
+    assert.equal(segmentOf("requests"), "requests");
+  });
+
+  it("leaves the status off for all statuses", () => {
+    assert.equal(statusParamOf("all"), undefined);
+    assert.equal(statusParamOf("approved"), "approved");
   });
 });
 
 describe("dates", () => {
-  it("shows Never with no time when the user has not signed in", () => {
+  it("reads Never with no time line before the first sign-in", () => {
     assert.deepEqual(lastLoginLines(null), { date: "Never", time: "" });
   });
 
-  it("names the first of the current month", () => {
-    assert.match(monthStartNote(new Date(2026, 9, 2)), /^Since 1 \S+ 2026$/);
+  it("gives a date and a time after one", () => {
+    const lines = lastLoginLines("2026-09-20T08:05:00.000Z");
+    assert.match(lines.date, /2026/);
+    assert.ok(lines.time.length > 0);
   });
 });
 
-describe("buildUsersCsv", () => {
-  it("quotes cells and defuses formulas", () => {
-    const user = toUser(apiUser({ fullname: "=HYPERLINK(\"x\")" }));
-    assert.ok(user);
-    const [, row] = buildUsersCsv([user]).split("\r\n");
-    assert.ok(row.startsWith(`"'=HYPERLINK(""x"")"`), row);
-    assert.ok(row.includes(`"Never"`), row);
+describe("statusOptionsFor", () => {
+  it("offers approved and active inside the Active list", () => {
+    assert.deepEqual(statusOptionsFor("active"), ["approved", "active"]);
+  });
+
+  it("offers nothing for a list of one state, so the select is disabled", () => {
+    assert.deepEqual(statusOptionsFor("deactivated"), []);
+    assert.deepEqual(statusOptionsFor("requests"), []);
+  });
+
+  it("offers all five in All accounts", () => {
+    assert.equal(statusOptionsFor("accounts").length, 5);
   });
 });
 
-describe("applyStatusChanges", () => {
-  const doctor = toUser(apiUser());
-  const resident = toUser(apiUser({ _id: "u2", role: "resident", status: "deactivated" }));
-  assert.ok(doctor && resident);
-
-  it("hides changed rows outside all accounts", () => {
-    const rows = applyStatusChanges([doctor, resident], [{ ids: ["u1"], action: "deactivate" }], "active");
-    assert.deepEqual(rows.map((user) => user.id), ["u2"]);
+describe("pageAfterChange", () => {
+  it("stays put while the page still has rows", () => {
+    assert.equal(pageAfterChange(3, 41, 20), 3);
   });
 
-  it("changes the status in place on all accounts", () => {
-    const rows = applyStatusChanges([doctor, resident], [{ ids: ["u2"], action: "reactivate" }], "accounts");
-    assert.equal(rows[1].status, "approved");
-    assert.equal(rows[0].status, "active");
+  it("moves back when the only row on the last page leaves", () => {
+    assert.equal(pageAfterChange(3, 40, 20), 2);
   });
 
-  it("words the toast for one or many users", () => {
-    assert.equal(statusToastMessage(["Test Person"], "deactivate"), "Test Person deactivated.");
-    assert.equal(statusToastMessage(["A", "B"], "reactivate"), "2 users reactivated.");
+  it("stays on page one when nothing is left", () => {
+    assert.equal(pageAfterChange(1, 0, 20), 1);
   });
 });

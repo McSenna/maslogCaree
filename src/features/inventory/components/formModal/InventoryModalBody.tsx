@@ -36,7 +36,7 @@ const InventoryModalBody = ({ isMobile, error, children }: Props) => {
         >
           <Feather name="alert-circle" size={14} color={palette.danger} />
           <Text
-            className="min-w-0 flex-1 text-[12.5px] font-medium"
+            className="min-w-0 flex-1 text-[14.5px] font-medium"
             style={{ color: palette.danger }}
           >
             {error}

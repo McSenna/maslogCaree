@@ -12,7 +12,7 @@ const StepProgress = ({
 
   return (
     <View className="flex-row items-center" style={{ gap: 12 }}>
-      <Text style={{ fontSize: 14, fontWeight: "700", color: APPOINTMENT_COLORS.primary }}>
+      <Text style={{ fontSize: 16, fontWeight: "700", color: APPOINTMENT_COLORS.primary }}>
         Step {step} of {totalSteps}
       </Text>
       <View

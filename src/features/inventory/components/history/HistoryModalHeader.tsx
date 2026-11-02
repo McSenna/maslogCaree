@@ -22,12 +22,12 @@ const HistoryModalHeader = ({ itemName, total, onClose }: Props) => {
       <View className="min-w-0 flex-1">
         <Text
           accessibilityRole="header"
-          className="text-[16px] font-bold"
+          className="text-[18px] font-bold"
           style={{ color: palette.heading }}
         >
           Inventory History
         </Text>
-        <Text className="mt-0.5 text-[12.5px]" numberOfLines={1} style={{ color: palette.muted }}>
+        <Text className="mt-0.5 text-[14.5px]" numberOfLines={1} style={{ color: palette.muted }}>
           {itemName}
           {total > 0 ? ` · ${total.toLocaleString()} movement${total === 1 ? "" : "s"}` : ""}
         </Text>

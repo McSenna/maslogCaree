@@ -100,11 +100,11 @@ const VerificationCodeBlock = ({
         <Text
           nativeID={titleId}
           accessibilityRole="header"
-          style={{ fontSize: 19, fontWeight: "700", color: REG_COLORS.heading, textAlign: "center" }}
+          style={{ fontSize: 21, fontWeight: "700", color: REG_COLORS.heading, textAlign: "center" }}
         >
           Verify your email
         </Text>
-        <Text style={{ fontSize: 14, lineHeight: 20, color: REG_COLORS.muted, textAlign: "center" }}>
+        <Text style={{ fontSize: 16, lineHeight: 22, color: REG_COLORS.muted, textAlign: "center" }}>
           Enter the {OTP_LENGTH}-digit code we sent to{" "}
           <Text style={{ fontWeight: "600", color: REG_COLORS.text }}>{maskEmail(email)}</Text>.
         </Text>

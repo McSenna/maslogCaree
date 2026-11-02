@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { toast } from "@/components/feedback";
 
 import type { MasterResidentRecord } from "../masterList.types";
 import { masterFullName } from "../masterResidentForm";
 import { resolveMasterListView } from "../masterListView";
-import { setMasterResidentActive } from "../services/masterListApi";
+import { deleteMasterResident, setMasterResidentActive } from "../services/masterListApi";
 import { useMasterList } from "./useMasterList";
+import { normalizeApiError } from "@/utils/apiErrorHandler";
 import { toastError } from "@/utils/errorToast/toastError";
 
 /** Editor: null when closed, "new" to add, or the record being edited. */
@@ -18,6 +19,30 @@ export const useMasterListScreen = ({ isPhone, onChanged }: { isPhone: boolean; 
   const [editor, setEditor] = useState<EditorTarget>(null);
   const [confirming, setConfirming] = useState<MasterResidentRecord | null>(null);
   const [toggling, setToggling] = useState(false);
+  const [deleting, setDeleting] = useState<MasterResidentRecord | null>(null);
+  const [removing, setRemoving] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const mutationLock = useRef(false);
+
+  const remove = async () => {
+    if (!deleting || mutationLock.current) return;
+    mutationLock.current = true;
+    setRemoving(true);
+    setDeleteError("");
+    try {
+      await deleteMasterResident(deleting._id);
+      setDeleting(null);
+      list.refresh();
+      onChanged?.();
+      toast.success("Record deleted", `Master resident ID ${deleting.masterResidentId}`);
+    } catch (caught: unknown) {
+      setDeleteError(normalizeApiError(caught).message);
+      toastError("Record not deleted", caught, { inline: true });
+    } finally {
+      mutationLock.current = false;
+      setRemoving(false);
+    }
+  };
 
   const view = resolveMasterListView({
     isLoading: list.isLoading,
@@ -27,7 +52,8 @@ export const useMasterListScreen = ({ isPhone, onChanged }: { isPhone: boolean; 
   });
 
   const toggleActive = async () => {
-    if (!confirming || toggling) return;
+    if (!confirming || mutationLock.current) return;
+    mutationLock.current = true;
     const next = !confirming.isActive;
     setToggling(true);
     try {
@@ -38,6 +64,7 @@ export const useMasterListScreen = ({ isPhone, onChanged }: { isPhone: boolean; 
     } catch (caught: unknown) {
       toastError(next ? "Record not reactivated" : "Record not deactivated", caught);
     } finally {
+      mutationLock.current = false;
       setToggling(false);
     }
   };
@@ -57,8 +84,18 @@ export const useMasterListScreen = ({ isPhone, onChanged }: { isPhone: boolean; 
     },
     confirming,
     confirmName: confirming ? masterFullName(confirming) : "",
-    askToggle: setConfirming,
-    cancelToggle: () => setConfirming(null),
+    askToggle: (record: MasterResidentRecord) => { if (!mutationLock.current) setConfirming(record); },
+    cancelToggle: () => { if (!mutationLock.current) setConfirming(null); },
+    deleting,
+    removing,
+    deleteError,
+    askDelete: (record: MasterResidentRecord) => {
+      if (mutationLock.current) return;
+      setDeleteError("");
+      setDeleting(record);
+    },
+    cancelDelete: () => { if (!mutationLock.current) setDeleting(null); },
+    remove,
     toggleActive,
     toggling,
     clearFilters,

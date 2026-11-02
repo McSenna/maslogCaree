@@ -1,22 +1,22 @@
 import { Badge, type BadgeTone, type FeatherName } from "@/components/data-table";
 
-import type { RequestStatus, UserStatus } from "../../userAdmin.types";
+import type { UserStatus } from "../../userAdmin.types";
 import { STATUS_LABELS } from "../../userAdminModel";
 
-type Look = { tone: BadgeTone; icon: FeatherName; label: string };
+type Look = { tone: BadgeTone; icon: FeatherName };
 
-const LOOK: Record<UserStatus | RequestStatus, Look> = {
-  active: { tone: "success", icon: "check-circle", label: STATUS_LABELS.active },
-  approved: { tone: "info", icon: "check", label: STATUS_LABELS.approved },
-  deactivated: { tone: "danger", icon: "x-circle", label: STATUS_LABELS.deactivated },
-  pending: { tone: "warning", icon: "clock", label: "Pending" },
-  rejected: { tone: "danger", icon: "x-circle", label: "Rejected" },
+const LOOK: Record<UserStatus, Look> = {
+  active: { tone: "success", icon: "check-circle" },
+  approved: { tone: "info", icon: "check" },
+  requested: { tone: "warning", icon: "clock" },
+  rejected: { tone: "danger", icon: "x-circle" },
+  deactivated: { tone: "danger", icon: "slash" },
 };
 
 /** Account status: colour, icon and word, so colour is never the only signal. */
-const UserStatusPill = ({ status }: { status: UserStatus | RequestStatus }) => {
+const UserStatusPill = ({ status }: { status: UserStatus }) => {
   const look = LOOK[status];
-  return <Badge tone={look.tone} icon={look.icon} label={look.label} spokenAs="Account status" />;
+  return <Badge tone={look.tone} icon={look.icon} label={STATUS_LABELS[status]} spokenAs="Account status" />;
 };
 
 export default UserStatusPill;

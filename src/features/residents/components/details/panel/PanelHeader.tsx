@@ -8,7 +8,7 @@ export const PanelHeader = ({ onClose }: { onClose: () => void }) => (
     title="Resident Details"
     subtitle="Registered resident information"
     titleId={TITLE_ID}
-    titleSize={22}
+    titleSize={24}
     closeLabel="Close resident details"
     onClose={onClose}
   />

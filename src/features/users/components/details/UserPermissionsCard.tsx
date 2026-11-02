@@ -18,7 +18,7 @@ const UserPermissionsCard = ({ user }: { user: AdminUser }) => {
         }}
       >
         <RoleBadge role={user.role} />
-        <Text className="text-[13px] leading-[19px]" style={{ color: palette.body }}>
+        <Text className="text-[15px] leading-[21px]" style={{ color: palette.body }}>
           {ROLE_PERMISSIONS[user.role]}
         </Text>
       </View>

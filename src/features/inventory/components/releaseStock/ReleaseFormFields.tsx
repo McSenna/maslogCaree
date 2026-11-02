@@ -64,7 +64,7 @@ const ReleaseFormFields = ({
           borderColor: palette.bannerBorder,
         }}
       >
-        <Text className="text-[12px] font-medium leading-[17px]" style={{ color: palette.body }}>
+        <Text className="text-[14px] font-medium leading-[19px]" style={{ color: palette.body }}>
           {nextBatchLine}
         </Text>
       </View>

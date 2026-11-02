@@ -47,7 +47,7 @@ const StatusTabs = ({
             }}
           >
             <Text
-              className={`text-[13.5px] ${isActive ? "font-semibold" : "font-medium"}`}
+              className={`text-[15.5px] ${isActive ? "font-semibold" : "font-medium"}`}
               style={{ color: isActive ? palette.primary : palette.muted }}
             >
               {STATUS_LABELS[status]}
@@ -60,7 +60,7 @@ const StatusTabs = ({
               }}
             >
               <Text
-                className="text-[11px] font-bold"
+                className="text-[13px] font-bold"
                 style={{ color: isActive ? PALETTE.white : palette.muted }}
               >
                 {count}

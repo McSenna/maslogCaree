@@ -1,22 +1,26 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "expo-router";
 import { handOffActivitySearch } from "@/features/systemLogs/activitySearchHandoff";
 
+import { useRemoteData } from "../../admin/hooks/useRemoteData";
+import { fetchUserDetail } from "../../admin/services/userAdminApi";
 import type { AdminUser } from "../../services/userService";
 
-export const useUserDetailsState = (users: AdminUser[], loading: boolean, error: string | null) => {
+const USER_SOURCES = ["user"] as const;
+
+/** The View drawer: fetched when it opens, and kept fresh while it is open. */
+export const useUserDetailsState = () => {
   const router = useRouter();
   const [detailsUserId, setDetailsUserId] = useState<string | null>(null);
 
-  const detailsUser = useMemo(
-    () => users.find((user) => user._id === detailsUserId) ?? null,
-    [users, detailsUserId]
-  );
+  const remote = useRemoteData<AdminUser | null>({
+    key: detailsUserId ?? "closed",
+    load: () => (detailsUserId ? fetchUserDetail(detailsUserId) : Promise.resolve(null)),
+    live: detailsUserId ? USER_SOURCES : undefined,
+  });
 
-  const detailsError =
-    detailsUserId !== null && !detailsUser && !loading
-      ? error ?? "This account is no longer in the user list."
-      : null;
+  // The previous person's data is never shown while the next one loads.
+  const detailsUser = remote.data && remote.data._id === detailsUserId ? remote.data : null;
 
   const viewActivity = useCallback(
     (user: AdminUser) => {
@@ -32,7 +36,9 @@ export const useUserDetailsState = (users: AdminUser[], loading: boolean, error:
     openDetails: setDetailsUserId,
     closeDetails: () => setDetailsUserId(null),
     detailsUser,
-    detailsError,
+    detailsLoading: detailsUserId !== null && !detailsUser && !remote.error,
+    detailsError: detailsUserId !== null && remote.error ? "Could not load this account." : null,
+    retryDetails: remote.refetch,
     viewActivity,
   };
 };

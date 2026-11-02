@@ -36,12 +36,12 @@ const AdminSupportResponseForm = ({ sending, onSend }: AdminSupportResponseFormP
   return (
     <View style={{ gap: 10 }}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <Text style={{ fontSize: 11.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
+        <Text style={{ fontSize: 13.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
           Write Response
         </Text>
         <Text
           style={{
-            fontSize: 11.5,
+            fontSize: 13.5,
             color: body.length > MAX_CHAR_COUNT ? palette.negative : palette.muted,
             fontVariant: ["tabular-nums"],
           }}
@@ -76,8 +76,8 @@ const AdminSupportResponseForm = ({ sending, onSend }: AdminSupportResponseFormP
           style={{
             minHeight: 76,
             padding: 10,
-            fontSize: 13.5,
-            lineHeight: 20,
+            fontSize: 15.5,
+            lineHeight: 22,
             color: palette.body,
             textAlignVertical: "top",
           }}
@@ -95,7 +95,7 @@ const AdminSupportResponseForm = ({ sending, onSend }: AdminSupportResponseFormP
             backgroundColor: palette.subtleSurface,
           }}
         >
-          <Text style={{ fontSize: 11.5, color: palette.muted }}>
+          <Text style={{ fontSize: 13.5, color: palette.muted }}>
             The requester will see this reply in their support portal.
           </Text>
 
@@ -122,7 +122,7 @@ const AdminSupportResponseForm = ({ sending, onSend }: AdminSupportResponseFormP
             )}
             <Text
               style={{
-                fontSize: 12.5,
+                fontSize: 14.5,
                 fontWeight: "600",
                 color: canSubmit ? PALETTE.white : palette.muted,
               }}
@@ -134,7 +134,7 @@ const AdminSupportResponseForm = ({ sending, onSend }: AdminSupportResponseFormP
       </View>
 
       {validationError ? (
-        <Text style={{ fontSize: 12, color: palette.negative }}>{validationError}</Text>
+        <Text style={{ fontSize: 14, color: palette.negative }}>{validationError}</Text>
       ) : null}
     </View>
   );

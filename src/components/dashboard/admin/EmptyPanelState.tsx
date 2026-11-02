@@ -23,11 +23,11 @@ const EmptyPanelState = ({ palette, icon, message, title, children }: EmptyPanel
         <Feather name={icon} size={20} color={palette.subtle} />
       </View>
       {title ? (
-        <Text accessibilityRole="header" className="text-center text-[15px] font-semibold" style={{ color: palette.heading }}>
+        <Text accessibilityRole="header" className="text-center text-[17px] font-semibold" style={{ color: palette.heading }}>
           {title}
         </Text>
       ) : null}
-      <Text className="max-w-[360px] text-center text-[13px] font-medium" style={{ color: palette.muted }}>
+      <Text className="max-w-[360px] text-center text-[15px] font-medium" style={{ color: palette.muted }}>
         {message}
       </Text>
       {children ? <View className="mt-2">{children}</View> : null}

@@ -20,10 +20,10 @@ export const Row = ({
   palette: QueuePalette;
 }) => (
   <View className="w-full flex-row items-start gap-3 py-2">
-    <Text className="text-[12.5px] font-medium" style={{ color: palette.muted, width: 132 }}>
+    <Text className="text-[14.5px] font-medium" style={{ color: palette.muted, width: 132 }}>
       {label}
     </Text>
-    <Text className="min-w-0 flex-1 text-[13px] leading-[19px]" style={{ color: palette.heading }}>
+    <Text className="min-w-0 flex-1 text-[15px] leading-[21px]" style={{ color: palette.heading }}>
       {value}
     </Text>
   </View>
@@ -40,7 +40,7 @@ export const Block = ({
 }) => (
   <View className="w-full">
     <Text
-      className="mb-1 text-[12px] font-bold uppercase"
+      className="mb-1 text-[14px] font-bold uppercase"
       style={{ color: palette.subtle, letterSpacing: 0.5 }}
     >
       {title}

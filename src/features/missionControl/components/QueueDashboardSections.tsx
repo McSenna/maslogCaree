@@ -82,9 +82,7 @@ const QueueDashboardSections = ({
           serviceLabels={serviceLabels}
           headerAction={headerAction}
           onApprove={(appointment) => onAssign(appointment, "assign")}
-          onMore={(appointment) =>
-            onAssign(appointment, appointment.status === "pending" ? "assign" : "reassign")
-          }
+          onReschedule={(appointment) => onAssign(appointment, "reassign")}
           busyId={actions.saving ? (control.assignment.target?._id ?? null) : null}
           canAct={control.canAct && dashboard.activeStatus !== "completed"}
           onRowPress={

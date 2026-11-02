@@ -20,10 +20,10 @@ const QueueNumber = ({ index, palette }: { index: number; palette: QueuePalette 
       className="h-11 w-11 items-center justify-center"
       style={{ borderRadius: QUEUE_RADIUS.control, backgroundColor: palette.primarySoft }}
     >
-      <Text className="text-[10px] font-semibold" style={{ color: palette.primary, opacity: 0.75 }}>
+      <Text className="text-[12px] font-semibold" style={{ color: palette.primary, opacity: 0.75 }}>
         #
       </Text>
-      <Text className="text-[14px] font-bold leading-[16px]" style={{ color: palette.primary }}>
+      <Text className="text-[16px] font-bold leading-[18px]" style={{ color: palette.primary }}>
         {String(index).padStart(2, "0")}
       </Text>
     </View>
@@ -109,14 +109,14 @@ const QueueRow = ({
           <View className="flex-row items-center gap-2">
             <Text
               numberOfLines={1}
-              className="min-w-0 flex-1 text-[14.5px] font-semibold"
+              className="min-w-0 flex-1 text-[16.5px] font-semibold"
               style={{ color: palette.heading }}
             >
               {appointmentPatientName(appointment)}
             </Text>
             {isServing ? <AppointmentStatusBadge status="processing" /> : null}
           </View>
-          <Text numberOfLines={1} className="mt-0.5 text-[12.5px]" style={{ color: palette.muted }}>
+          <Text numberOfLines={1} className="mt-0.5 text-[14.5px]" style={{ color: palette.muted }}>
             {serviceLabel} · {time}
           </Text>
           {childCaption(appointment) ? (

@@ -14,7 +14,7 @@ const OutcomeRow = ({ label, done }: { label: string; done: boolean }) => (
       color={done ? C.success : C.muted}
     />
     <Text
-      className="min-w-0 flex-1 text-[12.5px]"
+      className="min-w-0 flex-1 text-[14.5px]"
       style={{ color: done ? C.text : C.muted, fontWeight: done ? "600" : "400" }}
     >
       {label}

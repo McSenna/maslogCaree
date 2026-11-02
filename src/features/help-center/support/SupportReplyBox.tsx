@@ -49,8 +49,8 @@ const SupportReplyBox = ({ sending, placeholder, onSend }: SupportReplyBoxProps)
             {
               minHeight: 80,
               padding: 12,
-              fontSize: 14,
-              lineHeight: 20,
+              fontSize: 16,
+              lineHeight: 22,
               color: palette.body,
               outlineStyle: "none",
             } as never
@@ -72,7 +72,7 @@ const SupportReplyBox = ({ sending, placeholder, onSend }: SupportReplyBoxProps)
           backgroundColor: canSend ? palette.accent : palette.disabled,
         }}
       >
-        <Text style={{ fontSize: 14, fontWeight: "700", color: canSend ? palette.onAccent : palette.muted }}>
+        <Text style={{ fontSize: 16, fontWeight: "700", color: canSend ? palette.onAccent : palette.muted }}>
           {sending ? "Sending..." : "Send Reply"}
         </Text>
       </Pressable>

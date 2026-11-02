@@ -103,7 +103,7 @@ const EmailFieldControl = ({
           style={{
             flex: 1,
             minWidth: 0,
-            fontSize: narrow ? 14.5 : 15,
+            fontSize: narrow ? 16.5 : 17,
             color: editable ? REG_COLORS.text : REG_COLORS.muted,
             paddingVertical: 0,
             borderWidth: 0,
@@ -123,7 +123,7 @@ const EmailFieldControl = ({
         onPress={onActionPress}
         height={height}
         minWidth={narrow ? 104 : 118}
-        fontSize={narrow ? 10.5 : 11.5}
+        fontSize={narrow ? 12.5 : 13.5}
       />
     </View>
   );

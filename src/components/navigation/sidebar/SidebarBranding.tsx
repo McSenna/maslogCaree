@@ -21,8 +21,8 @@ const SidebarBranding = ({ palette }: { palette: SidebarPalette }) => {
     >
       <Leaf color={palette.leaf} />
       <Text
-        className="min-w-0 flex-1 text-[13px] font-medium"
-        style={{ color: palette.community, lineHeight: 18 }}
+        className="min-w-0 flex-1 text-[15px] font-medium"
+        style={{ color: palette.community, lineHeight: 20 }}
       >
         Caring for a{"\n"}Healthier Community
       </Text>

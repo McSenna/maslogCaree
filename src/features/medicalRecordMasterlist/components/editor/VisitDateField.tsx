@@ -28,7 +28,7 @@ const VisitDateField = ({ value, error, onOpen }: Props) => {
         style={buildShellStyle(palette, error)}
       >
         <Feather name="calendar" size={17} color={error ? palette.subtle : palette.primary} />
-        <Text className="min-w-0 flex-1 text-[14px]" style={{ color: shown ? palette.heading : palette.subtle }}>
+        <Text className="min-w-0 flex-1 text-[16px]" style={{ color: shown ? palette.heading : palette.subtle }}>
           {shown || "Choose the date on the record"}
         </Text>
         <Feather name="chevron-down" size={17} color={palette.subtle} />

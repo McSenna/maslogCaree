@@ -38,7 +38,7 @@ const StaffFilterBar = ({
       className={compact ? "gap-2" : "flex-row flex-wrap items-center"}
       style={compact ? undefined : { gap: 12 }}
     >
-      <Text className="text-[13px] font-semibold" style={{ color: palette.muted }}>
+      <Text className="text-[15px] font-semibold" style={{ color: palette.muted }}>
         Show
       </Text>
       <FilterChips palette={palette} label="Show service" value={service} options={options} onChange={onServiceChange} />

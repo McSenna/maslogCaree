@@ -41,13 +41,13 @@ const FeaturedAnnouncementCard = ({
                 label={tag}
                 color={color}
                 background={bg}
-                fontSize={isTablet ? 10 : 9}
+                fontSize={isTablet ? 12 : 11}
                 wide
               />
               <View className="rounded-full px-2.5 py-0.5 bg-blue-50">
                 <Text
                   className="font-black uppercase tracking-wide text-blue-600"
-                  style={{ fontSize: isTablet ? 10 : 9 }}
+                  style={{ fontSize: isTablet ? 12 : 11 }}
                 >
                   Featured
                 </Text>
@@ -55,7 +55,7 @@ const FeaturedAnnouncementCard = ({
             </View>
             <Text
               className="font-black text-slate-900 leading-tight"
-              style={{ fontSize: isTablet ? 17 : 15 }}
+              style={{ fontSize: isTablet ? 19 : 17 }}
             >
               {title}
             </Text>
@@ -64,7 +64,7 @@ const FeaturedAnnouncementCard = ({
 
         <Text
           className="text-slate-500 leading-relaxed mb-4"
-          style={{ fontSize: isTablet ? 13 : 12 }}
+          style={{ fontSize: isTablet ? 15 : 14 }}
         >
           {description}
         </Text>
@@ -76,7 +76,7 @@ const FeaturedAnnouncementCard = ({
             </View>
             <Text
               className="font-semibold text-slate-500"
-              style={{ fontSize: isTablet ? 12 : 11 }}
+              style={{ fontSize: isTablet ? 14 : 13 }}
             >
               {date}
             </Text>
@@ -101,7 +101,7 @@ const FeaturedAnnouncementCard = ({
               },
             ]}
           >
-            <Text className="font-bold" style={{ color, fontSize: isTablet ? 14 : 13 }}>
+            <Text className="font-bold" style={{ color, fontSize: isTablet ? 16 : 15 }}>
               View details
             </Text>
             <Feather name="arrow-right" size={14} color={color} />

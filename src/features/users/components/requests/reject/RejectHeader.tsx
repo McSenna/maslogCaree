@@ -19,8 +19,8 @@ const RejectHeader = ({
         <Feather name="alert-triangle" size={16} color={PALETTE.red[600]} />
       </View>
       <View>
-        <Text className={`text-[16px] font-bold ${classes.textPrimary}`}>Reject Registration</Text>
-        <Text className={`text-[12px] ${classes.textMuted}`} numberOfLines={1}>
+        <Text className={`text-[18px] font-bold ${classes.textPrimary}`}>Reject Registration</Text>
+        <Text className={`text-[14px] ${classes.textMuted}`} numberOfLines={1}>
           Target Resident: <Text className="font-semibold">{residentName}</Text>
         </Text>
       </View>

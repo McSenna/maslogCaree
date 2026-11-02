@@ -34,15 +34,15 @@ const DispensedItemRow = ({
     >
       <View className="flex-row items-start gap-2.5">
         <View className="min-w-0 flex-1 gap-0.5">
-          <Text numberOfLines={2} className="text-[14px] font-semibold" style={{ color: palette.heading }}>
+          <Text numberOfLines={2} className="text-[16px] font-semibold" style={{ color: palette.heading }}>
             {item.name}
           </Text>
           {subtitle ? (
-            <Text numberOfLines={1} className="text-[12px] capitalize" style={{ color: palette.muted }}>
+            <Text numberOfLines={1} className="text-[14px] capitalize" style={{ color: palette.muted }}>
               {subtitle}
             </Text>
           ) : null}
-          <Text className="text-[12px] font-medium" style={{ color: palette.muted }}>
+          <Text className="text-[14px] font-medium" style={{ color: palette.muted }}>
             Available: {item.currentStock} {item.unit}
           </Text>
         </View>
@@ -70,7 +70,7 @@ const DispensedItemRow = ({
       />
 
       {exceeds ? (
-        <Text className="text-[12px] font-medium" style={{ color: PALETTE.red[600] }}>
+        <Text className="text-[14px] font-medium" style={{ color: PALETTE.red[600] }}>
           Only {item.currentStock} {item.unit} available.
         </Text>
       ) : null}

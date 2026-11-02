@@ -51,7 +51,7 @@ const ProfileNoticeModal = ({ notice, onClose }: ProfileNoticeModalProps) => (
         accessibilityRole="header"
         style={{
           marginTop: 14,
-          fontSize: 18,
+          fontSize: 20,
           fontWeight: "700",
           color: PROFILE_COLORS.navy,
         }}
@@ -62,8 +62,8 @@ const ProfileNoticeModal = ({ notice, onClose }: ProfileNoticeModalProps) => (
       <Text
         style={{
           marginTop: 6,
-          fontSize: 14,
-          lineHeight: 20,
+          fontSize: 16,
+          lineHeight: 22,
           color: PROFILE_COLORS.muted,
         }}
       >
@@ -82,7 +82,7 @@ const ProfileNoticeModal = ({ notice, onClose }: ProfileNoticeModalProps) => (
             backgroundColor: PROFILE_COLORS.primary,
           }}
         >
-          <Text style={{ fontSize: 15, fontWeight: "700", color: PALETTE.white }}>
+          <Text style={{ fontSize: 17, fontWeight: "700", color: PALETTE.white }}>
             Got It
           </Text>
         </Pressable>

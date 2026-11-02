@@ -65,7 +65,7 @@ const BhwCard = ({ member, index, isTablet }: BhwCardProps) => {
           >
             <Text
               style={{
-                fontSize: isTablet ? 13 : 11,
+                fontSize: isTablet ? 15 : 13,
                 fontWeight: "900",
                 color: palette.fg,
                 letterSpacing: 0.5,
@@ -90,7 +90,7 @@ const BhwCard = ({ member, index, isTablet }: BhwCardProps) => {
           <Text
             style={{
               color: palette.fg,
-              fontSize: isTablet ? 14 : 13,
+              fontSize: isTablet ? 16 : 15,
               fontWeight: "800",
               textAlign: "center",
             }}
@@ -103,7 +103,7 @@ const BhwCard = ({ member, index, isTablet }: BhwCardProps) => {
         <Text
           style={{
             color: HC.slate,
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: "700",
             textTransform: "uppercase",
             letterSpacing: 0.8,

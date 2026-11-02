@@ -20,7 +20,7 @@ export type TextFieldProps = Omit<TextInputProps, "style" | "editable"> & {
   inputRef?: Ref<TextInput>;
 };
 
-const MULTILINE_INPUT = { minHeight: 120, maxHeight: 200, paddingTop: 12, paddingBottom: 12, lineHeight: 21 } as const;
+const MULTILINE_INPUT = { minHeight: 120, maxHeight: 200, paddingTop: 12, paddingBottom: 12, lineHeight: 23 } as const;
 
 const TextField = ({
   label,
@@ -48,7 +48,7 @@ const TextField = ({
 
   return (
     <View style={{ width: "100%", gap: 6 }}>
-      <Text style={{ fontSize: 13, fontWeight: "600", color: colors.heading }}>
+      <Text style={{ fontSize: 15, fontWeight: "600", color: colors.heading }}>
         {label}
         {required ? <Text style={{ color: colors.danger.fg }}> *</Text> : null}
       </Text>
@@ -97,7 +97,7 @@ const TextField = ({
           }}
           textAlignVertical={multiline ? "top" : inputProps.textAlignVertical}
           style={[
-            { flex: 1, minWidth: 0, minHeight: 44, fontSize: 15, color: colors.heading },
+            { flex: 1, minWidth: 0, minHeight: 44, fontSize: 17, color: colors.heading },
             multiline ? MULTILINE_INPUT : null,
             webStyle({ outlineStyle: "none" }),
           ]}

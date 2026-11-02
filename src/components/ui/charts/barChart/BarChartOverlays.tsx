@@ -16,7 +16,7 @@ const centeredLabel = (layout: BarLayout, index: number) => ({
   left: layout.slotCenter(index) - layout.slot / 2,
   width: layout.slot,
   textAlign: "center" as const,
-  fontSize: 11,
+  fontSize: 13,
 });
 
 export const BarChartYAxis = ({
@@ -47,7 +47,7 @@ export const BarChartYAxis = ({
           left: 0,
           right: 0,
           textAlign: "right",
-          fontSize: 11,
+          fontSize: 13,
           color: tickColor,
           fontVariant: ["tabular-nums"],
         }}
@@ -82,7 +82,7 @@ export const BarChartValues = ({
           style={{
             ...centeredLabel(layout, i),
             top,
-            fontSize: 12,
+            fontSize: 14,
             fontWeight: i === peakIdx ? "800" : "700",
             color: i === peakIdx ? accentColor : d.partial ? tickColor : valueColor,
             fontVariant: ["tabular-nums"],

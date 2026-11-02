@@ -26,15 +26,15 @@ const SupportMessageItem = ({ message }: SupportMessageItemProps) => {
           borderColor: fromStaff ? palette.border : palette.accentBorder,
         }}
       >
-        <Text style={{ fontSize: 11.5, fontWeight: "700", color: fromStaff ? palette.muted : palette.accent }}>
+        <Text style={{ fontSize: 13.5, fontWeight: "700", color: fromStaff ? palette.muted : palette.accent }}>
           {fromStaff ? message.authorName || "MaslogCare Support" : "You"}
         </Text>
-        <Text style={{ marginTop: 3, fontSize: 13.5, lineHeight: 20, color: palette.body }}>
+        <Text style={{ marginTop: 3, fontSize: 15.5, lineHeight: 22, color: palette.body }}>
           {message.body}
         </Text>
       </View>
 
-      <Text style={{ fontSize: 11, color: palette.muted }}>
+      <Text style={{ fontSize: 13, color: palette.muted }}>
         {formatTicketDateTime(message.createdAt)}
       </Text>
     </View>

@@ -73,8 +73,8 @@ const FormTextArea = ({
             className="min-w-0 flex-1"
             style={{
               minHeight,
-              fontSize: 14.5,
-              lineHeight: 20,
+              fontSize: 16.5,
+              lineHeight: 22,
               color: APPOINTMENT_COLORS.bodyText,
               padding: 0,
               ...webStyle({ outlineStyle: "none" }),
@@ -86,7 +86,7 @@ const FormTextArea = ({
           accessibilityElementsHidden
           importantForAccessibility="no"
           className="self-end"
-          style={{ fontSize: 11.5, color: APPOINTMENT_COLORS.placeholder }}
+          style={{ fontSize: 13.5, color: APPOINTMENT_COLORS.placeholder }}
         >
           {value.length}/{maxLength}
         </Text>
@@ -98,7 +98,7 @@ const FormTextArea = ({
           <Text
             accessibilityRole="alert"
             className="flex-1"
-            style={{ fontSize: 12.5, color: APPOINTMENT_COLORS.danger }}
+            style={{ fontSize: 14.5, color: APPOINTMENT_COLORS.danger }}
           >
             {error}
           </Text>

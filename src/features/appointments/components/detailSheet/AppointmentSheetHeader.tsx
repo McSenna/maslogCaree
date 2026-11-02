@@ -39,7 +39,7 @@ const AppointmentSheetHeader = ({
           <View className="flex-row flex-wrap items-center gap-2">
             <Text
               accessibilityRole="header"
-              className="text-[17px] font-bold"
+              className="text-[19px] font-bold"
               style={{ color: palette.heading }}
             >
               {service}
@@ -47,7 +47,7 @@ const AppointmentSheetHeader = ({
             <AppointmentStatusBadge status={status} audience="resident" />
           </View>
 
-          <Text className="text-[12.5px]" style={{ color: palette.muted }}>
+          <Text className="text-[14.5px]" style={{ color: palette.muted }}>
             {when}
           </Text>
         </View>

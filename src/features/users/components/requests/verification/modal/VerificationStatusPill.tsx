@@ -26,7 +26,7 @@ const VerificationStatusPill = ({ status }: Props) => {
   return (
     <View className={`px-2.5 py-0.5 rounded-full flex-row items-center gap-1.5 ${tone.wrap}`}>
       <View className={`w-2 h-2 rounded-full ${tone.dot}`} />
-      <Text className={`text-[11px] font-bold uppercase ${tone.text}`}>
+      <Text className={`text-[13px] font-bold uppercase ${tone.text}`}>
         {status || "Pending"}
       </Text>
     </View>

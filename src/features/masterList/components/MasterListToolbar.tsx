@@ -1,10 +1,9 @@
 import { View } from "react-native";
 
-import DashboardButton from "@/components/dashboard/admin/DashboardButton";
+import { TableButton } from "@/components/data-table";
 import SearchField from "@/components/ui/SearchField";
 import SelectMenu from "@/components/ui/SelectMenu";
 import { CONTROL_HEIGHT } from "@/design/adminSurfaces";
-import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { MasterListState } from "../hooks/useMasterList";
 import { MASTER_ROLE_FILTER_OPTIONS, MASTER_PUROK_FILTER_OPTIONS, MASTER_CIVIL_STATUS_FILTER_OPTIONS } from "../masterListFilters";
@@ -16,11 +15,11 @@ const CONTROL_GAP = 8;
 
 // Civil status fits its longest label, "Single - Solo Parent", without an ellipsis.
 const WIDTHS = {
-  fixed: { role: { width: 140 }, civilStatus: { width: 184 }, purok: { width: 256 } },
+  fixed: { role: { width: 140 }, civilStatus: { width: 212 }, purok: { width: 256 } },
   shared: { role: { flex: 1, minWidth: 130 }, civilStatus: { flex: 1, minWidth: 180 }, purok: { flex: 1, minWidth: 220 } },
 } as const;
 
-/** The search and all three filters at their fixed widths, on one line. */
+/** Search and all three filters at their fixed widths, on one line. */
 export const MASTER_TOOLBAR_WIDTH =
   SEARCH_STYLE.width + WIDTHS.fixed.role.width + WIDTHS.fixed.civilStatus.width + WIDTHS.fixed.purok.width + CONTROL_GAP * 3;
 
@@ -68,16 +67,15 @@ export const MasterListFilterMenus = ({ list, phone = false }: Props) => {
 };
 
 export const MasterListClearButton = ({ list }: Props) => {
-  const palette = useAdminSurfacePalette();
   if (!list.filtered && !list.queryInput) return null;
 
   return (
     <View className="self-end">
-      <DashboardButton
-        palette={palette}
+      <TableButton
         label="Clear filters"
         icon="x"
-        variant="ghost"
+        iconOnly
+        size="comfortable"
         onPress={list.clearFilters}
         accessibilityLabel="Clear Master List search and filters"
       />

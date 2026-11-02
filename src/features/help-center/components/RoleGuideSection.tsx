@@ -42,7 +42,7 @@ const RoleGuideSection = ({ guide }: RoleGuideSectionProps) => {
           >
             <Feather name={guide.icon} size={17} color={palette.tones.primary.icon} />
           </View>
-          <Text style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: "700", color: palette.heading }}>
+          <Text style={{ flex: 1, minWidth: 0, fontSize: 17, fontWeight: "700", color: palette.heading }}>
             {guide.title}
           </Text>
         </View>
@@ -51,7 +51,7 @@ const RoleGuideSection = ({ guide }: RoleGuideSectionProps) => {
           {guide.topics.map((topic) => (
             <View key={topic} style={{ flexDirection: "row", alignItems: "flex-start", gap: 8 }}>
               <Feather name="check" size={15} color={palette.positive} style={{ marginTop: 2 }} />
-              <Text style={{ flex: 1, minWidth: 0, fontSize: 13, lineHeight: 19, color: palette.body }}>
+              <Text style={{ flex: 1, minWidth: 0, fontSize: 15, lineHeight: 21, color: palette.body }}>
                 {topic}
               </Text>
             </View>

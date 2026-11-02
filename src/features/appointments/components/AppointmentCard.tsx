@@ -60,13 +60,13 @@ const AppointmentCard = ({
 
         <View className="min-w-0 flex-1 gap-1">
           <Text
-            className="text-[14.5px] font-bold"
+            className="text-[16.5px] font-bold"
             style={{ color: palette.heading }}
             numberOfLines={1}
           >
             {service}
           </Text>
-          <Text className="text-[12.5px]" style={{ color: palette.muted }} numberOfLines={1}>
+          <Text className="text-[14.5px]" style={{ color: palette.muted }} numberOfLines={1}>
             {when}
           </Text>
         </View>
@@ -75,7 +75,7 @@ const AppointmentCard = ({
       </View>
 
       {appointmentSubline(appointment) ? (
-        <Text className="text-[13px] leading-[19px]" style={{ color: palette.body }} numberOfLines={2}>
+        <Text className="text-[15px] leading-[21px]" style={{ color: palette.body }} numberOfLines={2}>
           {appointmentSubline(appointment)}
         </Text>
       ) : null}
@@ -112,7 +112,7 @@ const AppointmentCard = ({
                 size={14}
                 color={palette.primary}
               />
-              <Text style={{ fontSize: 12, fontWeight: "600", color: palette.primary }}>
+              <Text style={{ fontSize: 14, fontWeight: "600", color: palette.primary }}>
                 View Medical Details
               </Text>
             </Pressable>
@@ -140,7 +140,7 @@ const AppointmentCard = ({
               }}
             >
               <Feather name="calendar" size={13} color={palette.primary} />
-              <Text style={{ fontSize: 12, fontWeight: "600", color: palette.primary }}>
+              <Text style={{ fontSize: 14, fontWeight: "600", color: palette.primary }}>
                 Reschedule
               </Text>
             </Pressable>
@@ -167,7 +167,7 @@ const AppointmentCard = ({
               }}
             >
               <Feather name="x-circle" size={13} color={PALETTE.red[600]} />
-              <Text style={{ fontSize: 12, fontWeight: "600", color: PALETTE.red[700] }}>
+              <Text style={{ fontSize: 14, fontWeight: "600", color: PALETTE.red[700] }}>
                 Cancel
               </Text>
             </Pressable>
@@ -175,7 +175,7 @@ const AppointmentCard = ({
         </View>
 
         <View className="flex-row items-center gap-1 ml-auto">
-          <Text className="text-[12.5px] font-semibold" style={{ color: palette.primary }}>
+          <Text className="text-[14.5px] font-semibold" style={{ color: palette.primary }}>
             Details
           </Text>
           <Feather name="chevron-right" size={15} color={palette.primary} />

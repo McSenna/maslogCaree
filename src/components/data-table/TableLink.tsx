@@ -5,6 +5,7 @@ import { useThemeColors } from "@/hooks/useThemeColors";
 import { webStyle } from "@/theme/webStyle";
 
 import { focusRing } from "./focusRing";
+import { useCellSelfAlign } from "./TablePlacement";
 import { TABLE_TEXT } from "./tableTokens";
 
 type TableLinkProps = {
@@ -17,13 +18,14 @@ type TableLinkProps = {
 const POINTER = webStyle({ cursor: "pointer" });
 
 /**
- * A record's name as its own control. Rows that also hold checkboxes are opened
- * by a click anywhere for pointer users; this is the same action for keyboard
+ * A record's name as its own control. Rows can also open on a pointer click;
+ * this provides the same action for keyboard
  * and screen reader users, one tab stop per row.
  */
 const TableLink = ({ label, onPress, accessibilityLabel, accessibilityHint }: TableLinkProps) => {
   const colors = useThemeColors();
   const { hovered, focused, pressed, handlers } = useInteractionState();
+  const alignSelf = useCellSelfAlign();
   return (
     <Pressable
       {...handlers}
@@ -32,8 +34,8 @@ const TableLink = ({ label, onPress, accessibilityLabel, accessibilityHint }: Ta
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       hitSlop={{ top: 8, bottom: 8 }}
-      className="max-w-full self-start"
-      style={[POINTER, focused ? focusRing(colors.focusRing) : null]}
+      className="max-w-full"
+      style={[POINTER, { alignSelf }, focused ? focusRing(colors.focusRing) : null]}
     >
       <Text
         numberOfLines={1}

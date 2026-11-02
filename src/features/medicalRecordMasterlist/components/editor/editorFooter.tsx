@@ -16,7 +16,7 @@ const EditorFooter = ({ editor, onClose }: Props) => {
   return (
     <View className="w-full gap-3">
       {editor.problems.length > 0 ? (
-        <Text accessibilityRole="alert" accessibilityLiveRegion="polite" className="text-[12.5px] font-medium leading-[18px]" style={{ color: PALETTE.red[600] }}>
+        <Text accessibilityRole="alert" accessibilityLiveRegion="polite" className="text-[14.5px] font-medium leading-[20px]" style={{ color: PALETTE.red[600] }}>
           {`Check the fields marked in red: ${editor.problems.join(", ")}.`}
         </Text>
       ) : null}
@@ -24,7 +24,7 @@ const EditorFooter = ({ editor, onClose }: Props) => {
       {editor.isEditing ? null : (
         <View className="flex-row items-center gap-3">
           <Checkbox checked={editor.keepOpen} onChange={editor.setKeepOpen} accessibilityLabel="Keep this form open for this resident's next record" />
-          <Text className="min-w-0 flex-1 text-[12.5px] leading-[18px]" style={{ color: palette.body }} onPress={() => editor.setKeepOpen(!editor.keepOpen)}>
+          <Text className="min-w-0 flex-1 text-[14.5px] leading-[20px]" style={{ color: palette.body }} onPress={() => editor.setKeepOpen(!editor.keepOpen)}>
             Keep this form open for this resident&apos;s next record
           </Text>
         </View>

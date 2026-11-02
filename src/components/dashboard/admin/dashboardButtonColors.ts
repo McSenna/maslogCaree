@@ -3,8 +3,9 @@ import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 /**
  * - danger: the secondary shape with destructive colours (Deactivate, Delete).
  * - ghost: no border or fill until hovered, for icon buttons inside rows and bars.
+ * - outline: the secondary shape with a primary border, for a page's own action in a toolbar.
  */
-export type DashboardButtonVariant = "primary" | "secondary" | "link" | "danger" | "ghost";
+export type DashboardButtonVariant = "primary" | "secondary" | "outline" | "link" | "danger" | "ghost";
 
 type ButtonColors = { foreground: string; background: string; border: string | null };
 
@@ -23,6 +24,8 @@ export const dashboardButtonColors = (
       const danger = palette.statusTones.danger;
       return { foreground: danger.fg, background: active ? danger.bg : palette.cardBg, border: danger.border };
     }
+    case "outline":
+      return { foreground: palette.primary, background: active ? palette.hoverBg : palette.cardBg, border: palette.primary };
     case "ghost":
       return { foreground: palette.body, background: active ? palette.hoverBg : "transparent", border: null };
     default:

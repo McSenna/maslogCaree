@@ -17,6 +17,7 @@ type SelectMenuProps<T extends string> = {
   displayValue?: string;
   icon?: keyof typeof MaterialCommunityIcons.glyphMap;
   height?: number;
+  disabled?: boolean;
   style?: { flex?: number; flexGrow?: number; width?: number | `${number}%`; minWidth?: number };
 };
 
@@ -31,6 +32,7 @@ const SelectMenu = <T extends string,>({
   displayValue,
   icon,
   height = 48,
+  disabled = false,
   style,
 }: SelectMenuProps<T>) => {
   const palette = useAdminSurfacePalette();
@@ -62,12 +64,14 @@ const SelectMenu = <T extends string,>({
       <Pressable
         ref={triggerRef}
         onPress={open}
+        disabled={disabled}
         accessibilityRole="button"
         accessibilityLabel={`${label}: ${triggerLabel}`}
-        accessibilityState={{ expanded: isOpen }}
+        accessibilityState={{ expanded: isOpen, disabled }}
         className="flex-row items-center justify-between gap-2 border px-3.5"
         style={{
           height,
+          opacity: disabled ? 0.6 : 1,
           borderRadius: RADIUS.control,
           backgroundColor: palette.cardBg,
           borderColor: isOpen ? palette.primary : palette.cardBorder,
@@ -76,7 +80,7 @@ const SelectMenu = <T extends string,>({
       >
         <View className="min-w-0 flex-1 flex-row items-center gap-2">
           {icon ? <MaterialCommunityIcons name={icon} size={16} color={palette.muted} /> : null}
-          <Text numberOfLines={1} className="text-[14px] font-medium" style={{ color: palette.body }}>
+          <Text numberOfLines={1} className="font-medium" style={{ color: palette.body, fontSize: 16 }}>
             {triggerLabel}
           </Text>
         </View>
@@ -124,8 +128,8 @@ const SelectMenu = <T extends string,>({
                     }}
                   >
                     <Text
-                      className={`text-[14px] ${isActive ? "font-semibold" : "font-medium"}`}
-                      style={{ color: isActive ? palette.primary : palette.body }}
+                      className={isActive ? "font-semibold" : "font-medium"}
+                      style={{ color: isActive ? palette.primary : palette.body, fontSize: 16 }}
                     >
                       {option.label}
                     </Text>

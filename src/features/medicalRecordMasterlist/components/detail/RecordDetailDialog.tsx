@@ -1,3 +1,4 @@
+import { useAuth } from "@/contexts/AuthContext";
 import { View } from "react-native";
 
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
@@ -7,6 +8,7 @@ import { CompletionPlaceholder, FooterButtons } from "@/components/medicalRecord
 
 import type { RecordDetailState } from "../../hooks/useRecordDetail";
 import type { MasterlistDetail, ResidentIdentity } from "../../types";
+import { mayWriteMedicalRecords } from "../../recordWriteAccess";
 import { residentNameOf } from "../rowText";
 import RecordDetailContent from "./RecordDetailContent";
 
@@ -19,10 +21,11 @@ type Props = {
 
 /** One record for staff: centred on wide screens, a bottom sheet on phones. Loaded only when opened. */
 const RecordDetailDialog = ({ detail, onEdit, onShowHistory }: Props) => {
+  const { user } = useAuth();
   const palette = useAdminSurfacePalette();
   const loaded = detail.detail;
 
-  const footer = loaded?.editable && onEdit ? (
+  const footer = mayWriteMedicalRecords(user) && loaded && (loaded.editable || (loaded.baby && user?.role === "midwife")) && onEdit ? (
     <FooterButtons backLabel="Close" onBack={detail.close} nextLabel="Edit record" onNext={() => onEdit(loaded)} busy={false} disabled={false} />
   ) : undefined;
 

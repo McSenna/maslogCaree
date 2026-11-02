@@ -18,9 +18,10 @@ const asLocalDate = (iso: string | null) => (iso ? parseDateKey(iso) : undefined
  * system picker on phones. Both only offer days the field allows (see
  * dateFieldBounds), and the server checks the same limits.
  */
-const DateField = ({ field, value, onChange, palette, helper, error, disabled }: FieldPartProps) => {
+const DateField = ({ field, value, onChange, palette, helper, error, disabled, boundsOverride }: FieldPartProps) => {
   const [pickerOpen, setPickerOpen] = useState(false);
-  const bounds = boundsForField(field, useVisitDay());
+  const defaultBounds = boundsForField(field, useVisitDay());
+  const bounds = boundsOverride ?? defaultBounds;
   const day = typeof value === "string" && value ? value.slice(0, 10) : "";
   const shown = day ? formatBirthDate(day) : "";
   const isWeb = Platform.OS === "web";
@@ -39,14 +40,14 @@ const DateField = ({ field, value, onChange, palette, helper, error, disabled }:
         style={buildShellStyle(palette, error, disabled)}
       >
         <Feather name="calendar" size={16} color={error ? palette.subtle : palette.primary} />
-        <Text className="min-w-0 flex-1 text-[14px]" style={{ color: shown ? palette.heading : palette.subtle }}>
+        <Text className="min-w-0 flex-1 text-[16px]" style={{ color: shown ? palette.heading : palette.subtle }}>
           {shown || "Select a date"}
         </Text>
         <Feather name="chevron-down" size={16} color={palette.subtle} />
       </Pressable>
 
       <View className="mt-1 flex-row items-center justify-between gap-3">
-        <Text className="min-w-0 flex-1 text-[11.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
+        <Text className="min-w-0 flex-1 text-[13.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
           {helper ?? ""}
         </Text>
         {day ? (
@@ -56,7 +57,7 @@ const DateField = ({ field, value, onChange, palette, helper, error, disabled }:
             accessibilityLabel={`Clear ${field.label}`}
             hitSlop={10}
           >
-            <Text className="text-[11.5px] font-semibold" style={{ color: palette.primary }}>
+            <Text className="text-[13.5px] font-semibold" style={{ color: palette.primary }}>
               Clear
             </Text>
           </Pressable>

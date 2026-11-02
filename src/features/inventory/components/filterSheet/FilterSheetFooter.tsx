@@ -34,7 +34,7 @@ const FilterSheetFooter = ({ isSort, onReset, onApply }: Props) => {
           borderColor: palette.cardBorder,
         }}
       >
-        <Text className="text-[14px] font-semibold" style={{ color: palette.body }}>
+        <Text className="text-[16px] font-semibold" style={{ color: palette.body }}>
           Reset
         </Text>
       </Pressable>
@@ -50,7 +50,7 @@ const FilterSheetFooter = ({ isSort, onReset, onApply }: Props) => {
           backgroundColor: palette.primary,
         }}
       >
-        <Text className="text-[14px] font-semibold text-white">
+        <Text className="text-[16px] font-semibold text-white">
           {isSort ? "Apply Sorting" : "Apply Filters"}
         </Text>
       </Pressable>

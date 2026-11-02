@@ -40,7 +40,7 @@ const ScheduleRow = ({
   >
     <Text
       style={{
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: highlight ? "700" : "600",
         color: highlight ? palette.accent : palette.muted,
         textTransform: "uppercase",
@@ -51,7 +51,7 @@ const ScheduleRow = ({
     </Text>
     <Text
       style={{
-        fontSize: highlight ? 15 : 14,
+        fontSize: highlight ? 17 : 16,
         fontWeight: highlight ? "700" : "600",
         color: palette.heading,
         marginTop: 2,
@@ -83,11 +83,11 @@ export const RescheduleConfirmStep = ({
     >
       <Text
         accessibilityRole="header"
-        style={{ fontSize: 16, fontWeight: "700", color: palette.heading, textAlign: "center" }}
+        style={{ fontSize: 18, fontWeight: "700", color: palette.heading, textAlign: "center" }}
       >
         Reschedule Appointment?
       </Text>
-      <Text style={{ fontSize: 13, color: palette.muted, textAlign: "center", marginTop: 4 }}>
+      <Text style={{ fontSize: 15, color: palette.muted, textAlign: "center", marginTop: 4 }}>
         Your {appointmentServiceLabel(appointment)} appointment will be moved:
       </Text>
 

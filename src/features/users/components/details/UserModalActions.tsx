@@ -45,7 +45,7 @@ const ActionButton = ({
       }}
     >
       <Feather name={icon} size={17} color={text} />
-      <Text className="text-[14.5px] font-semibold" style={{ color: text }}>
+      <Text className="text-[16.5px] font-semibold" style={{ color: text }}>
         {label}
       </Text>
     </Pressable>
@@ -72,11 +72,11 @@ const UserModalActions = ({
   const palette = useUserDetailsPalette();
   const action = statusActionFor(user);
 
-  const statusButton = (
+  const statusButton = action ? (
     <ActionButton
       icon={action.destructive ? "user-x" : "user-check"}
       label={busy ? action.pendingLabel : action.label}
-      accessibilityLabel={`${action.label} ${user.fullname}`}
+      accessibilityLabel={`${action.label} of ${user.fullname}`}
       text={action.destructive ? palette.dangerText : palette.primary}
       background={action.destructive ? palette.dangerBg : palette.neutralBg}
       border={action.destructive ? palette.dangerBorder : palette.neutralBorder}
@@ -84,7 +84,7 @@ const UserModalActions = ({
       disabled={busy}
       stacked={compact}
     />
-  );
+  ) : null;
 
   const activityButton = (
     <ActionButton

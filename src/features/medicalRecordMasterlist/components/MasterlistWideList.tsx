@@ -18,7 +18,11 @@ const MasterlistWideList = ({ screen, width, insets }: Props) => {
   // A new page starts at its first row.
   const scrollRef = useScrollTopOnChange<ScrollView>(list.page);
   const openDetail = detail.open;
-  const columns = useMemo(() => masterlistColumns(openDetail), [openDetail]);
+  const onDelete = screen.deletion.open;
+  const deleteLoadingId = screen.deletion.loadingId;
+  const columns = useMemo(() => masterlistColumns({
+    onView:openDetail,onEdit:screen.editImmunization,editLoadingId:screen.editLoadingId,onDelete,deleteLoadingId,
+  }), [openDetail, screen.editImmunization, screen.editLoadingId, onDelete, deleteLoadingId]);
 
   return (
     <ScrollView

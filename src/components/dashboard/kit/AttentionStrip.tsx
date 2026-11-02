@@ -67,10 +67,10 @@ const AttentionCard = ({
           <Feather name={item.icon} size={18} color={tone.fg} />
         </View>
         <View className="min-w-0 flex-1">
-          <Text className="text-[14px] font-bold" numberOfLines={1} style={{ color: palette.heading }}>
+          <Text className="text-[16px] font-bold" numberOfLines={2} style={{ color: palette.heading }}>
             {item.title}
           </Text>
-          <Text className="text-[12.5px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
+          <Text className="text-[14.5px] font-medium" numberOfLines={2} style={{ color: palette.muted }}>
             {item.detail}
           </Text>
         </View>

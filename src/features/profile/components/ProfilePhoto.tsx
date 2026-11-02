@@ -61,7 +61,7 @@ const ProfilePhoto = ({
             <Text
               allowFontScaling={false}
               style={{
-                fontSize: Math.round(size * 0.34),
+                fontSize: Math.round(size * 0.34) + 2,
                 fontWeight: "700",
                 letterSpacing: 0.5,
                 color: colors.onPrimary,

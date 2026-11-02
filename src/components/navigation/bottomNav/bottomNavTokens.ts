@@ -47,8 +47,8 @@ export const BOTTOM_NAV_METRICS = {
   pillMinWidth: 52,
   pillRadius: 14,
   paddingHorizontal: 8,
-  labelSize: 11,
-  labelSizeCompact: 10,
+  labelSize: 13,
+  labelSizeCompact: 10.5,
 } as const;
 
 export const BOTTOM_NAV_TIMING = {

@@ -34,7 +34,7 @@ const ProfileModalHeader = ({
         >
           {title}
         </Text>
-        <Text style={{ marginTop: 4, fontSize: 14.5, color: PROFILE_COLORS.muted }}>
+        <Text style={{ marginTop: 4, fontSize: 16.5, color: PROFILE_COLORS.muted }}>
           View and manage your personal information.
         </Text>
       </View>

@@ -43,11 +43,11 @@ export const ItemsGivenSection = ({
             }}
           >
             <View style={{ minWidth: 0, flex: 1 }}>
-              <Text style={{ fontSize: 14, fontWeight: "600", color: palette.heading }}>
+              <Text style={{ fontSize: 16, fontWeight: "600", color: palette.heading }}>
                 {item.itemName}
               </Text>
               {item.specification ? (
-                <Text style={{ fontSize: 11, color: palette.muted, marginTop: 2 }}>
+                <Text style={{ fontSize: 13, color: palette.muted, marginTop: 2 }}>
                   {item.specification}
                 </Text>
               ) : null}
@@ -63,7 +63,7 @@ export const ItemsGivenSection = ({
                   : withAlpha(PALETTE.blue[600], 0.10),
               }}
             >
-              <Text style={{ fontSize: 13, fontWeight: "700", color: ITEM_TINT }}>
+              <Text style={{ fontSize: 15, fontWeight: "700", color: ITEM_TINT }}>
                 {item.quantity} {item.unit}
               </Text>
             </View>

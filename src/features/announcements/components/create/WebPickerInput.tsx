@@ -66,7 +66,7 @@ const NativeInput = ({
     color: value ? colors.heading : colors.subtle,
     colorScheme: resolvedTheme === "dark" ? "dark" : "light",
     font: "inherit",
-    fontSize: 15,
+    fontSize: 17,
     outline: "none",
     boxShadow: look.ring ? `0 0 0 3px ${look.ring}` : "none",
     transition: `border-color ${TIMING.hover}ms ease, box-shadow ${TIMING.hover}ms ease`,

@@ -23,7 +23,7 @@ const ServiceChip = ({ label, tone }: ServiceChipProps) => {
         borderColor: palette.border,
       }}
     >
-      <Text style={{ fontSize: 11.5, fontWeight: "600", color: palette.fg }}>{label}</Text>
+      <Text style={{ fontSize: 13.5, fontWeight: "600", color: palette.fg }}>{label}</Text>
     </View>
   );
 };

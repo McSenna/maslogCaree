@@ -8,14 +8,14 @@ import type { UserTab } from "../../userAdmin.types";
 
 type EmptyCopy = Pick<DataTableProps<unknown>, "emptyIcon" | "emptyTitle" | "emptyDescription" | "emptyAction">;
 
-export const USERS_ERROR = "Could not load users.";
+export const USERS_ERROR = "Could not load accounts.";
 
 const EMPTY: Record<UserTab, Required<Pick<EmptyCopy, "emptyIcon" | "emptyTitle" | "emptyDescription">>> = {
-  active: { emptyTitle: "No active users", emptyDescription: "Add a user to give them access to the app.", emptyIcon: "users" },
+  active: { emptyTitle: "No active accounts", emptyDescription: "Accounts that can sign in will be listed here.", emptyIcon: "users" },
   requests: { emptyTitle: "No pending requests", emptyDescription: "New sign-up requests from residents will appear here.", emptyIcon: "user-plus" },
-  rejected: { emptyTitle: "No rejected requests", emptyDescription: "Requests you decline will be listed here.", emptyIcon: "user-x" },
-  deactivated: { emptyTitle: "No deactivated users", emptyDescription: "Accounts you deactivate will be listed here and can be restored.", emptyIcon: "slash" },
-  accounts: { emptyTitle: "No registered users", emptyDescription: "Every registered account, active or deactivated, will be listed here.", emptyIcon: "users" },
+  rejected: { emptyTitle: "No rejected requests", emptyDescription: "Requests you reject will be listed here, and you can still approve them.", emptyIcon: "user-x" },
+  deactivated: { emptyTitle: "No deactivated accounts", emptyDescription: "Accounts you deactivate will be listed here and can be reactivated.", emptyIcon: "slash" },
+  accounts: { emptyTitle: "No accounts yet", emptyDescription: "Every account, in any status, will be listed here.", emptyIcon: "users" },
   masterlist: { emptyTitle: "No master list records", emptyDescription: "The barangay's official resident records will be listed here.", emptyIcon: "list" },
 };
 
@@ -24,7 +24,7 @@ export const usersEmptyCopy = (tab: UserTab, filtered: boolean, onClearFilters: 
   filtered
     ? {
         emptyIcon: "search",
-        emptyTitle: "No users found",
+        emptyTitle: "No accounts found",
         emptyDescription: "Nothing matches the current search and filters.",
         emptyAction: { label: "Clear filters", icon: "x", onPress: onClearFilters, variant: "outlined" },
       }
@@ -51,7 +51,7 @@ type ListStateProps = {
 const ListState = ({ view, tab, onRetry, onClearFilters }: ListStateProps) => {
   if (view === "loading") {
     return (
-      <View accessible accessibilityLabel="Loading users" accessibilityRole="progressbar">
+      <View accessible accessibilityLabel="Loading accounts" accessibilityRole="progressbar">
         {[0, 1, 2, 3, 4].map((row) => (
           <SkeletonRow key={row} />
         ))}

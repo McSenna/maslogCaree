@@ -27,11 +27,11 @@ const SupportCTA = ({ onContactSupport, onViewRequests }: SupportCTAProps) => {
       <View style={{ gap: 5 }}>
         <Text
           accessibilityRole="header"
-          style={{ fontSize: 17, fontWeight: "700", color: palette.heading }}
+          style={{ fontSize: 19, fontWeight: "700", color: palette.heading }}
         >
           Still need help?
         </Text>
-        <Text style={{ fontSize: 13.5, lineHeight: 20, color: palette.muted }}>
+        <Text style={{ fontSize: 15.5, lineHeight: 22, color: palette.muted }}>
           If you couldn&apos;t find the answer you&apos;re looking for, send us a support request and
           the MaslogCare support team will assist you.
         </Text>
@@ -55,7 +55,7 @@ const SupportCTA = ({ onContactSupport, onViewRequests }: SupportCTAProps) => {
           }}
         >
           <Feather name="life-buoy" size={16} color={PALETTE.white} />
-          <Text style={{ fontSize: 14, fontWeight: "700", color: PALETTE.white }}>Contact Support</Text>
+          <Text style={{ fontSize: 16, fontWeight: "700", color: PALETTE.white }}>Contact Support</Text>
         </Pressable>
 
         <Pressable
@@ -77,7 +77,7 @@ const SupportCTA = ({ onContactSupport, onViewRequests }: SupportCTAProps) => {
           }}
         >
           <Feather name="inbox" size={16} color={palette.body} />
-          <Text style={{ fontSize: 14, fontWeight: "700", color: palette.body }}>
+          <Text style={{ fontSize: 16, fontWeight: "700", color: palette.body }}>
             My Support Requests
           </Text>
         </Pressable>

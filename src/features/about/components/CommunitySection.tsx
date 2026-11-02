@@ -25,8 +25,8 @@ const CommunitySection = ({ isTablet }: { isTablet: boolean }) => {
             style={{
               flex: 1,
               color: HC.slate,
-              lineHeight: isTablet ? 23 : 21,
-              fontSize: isTablet ? 15 : 14,
+              lineHeight: isTablet ? 25 : 23,
+              fontSize: isTablet ? 17 : 16,
             }}
           >
             Barangay 61 Maslog is in Legazpi City, Albay. Its health office offers general

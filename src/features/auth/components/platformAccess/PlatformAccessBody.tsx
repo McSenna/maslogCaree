@@ -32,7 +32,7 @@ const PlatformAccessBody = ({
       className="text-center font-bold"
       style={{
         marginTop: 18,
-        fontSize: isNarrow ? 19 : 21,
+        fontSize: isNarrow ? 21 : 23,
         color: LANDING_COLORS.navy,
         letterSpacing: -0.2,
       }}
@@ -44,8 +44,8 @@ const PlatformAccessBody = ({
       className="text-center"
       style={{
         marginTop: 10,
-        fontSize: isNarrow ? 14 : 14.5,
-        lineHeight: isNarrow ? 21 : 22,
+        fontSize: isNarrow ? 16 : 16.5,
+        lineHeight: isNarrow ? 23 : 24,
         color: LANDING_COLORS.mutedText,
       }}
     >
@@ -65,7 +65,7 @@ const PlatformAccessBody = ({
           paddingVertical: 12,
         }}
       >
-        <Text className="text-center" style={{ fontSize: 12.5, lineHeight: 18.5, color: PALETTE.slate[700] }}>
+        <Text className="text-center" style={{ fontSize: 14.5, lineHeight: 20.5, color: PALETTE.slate[700] }}>
           {supporting}
         </Text>
       </View>

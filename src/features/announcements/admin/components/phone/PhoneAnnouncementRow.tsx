@@ -31,20 +31,20 @@ const PhoneAnnouncementRow = ({ item, expanded, first, onToggle, onEdit, onDelet
                 onPress={() => onToggle(item.id)}
                 accessibilityRole="button"
                 accessibilityState={{ expanded }}
-                accessibilityHint={expanded ? "Hides the details" : "Shows the full message and actions"}
+                accessibilityHint={expanded ? "Hides the details" : "Shows the full message"}
                 hitSlop={{ top: 12, bottom: 12 }}
               >
                 {({ pressed }) => (
-                  <Text className={`text-[15px] font-semibold ${pressed ? "text-brand" : "text-ink"}`}>{item.title}</Text>
+                  <Text className={`text-[17px] font-semibold ${pressed ? "text-brand" : "text-ink"}`}>{item.title}</Text>
                 )}
               </Pressable>
-              <Text numberOfLines={expanded ? undefined : 2} className="mt-1 text-[14px] font-normal leading-[21px] text-body">
+              <Text numberOfLines={expanded ? undefined : 2} className="mt-1 text-[16px] font-normal leading-[23px] text-body">
                 {item.body}
               </Text>
               <View className="mt-2 flex-row flex-wrap items-center gap-2">
                 <StatusLabel status={statusOf(item)} />
-                <Text className="text-[12px] font-medium text-text2">{item.audience}</Text>
-                <Text className="text-[12px] font-medium text-text2">{expiryShort(item)}</Text>
+                <Text className="text-[14px] font-medium text-text2">{item.audience}</Text>
+                <Text className="text-[14px] font-medium text-text2">{expiryShort(item)}</Text>
               </View>
             </View>
             <DashboardButton
@@ -52,28 +52,29 @@ const PhoneAnnouncementRow = ({ item, expanded, first, onToggle, onEdit, onDelet
               variant="ghost"
               size="md"
               iconOnly
-              icon="more-vertical"
-              label={expanded ? "Close actions" : "More actions"}
+              icon={expanded ? "chevron-up" : "chevron-down"}
+              label={expanded ? "Hide details" : "Show details"}
               onPress={() => onToggle(item.id)}
             />
           </View>
 
           {expanded ? (
-            <View className="gap-3 px-1 pb-4">
-              <View className="gap-1">
-                <Text className="text-[12.5px] font-medium text-text2">{postedLine(item)}</Text>
-                <Text className="text-[12.5px] font-medium text-text2">{eventLine(item)}</Text>
-              </View>
-              <View className="flex-row gap-2">
-                <View className="flex-1">
-                  <DashboardButton palette={palette} size="md" fullWidth icon="edit-2" label="Edit" onPress={() => onEdit(item)} />
-                </View>
-                <View className="flex-1">
-                  <DashboardButton palette={palette} size="md" fullWidth variant="danger" icon="trash-2" label="Delete" onPress={() => onDelete(item)} />
-                </View>
-              </View>
+            <View className="gap-1 px-1 pb-3">
+              <Text className="text-[14.5px] font-medium text-text2">{postedLine(item)}</Text>
+              <Text className="text-[14.5px] font-medium text-text2">{eventLine(item)}</Text>
             </View>
           ) : null}
+
+          <View className="px-1 pb-4">
+            <View className="flex-row gap-2">
+              <View className="flex-1">
+                <DashboardButton palette={palette} size="md" fullWidth icon="edit-2" label="Edit" onPress={() => onEdit(item)} />
+              </View>
+              <View className="flex-1">
+                <DashboardButton palette={palette} size="md" fullWidth variant="danger" icon="trash-2" label="Delete" onPress={() => onDelete(item)} />
+              </View>
+            </View>
+          </View>
         </View>
       </CardSide>
     </View>

@@ -1,3 +1,5 @@
+import { CLIENT_PLATFORM } from "@/config/platformAccess";
+import { setResidentWebBlocked } from "./residentWebBlock";
 import { toast } from "@/components/feedback/toast/toastStore";
 import { sessionEndNotice } from "@/utils/errorToast/errorToastPolicy";
 import { clearStoredUser, getStoredUser } from "@/utils/storage";
@@ -40,6 +42,11 @@ export const beginSignOut = (): void => {
  * tells them why; the burst of refusals that follows finds no session left.
  */
 export const forceLogout = async (reason?: string): Promise<void> => {
+  if (reason === "RESIDENT_WEB_ACCESS_DENIED" && CLIENT_PLATFORM === "web" && getStoredUser()?.role === "resident") {
+    setResidentWebBlocked(true);
+    return;
+  }
+  setResidentWebBlocked(false);
   const announce = Boolean(reason) && getStoredUser() !== null && !signingOut;
   if (!reason) signingOut = false;
   clearStoredUser();

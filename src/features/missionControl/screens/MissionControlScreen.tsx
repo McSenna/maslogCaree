@@ -79,10 +79,10 @@ const MissionControlScreen = () => {
         }}
       >
         <View ref={topRef}>
-          <Text className="text-[22px] font-bold" style={{ color: palette.heading }}>
+          <Text className="text-[24px] font-bold" style={{ color: palette.heading }}>
             Appointments &amp; Queue
           </Text>
-          <Text className="mt-1 text-[13px]" style={{ color: palette.muted }}>
+          <Text className="mt-1 text-[15px]" style={{ color: palette.muted }}>
             {control.scopeDescription}
           </Text>
         </View>
@@ -104,7 +104,7 @@ const MissionControlScreen = () => {
           listRef={listAnchor}
           headerAction={
             control.canManageMissions ? (
-              <View className="flex-row items-center gap-2">
+              <View className="max-w-full shrink flex-row flex-wrap items-center justify-end gap-2">
                 <MissionToolsButton palette={palette} onPress={() => setMissionToolsOpen(true)} />
                 <AddMissionButton palette={palette} onPress={() => setNewMissionOpen(true)} />
               </View>

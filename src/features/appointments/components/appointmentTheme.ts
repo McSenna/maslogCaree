@@ -1,7 +1,7 @@
 import { PALETTE } from "@/theme/palette";
 
 // The booking flow's colours in the shared roles: Dark Navy headings and
-// labels, slate body text, Healthcare Blue only for selection and actions.
+// labels, slate body text, primary blue only for selection and actions.
 export const APPOINTMENT_COLORS = {
   primary: PALETTE.ink,
   primaryDeep: PALETTE.ink,

@@ -38,11 +38,11 @@ const SupportSubmittedState = ({
 
       <Text
         accessibilityRole="header"
-        style={{ fontSize: 17, fontWeight: "700", color: palette.heading, textAlign: "center" }}
+        style={{ fontSize: 19, fontWeight: "700", color: palette.heading, textAlign: "center" }}
       >
         Support Request Submitted
       </Text>
-      <Text style={{ fontSize: 13.5, lineHeight: 20, color: palette.muted, textAlign: "center" }}>
+      <Text style={{ fontSize: 15.5, lineHeight: 22, color: palette.muted, textAlign: "center" }}>
         Your concern has been successfully sent to the MaslogCare support team.
       </Text>
 
@@ -59,11 +59,11 @@ const SupportSubmittedState = ({
           borderColor: palette.accentBorder,
         }}
       >
-        <Text style={{ fontSize: 15, fontWeight: "700", color: palette.accent, letterSpacing: 0.5 }}>
+        <Text style={{ fontSize: 17, fontWeight: "700", color: palette.accent, letterSpacing: 0.5 }}>
           {ticket.ticketNumber}
         </Text>
         <SupportStatusBadge status={ticket.status} />
-        <Text style={{ fontSize: 12, color: palette.muted }}>
+        <Text style={{ fontSize: 14, color: palette.muted }}>
           Submitted {formatTicketDateTime(ticket.createdAt)}
         </Text>
       </View>
@@ -83,7 +83,7 @@ const SupportSubmittedState = ({
             backgroundColor: palette.cardRaised,
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "600", color: palette.body }}>Close</Text>
+          <Text style={{ fontSize: 16, fontWeight: "600", color: palette.body }}>Close</Text>
         </Pressable>
 
         <Pressable
@@ -98,7 +98,7 @@ const SupportSubmittedState = ({
             backgroundColor: palette.accent,
           }}
         >
-          <Text style={{ fontSize: 14, fontWeight: "700", color: palette.onAccent }}>
+          <Text style={{ fontSize: 16, fontWeight: "700", color: palette.onAccent }}>
             View Support Request
           </Text>
         </Pressable>

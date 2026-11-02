@@ -5,7 +5,7 @@ const { blue, green, orange, slate, success, amber, red } = PALETTE;
 
 /**
  * MaslogCare palette (light), adopted 2026-10-02 for every role. White cards on
- * Soft Gray, Dark Navy text, Healthcare Blue for action and focus. Colour on a
+ * Soft Gray, Dark Navy text, primary blue for action and focus. Colour on a
  * card lives in its icon chip and label; card fills stay white.
  *
  * Text contrast on the card / on the page: heading 14.8 / 13.8, body 10.4 / 9.7,

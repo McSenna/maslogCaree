@@ -34,7 +34,7 @@ const SlotCountBadge = ({
   >
     <Text
       style={{
-        fontSize: 11,
+        fontSize: 13,
         fontWeight: "600",
         color: count > 0 ? palette.successFg : palette.muted,
       }}
@@ -87,7 +87,7 @@ export const RescheduleDateList = ({
               <Feather name="calendar" size={16} color={isSelected ? palette.accent : palette.muted} />
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 16,
                   fontWeight: isSelected ? "700" : "500",
                   color: isSelected ? palette.accent : palette.heading,
                 }}

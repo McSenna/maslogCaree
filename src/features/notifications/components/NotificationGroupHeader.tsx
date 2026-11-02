@@ -18,7 +18,7 @@ const NotificationGroupHeader = ({ label }: { label: string }) => {
       <Text
         maxFontSizeMultiplier={1.3}
         style={{
-          fontSize: 12.5,
+          fontSize: 14.5,
           fontWeight: "600",
           letterSpacing: 0.2,
           color: palette.muted,

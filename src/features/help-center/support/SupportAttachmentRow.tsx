@@ -36,10 +36,10 @@ const SupportAttachmentRow = ({ fileName, fileSize, onRemove }: SupportAttachmen
       />
 
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "600", color: palette.heading }}>
+        <Text numberOfLines={1} style={{ fontSize: 15, fontWeight: "600", color: palette.heading }}>
           {fileName}
         </Text>
-        <Text style={{ fontSize: 11.5, color: palette.muted }}>
+        <Text style={{ fontSize: 13.5, color: palette.muted }}>
           {extension} · {formatFileSize(fileSize)}
         </Text>
       </View>

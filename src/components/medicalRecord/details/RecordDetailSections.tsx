@@ -1,3 +1,4 @@
+import { immunizationProgressLabel } from "@/services/immunizationRecordProgress";
 import { Text, View } from "react-native";
 
 import { QUEUE_RADIUS, type QueuePalette } from "@/components/appointmentQueue/queueTheme";
@@ -12,35 +13,27 @@ type SectionProps = {
   palette: QueuePalette;
 };
 
-export const CompletedBadge = ({ record, palette }: Omit<SectionProps, "form">) => (
-  <View
-    className="w-full flex-row items-center gap-2 self-start px-3 py-1.5"
-    style={{ borderRadius: QUEUE_RADIUS.pill, backgroundColor: palette.statuses.completed.bg }}
-  >
-    <View
-      className="h-2 w-2 rounded-full"
-      style={{ backgroundColor: palette.statuses.completed.dot }}
-    />
-    <Text
-      className="text-[12.5px] font-semibold"
-      style={{ color: palette.statuses.completed.fg }}
-    >
-      Completed {formatWhen(record.completedAt)}
+export const CompletedBadge = ({ record, palette }: Omit<SectionProps, "form">) => {
+  const tone = record.recordStatus === "in_progress" ? palette.statuses.processing : palette.statuses.completed;
+  return <View className="w-full flex-row items-center gap-2 self-start px-3 py-1.5" style={{ borderRadius:QUEUE_RADIUS.pill,backgroundColor:tone.bg }}>
+    <Text className="text-[14.5px] font-semibold" style={{color:tone.fg}}>
+      {immunizationProgressLabel(record) || `Completed ${formatWhen(record.completedAt)}`}
     </Text>
-  </View>
-);
+  </View>;
+};
 
 export const VisitBlock = ({ record, form, palette }: SectionProps) => {
   const providerName =
     typeof record.provider === "object" && record.provider ? record.provider.fullname : undefined;
   const residentName =
     typeof record.resident === "object" && record.resident ? record.resident.fullname : undefined;
+  const baby = typeof record.immunizationBabyId === "object" ? record.immunizationBabyId : null;
   const appointment = typeof record.appointment === "object" ? record.appointment : null;
 
   return (
     <Block title="Visit" palette={palette}>
       {/* An immunization record is the child's; the account holder is the parent. */}
-      <Row label="Patient" value={appointment?.childName?.trim() || residentName || "Not recorded"} palette={palette} />
+      <Row label="Patient" value={baby?.name || appointment?.childName?.trim() || residentName || "Not recorded"} palette={palette} />
       {appointment?.childName?.trim() && residentName ? <Row label="Parent" value={residentName} palette={palette} /> : null}
       <Row label="Service" value={form?.label ?? record.serviceType} palette={palette} />
       <Row label="Provider" value={providerName || "Not recorded"} palette={palette} />
@@ -49,7 +42,7 @@ export const VisitBlock = ({ record, form, palette }: SectionProps) => {
         value={formatWhen(record.appointmentDate ?? appointment?.slotStart)}
         palette={palette}
       />
-      <Row label="Completed" value={formatWhen(record.completedAt)} palette={palette} />
+      <Row label={record.recordStatus ? "Last recorded care" : "Completed"} value={formatWhen(record.completedAt)} palette={palette} />
     </Block>
   );
 };

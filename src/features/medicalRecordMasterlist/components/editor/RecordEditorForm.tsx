@@ -1,3 +1,6 @@
+import { useAuth } from "@/contexts/AuthContext";
+import ImmunizationRecordFields from "@/features/immunization/components/ImmunizationRecordFields";
+import { useClinicalTransition } from "@/features/immunization/hooks/useClinicalDraft";
 import { Text, View } from "react-native";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
@@ -13,7 +16,7 @@ import ResidentPicker from "./ResidentPicker";
 import ResidentSummary from "./ResidentSummary";
 import VisitDateField from "./VisitDateField";
 
-type Props = { editor: RecordEditorState; forms: CompletionForm[]; twoColumn: boolean; onOpenDate: () => void };
+type Props = { editor: RecordEditorState; forms: CompletionForm[]; twoColumn: boolean; onOpenDate: () => void; busy?: boolean; onContentChange: () => void; onClinicalLayout: (y: number) => void };
 
 const REASON_FIELD: MedicalField = {
   key: "reason",
@@ -26,33 +29,40 @@ const REASON_FIELD: MedicalField = {
 
 const SectionError = ({ message }: { message: string }) =>
   message ? (
-    <Text accessibilityRole="alert" className="text-[12px] font-medium" style={{ color: PALETTE.red[600] }}>
+    <Text accessibilityRole="alert" className="text-[14px] font-medium" style={{ color: PALETTE.red[600] }}>
       {message}
     </Text>
   ) : null;
 
 /** The whole record on one page: who, when and what, then the service's own medical fields. */
-const RecordEditorForm = ({ editor, forms, twoColumn, onOpenDate }: Props) => {
+const RecordEditorForm = ({ editor, forms, twoColumn, onOpenDate, busy, onContentChange, onClinicalLayout }: Props) => {
   const palette = useQueuePalette();
+  const transition = useClinicalTransition();
+  const { user } = useAuth();
+  const immunization = (!editor.isEditing || Boolean(editor.initialBabyId)) && editor.serviceType === "immunization" && user?.role === "midwife";
   const visitValues: Record<string, string> = editor.visit;
   const serviceField: MedicalField = {
     key: "serviceType",
     label: "Service",
     type: "select",
     required: true,
-    options: forms.map((form) => ({ value: form.categoryKey, label: form.label })),
+    options: forms.filter((form) => form.categoryKey !== "immunization" || user?.role === "midwife").map((form) => ({ value: form.categoryKey, label: form.label })),
   };
   const otherVisitFields = VISIT_FIELDS.filter((field) => field.key !== "visitDate" && !(editor.isEditing && field.key === "source"));
 
   return (
     <View className="w-full gap-3.5">
-      <SectionCard icon="user" title="Resident" caption="From the barangay master list">
+      {!editor.isEditing ? <SectionCard icon="clipboard" title="Service">
+        <MedicalFieldInput field={serviceField} value={editor.serviceType} error={editor.visitErrors.serviceType || undefined}
+          disabled={busy} onChange={(value) => transition(() => editor.chooseService(typeof value === "string" ? value : ""))} />
+      </SectionCard> : null}
+      <SectionCard icon="user" title={immunization ? "Mother" : "Resident"} caption="From the barangay master list">
         {editor.resident ? (
           <ResidentSummary
             resident={editor.resident}
             confirmed={editor.confirmed}
-            onConfirmedChange={editor.isEditing ? undefined : editor.setConfirmed}
-            onChange={editor.isEditing ? undefined : () => editor.chooseResident(null)}
+            onConfirmedChange={editor.isEditing || busy ? undefined : value => transition(() => editor.setConfirmed(value))}
+            onChange={editor.isEditing || busy ? undefined : () => transition(() => editor.chooseResident(null))}
           />
         ) : (
           <ResidentPicker onPick={editor.chooseResident} />
@@ -60,16 +70,10 @@ const RecordEditorForm = ({ editor, forms, twoColumn, onOpenDate }: Props) => {
         <SectionError message={editor.residentError} />
       </SectionCard>
 
+      {!immunization ? <>
       <SectionCard icon="calendar" title="Visit" caption="As written on the record">
         <VisitDateField value={editor.visit.visitDate} error={editor.visitErrors.visitDate || undefined} onOpen={onOpenDate} />
-        {editor.isEditing ? null : (
-          <MedicalFieldInput
-            field={serviceField}
-            value={editor.serviceType}
-            error={editor.visitErrors.serviceType || undefined}
-            onChange={(value) => editor.chooseService(typeof value === "string" ? value : "")}
-          />
-        )}
+
         {otherVisitFields.map((field) => (
           <MedicalFieldInput
             key={field.key}
@@ -92,13 +96,19 @@ const RecordEditorForm = ({ editor, forms, twoColumn, onOpenDate }: Props) => {
             visitDay={editor.visit.visitDate || null}
           />
         ) : (
-          <Text className="text-[13px] leading-[19px]" style={{ color: palette.muted }}>
+          <Text className="text-[15px] leading-[21px]" style={{ color: palette.muted }}>
             Choose the service above to show its fields.
           </Text>
         )}
       </SectionCard>
 
-      {editor.isEditing ? (
+      </> : editor.resident && editor.confirmed && editor.resident.masterResidentId ? (
+        <View onLayout={event => onClinicalLayout(event.nativeEvent.layout.y + 16)}>
+          <ImmunizationRecordFields key={editor.resident.masterResidentId} mother={{masterResidentId:editor.resident.masterResidentId,name:editor.resident.fullName}} initialBabyId={editor.initialBabyId} busy={busy} onContentChange={onContentChange} />
+        </View>
+      ) : <Text className="text-[15px] leading-[21px]" style={{color:palette.muted}}>Select and confirm the mother above to show her babies and vaccine checklist.</Text>}
+
+      {editor.isEditing && !immunization ? (
         <SectionCard icon="edit-3" title="Why are you changing this record?">
           <MedicalFieldInput field={REASON_FIELD} value={editor.reason} error={editor.reasonError || undefined} onChange={(value) => editor.setReason(typeof value === "string" ? value : "")} />
         </SectionCard>

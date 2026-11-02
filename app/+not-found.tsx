@@ -31,17 +31,17 @@ const NotFoundScreen = () => {
             <Text
               role="heading"
               aria-level={1}
-              style={{ fontSize: 26, lineHeight: 32, fontWeight: "800", color: colors.heading, textAlign: "center" }}
+              style={{ fontSize: 28, lineHeight: 34, fontWeight: "800", color: colors.heading, textAlign: "center" }}
             >
               Page not found
             </Text>
-            <Text style={{ fontSize: 15, lineHeight: 22, color: colors.muted, textAlign: "center" }}>
+            <Text style={{ fontSize: 17, lineHeight: 24, color: colors.muted, textAlign: "center" }}>
               This link may be old or mistyped. Your appointments and records are safe.
             </Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <Feather name="compass" size={15} color={colors.subtle} />
-            <Text style={{ fontSize: 13, color: colors.subtle }}>MaslogCare, Barangay 61 Maslog</Text>
+            <Text style={{ fontSize: 15, color: colors.subtle }}>MaslogCare, Barangay 61 Maslog</Text>
           </View>
           <Button
             label={user ? "Go to my dashboard" : "Go to sign in"}

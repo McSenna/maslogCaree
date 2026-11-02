@@ -51,7 +51,7 @@ const QueueTable = ({
       label="Show"
       value={tab}
       onChange={setTab}
-      fill={compact}
+      wrap
       options={[
         { value: "all", label: "All", count: counts.all },
         { value: "waiting", label: "Waiting", count: counts.waiting },
@@ -103,7 +103,7 @@ const QueueTable = ({
               <PatientName palette={palette} row={row} />
               <View className="flex-row flex-wrap items-center gap-2">
                 {showService ? <ServiceBadge serviceKey={row.consultationType} label={row.serviceLabel} compact /> : null}
-                <Text className="text-[12.5px] font-medium" style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
+                <Text className="text-[14.5px] font-medium" style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
                   {slotTime(row.slotStart)}
                 </Text>
               </View>
@@ -122,7 +122,7 @@ const QueueTable = ({
           className="mt-1 h-11 flex-row items-center justify-center gap-1.5"
           style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
         >
-          <Text className="text-[13px] font-semibold" style={{ color: palette.primary }}>
+          <Text className="text-[15px] font-semibold" style={{ color: palette.primary }}>
             {hidden} more in the queue
           </Text>
           <Feather name="arrow-right" size={14} color={palette.primary} />

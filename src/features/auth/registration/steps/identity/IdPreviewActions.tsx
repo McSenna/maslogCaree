@@ -30,7 +30,7 @@ const IdPreviewActions = ({ onReplace, onRemove }: Props) => {
         style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
       >
         <Feather name="refresh-cw" size={13} color={REG_COLORS.primary} />
-        <Text style={{ fontSize: 12.5, fontWeight: "600", color: REG_COLORS.primary }}>
+        <Text style={{ fontSize: 14.5, fontWeight: "600", color: REG_COLORS.primary }}>
           Replace Document
         </Text>
       </Pressable>
@@ -42,7 +42,7 @@ const IdPreviewActions = ({ onReplace, onRemove }: Props) => {
         style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
       >
         <Feather name="trash-2" size={13} color={PALETTE.red[600]} />
-        <Text style={{ fontSize: 12.5, fontWeight: "600", color: PALETTE.red[700] }}>Remove</Text>
+        <Text style={{ fontSize: 14.5, fontWeight: "600", color: PALETTE.red[700] }}>Remove</Text>
       </Pressable>
     </View>
   );

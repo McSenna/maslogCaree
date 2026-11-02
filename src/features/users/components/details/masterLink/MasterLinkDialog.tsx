@@ -52,7 +52,7 @@ const MasterLinkDialog = ({ user, mode, onClose }: Props) => {
     >
       {action.error ? <ErrorBanner message={action.error} /> : null}
       {mode === "unlink" ? (
-        <Text className="text-[13px] leading-[19px]" style={{ color: palette.body }}>
+        <Text className="text-[15px] leading-[21px]" style={{ color: palette.body }}>
           {`Records filed under ${user.masterResidentId ?? "this record"} stay on file and stop showing in this account. Link it again to restore them.`}
         </Text>
       ) : (

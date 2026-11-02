@@ -53,12 +53,12 @@ const ChartCallout = ({
           }),
         }}
       >
-        <Text numberOfLines={1} className="text-[12.5px] font-bold" style={{ color: PALETTE.white }}>
+        <Text numberOfLines={1} className="text-[14.5px] font-bold" style={{ color: PALETTE.white }}>
           {content.title}
         </Text>
         <Text
           numberOfLines={1}
-          className="mt-0.5 text-[11.5px] font-medium"
+          className="mt-0.5 text-[13.5px] font-medium"
           style={{ color: PALETTE.slate[300] }}
         >
           {content.meta}

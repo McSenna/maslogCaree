@@ -53,7 +53,7 @@ export const RecommendationsSection = ({
     >
       <View style={{ gap: 10 }}>
         {record.recommendations ? (
-          <Text style={{ fontSize: 14, color: palette.body, lineHeight: 20 }}>
+          <Text style={{ fontSize: 16, color: palette.body, lineHeight: 22 }}>
             {record.recommendations}
           </Text>
         ) : null}
@@ -72,12 +72,12 @@ export const RecommendationsSection = ({
           >
             <Feather name="calendar" size={16} color={palette.warning} />
             <View style={{ minWidth: 0, flex: 1 }}>
-              <Text style={{ fontSize: 12, color: palette.warningFg, fontWeight: "600" }}>
+              <Text style={{ fontSize: 14, color: palette.warningFg, fontWeight: "600" }}>
                 Next Visit
               </Text>
               <Text
                 style={{
-                  fontSize: 13,
+                  fontSize: 15,
                   color: palette.heading,
                   fontWeight: "500",
                   marginTop: 2,

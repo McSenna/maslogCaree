@@ -136,7 +136,7 @@ const AnnouncementDateTimeFields = ({
                 borderTopColor: colors.border,
               }}
             >
-              <Text style={{ fontSize: 15, fontWeight: "600", color: colors.primary }}>Done</Text>
+              <Text style={{ fontSize: 17, fontWeight: "600", color: colors.primary }}>Done</Text>
             </Pressable>
           ) : null}
         </View>

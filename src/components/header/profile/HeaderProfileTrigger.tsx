@@ -79,8 +79,8 @@ const HeaderProfileTrigger = ({
             numberOfLines={1}
             style={{
               fontFamily: HEADER_FONT,
-              fontSize: 14.5,
-              lineHeight: 18,
+              fontSize: 16.5,
+              lineHeight: 20,
               fontWeight: "600",
               color: palette.title,
             }}
@@ -93,8 +93,8 @@ const HeaderProfileTrigger = ({
               numberOfLines={1}
               style={{
                 fontFamily: HEADER_FONT,
-                fontSize: 12,
-                lineHeight: 15,
+                fontSize: 14,
+                lineHeight: 17,
                 fontWeight: "400",
                 color: palette.muted,
                 marginTop: 1,

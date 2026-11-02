@@ -41,7 +41,7 @@ export const OtpStep = ({ flow }: { flow: ForgotPasswordController }) => (
       />
 
       <View className="w-full flex-row items-center justify-center gap-1">
-        <Text className="text-[12.5px]" style={{ color: C.muted }}>
+        <Text className="text-[14.5px]" style={{ color: C.muted }}>
           Didn&apos;t receive the code?
         </Text>
         <TextButton

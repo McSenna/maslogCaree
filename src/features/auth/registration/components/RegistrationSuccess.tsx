@@ -38,7 +38,7 @@ const RegistrationSuccess = ({ email, status, onContinue, height }: Registration
       <View style={{ alignItems: "center", gap: 8 }}>
         <Text
           accessibilityRole="header"
-          style={{ fontSize: 21, fontWeight: "800", color: REG_COLORS.heading, letterSpacing: -0.3 }}
+          style={{ fontSize: 23, fontWeight: "800", color: REG_COLORS.heading, letterSpacing: -0.3 }}
         >
           {content.title}
         </Text>
@@ -57,14 +57,14 @@ const RegistrationSuccess = ({ email, status, onContinue, height }: Registration
           }}
         >
           <View style={{ width: 7, height: 7, borderRadius: 3.5, backgroundColor: tone.icon }} />
-          <Text style={{ fontSize: 12, fontWeight: "700", color: tone.text }}>{content.badge}</Text>
+          <Text style={{ fontSize: 14, fontWeight: "700", color: tone.text }}>{content.badge}</Text>
         </View>
 
         <Text
           accessibilityLiveRegion="polite"
           style={{
-            fontSize: 14,
-            lineHeight: 22,
+            fontSize: 16,
+            lineHeight: 24,
             textAlign: "center",
             color: REG_COLORS.muted,
             maxWidth: 420,
@@ -89,7 +89,7 @@ const RegistrationSuccess = ({ email, status, onContinue, height }: Registration
       >
         <View style={{ flexDirection: "row", gap: 10, alignItems: "flex-start" }}>
           <Feather name="shield" size={17} color={REG_COLORS.primary} style={{ marginTop: 2 }} />
-          <Text style={{ flex: 1, fontSize: 13, lineHeight: 19, color: PALETTE.slate[700] }}>
+          <Text style={{ flex: 1, fontSize: 15, lineHeight: 21, color: PALETTE.slate[700] }}>
             {content.note}
           </Text>
         </View>
@@ -97,7 +97,7 @@ const RegistrationSuccess = ({ email, status, onContinue, height }: Registration
         {email ? (
           <View style={{ flexDirection: "row", gap: 10, alignItems: "center", paddingTop: 8, borderTopWidth: 1, borderTopColor: PALETTE.slate[200] }}>
             <Feather name="mail" size={14} color={PALETTE.slate[500]} />
-            <Text style={{ flex: 1, fontSize: 12, color: PALETTE.slate[500] }}>
+            <Text style={{ flex: 1, fontSize: 14, color: PALETTE.slate[500] }}>
               Registered email: <Text style={{ fontWeight: "600", color: PALETTE.slate[800] }}>{email}</Text>
             </Text>
           </View>
@@ -122,7 +122,7 @@ const RegistrationSuccess = ({ email, status, onContinue, height }: Registration
         })}
       >
         <Feather name="log-in" size={16} color={REG_COLORS.surface} />
-        <Text style={{ fontSize: 15, fontWeight: "700", color: REG_COLORS.surface }}>
+        <Text style={{ fontSize: 17, fontWeight: "700", color: REG_COLORS.surface }}>
           {content.action}
         </Text>
       </Pressable>

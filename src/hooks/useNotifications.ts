@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { isResidentWebBlocked, subscribeResidentWebBlock } from "@/services/residentWebBlock";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { toast } from "@/components/feedback/toast/toastStore";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,7 +17,9 @@ import { useNotificationLiveUpdates } from "./notifications/useNotificationLiveU
 const PAGE_SIZE = 20;
 
 export const useNotifications = () => {
-  const { user } = useAuth();
+  const { user: account } = useAuth();
+  const blocked = useSyncExternalStore(subscribeResidentWebBlock, isResidentWebBlocked, () => false);
+  const user = account?.role === "resident" && blocked ? null : account;
 
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -51,6 +54,7 @@ export const useNotifications = () => {
 
       try {
         const page = await fetchNotifications({ limit: PAGE_SIZE });
+        if (user.role === "resident" && isResidentWebBlocked()) return;
 
         if (announce) {
           // Explicit load or pull-to-refresh: the first page becomes the list again.
@@ -99,6 +103,7 @@ export const useNotifications = () => {
 
     try {
       const page = await fetchNotifications({ cursor, limit: PAGE_SIZE });
+      if (user.role === "resident" && isResidentWebBlocked()) return;
       pagedRef.current = true;
       setNotifications((prev) => mergeNotifications(prev, page.notifications));
       setUnreadCount(page.unreadCount);

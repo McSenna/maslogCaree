@@ -50,7 +50,7 @@ export const RadioOption = ({ palette, label, selected, disabled = false, onPres
 
     <Text
       style={{
-        fontSize: 13.5,
+        fontSize: 15.5,
         fontWeight: selected ? "600" : "500",
         color: selected ? palette.dangerFg : palette.body,
       }}

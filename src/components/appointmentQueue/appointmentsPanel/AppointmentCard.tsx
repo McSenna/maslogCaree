@@ -24,10 +24,10 @@ const AppointmentCard = ({ appointment, serviceLabel, palette, ...actions }: App
       <View className="flex-row items-center gap-3">
         <QueueAvatar name={appointmentPatientName(appointment, "")} palette={palette} />
         <View className="min-w-0 flex-1">
-          <Text numberOfLines={1} className="text-[15px] font-bold" style={{ color: palette.heading }}>
+          <Text numberOfLines={1} className="text-[17px] font-bold" style={{ color: palette.heading }}>
             {appointmentPatientName(appointment)}
           </Text>
-          <Text numberOfLines={1} className="mt-0.5 text-[13px]" style={{ color: palette.muted }}>
+          <Text numberOfLines={1} className="mt-0.5 text-[15px]" style={{ color: palette.muted }}>
             {isRescheduledRequest(appointment) ? `${serviceLabel} · Rescheduled` : serviceLabel}
           </Text>
           {childCaption(appointment) ? (
@@ -41,13 +41,13 @@ const AppointmentCard = ({ appointment, serviceLabel, palette, ...actions }: App
       <View className="flex-row items-center gap-4">
         <View className="flex-row items-center gap-1.5">
           <Feather name="calendar" size={13} color={palette.subtle} />
-          <Text className="text-[12.5px]" style={{ color: palette.body }}>
+          <Text className="text-[14.5px]" style={{ color: palette.body }}>
             {when.date}
           </Text>
         </View>
         <View className="flex-row items-center gap-1.5">
           <Feather name="clock" size={13} color={palette.subtle} />
-          <Text className="text-[12.5px]" style={{ color: palette.body }}>
+          <Text className="text-[14.5px]" style={{ color: palette.body }}>
             {when.time}
           </Text>
         </View>

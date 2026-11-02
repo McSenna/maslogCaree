@@ -8,7 +8,7 @@ const mockService = {
   icon: "activity",
   label: "Appointments",
   desc: "Schedule and manage visits to the Health Center.",
-  color: "#2D5BFF",
+  color: "#1557D6",
   bg: "#FFFFFF",
   iconBg: "#EEF2FF",
   border: "#F1F5F9",

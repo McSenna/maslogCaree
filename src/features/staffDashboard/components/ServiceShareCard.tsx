@@ -44,13 +44,13 @@ const ServiceShareCard = ({
         <View className="w-full gap-4">
           <View>
             <Text
-              className="text-[30px] font-bold"
+              className="text-[32px] font-bold"
               accessibilityLabel={`${visits(total)} completed in the last ${days} days`}
-              style={{ color: palette.heading, lineHeight: 36, letterSpacing: -0.5, fontVariant: ["tabular-nums"] }}
+              style={{ color: palette.heading, lineHeight: 38, letterSpacing: -0.5, fontVariant: ["tabular-nums"] }}
             >
               {total.toLocaleString()}
             </Text>
-            <Text className="text-[12.5px] font-medium" style={{ color: palette.muted }}>
+            <Text className="text-[14.5px] font-medium" style={{ color: palette.muted }}>
               completed across {shares.length} {shares.length === 1 ? "service" : "services"}
             </Text>
           </View>
@@ -93,17 +93,17 @@ const ServiceShareCard = ({
                   style={{ backgroundColor: serviceColor(share.key, isDark, palette.primary) }}
                 />
                 <Text
-                  className="min-w-0 flex-1 text-[13.5px] font-semibold"
+                  className="min-w-0 flex-1 text-[15.5px] font-semibold"
                   numberOfLines={1}
                   style={{ color: palette.heading }}
                 >
                   {share.label}
                 </Text>
-                <Text className="text-[13.5px] font-bold" style={{ color: palette.heading, fontVariant: ["tabular-nums"] }}>
+                <Text className="text-[15.5px] font-bold" style={{ color: palette.heading, fontVariant: ["tabular-nums"] }}>
                   {share.count.toLocaleString()}
                 </Text>
                 <Text
-                  className="w-11 text-right text-[12.5px] font-semibold"
+                  className="w-11 text-right text-[14.5px] font-semibold"
                   style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}
                 >
                   {share.percent}%

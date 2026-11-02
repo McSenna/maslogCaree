@@ -19,16 +19,16 @@ const AdminTicketModalFallback = ({ loading, error, onClose }: AdminTicketModalF
         {loading ? (
           <>
             <ActivityIndicator size="small" color={palette.primary} />
-            <Text className="text-[13px]" style={{ color: palette.muted }}>
+            <Text className="text-[15px]" style={{ color: palette.muted }}>
               Loading support request…
             </Text>
           </>
         ) : (
           <>
-            <Text className="text-[16px] font-bold" style={{ color: palette.heading }}>
+            <Text className="text-[18px] font-bold" style={{ color: palette.heading }}>
               Request unavailable
             </Text>
-            <Text className="text-center text-[13px]" style={{ color: palette.muted }}>
+            <Text className="text-center text-[15px]" style={{ color: palette.muted }}>
               {error ?? "This support request could not be loaded."}
             </Text>
             <Pressable
@@ -37,7 +37,7 @@ const AdminTicketModalFallback = ({ loading, error, onClose }: AdminTicketModalF
               className="mt-1 rounded-xl px-5 py-2.5 active:opacity-85"
               style={{ backgroundColor: palette.primary }}
             >
-              <Text className="text-[13px] font-semibold text-white">Close</Text>
+              <Text className="text-[15px] font-semibold text-white">Close</Text>
             </Pressable>
           </>
         )}

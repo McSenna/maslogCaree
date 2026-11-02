@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { View } from "react-native";
 
 import { DataTable } from "@/components/data-table";
@@ -25,29 +24,8 @@ type DesktopLogsViewProps = {
   onPageChange: (page: number) => void;
 };
 
-/** Rows checked on the current page of logs. */
-const usePageChecks = (logs: SystemLog[]) => {
-  const [checked, setChecked] = useState<ReadonlySet<string>>(new Set());
-  const onPage = logs.filter((log) => checked.has(log._id)).length;
-  const allChecked = logs.length > 0 && onPage === logs.length;
-  return {
-    isChecked: (id: string) => checked.has(id),
-    allChecked,
-    someChecked: onPage > 0 && !allChecked,
-    onToggle: (id: string) =>
-      setChecked((previous) => {
-        const next = new Set(previous);
-        if (next.has(id)) next.delete(id);
-        else next.add(id);
-        return next;
-      }),
-    onToggleAll: () => setChecked(allChecked ? new Set() : new Set(logs.map((log) => log._id))),
-  };
-};
-
 const DesktopLogsView = ({ logs, loading, refreshing, error, hasActiveFilters, onRetry, selectedLog, onSelect, onClearSelection, page, total, onPageChange }: DesktopLogsViewProps) => {
-  // The check handlers change every render, so the columns are rebuilt with them rather than memoised.
-  const columns = logColumns({ ...usePageChecks(logs), onOpen: onSelect });
+  const columns = logColumns({ onOpen: onSelect });
   const empty = logsEmptyCopy(hasActiveFilters);
 
   return (

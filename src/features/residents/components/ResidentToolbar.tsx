@@ -63,7 +63,7 @@ const ResidentToolbar = ({ residents, isDesktop }: ResidentToolbarProps) => {
         {statusMenu}
         {sortMenu}
       </View>
-      <Text className="text-[15px] font-semibold" style={{ color: palette.heading }}>
+      <Text className="text-[17px] font-semibold" style={{ color: palette.heading }}>
         {residents.total.toLocaleString()} {residents.total === 1 ? "resident" : "residents"}
       </Text>
     </View>

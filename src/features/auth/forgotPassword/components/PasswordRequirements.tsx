@@ -25,7 +25,7 @@ export const PasswordStrengthMeter = ({ value }: { value: string }) => {
         ))}
       </View>
       {value ? (
-        <Text className="text-[11.5px] font-semibold" style={{ color: meta.color }}>
+        <Text className="text-[13.5px] font-semibold" style={{ color: meta.color }}>
           {meta.label} password
         </Text>
       ) : null}
@@ -50,7 +50,7 @@ const PasswordRequirements = ({ value }: { value: string }) => (
             color={passed ? C.success : C.border}
           />
           <Text
-            className="text-[12px]"
+            className="text-[14px]"
             style={{ color: passed ? C.success : C.muted, fontWeight: passed ? "600" : "400" }}
           >
             {rule.label}

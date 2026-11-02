@@ -18,17 +18,17 @@ export const Field = ({ label, required = false, helper, error, children }: Fiel
 
   return (
     <View className="w-full gap-1.5">
-      <Text className="text-[12.5px] font-semibold" style={{ color: palette.heading }}>
+      <Text className="text-[14.5px] font-semibold" style={{ color: palette.heading }}>
         {label}
         {required ? <Text style={{ color: palette.danger }}> *</Text> : null}
       </Text>
       {children}
       {error ? (
-        <Text className="text-[11.5px] font-medium" style={{ color: palette.danger }}>
+        <Text className="text-[13.5px] font-medium" style={{ color: palette.danger }}>
           {error}
         </Text>
       ) : helper ? (
-        <Text className="text-[11.5px]" style={{ color: palette.subtle }}>
+        <Text className="text-[13.5px]" style={{ color: palette.subtle }}>
           {helper}
         </Text>
       ) : null}
@@ -70,7 +70,7 @@ export const TextField = ({
       multiline={multiline}
       editable={editable}
       maxLength={maxLength}
-      className="w-full border px-3.5 text-[14px]"
+      className="w-full border px-3.5 text-[16px]"
       style={
         {
           minHeight: multiline ? 84 : CONTROL_HEIGHT,
@@ -101,7 +101,7 @@ export const ReadOnlyValue = ({ value }: { value: string }) => {
         borderColor: palette.cardBorder,
       }}
     >
-      <Text className="text-[14px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+      <Text className="text-[16px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
         {value}
       </Text>
     </View>

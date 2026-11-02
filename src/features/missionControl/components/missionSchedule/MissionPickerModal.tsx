@@ -84,14 +84,14 @@ const MissionPickerModal = ({
           <View className="px-5 pb-3 pt-4">
             <Text
               accessibilityRole="header"
-              className="text-[17px] font-bold"
+              className="text-[19px] font-bold"
               style={{ color: palette.heading }}
             >
               {title}
             </Text>
             <Text
               accessibilityLiveRegion="polite"
-              className="mt-0.5 text-[13px] font-medium"
+              className="mt-0.5 text-[15px] font-medium"
               style={{ color: palette.primary }}
             >
               {summary}
@@ -115,7 +115,7 @@ const MissionPickerModal = ({
                 borderColor: palette.border,
               }}
             >
-              <Text className="text-[14.5px] font-semibold" style={{ color: palette.body }}>
+              <Text className="text-[16.5px] font-semibold" style={{ color: palette.body }}>
                 Cancel
               </Text>
             </Pressable>
@@ -131,7 +131,7 @@ const MissionPickerModal = ({
                 backgroundColor: palette.primary,
               }}
             >
-              <Text className="text-[14.5px] font-bold text-white">Done</Text>
+              <Text className="text-[16.5px] font-bold text-white">Done</Text>
             </Pressable>
           </View>
         </View>

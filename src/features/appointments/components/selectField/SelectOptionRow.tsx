@@ -33,7 +33,7 @@ const SelectOptionRow = ({ option, isSelected, isLast, onSelect }: Props) => {
       <View className="min-w-0 flex-1">
         <Text
           style={{
-            fontSize: 15,
+            fontSize: 17,
             fontWeight: isSelected ? "700" : "500",
             color: isSelected ? APPOINTMENT_COLORS.primaryBright : APPOINTMENT_COLORS.bodyText,
           }}
@@ -43,7 +43,7 @@ const SelectOptionRow = ({ option, isSelected, isLast, onSelect }: Props) => {
         {option.helper ? (
           <Text
             className="mt-0.5"
-            style={{ fontSize: 12.5, color: APPOINTMENT_COLORS.mutedText }}
+            style={{ fontSize: 14.5, color: APPOINTMENT_COLORS.mutedText }}
           >
             {option.helper}
           </Text>

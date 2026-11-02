@@ -53,13 +53,13 @@ const LogDetailsPanel = ({ log, onClose }: LogDetailsPanelProps) => {
             </View>
             <View className="flex-1">
               <View className="flex-row flex-wrap items-center gap-2">
-                <Text className="text-[15px] font-bold" style={{ color: palette.heading }}>
+                <Text className="text-[17px] font-bold" style={{ color: palette.heading }}>
                   {formatSystemLogActionLabel(log)}
                 </Text>
                 <StatusBadge status={log.status} />
               </View>
               {log.description ? (
-                <Text className="mt-1 text-[13px] leading-relaxed" style={{ color: palette.muted }}>
+                <Text className="mt-1 text-[15px] leading-relaxed" style={{ color: palette.muted }}>
                   {log.description}
                 </Text>
               ) : null}

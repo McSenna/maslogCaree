@@ -1,11 +1,11 @@
-import { type ReactNode } from "react";
+import { useCallback, type ReactNode } from "react";
 import { Animated, Platform, View } from "react-native";
 import Modal from "@/components/ui/AppModal";
 
 import { backDismissesKeyboardFirst } from "@/components/ui/sheetLayout/sheetBack";
 import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
 import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
-import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
+import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 
 import SheetHandle from "./bottomSheet/SheetHandle";
 import SheetScrim from "./bottomSheet/SheetScrim";
@@ -66,16 +66,20 @@ const BottomSheet = ({
     edgePadding: isSheet ? 0 : DESKTOP_EDGE,
   });
 
-  const { translateY, scrimOpacity, animateOut, requestClose, onSheetLayout } = useSheetAnimation({
+  const { translateY, scrimOpacity, animateOut, requestClose: animateClose, onSheetLayout } = useSheetAnimation({
     visible,
     isSheet,
     height,
     onClose,
   });
 
-  const panResponder = useSheetPanResponder({ translateY, animateOut, onClose });
+  const requestClose = useCallback(() => {
+    if (!onDismissRequest?.()) animateClose();
+  }, [animateClose, onDismissRequest]);
+  const panResponder = useSheetPanResponder({ translateY, animateOut, onClose, onDismissRequest });
 
   useWebModalBehavior(visible, requestClose);
+  const attachFocusTrap = useFocusTrap(visible);
 
   if (!visible) return null;
 
@@ -84,17 +88,16 @@ const BottomSheet = ({
       ? 0
       : Math.max(layout.bottomInset, MIN_BOTTOM_GAP);
 
-  const handleAndroidBack = backDismissesKeyboardFirst(layout, () => {
-    if (onDismissRequest?.()) return;
-    requestClose();
-  });
+  const handleAndroidBack = backDismissesKeyboardFirst(layout, requestClose);
 
   return (
-    <Modal visible transparent animationType="none" onRequestClose={handleAndroidBack} statusBarTranslucent>
+    <Modal visible accessibilityLabel={accessibilityLabel} transparent animationType="none" onRequestClose={handleAndroidBack} statusBarTranslucent>
       <SheetViewport layout={layout} style={isSheet ? null : { paddingHorizontal: DESKTOP_EDGE }}>
         <SheetScrim color={scrim} opacity={isSheet ? scrimOpacity : 1} onPress={requestClose} />
 
         <Animated.View
+          ref={attachFocusTrap as never}
+          {...Platform.select({ web: { role: "group" } as object })}
           accessibilityViewIsModal
           accessibilityLabel={accessibilityLabel}
           onLayout={(event) => {

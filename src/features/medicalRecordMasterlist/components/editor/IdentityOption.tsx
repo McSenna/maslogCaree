@@ -47,10 +47,10 @@ const IdentityOption = ({ identity, selected, onSelect }: Props) => {
     >
       <Feather name={selected ? "check-circle" : "circle"} size={18} color={selected ? palette.primary : palette.subtle} />
       <View className="min-w-0 flex-1 gap-0.5">
-        <Text className="text-[14px] font-semibold" style={{ color: palette.heading }}>
+        <Text className="text-[16px] font-semibold" style={{ color: palette.heading }}>
           {identity.fullName}
         </Text>
-        <Text className="text-[12.5px] leading-[18px]" style={{ color: palette.muted }}>
+        <Text className="text-[14.5px] leading-[20px]" style={{ color: palette.muted }}>
           {identityFacts(identity)}
         </Text>
       </View>

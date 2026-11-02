@@ -13,7 +13,7 @@ type RejectBodyProps = {
 
 const RejectBody = ({ draft, isDark, textPrimary, textSecondary }: RejectBodyProps) => (
   <View>
-    <Text className={`mb-2.5 text-[13px] font-medium ${textSecondary}`}>
+    <Text className={`mb-2.5 text-[15px] font-medium ${textSecondary}`}>
       Select the primary reason for rejecting this verification request:
     </Text>
 

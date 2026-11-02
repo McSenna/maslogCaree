@@ -30,7 +30,7 @@ const FormSection = ({ label, children }: { label: string; children: React.React
 
   return (
     <View style={{ gap: 12 }}>
-      <Text accessibilityRole="header" style={{ fontSize: 14, fontWeight: "600", color: palette.heading }}>
+      <Text accessibilityRole="header" style={{ fontSize: 16, fontWeight: "600", color: palette.heading }}>
         {label}
       </Text>
       {children}
@@ -48,7 +48,7 @@ const AnnouncementForm = ({ form, compact }: AnnouncementFormProps) => {
 
   return (
     <View style={{ gap: compact ? 20 : 24 }}>
-      <Text style={{ fontSize: 13.5, lineHeight: 20, color: palette.body }}>
+      <Text style={{ fontSize: 15.5, lineHeight: 22, color: palette.body }}>
         {formIntro(values, form.isEditing, form.canChooseDraft)}
       </Text>
 

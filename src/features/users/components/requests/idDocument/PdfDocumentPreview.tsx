@@ -28,10 +28,10 @@ const PdfDocumentPreview = ({
         <Feather name="file-text" size={32} color={PALETTE.red[600]} />
       </View>
       <View className="items-center">
-        <Text className={`text-center text-[14px] font-bold ${textPrimary}`} numberOfLines={1}>
+        <Text className={`text-center text-[16px] font-bold ${textPrimary}`} numberOfLines={1}>
           {fileName || "Government_ID.pdf"}
         </Text>
-        <Text className={`mt-1 text-center text-[12px] ${textMuted}`}>
+        <Text className={`mt-1 text-center text-[14px] ${textMuted}`}>
           PDF Document{formatFileSize(fileSize) ? ` • ${formatFileSize(fileSize)}` : ""}
         </Text>
       </View>
@@ -47,7 +47,7 @@ const PdfDocumentPreview = ({
           <Text className="text-xs font-bold text-white">View Secure PDF</Text>
         </Pressable>
       ) : (
-        <Text className={`mt-1 px-4 text-center text-[11.5px] ${textMuted}`}>
+        <Text className={`mt-1 px-4 text-center text-[13.5px] ${textMuted}`}>
           PDF documents can be opened from the admin console on the web.
         </Text>
       )}

@@ -54,12 +54,12 @@ export const MetricRow = ({
   gap,
   children,
 }: {
-  columns: 2 | 4;
+  columns: 1 | 2 | 3 | 4;
   gap: number;
   children: ReactNode;
 }) => {
   const cells = Children.toArray(children).filter(isValidElement);
-  const rows = columns === 4 ? [cells] : [cells.slice(0, 2), cells.slice(2, 4)].filter((row) => row.length);
+  const rows = Array.from({ length: Math.ceil(cells.length / columns) }, (_, row) => cells.slice(row * columns, (row + 1) * columns));
 
   return (
     <View style={{ gap }}>

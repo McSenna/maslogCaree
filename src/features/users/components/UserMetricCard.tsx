@@ -31,7 +31,7 @@ const TrendPill = ({ growth, compact }: { growth: number; compact: boolean }) =>
     >
       <Feather name={isUp ? "arrow-up" : "arrow-down"} size={compact ? 10 : 12} color={tone.text} />
       <Text
-        className={compact ? "text-[11px] font-semibold" : "text-[12px] font-semibold"}
+        className={compact ? "text-[13px] font-semibold" : "text-[14px] font-semibold"}
         style={{ color: tone.text }}
       >
         {Math.abs(growth)}%
@@ -74,13 +74,13 @@ const UserMetricCard = ({
           {showTrend ? <TrendPill growth={growth as number} compact /> : null}
         </View>
 
-        <Text className="mt-2.5 text-[13px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+        <Text className="mt-2.5 text-[15px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
           {label}
         </Text>
-        <Text className="mt-0.5 text-[26px] font-extrabold" style={{ color: palette.heading, lineHeight: 32 }}>
+        <Text className="mt-0.5 text-[28px] font-extrabold" style={{ color: palette.heading, lineHeight: 34 }}>
           {value.toLocaleString()}
         </Text>
-        <Text className="mt-0.5 text-[11px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
+        <Text className="mt-0.5 text-[13px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
           {description}
         </Text>
       </View>
@@ -104,7 +104,7 @@ const UserMetricCard = ({
       <View className="min-w-0 flex-1">
         <View className="flex-row items-center gap-1.5">
           <Text
-            className="min-w-0 flex-1 text-[14px] font-semibold"
+            className="min-w-0 flex-1 text-[16px] font-semibold"
             numberOfLines={2}
             style={{ color: palette.heading }}
           >
@@ -113,10 +113,10 @@ const UserMetricCard = ({
           {showTrend ? <TrendPill growth={growth as number} compact={false} /> : null}
         </View>
 
-        <Text className="mt-0.5 text-[30px] font-extrabold" style={{ color: palette.heading, lineHeight: 36 }}>
+        <Text className="mt-0.5 text-[32px] font-extrabold" style={{ color: palette.heading, lineHeight: 38 }}>
           {value.toLocaleString()}
         </Text>
-        <Text className="mt-0.5 text-[12px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
+        <Text className="mt-0.5 text-[14px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
           {description}
         </Text>
       </View>

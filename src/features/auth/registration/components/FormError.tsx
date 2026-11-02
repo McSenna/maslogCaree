@@ -20,7 +20,7 @@ const FormError = ({ message }: { message?: string }) => {
       }}
     >
       <Feather name="alert-circle" size={17} color={REG_COLORS.error} style={{ marginTop: 1 }} />
-      <Text style={{ flex: 1, fontSize: 13, lineHeight: 19, color: PALETTE.red[700] }}>{message}</Text>
+      <Text style={{ flex: 1, fontSize: 15, lineHeight: 21, color: PALETTE.red[700] }}>{message}</Text>
     </View>
   );
 };

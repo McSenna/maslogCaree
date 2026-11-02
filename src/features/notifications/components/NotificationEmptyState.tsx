@@ -41,7 +41,7 @@ const NotificationEmptyState = ({ filter = "all" }: { filter?: NotificationFilte
         <Feather name={icon} size={22} color={fg} />
       </View>
 
-      <Text style={{ fontSize: 15, fontWeight: "700", color: palette.heading }}>
+      <Text style={{ fontSize: 17, fontWeight: "700", color: palette.heading }}>
         {title}
       </Text>
 
@@ -50,8 +50,8 @@ const NotificationEmptyState = ({ filter = "all" }: { filter?: NotificationFilte
           marginTop: 6,
           maxWidth: 300,
           textAlign: "center",
-          fontSize: 13,
-          lineHeight: 19,
+          fontSize: 15,
+          lineHeight: 21,
           color: palette.muted,
         }}
       >

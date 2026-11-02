@@ -45,7 +45,7 @@ const CustomDateRangeInputs = ({
           accessibilityLabel={field.label}
           autoCapitalize="none"
           autoCorrect={false}
-          className="min-w-0 flex-1 border px-3.5 text-[14px]"
+          className="min-w-0 flex-1 border px-3.5 text-[16px]"
           style={
             {
               height: CONTROL_HEIGHT,

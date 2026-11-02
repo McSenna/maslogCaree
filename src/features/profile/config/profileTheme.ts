@@ -30,14 +30,14 @@ export const PROFILE_RADIUS = {
 } as const;
 
 export const PROFILE_TYPE = {
-  modalTitle: 27,
-  screenTitle: 22,
-  name: 25,
-  nameCompact: 22,
-  sectionTitle: 18,
-  label: 13.5,
-  value: 14.5,
-  meta: 12.5,
+  modalTitle: 29,
+  screenTitle: 24,
+  name: 27,
+  nameCompact: 24,
+  sectionTitle: 20,
+  label: 15.5,
+  value: 16.5,
+  meta: 14.5,
 } as const;
 
 export const PROFILE_SHADOW = {

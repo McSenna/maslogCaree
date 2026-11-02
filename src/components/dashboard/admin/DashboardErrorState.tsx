@@ -41,11 +41,11 @@ const DashboardErrorState = ({
       </View>
 
       <View className={isBanner ? "min-w-0 flex-1 gap-0.5" : "items-center gap-1"}>
-        <Text className="text-[14px] font-semibold" style={{ color: palette.heading }}>
+        <Text className="text-[16px] font-semibold" style={{ color: palette.heading }}>
           {isBanner ? "Couldn't refresh. Showing the last loaded data." : title}
         </Text>
         <Text
-          className={`text-[12.5px] ${isBanner ? "" : "text-center"}`}
+          className={`text-[14.5px] ${isBanner ? "" : "text-center"}`}
           style={{ color: palette.muted }}
         >
           {message || "Please check your connection and try again."}

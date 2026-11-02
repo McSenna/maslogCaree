@@ -1,3 +1,4 @@
+import { immunizationProgressLabel } from "@/services/immunizationRecordProgress";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, Text, View } from "react-native";
 import { QUEUE_RADIUS, type QueuePalette } from "@/components/appointmentQueue/queueTheme";
@@ -27,9 +28,10 @@ const MedicalRecordCard = ({
   const role = providerRoleLabelOf(record);
   const when = formatDate(record.completedAt);
   const summary = summarizeRecord(record);
-  const completed = palette.statuses.completed;
-  const historical = isEncodedRecord(record);
-  const statusLabel = historical ? "Historical record" : "Completed";
+  const completed = record.recordStatus === "in_progress" ? palette.statuses.processing : palette.statuses.completed;
+  const historical = !record.recordStatus && isEncodedRecord(record);
+  const baby = typeof record.immunizationBabyId === "object" ? record.immunizationBabyId : null;
+  const statusLabel = record.recordStatus === "in_progress" ? "In progress" : historical ? "Historical record" : "Completed";
 
   return (
     <Pressable
@@ -54,14 +56,14 @@ const MedicalRecordCard = ({
         </View>
 
         <View className="min-w-0 flex-1 gap-1">
-          <Text className="text-[14.5px] font-bold" style={{ color: palette.heading }} numberOfLines={1}>
+          <Text className="text-[16.5px] font-bold" style={{ color: palette.heading }} numberOfLines={1}>
             {service}
           </Text>
-          <Text className="text-[12.5px]" style={{ color: palette.muted }} numberOfLines={1}>
+          <Text className="text-[14.5px]" style={{ color: palette.muted }} numberOfLines={1}>
             {when}
           </Text>
           {provider ? (
-            <Text className="text-[12.5px]" style={{ color: palette.body }} numberOfLines={1}>
+            <Text className="text-[14.5px]" style={{ color: palette.body }} numberOfLines={1}>
               {provider}
               {role ? <Text style={{ color: palette.subtle }}>{`  ·  ${role}`}</Text> : null}
             </Text>
@@ -69,8 +71,9 @@ const MedicalRecordCard = ({
         </View>
       </View>
 
+      {baby ? <Text className="text-[15px] leading-[21px]" style={{color:palette.heading}}>Baby: {baby.name}{"\n"}{immunizationProgressLabel(record)}</Text> : null}
       {summary ? (
-        <Text className="text-[13px] leading-[19px]" style={{ color: palette.body }} numberOfLines={2}>
+        <Text className="text-[15px] leading-[21px]" style={{ color: palette.body }} numberOfLines={2}>
           {summary}
         </Text>
       ) : null}
@@ -89,13 +92,13 @@ const MedicalRecordCard = ({
           ) : (
             <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: completed.dot }} />
           )}
-          <Text className="text-[11.5px] font-semibold" style={{ color: historical ? palette.primary : completed.fg }}>
+          <Text className="text-[13.5px] font-semibold" style={{ color: historical ? palette.primary : completed.fg }}>
             {statusLabel}
           </Text>
         </View>
 
         <View className="flex-row items-center gap-1">
-          <Text className="text-[12.5px] font-semibold" style={{ color: palette.primary }}>
+          <Text className="text-[14.5px] font-semibold" style={{ color: palette.primary }}>
             View Record
           </Text>
           <Feather name="chevron-right" size={15} color={palette.primary} />

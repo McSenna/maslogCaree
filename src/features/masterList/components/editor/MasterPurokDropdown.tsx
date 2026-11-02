@@ -160,7 +160,7 @@ const MasterPurokDropdown = ({
             numberOfLines={1}
             style={{
               flex: 1,
-              fontSize: 15,
+              fontSize: 17,
               color: selected ? REG_COLORS.text : REG_COLORS.subtle,
             }}
           >
@@ -241,8 +241,8 @@ const MasterPurokDropdown = ({
                     <Text
                       style={{
                         flex: 1,
-                        fontSize: 14,
-                        lineHeight: 20,
+                        fontSize: 16,
+                        lineHeight: 22,
                         fontWeight: checked ? "600" : "400",
                         color: checked ? REG_COLORS.primary : REG_COLORS.text,
                       }}

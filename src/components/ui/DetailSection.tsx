@@ -25,13 +25,13 @@ export const RecordSection = ({
     <View className="w-full gap-2">
       <View className="gap-0.5">
         <Text
-          className="text-[11.5px] font-bold uppercase"
+          className="text-[13.5px] font-bold uppercase"
           style={{ color: palette.subtle, letterSpacing: 0.6 }}
         >
           {title}
         </Text>
         {caption ? (
-          <Text className="text-[12px]" style={{ color: palette.muted }}>
+          <Text className="text-[14px]" style={{ color: palette.muted }}>
             {caption}
           </Text>
         ) : null}
@@ -71,13 +71,13 @@ export const DetailRow = ({
       style={last ? undefined : { borderBottomWidth: 1, borderBottomColor: palette.divider }}
     >
       <Text
-        className="text-[12.5px] font-medium"
+        className="text-[14.5px] font-medium"
         style={{ color: palette.muted, width: stacked ? undefined : 128 }}
       >
         {label}
       </Text>
       <Text
-        className="min-w-0 flex-1 text-[13.5px] leading-[20px]"
+        className="min-w-0 flex-1 text-[15.5px] leading-[22px]"
         style={{ color: palette.heading }}
       >
         {value}
@@ -95,15 +95,15 @@ export const MeasurementTile = ({
 }) => {
   return (
     <View className="min-w-0 flex-1 gap-1 px-3.5 py-3" style={{ minWidth: 104 }}>
-      <Text className="text-[11.5px] font-medium" style={{ color: palette.muted }} numberOfLines={2}>
+      <Text className="text-[13.5px] font-medium" style={{ color: palette.muted }} numberOfLines={2}>
         {entry.label}
       </Text>
       <View className="flex-row items-baseline gap-1">
-        <Text className="text-[18px] font-bold" style={{ color: palette.heading }}>
+        <Text className="text-[20px] font-bold" style={{ color: palette.heading }}>
           {entry.raw ?? entry.value}
         </Text>
         {entry.unit ? (
-          <Text className="text-[11.5px] font-medium" style={{ color: palette.subtle }}>
+          <Text className="text-[13.5px] font-medium" style={{ color: palette.subtle }}>
             {entry.unit}
           </Text>
         ) : null}
@@ -126,7 +126,7 @@ export const ProseBlock = ({
       className="w-full px-3.5 py-3"
       style={last ? undefined : { borderBottomWidth: 1, borderBottomColor: palette.divider }}
     >
-      <Text className="text-[13.5px] leading-[21px]" style={{ color: palette.body }}>
+      <Text className="text-[15.5px] leading-[23px]" style={{ color: palette.body }}>
         {text}
       </Text>
     </View>

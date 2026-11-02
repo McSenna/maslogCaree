@@ -33,7 +33,7 @@ const MissionDateTimeSection = ({
           onPress={() => onOpenPicker("date")}
         />
         {dateError ? (
-          <Text className="mt-1.5 text-[12.5px] font-medium" style={{ color: palette.danger }}>
+          <Text className="mt-1.5 text-[14.5px] font-medium" style={{ color: palette.danger }}>
             {dateError}
           </Text>
         ) : null}
@@ -59,7 +59,7 @@ const MissionDateTimeSection = ({
           />
         </View>
         {timeError ? (
-          <Text className="mt-1.5 text-[12.5px] font-medium" style={{ color: palette.danger }}>
+          <Text className="mt-1.5 text-[14.5px] font-medium" style={{ color: palette.danger }}>
             {timeError}
           </Text>
         ) : null}

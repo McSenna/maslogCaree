@@ -36,7 +36,7 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
       <View className="flex-row items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
         <View className="flex-row items-center gap-2">
           <Feather name="user" size={15} color={PALETTE.blue[600]} />
-          <Text className="text-[14px] font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
+          <Text className="text-[16px] font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider">
             Resident Information
           </Text>
         </View>
@@ -52,19 +52,19 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
           />
         ) : (
           <View className="w-14 h-14 rounded-full bg-blue-600 items-center justify-center">
-            <Text className="text-white text-[18px] font-bold">
+            <Text className="text-white text-[20px] font-bold">
               {resident?.fullname?.charAt(0)?.toUpperCase() || "R"}
             </Text>
           </View>
         )}
         <View className="flex-1 min-w-0">
-          <Text className={`text-[16px] font-extrabold ${classes.textPrimary}`} numberOfLines={1}>
+          <Text className={`text-[18px] font-extrabold ${classes.textPrimary}`} numberOfLines={1}>
             {resident?.fullname}
           </Text>
-          <Text className={`text-[12px] ${classes.textMuted}`} numberOfLines={1}>
+          <Text className={`text-[14px] ${classes.textMuted}`} numberOfLines={1}>
             {resident?.email}
           </Text>
-          <Text className="text-[11px] font-medium text-blue-700 dark:text-blue-300 mt-0.5">
+          <Text className="text-[13px] font-medium text-blue-700 dark:text-blue-300 mt-0.5">
             Role: Resident
           </Text>
         </View>
@@ -106,14 +106,14 @@ const ResidentInfoColumn = ({ resident, verification }: Props) => {
 
         {verification?.rejectionReason ? (
           <View className="p-3 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800">
-            <Text className="text-[11px] font-bold uppercase tracking-wider text-red-600">
+            <Text className="text-[13px] font-bold uppercase tracking-wider text-red-600">
               Rejection Reason
             </Text>
-            <Text className="text-[13px] font-semibold text-red-700 dark:text-red-300 mt-0.5">
+            <Text className="text-[15px] font-semibold text-red-700 dark:text-red-300 mt-0.5">
               {verification.rejectionReason}
             </Text>
             {verification.rejectionRemarks ? (
-              <Text className="text-[12px] text-red-600 dark:text-red-400 mt-1">
+              <Text className="text-[14px] text-red-600 dark:text-red-400 mt-1">
                 Remarks: {verification.rejectionRemarks}
               </Text>
             ) : null}

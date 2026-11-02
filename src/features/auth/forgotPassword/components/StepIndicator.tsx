@@ -59,7 +59,7 @@ const StepIndicator = ({ step, compact }: { step: RecoveryStep; compact?: boolea
                 }}
               >
                 <Text
-                  className="text-[11px] font-bold"
+                  className="text-[13px] font-bold"
                   style={{ color: done || active ? PALETTE.white : C.muted }}
                 >
                   {index + 1}
@@ -74,7 +74,7 @@ const StepIndicator = ({ step, compact }: { step: RecoveryStep; compact?: boolea
               />
             </View>
             <Text
-              className="text-[10.5px] font-semibold"
+              className="text-[12.5px] font-semibold"
               numberOfLines={1}
               style={{ color: active ? C.primary : C.muted }}
             >

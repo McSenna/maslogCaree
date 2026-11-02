@@ -30,7 +30,7 @@ const QueueRefreshButton = ({
       }}
     >
       <Feather name="refresh-cw" size={15} color={palette.primary} />
-      <Text className="text-[13.5px] font-semibold" style={{ color: palette.primary }}>
+      <Text className="text-[15.5px] font-semibold" style={{ color: palette.primary }}>
         Refresh
       </Text>
     </Pressable>

@@ -26,7 +26,7 @@ const PageLoader = ({
       <EclipseLoader size={size} color={palette.primary} accessibilityLabel={label} />
 
       {showLabel ? (
-        <Text className="text-[12.5px] font-medium" style={{ color: palette.muted }}>
+        <Text className="text-[14.5px] font-medium" style={{ color: palette.muted }}>
           {label}
         </Text>
       ) : null}

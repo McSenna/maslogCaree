@@ -15,10 +15,10 @@ import { patientFactsOf } from "./patientFacts";
 const Fact = ({ label, value, palette }: { label: string; value: string; palette: QueuePalette }) => {
   return (
     <View className="min-w-[104px] flex-1 gap-0.5">
-      <Text className="text-[10.5px] font-bold uppercase" style={{ color: palette.subtle, letterSpacing: 0.4 }}>
+      <Text className="text-[12.5px] font-bold uppercase" style={{ color: palette.subtle, letterSpacing: 0.4 }}>
         {label}
       </Text>
-      <Text className="text-[13px] font-semibold" style={{ color: palette.heading }} numberOfLines={1}>
+      <Text className="text-[15px] font-semibold" style={{ color: palette.heading }} numberOfLines={1}>
         {value}
       </Text>
     </View>
@@ -60,16 +60,16 @@ export const PatientSummaryCard = ({ appointment }: { appointment: AppointmentRe
           className="h-11 w-11 items-center justify-center rounded-full"
           style={{ backgroundColor: palette.primarySoft }}
         >
-          <Text className="text-[15px] font-bold" style={{ color: palette.primary }}>
+          <Text className="text-[17px] font-bold" style={{ color: palette.primary }}>
             {initialsOf(facts.name)}
           </Text>
         </View>
         <View className="min-w-0 flex-1">
-          <Text className="text-[15.5px] font-bold" style={{ color: palette.heading }} numberOfLines={1}>
+          <Text className="text-[17.5px] font-bold" style={{ color: palette.heading }} numberOfLines={1}>
             {facts.name}
           </Text>
           {facts.email ? (
-            <Text className="text-[12px]" style={{ color: palette.muted }} numberOfLines={1}>
+            <Text className="text-[14px]" style={{ color: palette.muted }} numberOfLines={1}>
               {facts.email}
             </Text>
           ) : null}
@@ -115,7 +115,7 @@ export const AppointmentSummaryCard = ({
           style={{ borderRadius: QUEUE_RADIUS.pill, backgroundColor: palette.primarySoft }}
         >
           <Feather name="activity" size={12} color={palette.primary} />
-          <Text className="text-[12px] font-bold" style={{ color: palette.primary }}>
+          <Text className="text-[14px] font-bold" style={{ color: palette.primary }}>
             {serviceLabel}
           </Text>
         </View>
@@ -125,7 +125,7 @@ export const AppointmentSummaryCard = ({
           style={{ borderRadius: QUEUE_RADIUS.pill, backgroundColor: status.bg }}
         >
           <View className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: status.dot }} />
-          <Text className="text-[12px] font-semibold" style={{ color: status.fg }}>
+          <Text className="text-[14px] font-semibold" style={{ color: status.fg }}>
             {STATUS_LABELS[appointment.status]}
           </Text>
         </View>

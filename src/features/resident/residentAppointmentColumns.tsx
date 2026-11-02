@@ -18,12 +18,12 @@ export const dateParts = (appointment: AppointmentRecord): { date: string; time:
 
 export const residentAppointmentColumns = (palette: AdminDashboardPalette): Column<AppointmentRecord>[] => [
   {
-    key: "service",
+    key: "service", nameColumn: true,
     header: "Service",
     flex: 1.3,
     minWidth: 150,
     render: (row) => (
-      <Text className="text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+      <Text className="text-[15.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
         {formatConsultationTypeLabel(row.consultationType)}
       </Text>
     ),
@@ -31,10 +31,11 @@ export const residentAppointmentColumns = (palette: AdminDashboardPalette): Colu
   {
     key: "date",
     header: "Date",
+    align: "center",
     flex: 1,
     minWidth: 140,
     render: (row) => (
-      <Text className="text-[13px]" numberOfLines={1} style={{ color: palette.body }}>
+      <Text className="text-[15px]" numberOfLines={1} style={{ color: palette.body }}>
         {dateParts(row).date}
       </Text>
     ),
@@ -42,10 +43,11 @@ export const residentAppointmentColumns = (palette: AdminDashboardPalette): Colu
   {
     key: "time",
     header: "Time",
-    width: 108,
+    align: "center",
+    width: 120,
     hideBelow: "lg",
     render: (row) => (
-      <Text className="text-[13px]" numberOfLines={1} style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
+      <Text className="text-[15px]" numberOfLines={1} style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
         {dateParts(row).time}
       </Text>
     ),
@@ -53,8 +55,8 @@ export const residentAppointmentColumns = (palette: AdminDashboardPalette): Colu
   {
     key: "status",
     header: "Status",
-    width: 160,
-    align: "right",
+    width: 180,
+    align: "center",
     render: (row) => <AppointmentStatusBadge status={row.status} audience="resident" />,
   },
 ];

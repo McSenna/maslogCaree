@@ -1,4 +1,5 @@
 import type { MasterlistScreenState } from "../hooks/useMasterlistScreen";
+import RecordDeletionDialog from "./RecordDeletionDialog";
 import RecordDetailDialog from "./detail/RecordDetailDialog";
 import RecordEditorDialog from "./editor/RecordEditorDialog";
 
@@ -7,8 +8,10 @@ const MasterlistOverlays = ({ screen }: { screen: MasterlistScreenState }) => {
   const { editor, detail } = screen;
   return (
     <>
-      {editor ? (
+      {screen.canWriteRecords ? <RecordDeletionDialog deletion={screen.deletion} /> : null}
+      {screen.canWriteRecords && editor ? (
         <RecordEditorDialog
+          initialServiceType={screen.initialServiceType}
           editing={editor === "new" ? null : editor}
           forms={screen.serviceForms.forms}
           formsLoading={screen.serviceForms.loading}
@@ -19,7 +22,7 @@ const MasterlistOverlays = ({ screen }: { screen: MasterlistScreenState }) => {
       ) : null}
       <RecordDetailDialog
         detail={detail}
-        onEdit={editor ? undefined : screen.openEdit}
+        onEdit={screen.canWriteRecords && !editor ? screen.openEdit : undefined}
         onShowHistory={editor ? undefined : screen.showHistory}
       />
     </>

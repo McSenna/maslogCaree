@@ -29,7 +29,7 @@ const NoteLine = ({ icon, text }: { icon: "link" | "alert-circle"; text: string 
       <View className="pt-0.5">
         <Feather name={icon} size={13} color={palette.muted} />
       </View>
-      <Text className="min-w-0 flex-1 text-[13px]" style={{ color: palette.body }}>
+      <Text className="min-w-0 flex-1 text-[15px]" style={{ color: palette.body }}>
         {text}
       </Text>
     </View>
@@ -56,10 +56,10 @@ const MasterListCheckCard = ({ review, resident, isPending }: Props) => {
           <Feather name={summary.icon} size={18} color={tone.text} />
         </View>
         <View className="min-w-0 flex-1 gap-1">
-          <Text className="text-[14px] font-bold" style={{ color: tone.text }}>
+          <Text className="text-[16px] font-bold" style={{ color: tone.text }}>
             {summary.title}
           </Text>
-          <Text className="text-[13px] leading-[19px]" style={{ color: palette.body }}>
+          <Text className="text-[15px] leading-[21px]" style={{ color: palette.body }}>
             {summary.body}
           </Text>
         </View>

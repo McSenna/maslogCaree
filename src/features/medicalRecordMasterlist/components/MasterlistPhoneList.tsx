@@ -16,11 +16,15 @@ const MasterlistPhoneList = ({ screen, width }: Props) => {
   const palette = useAdminSurfacePalette();
   const { list, view, detail } = screen;
   const firstId = list.records[0]?._id;
+  const onDelete = screen.deletion.open;
+  const deleteLoadingId = screen.deletion.loadingId;
+  const editLoadingId = screen.editLoadingId;
+  const onEdit = screen.editImmunization;
   const openDetail = detail.open;
 
   const renderRow: ListRenderItem<MasterlistRow> = useCallback(
-    ({ item }) => <MasterlistPhoneRow row={item} first={item._id === firstId} onView={openDetail} />,
-    [firstId, openDetail]
+    ({ item }) => <MasterlistPhoneRow row={item} first={item._id === firstId} onView={openDetail} onEdit={onEdit} editLoadingId={editLoadingId} onDelete={onDelete} deleteLoadingId={deleteLoadingId} />,
+    [firstId, openDetail, onEdit, editLoadingId, onDelete, deleteLoadingId]
   );
 
   const header = (
@@ -40,7 +44,7 @@ const MasterlistPhoneList = ({ screen, width }: Props) => {
         {view === "list" ? (
           <View className="items-center gap-2 border-t border-divider pt-3">
             {list.isFetching && list.page > 1 ? <ActivityIndicator color={palette.primary} accessibilityLabel="Loading more records" /> : null}
-            <Text className="text-[12.5px] font-medium text-text2">{`${list.records.length} of ${list.total} records`}</Text>
+            <Text className="text-[14.5px] font-medium text-text2">{`${list.records.length} of ${list.total} records`}</Text>
           </View>
         ) : (
           <MasterlistStates view={view} canEncode={screen.canEncode} onRetry={list.refresh} onClearFilters={screen.clearFilters} onAdd={screen.openNew} />

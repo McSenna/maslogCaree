@@ -23,8 +23,8 @@ const SupportFieldShell = ({
   return (
     <View style={{ gap: 6 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-        <Text style={{ fontSize: 13, fontWeight: "600", color: palette.heading }}>{label}</Text>
-        {required ? <Text style={{ fontSize: 13, color: palette.danger }}>*</Text> : null}
+        <Text style={{ fontSize: 15, fontWeight: "600", color: palette.heading }}>{label}</Text>
+        {required ? <Text style={{ fontSize: 15, color: palette.danger }}>*</Text> : null}
       </View>
 
       {children}
@@ -32,12 +32,12 @@ const SupportFieldShell = ({
       {error ? (
         <Text
           accessibilityLiveRegion="polite"
-          style={{ fontSize: 12, color: palette.dangerFg }}
+          style={{ fontSize: 14, color: palette.dangerFg }}
         >
           {error}
         </Text>
       ) : hint ? (
-        <Text style={{ fontSize: 12, color: palette.muted }}>{hint}</Text>
+        <Text style={{ fontSize: 14, color: palette.muted }}>{hint}</Text>
       ) : null}
     </View>
   );

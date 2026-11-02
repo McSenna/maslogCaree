@@ -18,7 +18,7 @@ const AdminSupportConversation = ({ messages }: AdminSupportConversationProps) =
   return (
     <View style={{ gap: 12 }}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-        <Text style={{ fontSize: 11.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
+        <Text style={{ fontSize: 13.5, fontWeight: "700", color: palette.subtle, letterSpacing: 0.4, textTransform: "uppercase" }}>
           Response History ({messages.length})
         </Text>
       </View>
@@ -37,7 +37,7 @@ const AdminSupportConversation = ({ messages }: AdminSupportConversationProps) =
           }}
         >
           <Feather name="message-square" size={18} color={palette.muted} />
-          <Text style={{ fontSize: 13, color: palette.muted, textAlign: "center" }}>
+          <Text style={{ fontSize: 15, color: palette.muted, textAlign: "center" }}>
             No replies recorded yet. Write a response below to update the requester.
           </Text>
         </View>
@@ -83,7 +83,7 @@ const AdminSupportConversation = ({ messages }: AdminSupportConversationProps) =
                     >
                       <Text
                         style={{
-                          fontSize: 11,
+                          fontSize: 13,
                           fontWeight: "700",
                           color: isStaff ? palette.primary : palette.muted,
                         }}
@@ -91,17 +91,17 @@ const AdminSupportConversation = ({ messages }: AdminSupportConversationProps) =
                         {isStaff ? "MaslogCare Support" : message.authorRole || "Requester"}
                       </Text>
                     </View>
-                    <Text style={{ fontSize: 12.5, fontWeight: "600", color: palette.heading }}>
+                    <Text style={{ fontSize: 14.5, fontWeight: "600", color: palette.heading }}>
                       {message.authorName}
                     </Text>
                   </View>
 
-                  <Text style={{ fontSize: 11.5, color: palette.muted, fontVariant: ["tabular-nums"] }}>
+                  <Text style={{ fontSize: 13.5, color: palette.muted, fontVariant: ["tabular-nums"] }}>
                     {formatTicketDateTime(message.createdAt)}
                   </Text>
                 </View>
 
-                <Text style={{ fontSize: 13.5, lineHeight: 21, color: palette.body }}>
+                <Text style={{ fontSize: 15.5, lineHeight: 23, color: palette.body }}>
                   {message.body}
                 </Text>
               </View>

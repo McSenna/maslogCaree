@@ -60,7 +60,7 @@ export const RescheduleTimeGrid = ({ palette, slots, selected, onSelect }: Props
                   >
                     <Text
                       style={{
-                        fontSize: 13,
+                        fontSize: 15,
                         fontWeight: isSelected ? "700" : "500",
                         color: isSelected ? PALETTE.white : palette.body,
                       }}

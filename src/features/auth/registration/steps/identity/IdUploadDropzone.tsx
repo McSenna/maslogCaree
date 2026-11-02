@@ -48,10 +48,10 @@ const IdUploadDropzone = ({ onPress, isProcessing, hasError }: Props) => {
       )}
 
       <View style={{ alignItems: "center", gap: 4 }}>
-        <Text style={{ fontSize: 14.5, fontWeight: "700", color: REG_COLORS.heading }}>
+        <Text style={{ fontSize: 16.5, fontWeight: "700", color: REG_COLORS.heading }}>
           {isProcessing ? "Processing Document..." : "Click or tap to upload Government ID"}
         </Text>
-        <Text style={{ fontSize: 12, color: REG_COLORS.muted, textAlign: "center" }}>
+        <Text style={{ fontSize: 14, color: REG_COLORS.muted, textAlign: "center" }}>
           JPG, PNG or PDF up to 10MB
         </Text>
       </View>
@@ -68,7 +68,7 @@ const IdUploadDropzone = ({ onPress, isProcessing, hasError }: Props) => {
         }}
       >
         <Feather name="shield" size={13} color={PALETTE.slate[700]} />
-        <Text style={{ fontSize: 11.5, fontWeight: "600", color: PALETTE.slate[700] }}>
+        <Text style={{ fontSize: 13.5, fontWeight: "600", color: PALETTE.slate[700] }}>
           Stored privately & securely for Admin review only
         </Text>
       </View>

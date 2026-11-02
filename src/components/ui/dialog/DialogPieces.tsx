@@ -13,7 +13,7 @@ export const DialogStatus = ({
 }) => (
   <View style={{ paddingVertical: 40, alignItems: "center", justifyContent: "center" }}>
     <ActivityIndicator size="large" color={palette.accent} />
-    <Text style={{ color: palette.muted, marginTop: 12, fontSize: 14 }}>{message}</Text>
+    <Text style={{ color: palette.muted, marginTop: 12, fontSize: 16 }}>{message}</Text>
   </View>
 );
 
@@ -41,10 +41,10 @@ export const DialogError = ({
     }}
   >
     <Feather name="alert-circle" size={28} color={palette.danger} />
-    <Text style={{ color: palette.dangerFg, fontSize: 15, fontWeight: "600", marginTop: 8 }}>
+    <Text style={{ color: palette.dangerFg, fontSize: 17, fontWeight: "600", marginTop: 8 }}>
       {title}
     </Text>
-    <Text style={{ color: palette.muted, fontSize: 13, textAlign: "center", marginTop: 4 }}>
+    <Text style={{ color: palette.muted, fontSize: 15, textAlign: "center", marginTop: 4 }}>
       {message}
     </Text>
     <Pressable
@@ -58,7 +58,7 @@ export const DialogError = ({
         backgroundColor: palette.accent,
       }}
     >
-      <Text style={{ color: PALETTE.white, fontSize: 13, fontWeight: "600" }}>{actionLabel}</Text>
+      <Text style={{ color: PALETTE.white, fontSize: 15, fontWeight: "600" }}>{actionLabel}</Text>
     </Pressable>
   </View>
 );
@@ -80,7 +80,7 @@ export const InlineError = ({
       borderWidth: 1,
     }}
   >
-    <Text style={{ color: palette.dangerFg, fontSize: 12.5, textAlign: "center" }}>{message}</Text>
+    <Text style={{ color: palette.dangerFg, fontSize: 14.5, textAlign: "center" }}>{message}</Text>
   </View>
 );
 
@@ -101,7 +101,7 @@ export const EmptyNote = ({
       alignItems: "center",
     }}
   >
-    <Text style={{ color: palette.muted, fontSize: 13, textAlign: "center" }}>{message}</Text>
+    <Text style={{ color: palette.muted, fontSize: 15, textAlign: "center" }}>{message}</Text>
   </View>
 );
 
@@ -150,7 +150,7 @@ export const DialogActions = ({
           opacity: busy ? 0.55 : 1,
         }}
       >
-        <Text style={{ fontSize: 14, fontWeight: "600", color: palette.body }}>
+        <Text style={{ fontSize: 16, fontWeight: "600", color: palette.body }}>
           {secondaryLabel}
         </Text>
       </Pressable>
@@ -179,7 +179,7 @@ export const DialogActions = ({
         ) : null}
         <Text
           style={{
-            fontSize: 14,
+            fontSize: 16,
             fontWeight: "700",
             color: primaryDisabled && !busy ? palette.muted : PALETTE.white,
           }}

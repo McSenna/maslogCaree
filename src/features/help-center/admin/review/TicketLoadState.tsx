@@ -17,7 +17,7 @@ const TicketLoadState = ({ loading, error, onClose }: TicketLoadStateProps) => {
       {loading ? (
         <View accessibilityLiveRegion="polite" style={{ alignItems: "center", gap: 12 }}>
           <ActivityIndicator size="small" color={colors.primary} />
-          <Text style={{ fontSize: 13, color: colors.muted }}>Loading support request…</Text>
+          <Text style={{ fontSize: 15, color: colors.muted }}>Loading support request…</Text>
         </View>
       ) : (
         <FeedbackState

@@ -22,8 +22,10 @@ export type Column<T> = {
   /** Share of the width left after fixed columns. */
   flex?: number;
   minWidth?: number;
-  /** Applies to the header label and the cell content alike. */
+  /** Tables override this: they centre every column except a name column. */
   align?: Align;
+  /** The column that names the row (a person, an item, a title). It stays on the left edge. */
+  nameColumn?: boolean;
   render?: (row: T, index: number, context: CellContext) => ReactNode;
   /** Plain value: the default cell, and what phone cards and spoken row labels use. */
   accessor?: (row: T) => string | number;

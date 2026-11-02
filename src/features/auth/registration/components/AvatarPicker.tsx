@@ -44,10 +44,10 @@ const AvatarPicker = ({ photo, onPress }: AvatarPickerProps) => (
     )}
 
     <View style={{ flex: 1, gap: 2 }}>
-      <Text style={{ fontSize: 13.5, fontWeight: "600", color: REG_COLORS.primary }}>
+      <Text style={{ fontSize: 15.5, fontWeight: "600", color: REG_COLORS.primary }}>
         {photo ? "Change profile photo" : "Add a profile photo"}
       </Text>
-      <Text style={{ fontSize: 12.5, color: REG_COLORS.muted }}>
+      <Text style={{ fontSize: 14.5, color: REG_COLORS.muted }}>
         Optional. Helps health workers recognise you at the centre.
       </Text>
     </View>

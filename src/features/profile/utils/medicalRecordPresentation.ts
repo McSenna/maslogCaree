@@ -1,3 +1,4 @@
+import { immunizationProgressLabel } from "@/services/immunizationRecordProgress";
 import { getServiceLabel } from "@/config/appointmentServices";
 import type { MedicalRecord } from "@/services/medicalRecords";
 import { formatDate } from "@/utils/dateFormatter";
@@ -19,6 +20,11 @@ export const recordDate = (record: MedicalRecord): string =>
   formatDate(record.appointmentDate ?? record.completedAt);
 
 export const recordSummary = (record: MedicalRecord): string | null => {
+  const progress = immunizationProgressLabel(record);
+  if (progress) {
+    const baby = typeof record.immunizationBabyId === "object" ? record.immunizationBabyId : null;
+    return `${baby ? `Baby: ${baby.name}. ` : ""}${progress}`;
+  }
   const summary = record.diagnosis?.trim() || record.assessment?.trim();
   return summary ? summary : null;
 };

@@ -53,7 +53,8 @@ const ResidentVerificationSheet = ({
   const isPending = verification?.verificationStatus === "pending";
   const busy = approving || rejecting;
   const submitted = verification?.submittedAt ? formatDateTime(verification.submittedAt) : null;
-  const showActions = Boolean(request) && !error && isPending;
+  const canApprove = isPending || verification?.verificationStatus === "rejected";
+  const showActions = Boolean(request) && !error && canApprove;
 
   // An approval or rejection in flight must finish before the sheet can go.
   const handleClose = () => {
@@ -91,6 +92,7 @@ const ResidentVerificationSheet = ({
         {showActions ? (
           <VerificationSheetActions
             residentName={resident?.fullname}
+            canReject={Boolean(isPending)}
             approving={approving}
             rejecting={rejecting}
             onApprove={decision.openApproveConfirm}
@@ -104,7 +106,7 @@ const ResidentVerificationSheet = ({
         residentName={resident?.fullname}
         approving={approving}
         rejecting={rejecting}
-        hasLinkChoices={choosableCandidates(request?.masterList, isPending).length > 0}
+        hasLinkChoices={choosableCandidates(request?.masterList, canApprove).length > 0}
       />
     </>
   );

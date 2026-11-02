@@ -50,14 +50,14 @@ const ServiceCatalogItem = ({ service }: ServiceCatalogItemProps) => {
       </View>
 
       <View style={{ flex: 1, minWidth: 0, gap: SPACING.xs }}>
-        <Text style={{ fontSize: 16, lineHeight: 22, fontWeight: "700", color: colors.heading }}>
+        <Text style={{ fontSize: 18, lineHeight: 24, fontWeight: "700", color: colors.heading }}>
           {service.label}
         </Text>
         {service.description ? (
-          <Text style={{ fontSize: 14, lineHeight: 20, color: colors.body }}>{service.description}</Text>
+          <Text style={{ fontSize: 16, lineHeight: 22, color: colors.body }}>{service.description}</Text>
         ) : null}
         {provider ? (
-          <Text style={{ fontSize: 13, lineHeight: 18, color: colors.muted }}>Seen by: {provider}</Text>
+          <Text style={{ fontSize: 15, lineHeight: 20, color: colors.muted }}>Seen by: {provider}</Text>
         ) : null}
       </View>
     </View>

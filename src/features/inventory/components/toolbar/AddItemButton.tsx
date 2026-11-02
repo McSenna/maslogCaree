@@ -19,7 +19,7 @@ const AddItemButton = ({ onPress }: { onPress: () => void }) => {
       }}
     >
       <Feather name="plus" size={17} color={PALETTE.white} />
-      <Text className="text-[14px] font-semibold text-white">Add Item</Text>
+      <Text className="text-[16px] font-semibold text-white">Add Item</Text>
     </Pressable>
   );
 };

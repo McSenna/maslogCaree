@@ -1,3 +1,4 @@
+import { setResidentWebBlocked } from "@/services/residentWebBlock";
 import { useCallback } from "react";
 
 import api from "@/services/api";
@@ -22,6 +23,7 @@ export const useAuthActions = ({ setUser }: Options) => {
     (userData: AuthUser, token: string) => {
       const currentUser = toCurrentUser(userData);
 
+      setResidentWebBlocked(false);
       setUser(currentUser);
       setStoredUser(toStoredUser(currentUser, userData, token));
       return currentUser;

@@ -51,7 +51,7 @@ export const CancelAppointmentForm = ({
       >
         <Text
           style={{
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: "600",
             color: palette.muted,
             textTransform: "uppercase",
@@ -60,12 +60,12 @@ export const CancelAppointmentForm = ({
         >
           Appointment
         </Text>
-        <Text style={{ fontSize: 16, fontWeight: "700", color: palette.heading, marginTop: 3 }}>
+        <Text style={{ fontSize: 18, fontWeight: "700", color: palette.heading, marginTop: 3 }}>
           {appointmentServiceLabel(appointment)}
         </Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginTop: 4 }}>
           <Feather name="clock" size={13} color={palette.muted} />
-          <Text style={{ fontSize: 13, color: palette.body }}>{appointmentWhen(appointment)}</Text>
+          <Text style={{ fontSize: 15, color: palette.body }}>{appointmentWhen(appointment)}</Text>
         </View>
       </View>
 
@@ -83,10 +83,10 @@ export const CancelAppointmentForm = ({
       >
         <Feather name="alert-triangle" size={18} color={palette.danger} style={{ marginTop: 2 }} />
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 14, fontWeight: "600", color: palette.dangerFg }}>
+          <Text style={{ fontSize: 16, fontWeight: "600", color: palette.dangerFg }}>
             Are you sure you want to cancel this appointment?
           </Text>
-          <Text style={{ fontSize: 12.5, color: palette.muted, marginTop: 2, lineHeight: 18 }}>
+          <Text style={{ fontSize: 14.5, color: palette.muted, marginTop: 2, lineHeight: 20 }}>
             This removes the appointment from your active schedule and releases your time slot for
             someone else.
           </Text>

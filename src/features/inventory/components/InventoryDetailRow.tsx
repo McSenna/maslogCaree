@@ -29,11 +29,11 @@ const InventoryDetailRow = ({
       >
         <Feather name={icon} size={12} color={palette.muted} />
       </View>
-      <Text className="flex-1 text-[13px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
+      <Text className="flex-1 text-[15px] font-medium" numberOfLines={1} style={{ color: palette.muted }}>
         {label}
       </Text>
       <Text
-        className="shrink-0 text-[13px] font-semibold"
+        className="shrink-0 text-[15px] font-semibold"
         numberOfLines={1}
         style={{ color: emphasis ? palette.danger : palette.heading }}
       >

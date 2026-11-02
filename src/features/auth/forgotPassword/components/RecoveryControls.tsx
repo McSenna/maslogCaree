@@ -29,7 +29,7 @@ export const PrimaryButton = ({
       style={{ borderRadius: R.control, backgroundColor: C.primary, opacity: inactive ? 0.5 : 1 }}
     >
       {loading ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
-      <Text className="text-[15px] font-semibold text-white">
+      <Text className="text-[17px] font-semibold text-white">
         {loading ? (loadingLabel ?? label) : label}
       </Text>
     </Pressable>
@@ -61,7 +61,7 @@ export const TextButton = ({
       style={({ pressed }) => ({ opacity: pressed && !disabled ? 0.6 : 1 })}
     >
       {icon ? <Feather name={icon} size={14} color={color} /> : null}
-      <Text className="text-[13px] font-semibold" style={{ color }}>
+      <Text className="text-[15px] font-semibold" style={{ color }}>
         {label}
       </Text>
     </Pressable>
@@ -81,7 +81,7 @@ export const RecoveryField = ({
   trailing?: ReactNode;
 } & React.ComponentProps<typeof TextInput>) => (
   <View className="w-full gap-1.5">
-    <Text className="text-[12.5px] font-semibold" style={{ color: C.text }}>
+    <Text className="text-[14.5px] font-semibold" style={{ color: C.text }}>
       {label}
     </Text>
     <View
@@ -98,7 +98,7 @@ export const RecoveryField = ({
         accessibilityLabel={label}
         placeholderTextColor={PALETTE.slate[500]}
         {...input}
-        className="min-w-0 flex-1 text-[14.5px]"
+        className="min-w-0 flex-1 text-[16.5px]"
         style={{ color: C.text, outlineStyle: "none" } as never}
       />
       {trailing}
@@ -124,7 +124,7 @@ export const RecoveryMessage = ({ tone, text }: { tone: "error" | "info"; text: 
         style={{ marginTop: 1 }}
       />
       <Text
-        className="min-w-0 flex-1 text-[12.5px] leading-[18px]"
+        className="min-w-0 flex-1 text-[14.5px] leading-[20px]"
         style={{ color: isError ? C.error : C.primary }}
       >
         {text}

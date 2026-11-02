@@ -1,3 +1,4 @@
+import { readDeviceCredential } from "@/services/managedDeviceCredential";
 import api from "@/services/api";
 import { CLIENT_PLATFORM } from "@/config/platformAccess";
 import { setStoredUser } from "@/utils/storage";
@@ -73,6 +74,7 @@ export const verifyOtp = async (
     email: email.trim().toLowerCase(),
     otp: otp.trim(),
     clientPlatform: CLIENT_PLATFORM,
+    deviceCredential: await readDeviceCredential(),
   });
 
   if (data.token) {
@@ -95,6 +97,7 @@ export const loginWithEmail = async (
     email: email.trim().toLowerCase(),
     password,
     clientPlatform: CLIENT_PLATFORM,
+    deviceCredential: await readDeviceCredential(),
   });
 
   if (data.token) {

@@ -21,7 +21,7 @@ const PlatformAccessAction = forwardRef<View, { label: string; onPress: () => vo
         ...Platform.select({ web: { cursor: "pointer" } }),
       }}
     >
-      <Text style={{ color: PALETTE.white, fontSize: 15.5, fontWeight: "700" }}>{label}</Text>
+      <Text style={{ color: PALETTE.white, fontSize: 17.5, fontWeight: "700" }}>{label}</Text>
     </Pressable>
   )
 );

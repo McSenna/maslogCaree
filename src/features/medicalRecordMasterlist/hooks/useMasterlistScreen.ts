@@ -1,13 +1,19 @@
-import { useState } from "react";
+import { fetchMasterlistRecord } from "../services/masterlistRecordsApi";
+import { useAuth } from "@/contexts/AuthContext";
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
+import { clearImmunizationEditorRequest, getImmunizationEditorRequest, getChecklistRequestVersion, subscribeImmunizationSelection } from "@/features/immunization/selection";
+import { useCallback, useRef, useState, useSyncExternalStore } from "react";
 
 import { toast } from "@/components/feedback";
 import { resolveMasterListView } from "@/features/masterList/masterListView";
 
 import { CARD_CRITERIA, EMPTY_CRITERIA, recordReference, type MasterlistCardKey } from "../masterlistLabels";
 import type { MasterlistDetail, ResidentIdentity } from "../types";
+import { mayWriteMedicalRecords } from "../recordWriteAccess";
 import { useMasterlistRecords } from "./useMasterlistRecords";
 import { useMasterlistSummary } from "./useMasterlistSummary";
 import { useRecordDetail } from "./useRecordDetail";
+import useRecordDeletion from "./useRecordDeletion";
 import { useServiceForms } from "./useServiceForms";
 
 /** Editor: null when closed, "new" to add, or the record being edited. */
@@ -21,7 +27,36 @@ export const useMasterlistScreen = ({ isPhone }: { isPhone: boolean }) => {
   const { summary, refresh: refreshSummary } = useMasterlistSummary();
   const serviceForms = useServiceForms(summary?.services ?? NO_SERVICES);
   const detail = useRecordDetail();
+  const { user } = useAuth();
+  const canWriteRecords = mayWriteMedicalRecords(user);
+  const deletion = useRecordDeletion(() => { detail.close(); list.refresh(); refreshSummary(); });
+  const requestVersion = useSyncExternalStore(subscribeImmunizationSelection, getChecklistRequestVersion, () => 0);
+  const [initialServiceType, setInitialServiceType] = useState("");
   const [editor, setEditor] = useState<EditorTarget>(null);
+  const [editLoadingId, setEditLoadingId] = useState<string | null>(null);
+  const editLoading = useRef(false);
+  const editImmunization = useCallback(async (id: string) => {
+    if (user?.role !== "midwife" || editLoading.current) return;
+    editLoading.current = true;
+    setEditLoadingId(id);
+    try {
+      const target = await fetchMasterlistRecord(id);
+      if (target.baby) { detail.close(); setEditor(target); }
+    } catch { toast.error("Record could not be opened. Refresh the table and try again."); }
+    finally { editLoading.current = false; setEditLoadingId(null); }
+  }, [user?.role, detail]);
+  useSyncOnChange([requestVersion, user?.role], () => {
+    if (user?.role === "midwife" && getImmunizationEditorRequest()) {
+      setInitialServiceType("immunization");
+      setEditor("new");
+    }
+  });
+  const closeEditor = () => {
+    clearImmunizationEditorRequest();
+    setEditor(null);
+    list.refresh();
+    refreshSummary();
+  };
   // The person whose history the list is narrowed to, for the banner above it.
   const [historyOf, setHistoryOf] = useState<ResidentIdentity | null>(null);
 
@@ -68,18 +103,28 @@ export const useMasterlistScreen = ({ isPhone }: { isPhone: boolean }) => {
     serviceForms,
     detail,
     editor,
+    initialServiceType,
     historyOf,
-    openNew: () => setEditor("new"),
+    openNew: () => {
+      if (!canWriteRecords) return;
+      setInitialServiceType("");
+      setEditor("new");
+    },
     openEdit: (target: MasterlistDetail) => {
+      if (!canWriteRecords || !(target.editable || (target.baby && user?.role === "midwife"))) return;
       detail.close();
       setEditor(target);
     },
-    closeEditor: () => setEditor(null),
+    closeEditor,
     onSaved,
     selectCard,
     showHistory,
     clearFilters,
-    canEncode: (summary?.services.length ?? 0) > 0,
+    deletion,
+    editLoadingId,
+    editImmunization: user?.role === "midwife" ? editImmunization : undefined,
+    canWriteRecords,
+    canEncode: canWriteRecords && (summary?.services.length ?? 0) > 0,
   };
 };
 

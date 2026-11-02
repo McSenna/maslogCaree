@@ -65,7 +65,7 @@ const EditMissionScheduleModal = ({
               opacity: saving ? 0.5 : 1,
             }}
           >
-            <Text className="text-[14.5px] font-semibold" style={{ color: palette.body }}>
+            <Text className="text-[16.5px] font-semibold" style={{ color: palette.body }}>
               Cancel
             </Text>
           </Pressable>

@@ -39,7 +39,7 @@ const AboutHeader = ({
         numberOfLines={1}
         style={{
           flex: 1,
-          fontSize: compact ? 16.5 : 17.5,
+          fontSize: compact ? 18.5 : 19.5,
           fontWeight: "800",
           letterSpacing: -0.3,
           color: LANDING_COLORS.navy,

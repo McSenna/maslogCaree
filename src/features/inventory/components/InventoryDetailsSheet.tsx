@@ -94,7 +94,7 @@ const InventoryDetailsSheet = ({
           >
             <Text
               accessibilityRole="header"
-              className="text-[16px] font-bold"
+              className="text-[18px] font-bold"
               style={{ color: palette.heading }}
             >
               Inventory Item Details

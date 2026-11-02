@@ -49,8 +49,8 @@ const AboutImagePanel = ({ height }: AboutImagePanelProps) => {
       >
       <Text
         style={{
-          fontSize: 13,
-          lineHeight: 18,
+          fontSize: 15,
+          lineHeight: 20,
           fontWeight: "700",
           color: LANDING_COLORS.white,
         }}

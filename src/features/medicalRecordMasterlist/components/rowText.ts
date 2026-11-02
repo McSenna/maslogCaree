@@ -1,12 +1,12 @@
-import { formatCalendarDay, recordReference, ROLE_LABELS, SOURCE_LABELS } from "../masterlistLabels";
+import { formatCalendarDay, ROLE_LABELS, SOURCE_LABELS } from "../masterlistLabels";
 import type { MasterlistRow } from "../types";
 
 export const residentNameOf = (row: MasterlistRow) =>
   row.resident.fullName || (row.resident.missing ? "Removed master list record" : "Name not recorded");
 
-/** Reference and birth date: enough to tell two people with one name apart. */
+/** Birth date: enough to tell two people with one name apart. */
 export const residentLineOf = (row: MasterlistRow) =>
-  [recordReference(row._id), row.resident.dateOfBirth ? `Born ${formatCalendarDay(row.resident.dateOfBirth)}` : ""]
+  [row.baby ? `Baby: ${row.baby.name} (ID ${row.baby._id})` : "", row.resident.dateOfBirth ? `Born ${formatCalendarDay(row.resident.dateOfBirth)}` : ""]
     .filter(Boolean)
     .join(", ");
 

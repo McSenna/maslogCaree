@@ -143,7 +143,7 @@ const RegistrationTrendPanel = ({
             }}
           />
           {latestIsPartial && latest ? (
-            <Text className="mt-2 text-[12px] font-medium" style={{ color: palette.muted }}>
+            <Text className="mt-2 text-[14px] font-medium" style={{ color: palette.muted }}>
               {`${expandMonth(latest.label)} is still in progress, so its point counts accounts so far.`}
             </Text>
           ) : null}

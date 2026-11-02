@@ -78,7 +78,7 @@ const AdminSupportToolbar = ({
           options={statusOptions}
           onChange={(status) => onChange({ status: status as AdminTicketQuery["status"] })}
           icon="filter-variant"
-          style={{ minWidth: 160, flexGrow: 1 }}
+          style={{ minWidth: 184, flexGrow: 1 }}
         />
 
         <SelectMenu
@@ -87,7 +87,7 @@ const AdminSupportToolbar = ({
           options={categoryOptions}
           onChange={(category) => onChange({ category: category as AdminTicketQuery["category"] })}
           icon="shape-outline"
-          style={{ minWidth: 180, flexGrow: 1 }}
+          style={{ minWidth: 206, flexGrow: 1 }}
         />
 
         <SelectMenu
@@ -96,7 +96,7 @@ const AdminSupportToolbar = ({
           options={sortOptions}
           onChange={(sort) => onChange({ sort: sort as AdminTicketQuery["sort"] })}
           icon="sort"
-          style={{ minWidth: 165, flexGrow: 1 }}
+          style={{ minWidth: 190, flexGrow: 1 }}
         />
 
         {hasActiveFilters && onClear ? (
@@ -118,7 +118,7 @@ const AdminSupportToolbar = ({
             })}
           >
             <Feather name="x" size={14} color={palette.muted} />
-            <Text style={{ fontSize: 13, fontWeight: "600", color: palette.muted }}>
+            <Text style={{ fontSize: 15, fontWeight: "600", color: palette.muted }}>
               Clear
             </Text>
           </Pressable>

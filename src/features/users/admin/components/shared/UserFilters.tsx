@@ -3,32 +3,18 @@ import { View } from "react-native";
 import SelectMenu, { type SelectOption } from "@/components/ui/SelectMenu";
 
 import type { UserFilterState } from "../../hooks/useUserFilterState";
-import type { RoleFilter, StatusFilter, UserSort } from "../../userAdmin.types";
-import { ROLES, STATUS_LABELS } from "../../userAdminModel";
+import type { RoleFilter, StatusFilter } from "../../userAdmin.types";
+import { ROLES, STATUS_LABELS, statusOptionsFor } from "../../userAdminModel";
 
 const ROLE_OPTIONS: SelectOption<RoleFilter>[] = [
   { value: "all", label: "All roles" },
   ...ROLES.map((role) => ({ value: role, label: role })),
 ];
 
-const STATUS_OPTIONS: SelectOption<StatusFilter>[] = [
-  { value: "all", label: "All statuses" },
-  { value: "active", label: STATUS_LABELS.active },
-  { value: "approved", label: STATUS_LABELS.approved },
-  { value: "deactivated", label: STATUS_LABELS.deactivated },
-];
-
-const SORT_OPTIONS: SelectOption<UserSort>[] = [
-  { value: "last_login_desc", label: "Last login, newest" },
-  { value: "last_login_asc", label: "Last login, oldest" },
-  { value: "name_asc", label: "Name, A to Z" },
-  { value: "joined_desc", label: "Joined, newest" },
-];
-
-// Fixed widths fit "Last login, newest" without truncating; shares wrap on narrow rows.
+// Shares wrap on narrow rows; fixed widths fit each filter label.
 const WIDTHS = {
-  fixed: { role: { width: 140 }, status: { width: 150 }, sort: { width: 196 } },
-  shared: { role: { flex: 1, minWidth: 130 }, status: { flex: 1, minWidth: 130 }, sort: { flex: 1, minWidth: 180 } },
+  fixed: { role: { width: 150 }, status: { width: 164 } },
+  shared: { role: { flex: 1, minWidth: 150 }, status: { flex: 1, minWidth: 150 } },
 } as const;
 
 type UserFiltersProps = {
@@ -38,14 +24,18 @@ type UserFiltersProps = {
   height: number;
 };
 
-/** Role, status and sort, in the dashboard's dropdown. They combine with each other and with search. */
+/** Role and status combine with each other and with search. */
 const UserFilters = ({ filters, fixed, height }: UserFiltersProps) => {
   const widths = fixed ? WIDTHS.fixed : WIDTHS.shared;
+  const statuses = statusOptionsFor(filters.tab);
+  const statusOptions: SelectOption<StatusFilter>[] = [
+    { value: "all", label: "All statuses" },
+    ...statuses.map((status) => ({ value: status, label: STATUS_LABELS[status] })),
+  ];
   return (
     <View className={`flex-row flex-wrap gap-2 ${fixed ? "" : "w-full"}`}>
       <SelectMenu label="Role" value={filters.role} options={ROLE_OPTIONS} onChange={filters.setRole} height={height} style={widths.role} />
-      <SelectMenu label="Status" value={filters.status} options={STATUS_OPTIONS} onChange={filters.setStatus} height={height} style={widths.status} />
-      <SelectMenu label="Sort" value={filters.sort} options={SORT_OPTIONS} onChange={filters.setSort} height={height} style={widths.sort} />
+      <SelectMenu label="Status" value={filters.status} options={statusOptions} onChange={filters.setStatus} height={height} style={widths.status} disabled={statuses.length === 0} />
     </View>
   );
 };

@@ -38,7 +38,7 @@ const FieldGroup = ({
     <View className="w-full gap-3.5">
       {title ? (
         <Text
-          className="text-[11.5px] font-bold uppercase"
+          className="text-[13.5px] font-bold uppercase"
           style={{ color: palette.subtle, letterSpacing: 0.5 }}
         >
           {title}

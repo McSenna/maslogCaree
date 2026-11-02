@@ -1,3 +1,4 @@
+import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { emptyValues, useMedicalRecordForm } from "@/components/medicalRecord/MedicalRecordForm";
@@ -24,6 +25,7 @@ type Options = {
   onSaved: (detail: MasterlistDetail) => void;
   /** Closes the form after a save, unless it is kept open for the next record. */
   onDone: () => void;
+  initialServiceType?: string;
 };
 
 /**
@@ -32,12 +34,12 @@ type Options = {
  * clears the visit and readings but keeps the confirmed resident, service and
  * provider, so a stack of paper records is confirmed once.
  */
-export const useRecordEditor = ({ editing, forms, onSaved, onDone }: Options) => {
+export const useRecordEditor = ({ editing, forms, onSaved, onDone, initialServiceType = "" }: Options) => {
   const editForm = useMemo(() => (editing ? relaxForEncoding(editing.form) : null), [editing]);
   const [resident, setResident] = useState<ResidentIdentity | null>(editing?.resident ?? null);
   const [confirmed, setConfirmed] = useState(Boolean(editing));
   const [residentError, setResidentError] = useState("");
-  const [serviceType, setServiceType] = useState(editing?.serviceType ?? (forms.length === 1 ? forms[0].categoryKey : ""));
+  const [serviceType, setServiceType] = useState(editing?.serviceType ?? (initialServiceType || (forms.length === 1 ? forms[0].categoryKey : "")));
   const [visit, setVisit] = useState<VisitValues>(editing ? visitFromRecord(editing.record) : EMPTY_VISIT);
   const [visitErrors, setVisitErrors] = useState<Record<string, string>>({});
   const [reason, setReason] = useState("");
@@ -89,6 +91,10 @@ export const useRecordEditor = ({ editing, forms, onSaved, onDone }: Options) =>
     [forms, medical]
   );
 
+  useSyncOnChange([initialServiceType, forms.length], () => {
+    if (!editing && !serviceType && initialServiceType && forms.some(candidate => candidate.categoryKey === initialServiceType)) chooseService(initialServiceType);
+  });
+
   const setVisitField = useCallback((key: string, value: FieldValue) => {
     setVisit((current) => ({ ...current, [key]: typeof value === "string" ? value : "" }));
     setVisitErrors((current) => (current[key] ? { ...current, [key]: "" } : current));
@@ -123,6 +129,7 @@ export const useRecordEditor = ({ editing, forms, onSaved, onDone }: Options) =>
 
   return {
     isEditing: Boolean(editing),
+    initialBabyId: editing?.baby?._id ?? null,
     resident,
     chooseResident,
     confirmed,

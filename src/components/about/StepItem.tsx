@@ -21,7 +21,7 @@ const Badge = ({ index }: { index: number }) => (
       backgroundColor: LANDING_COLORS.primaryBlue,
     }}
   >
-    <Text style={{ fontSize: 12.5, fontWeight: "800", color: LANDING_COLORS.white }}>
+    <Text style={{ fontSize: 14.5, fontWeight: "800", color: LANDING_COLORS.white }}>
       {index + 1}
     </Text>
   </View>
@@ -46,10 +46,10 @@ const StepItem = ({ step, index, horizontal, showConnector }: StepItemProps) => 
           <Badge index={index} />
           {showConnector ? <Connector horizontal /> : null}
         </View>
-        <Text style={{ fontSize: 13.5, fontWeight: "700", color: LANDING_COLORS.navy }}>
+        <Text style={{ fontSize: 15.5, fontWeight: "700", color: LANDING_COLORS.navy }}>
           {step.title}
         </Text>
-        <Text style={{ fontSize: 12.5, lineHeight: 18, color: LANDING_COLORS.mutedText }}>
+        <Text style={{ fontSize: 14.5, lineHeight: 20, color: LANDING_COLORS.mutedText }}>
           {step.description}
         </Text>
       </View>
@@ -64,10 +64,10 @@ const StepItem = ({ step, index, horizontal, showConnector }: StepItemProps) => 
       </View>
 
       <View style={{ flex: 1, minWidth: 0, gap: 3, paddingBottom: showConnector ? 14 : 0 }}>
-        <Text style={{ fontSize: 13.5, fontWeight: "700", color: LANDING_COLORS.navy }}>
+        <Text style={{ fontSize: 15.5, fontWeight: "700", color: LANDING_COLORS.navy }}>
           {step.title}
         </Text>
-        <Text style={{ fontSize: 12.5, lineHeight: 18, color: LANDING_COLORS.mutedText }}>
+        <Text style={{ fontSize: 14.5, lineHeight: 20, color: LANDING_COLORS.mutedText }}>
           {step.description}
         </Text>
       </View>

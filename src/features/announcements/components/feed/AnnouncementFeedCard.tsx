@@ -32,7 +32,7 @@ const MetaRow = ({
   return (
     <View accessibilityLabel={`${label}: ${children}`} style={{ flexDirection: "row", alignItems: "flex-start", gap: 8 }}>
       <Feather name={icon} size={15} color={colors.primary} style={{ marginTop: 2 }} />
-      <Text style={{ flex: 1, minWidth: 0, fontSize: 13.5, lineHeight: 19, fontWeight: "600", color: colors.heading }}>
+      <Text style={{ flex: 1, minWidth: 0, fontSize: 15.5, lineHeight: 21, fontWeight: "600", color: colors.heading }}>
         {children}
       </Text>
     </View>
@@ -88,7 +88,7 @@ const AnnouncementFeedCard = ({ announcement, showAdminMeta = false }: Announcem
       >
         <Text
           style={{
-            fontSize: 11,
+            fontSize: 13,
             fontWeight: "700",
             letterSpacing: 0.6,
             color: past ? colors.muted : colors.primary,
@@ -98,8 +98,8 @@ const AnnouncementFeedCard = ({ announcement, showAdminMeta = false }: Announcem
         </Text>
         <Text
           style={{
-            fontSize: 22,
-            lineHeight: 26,
+            fontSize: 24,
+            lineHeight: 28,
             fontWeight: "700",
             fontVariant: ["tabular-nums"],
             color: past ? colors.muted : colors.heading,
@@ -114,7 +114,7 @@ const AnnouncementFeedCard = ({ announcement, showAdminMeta = false }: Announcem
           <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 8 }}>
             <Text
               accessibilityRole="header"
-              style={{ flex: 1, minWidth: 0, fontSize: 16, lineHeight: 22, fontWeight: "700", color: colors.heading }}
+              style={{ flex: 1, minWidth: 0, fontSize: 18, lineHeight: 24, fontWeight: "700", color: colors.heading }}
             >
               {announcement.title}
             </Text>
@@ -129,11 +129,11 @@ const AnnouncementFeedCard = ({ announcement, showAdminMeta = false }: Announcem
                   borderColor: colors.neutral.border,
                 }}
               >
-                <Text style={{ fontSize: 11.5, fontWeight: "600", color: colors.neutral.fg }}>Past</Text>
+                <Text style={{ fontSize: 13.5, fontWeight: "600", color: colors.neutral.fg }}>Past</Text>
               </View>
             ) : null}
           </View>
-          <Text style={{ fontSize: 14, lineHeight: 21, color: colors.body }}>{announcement.message}</Text>
+          <Text style={{ fontSize: 16, lineHeight: 23, color: colors.body }}>{announcement.message}</Text>
         </View>
 
         <View style={{ gap: 6 }}>
@@ -147,7 +147,7 @@ const AnnouncementFeedCard = ({ announcement, showAdminMeta = false }: Announcem
           </MetaRow>
         </View>
 
-        {footer ? <Text style={{ fontSize: 12, color: colors.subtle }}>{footer}</Text> : null}
+        {footer ? <Text style={{ fontSize: 14, color: colors.subtle }}>{footer}</Text> : null}
       </View>
     </View>
   );

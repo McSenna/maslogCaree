@@ -42,14 +42,14 @@ const ResidentCard = ({ resident, onPress, dense = false }: ResidentCardProps) =
         <View className="flex-row items-start gap-2">
           <View className="min-w-0 flex-1">
             <Text
-              className={dense ? "text-[16px] font-bold" : "text-[17px] font-bold"}
+              className={dense ? "text-[18px] font-bold" : "text-[19px] font-bold"}
               numberOfLines={1}
               style={{ color: palette.heading }}
             >
               {resident.fullname}
             </Text>
             <Text
-              className={dense ? "mt-0.5 text-[12px]" : "mt-0.5 text-[12.5px]"}
+              className={dense ? "mt-0.5 text-[14px]" : "mt-0.5 text-[14.5px]"}
               numberOfLines={1}
               style={{ color: palette.subtle }}
             >
@@ -74,7 +74,7 @@ const ResidentCard = ({ resident, onPress, dense = false }: ResidentCardProps) =
           <View className="flex-row items-center gap-1.5">
             <Feather name="phone" size={12} color={palette.subtle} />
             <Text
-              className="min-w-0 flex-1 text-[12.5px] font-medium"
+              className="min-w-0 flex-1 text-[14.5px] font-medium"
               numberOfLines={1}
               style={{ color: palette.body }}
             >
@@ -85,7 +85,7 @@ const ResidentCard = ({ resident, onPress, dense = false }: ResidentCardProps) =
           <View className="flex-row items-center gap-1.5">
             <Feather name="map-pin" size={12} color={palette.subtle} />
             <Text
-              className="min-w-0 flex-1 text-[12.5px]"
+              className="min-w-0 flex-1 text-[14.5px]"
               numberOfLines={1}
               style={{ color: palette.muted }}
             >
@@ -95,7 +95,7 @@ const ResidentCard = ({ resident, onPress, dense = false }: ResidentCardProps) =
 
           <View className="flex-row items-center gap-1.5">
             <Feather name="calendar" size={12} color={palette.subtle} />
-            <Text className="text-[12px]" numberOfLines={1} style={{ color: palette.subtle }}>
+            <Text className="text-[14px]" numberOfLines={1} style={{ color: palette.subtle }}>
               Registered {formatDate(resident.createdAt)}
             </Text>
           </View>

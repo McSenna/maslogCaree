@@ -60,3 +60,8 @@ export const setMasterResidentActive = async (id: string, active: boolean): Prom
   const { data } = await api.patch<RecordResponse>(`${BASE}/${id}/status`, { active });
   return data.record;
 };
+
+/** Soft-delete the official record. The server retains historical references. */
+export const deleteMasterResident = async (id: string): Promise<void> => {
+  await api.delete(`${BASE}/${id}`);
+};

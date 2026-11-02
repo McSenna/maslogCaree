@@ -37,14 +37,14 @@ const AnnouncementsHero = ({
           <View style={{ flexShrink: 1 }}>
             <Text
               className="font-bold uppercase"
-              style={{ color: withAlpha(PALETTE.white, 0.85), fontSize: 12, letterSpacing: 1.2 }}
+              style={{ color: withAlpha(PALETTE.white, 0.85), fontSize: 14, letterSpacing: 1.2 }}
             >
               Barangay Maslog
             </Text>
             <Text
               accessibilityRole="header"
               className="font-black text-white"
-              style={{ fontSize: isTablet ? 26 : 22 }}
+              style={{ fontSize: isTablet ? 28 : 24 }}
             >
               Health announcements
             </Text>
@@ -54,8 +54,8 @@ const AnnouncementsHero = ({
         <Text
           style={{
             color: withAlpha(PALETTE.white, 0.92),
-            fontSize: isTablet ? 16 : 15,
-            lineHeight: isTablet ? 24 : 22,
+            fontSize: isTablet ? 18 : 17,
+            lineHeight: isTablet ? 26 : 24,
             maxWidth: isTablet ? 520 : undefined,
           }}
         >
@@ -64,7 +64,7 @@ const AnnouncementsHero = ({
 
         <View className="flex-row items-center gap-2">
           <Feather name="calendar" size={15} color={withAlpha(PALETTE.white, 0.9)} />
-          <Text className="font-bold" style={{ color: withAlpha(PALETTE.white, 0.9), fontSize: 14 }}>
+          <Text className="font-bold" style={{ color: withAlpha(PALETTE.white, 0.9), fontSize: 16 }}>
             {eventLabel}
           </Text>
         </View>

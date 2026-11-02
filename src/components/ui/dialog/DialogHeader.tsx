@@ -58,7 +58,7 @@ export const DialogHeader = ({
         nativeID={titleId}
         accessibilityRole="header"
         numberOfLines={2}
-        style={{ minWidth: 0, flex: 1, fontSize: 17, fontWeight: "700", color: palette.heading }}
+        style={{ minWidth: 0, flex: 1, fontSize: 19, fontWeight: "700", color: palette.heading }}
       >
         {title}
       </Text>

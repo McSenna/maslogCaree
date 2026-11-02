@@ -64,7 +64,7 @@ const ServiceCard = ({
 
         <Text
           className="mb-1 font-bold leading-tight text-slate-800"
-          style={{ fontSize: isTablet ? 14 : 13 }}
+          style={{ fontSize: isTablet ? 16 : 15 }}
           numberOfLines={1}
         >
           {label}
@@ -73,9 +73,9 @@ const ServiceCard = ({
         <Text
           className="leading-relaxed"
           style={{
-            fontSize: isTablet ? 12 : 11,
+            fontSize: isTablet ? 14 : 13,
             color: PALETTE.slate[500],
-            lineHeight: isTablet ? 17 : 15,
+            lineHeight: isTablet ? 19 : 17,
           }}
           numberOfLines={2}
         >

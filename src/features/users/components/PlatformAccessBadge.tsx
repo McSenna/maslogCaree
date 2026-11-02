@@ -33,7 +33,7 @@ const PlatformAccessBadge = ({ user, size = "md" }: PlatformAccessBadgeProps) =>
       />
       <Text
         numberOfLines={1}
-        className={isSm ? "text-[11px] font-semibold" : "text-[12px] font-semibold"}
+        className={isSm ? "text-[13px] font-semibold" : "text-[14px] font-semibold"}
         style={{ color: tone.text }}
       >
         {access.label}

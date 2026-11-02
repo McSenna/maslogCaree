@@ -32,7 +32,7 @@ export const CancellationReasonPicker = ({
   onCustomReasonChange,
 }: Props) => (
   <View>
-    <Text style={{ fontSize: 13, fontWeight: "600", color: palette.heading, marginBottom: 8 }}>
+    <Text style={{ fontSize: 15, fontWeight: "600", color: palette.heading, marginBottom: 8 }}>
       Reason for Cancellation (Optional)
     </Text>
 
@@ -67,7 +67,7 @@ export const CancellationReasonPicker = ({
           backgroundColor: palette.cardRaised,
           padding: 12,
           color: palette.heading,
-          fontSize: 13.5,
+          fontSize: 15.5,
           minHeight: 70,
           textAlignVertical: "top",
         }}

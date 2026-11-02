@@ -39,20 +39,20 @@ const MobileLogCard = ({
 
       <View className="flex-1">
         <View className="flex-row items-center justify-between gap-2">
-          <Text className="flex-1 text-[14px] font-semibold" style={{ color: palette.heading }} numberOfLines={1}>
+          <Text className="flex-1 text-[16px] font-semibold" style={{ color: palette.heading }} numberOfLines={1}>
             {formatSystemLogActionLabel(log)}
           </Text>
           <StatusBadge status={log.status} />
         </View>
-        <Text className="mt-1 text-[12.5px]" style={{ color: palette.body }} numberOfLines={1}>
+        <Text className="mt-1 text-[14.5px]" style={{ color: palette.body }} numberOfLines={1}>
           {log.userName}
         </Text>
-        <Text className="mt-0.5 text-[11.5px]" style={{ color: palette.muted }} numberOfLines={1}>
+        <Text className="mt-0.5 text-[13.5px]" style={{ color: palette.muted }} numberOfLines={1}>
           {formatSystemLogDate(log.createdAt)}
         </Text>
         <View className="mt-1.5 flex-row items-center justify-between gap-2">
           <Text
-            className="text-[11.5px]"
+            className="text-[13.5px]"
             style={{ color: palette.muted, fontFamily: "monospace" }}
             numberOfLines={1}
           >

@@ -34,7 +34,7 @@ const InventoryItemSummary = ({ item, size = "md" }: InventoryItemSummaryProps) 
       <View className="min-w-0 flex-1 gap-1.5">
         <View className="flex-row flex-wrap items-center gap-2">
           <Text
-            className={isSm ? "text-[16px] font-bold" : "text-[18px] font-bold"}
+            className={isSm ? "text-[18px] font-bold" : "text-[20px] font-bold"}
             style={{ color: palette.heading }}
           >
             {item.name}
@@ -49,7 +49,7 @@ const InventoryItemSummary = ({ item, size = "md" }: InventoryItemSummaryProps) 
         </View>
 
         {item.specification ? (
-          <Text className="text-[12.5px] font-medium" style={{ color: palette.muted }}>
+          <Text className="text-[14.5px] font-medium" style={{ color: palette.muted }}>
             {item.specification}
           </Text>
         ) : null}

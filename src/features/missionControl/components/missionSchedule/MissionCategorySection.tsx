@@ -47,12 +47,12 @@ const MissionCategorySection = ({
     <View className="w-full gap-3">
       <View className="flex-row items-center gap-2">
         <Feather name="grid" size={15} color={palette.primary} />
-        <Text className="min-w-0 flex-1 text-[15px] font-bold" style={{ color: palette.heading }}>
+        <Text className="min-w-0 flex-1 text-[17px] font-bold" style={{ color: palette.heading }}>
           Categories on this mission
         </Text>
         <Text
           accessibilityLiveRegion="polite"
-          className="text-[12.5px] font-medium"
+          className="text-[14.5px] font-medium"
           style={{ color: error ? palette.danger : palette.muted }}
         >
           {selectedCount} {selectedCount === 1 ? "service" : "services"} selected
@@ -75,7 +75,7 @@ const MissionCategorySection = ({
       </View>
 
       {error ? (
-        <Text className="text-[12.5px] font-medium" style={{ color: palette.danger }}>
+        <Text className="text-[14.5px] font-medium" style={{ color: palette.danger }}>
           {error}
         </Text>
       ) : null}

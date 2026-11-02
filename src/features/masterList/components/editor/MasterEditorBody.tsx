@@ -91,8 +91,8 @@ const MasterEditorBody = ({
             >
               <Text
                 style={{
-                  fontSize: 13,
-                  lineHeight: 19,
+                  fontSize: 15,
+                  lineHeight: 21,
                   color: REG_COLORS.error,
                   textDecorationLine: "underline",
                 }}

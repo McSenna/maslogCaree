@@ -27,7 +27,7 @@ const HealthcareTeamSection = ({
       <Text
         style={{
           color: HC.slateLight,
-          fontSize: isTablet ? 12 : 11,
+          fontSize: isTablet ? 14 : 13,
           marginTop: -8,
           marginBottom: 16,
         }}

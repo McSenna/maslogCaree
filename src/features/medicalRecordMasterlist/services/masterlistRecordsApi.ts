@@ -76,3 +76,8 @@ export const editMedicalRecord = async (id: string, body: EditRecordBody): Promi
   const { data } = await api.patch<{ detail: MasterlistDetail }>(`${BASE}/${id}`, body);
   return data.detail;
 };
+
+export const deleteMedicalRecord = async (body: { recordId: string; reason: string; expectedUpdatedAt: string }) => {
+  const { data } = await api.post<{success:true;recordId:string;deleted:boolean}>(`${BASE}/delete`, body);
+  return data;
+};

@@ -1,6 +1,13 @@
+import MedicalRecordsTabs from "@/features/immunization/components/MedicalRecordsTabs";
 import { Feather } from "@expo/vector-icons";
 import { useMemo } from "react";
-import { ActivityIndicator, Pressable, SectionList, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  SectionList,
+  Text,
+  View,
+} from "react-native";
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import { ResidentMedicalDetailsDialog } from "@/features/medical-records/components/ResidentMedicalDetailsDialog";
 import MedicalRecordCard from "@/components/medicalRecord/history/MedicalRecordCard";
@@ -11,7 +18,10 @@ import RecordYearHeader from "@/components/medicalRecord/history/RecordYearHeade
 import { groupRecordsByYear } from "@/components/medicalRecord/history/recordYearSections";
 import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 import { useTheme } from "@/contexts/ThemeContext";
-import { INITIAL_RECORD_FILTERS, useResidentMedicalRecords } from "@/hooks/useResidentMedicalRecords";
+import {
+  INITIAL_RECORD_FILTERS,
+  useResidentMedicalRecords,
+} from "@/hooks/useResidentMedicalRecords";
 
 const ResidentMedicalRecords = () => {
   const { classes } = useTheme();
@@ -22,9 +32,22 @@ const ResidentMedicalRecords = () => {
 
   const emptyState = () => {
     if (loading) return <MedicalRecordSkeleton palette={palette} />;
-    if (error) return <MedicalRecordEmptyState variant="error" palette={palette} onRetry={history.refetch} />;
+    if (error)
+      return (
+        <MedicalRecordEmptyState
+          variant="error"
+          palette={palette}
+          onRetry={history.refetch}
+        />
+      );
     if (history.filtered) {
-      return <MedicalRecordEmptyState variant="no-matches" palette={palette} onClearFilters={() => history.setFilters(INITIAL_RECORD_FILTERS)} />;
+      return (
+        <MedicalRecordEmptyState
+          variant="no-matches"
+          palette={palette}
+          onClearFilters={() => history.setFilters(INITIAL_RECORD_FILTERS)}
+        />
+      );
     }
     return <MedicalRecordEmptyState variant="no-records" palette={palette} />;
   };
@@ -34,13 +57,19 @@ const ResidentMedicalRecords = () => {
       <View className="gap-1">
         <PageTitle>Medical Record History</PageTitle>
         <PageSubtitle>
-          Your visits to the Maslog health center, including records from before you joined MaslogCare. New visits
-          appear here once your appointment is closed.
+          Your visits to the Maslog health center, including records from before
+          you joined MaslogCare. New visits appear here once your appointment is
+          closed.
         </PageSubtitle>
       </View>
 
       {records.length || history.filtered ? (
-        <MedicalRecordFilters value={history.filters} onChange={history.setFilters} palette={palette} resultCount={history.total} />
+        <MedicalRecordFilters
+          value={history.filters}
+          onChange={history.setFilters}
+          palette={palette}
+          resultCount={history.total}
+        />
       ) : null}
 
       {error && records.length ? (
@@ -51,8 +80,15 @@ const ResidentMedicalRecords = () => {
           className="w-full flex-row items-center gap-2.5 rounded-xl px-3.5 py-2.5 active:opacity-80"
           style={{ backgroundColor: palette.statuses.pending.bg }}
         >
-          <Feather name="refresh-cw" size={14} color={palette.statuses.pending.dot} />
-          <Text className="min-w-0 flex-1 text-[12.5px] font-medium" style={{ color: palette.statuses.pending.fg }}>
+          <Feather
+            name="refresh-cw"
+            size={14}
+            color={palette.statuses.pending.dot}
+          />
+          <Text
+            className="min-w-0 flex-1 text-[14.5px] font-medium"
+            style={{ color: palette.statuses.pending.fg }}
+          >
             These records may be out of date. Tap to try again.
           </Text>
         </Pressable>
@@ -66,15 +102,26 @@ const ResidentMedicalRecords = () => {
         className={`flex-1 ${classes.scrollBg}`}
         sections={loading ? [] : sections}
         keyExtractor={(record) => record._id}
-        renderItem={({ item }) => <MedicalRecordCard record={item} palette={palette} onOpen={(row) => void viewer.open(row)} />}
-        renderSectionHeader={({ section }) => <RecordYearHeader title={section.title} palette={palette} />}
+        renderItem={({ item }) => (
+          <MedicalRecordCard
+            record={item}
+            palette={palette}
+            onOpen={(row) => void viewer.open(row)}
+          />
+        )}
+        renderSectionHeader={({ section }) => (
+          <RecordYearHeader title={section.title} palette={palette} />
+        )}
         ItemSeparatorComponent={() => <View className="h-3" />}
         ListHeaderComponent={header}
         ListEmptyComponent={emptyState()}
         ListFooterComponent={
           history.loadingMore ? (
             <View className="items-center py-4">
-              <ActivityIndicator color={palette.primary} accessibilityLabel="Loading more records" />
+              <ActivityIndicator
+                color={palette.primary}
+                accessibilityLabel="Loading more records"
+              />
             </View>
           ) : (
             <View className="h-8" />
@@ -100,4 +147,9 @@ const ResidentMedicalRecords = () => {
   );
 };
 
-export default ResidentMedicalRecords;
+const ResidentMedicalRecordsPage = () => (
+  <MedicalRecordsTabs>
+    <ResidentMedicalRecords />
+  </MedicalRecordsTabs>
+);
+export default ResidentMedicalRecordsPage;

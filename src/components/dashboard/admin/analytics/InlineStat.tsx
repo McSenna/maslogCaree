@@ -15,13 +15,13 @@ type Props = {
  */
 const InlineStat = ({ palette, label, value, meta }: Props) => (
   <View accessible accessibilityLabel={`${label}: ${value}, ${meta}`} className="min-w-0 items-start gap-0.5">
-    <Text className="text-[12px] font-medium" style={{ color: palette.muted }}>
+    <Text className="text-[14px] font-medium" style={{ color: palette.muted }}>
       {label}
     </Text>
-    <Text className="text-[15px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+    <Text className="text-[17px] font-semibold" numberOfLines={2} style={{ color: palette.heading }}>
       {value}
     </Text>
-    <Text className="text-[12px]" numberOfLines={1} style={{ color: palette.muted }}>
+    <Text className="text-[14px]" numberOfLines={2} style={{ color: palette.muted }}>
       {meta}
     </Text>
   </View>

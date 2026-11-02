@@ -94,7 +94,7 @@ const EmailVerificationField = ({
       <Text
         nativeID={labelId}
         style={{
-          fontSize: 13,
+          fontSize: 15,
           fontWeight: "600",
           color: REG_COLORS.heading,
           letterSpacing: 0.1,
@@ -129,19 +129,19 @@ const EmailVerificationField = ({
             color={REG_COLORS.error}
             style={{ marginTop: 1 }}
           />
-          <Text style={{ flex: 1, fontSize: 12.5, lineHeight: 17, color: REG_COLORS.error }}>
+          <Text style={{ flex: 1, fontSize: 14.5, lineHeight: 19, color: REG_COLORS.error }}>
             {message}
           </Text>
         </View>
       ) : isVerified ? (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <Feather name="check-circle" size={13} color={REG_COLORS.successText} />
-          <Text style={{ fontSize: 12.5, lineHeight: 17, color: REG_COLORS.successText }}>
+          <Text style={{ fontSize: 14.5, lineHeight: 19, color: REG_COLORS.successText }}>
             Email verified.
           </Text>
         </View>
       ) : (
-        <Text style={{ fontSize: 12.5, lineHeight: 17, color: REG_COLORS.muted }}>
+        <Text style={{ fontSize: 14.5, lineHeight: 19, color: REG_COLORS.muted }}>
           {codeSent
             ? "We sent a code to this address. Select Enter code to finish verifying."
             : "We'll send a verification code to this address."}

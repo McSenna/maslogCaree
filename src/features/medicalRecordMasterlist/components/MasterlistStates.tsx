@@ -25,8 +25,9 @@ export const masterlistEmptyCopy = (
     : {
         emptyIcon: "file-text",
         emptyTitle: "No medical records found",
-        emptyDescription:
-          "Encode the health center's paper records here. Each one is filed under a resident on the barangay master list.",
+        emptyDescription: canEncode
+          ? "Encode the health center's paper records here. Each one is filed under a resident on the barangay master list."
+          : "No medical records are available to view yet.",
         emptyAction: canEncode ? { label: "Add medical record", icon: "plus", onPress: onAdd } : undefined,
       };
 

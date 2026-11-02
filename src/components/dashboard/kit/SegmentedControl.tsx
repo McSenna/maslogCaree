@@ -22,6 +22,10 @@ type SegmentedControlProps<T extends string> = {
   onChange: (value: T) => void;
   /** Stretch to the parent's width with equal segments (phones). */
   fill?: boolean;
+  /** Comfortable page tabs use larger text and 44px segment targets. */
+  size?: "sm" | "md";
+  /** Segments that do not fit take the next line, so none is ever cut off. */
+  wrap?: boolean;
 };
 
 const HEIGHT = 34;
@@ -36,13 +40,16 @@ const Segment = <T extends string,>({
   selected,
   onSelect,
   fill,
+  size,
 }: {
   palette: AdminDashboardPalette;
   option: SegmentOption<T>;
   selected: boolean;
   onSelect: (value: T) => void;
   fill: boolean;
+  size: "sm" | "md";
 }) => {
+  const comfortable = size === "md";
   const { hovered, focused, handlers } = useInteractionState();
   const color = selected ? palette.heading : hovered ? palette.body : palette.muted;
   const countLabel = typeof option.count === "number" ? `, ${option.count}` : "";
@@ -54,19 +61,19 @@ const Segment = <T extends string,>({
       role="radio"
       aria-checked={selected}
       accessibilityLabel={`${option.label}${countLabel}`}
-      hitSlop={{ top: (MIN_TARGET - HEIGHT) / 2, bottom: (MIN_TARGET - HEIGHT) / 2 }}
+      hitSlop={comfortable ? undefined : { top: (MIN_TARGET - HEIGHT) / 2, bottom: (MIN_TARGET - HEIGHT) / 2 }}
       style={[
         {
           flex: fill ? 1 : undefined,
-          height: HEIGHT - 6,
+          height: comfortable ? MIN_TARGET : HEIGHT - 6,
           // Stretched segments share a phone-width track, so they trade padding for label room.
-          paddingHorizontal: fill ? 6 : 12,
+          paddingHorizontal: comfortable ? (fill ? 10 : 18) : (fill ? 6 : 12),
           minWidth: 0,
-          borderRadius: 8,
+          borderRadius: comfortable ? 10 : 8,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
-          gap: fill ? 4 : 6,
+          gap: comfortable ? 8 : fill ? 4 : 6,
           backgroundColor: selected ? palette.cardBg : "transparent",
           outlineWidth: focused ? 2 : 0,
           outlineStyle: "solid",
@@ -78,16 +85,16 @@ const Segment = <T extends string,>({
       ]}
     >
       <Text
-        className={fill ? "shrink text-[12.5px] font-semibold" : "text-[13px] font-semibold"}
+        className={fill ? "shrink font-semibold" : "font-semibold"}
         numberOfLines={1}
-        style={{ color }}
+        style={{ color, fontSize: comfortable ? 17 : fill ? 14.5 : 15 }}
       >
         {option.label}
       </Text>
       {typeof option.count === "number" ? (
         <Text
-          className="text-[12px] font-semibold"
-          style={{ color: selected ? palette.primary : palette.subtle, fontVariant: ["tabular-nums"] }}
+          className="font-semibold"
+          style={{ color: selected ? palette.primary : palette.subtle, fontVariant: ["tabular-nums"], fontSize: comfortable ? 15 : 14 }}
         >
           {option.count}
         </Text>
@@ -107,15 +114,19 @@ const SegmentedControl = <T extends string,>({
   options,
   onChange,
   fill = false,
+  size = "sm",
+  wrap = false,
 }: SegmentedControlProps<T>) => (
   <View
     role="radiogroup"
     accessibilityLabel={label}
     style={{
       alignSelf: fill ? "stretch" : "flex-start",
-      height: HEIGHT,
+      height: wrap ? undefined : size === "md" ? MIN_TARGET + 8 : HEIGHT,
+      flexWrap: wrap ? "wrap" : "nowrap",
+      maxWidth: "100%",
       padding: 3,
-      borderRadius: 10,
+      borderRadius: size === "md" ? 12 : 10,
       flexDirection: "row",
       gap: 2,
       backgroundColor: palette.divider,
@@ -131,6 +142,7 @@ const SegmentedControl = <T extends string,>({
         selected={option.value === value}
         onSelect={onChange}
         fill={fill}
+        size={size}
       />
     ))}
   </View>

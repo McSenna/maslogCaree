@@ -46,8 +46,8 @@ const AppointmentAlert = ({
         accessibilityRole={isDanger ? "alert" : undefined}
         className="min-w-0 flex-1"
         style={{
-          fontSize: 13,
-          lineHeight: isDanger ? 18 : 19,
+          fontSize: 15,
+          lineHeight: isDanger ? 20 : 21,
           color: isDanger ? PALETTE.red[700] : APPOINTMENT_COLORS.bodyText,
         }}
       >
@@ -68,7 +68,7 @@ const AppointmentAlert = ({
             borderColor: APPOINTMENT_COLORS.dangerBorder,
           }}
         >
-          <Text style={{ fontSize: 13, fontWeight: "700", color: APPOINTMENT_COLORS.danger }}>
+          <Text style={{ fontSize: 15, fontWeight: "700", color: APPOINTMENT_COLORS.danger }}>
             {action.label}
           </Text>
         </Pressable>

@@ -47,7 +47,7 @@ const UserSheetBody = ({ user, loading, error, onRetry }: Props) => {
           <SheetSection title="Role & Permissions">
             <View className="gap-2 pt-1">
               <RoleBadge role={user.role} />
-              <Text className="text-[13px] leading-[19px]" style={{ color: palette.body }}>
+              <Text className="text-[15px] leading-[21px]" style={{ color: palette.body }}>
                 {ROLE_PERMISSIONS[user.role]}
               </Text>
             </View>
@@ -55,8 +55,8 @@ const UserSheetBody = ({ user, loading, error, onRetry }: Props) => {
 
           <SheetSection title="Platform Access">
             <PlatformAccessRows user={user} />
-            {access && !access.web ? (
-              <Text className="pb-1 pt-1 text-[12.5px]" style={{ color: palette.subtle }}>
+            {user.role !== "resident" && access && !access.web ? (
+              <Text className="pb-1 pt-1 text-[14.5px]" style={{ color: palette.subtle }}>
                 This account can only sign in through the MaslogCare mobile application.
               </Text>
             ) : null}

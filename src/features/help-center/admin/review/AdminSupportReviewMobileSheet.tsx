@@ -57,10 +57,10 @@ const AdminSupportReviewMobileSheet = ({
       }}
     >
       <View style={{ gap: 2, flex: 1, minWidth: 0 }}>
-        <Text style={{ fontSize: 11.5, fontWeight: "700", color: palette.primary, letterSpacing: 0.3 }}>
+        <Text style={{ fontSize: 13.5, fontWeight: "700", color: palette.primary, letterSpacing: 0.3 }}>
           {ticket.ticketNumber}
         </Text>
-        <Text numberOfLines={1} style={{ fontSize: 14.5, fontWeight: "700", color: palette.heading }}>
+        <Text numberOfLines={1} style={{ fontSize: 16.5, fontWeight: "700", color: palette.heading }}>
           Review Support Request
         </Text>
       </View>

@@ -105,7 +105,7 @@ export const ChangePasswordModal = ({
               <Text
                 id={titleId}
                 style={{
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: "700",
                   color: C.heading,
                 }}

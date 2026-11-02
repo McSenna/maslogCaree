@@ -49,10 +49,10 @@ const HelpCategoryCard = ({ category, expanded, onToggle }: HelpCategoryCardProp
         </View>
 
         <View style={{ flex: 1, minWidth: 0, gap: 3 }}>
-          <Text style={{ fontSize: 15, fontWeight: "700", color: palette.heading }}>
+          <Text style={{ fontSize: 17, fontWeight: "700", color: palette.heading }}>
             {category.title}
           </Text>
-          <Text style={{ fontSize: 13, lineHeight: 19, color: palette.muted }}>
+          <Text style={{ fontSize: 15, lineHeight: 21, color: palette.muted }}>
             {category.description}
           </Text>
         </View>

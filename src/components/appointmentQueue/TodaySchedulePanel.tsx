@@ -23,7 +23,7 @@ const ScheduleRow = ({
   return (
     <View className="w-full flex-row items-stretch gap-3">
       <Text
-        className="w-[68px] pt-3 text-right text-[12.5px] font-semibold"
+        className="w-[68px] pt-3 text-right text-[14.5px] font-semibold"
         style={{ color: palette.muted }}
       >
         {time}
@@ -38,10 +38,10 @@ const ScheduleRow = ({
 
       <View className={`min-w-0 flex-1 flex-row items-center gap-2 ${isLast ? "pb-1" : "pb-3"} pt-2.5`}>
         <View className="min-w-0 flex-1">
-          <Text numberOfLines={1} className="text-[14px] font-semibold" style={{ color: palette.heading }}>
+          <Text numberOfLines={1} className="text-[16px] font-semibold" style={{ color: palette.heading }}>
             {appointmentPatientName(appointment)}
           </Text>
-          <Text numberOfLines={1} className="mt-0.5 text-[12.5px]" style={{ color: palette.muted }}>
+          <Text numberOfLines={1} className="mt-0.5 text-[14.5px]" style={{ color: palette.muted }}>
             {serviceLabel}
           </Text>
         </View>
@@ -71,7 +71,7 @@ const TodaySchedulePanel = ({
       icon="calendar"
       title="Today's Schedule"
       trailing={
-        <Text className="text-[12.5px] font-semibold" style={{ color: palette.muted }}>
+        <Text className="text-[14.5px] font-semibold" style={{ color: palette.muted }}>
           {dateLabel}
         </Text>
       }
@@ -90,10 +90,10 @@ const TodaySchedulePanel = ({
         </View>
       ) : schedule.length === 0 ? (
         <View className="items-center gap-1.5 px-4 py-9">
-          <Text className="text-[13.5px] font-semibold" style={{ color: palette.heading }}>
+          <Text className="text-[15.5px] font-semibold" style={{ color: palette.heading }}>
             Nothing booked today.
           </Text>
-          <Text className="text-center text-[12.5px]" style={{ color: palette.muted }}>
+          <Text className="text-center text-[14.5px]" style={{ color: palette.muted }}>
             {emptyMessage}
           </Text>
         </View>

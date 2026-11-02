@@ -25,7 +25,7 @@ const MedicalRecordLink = ({
   return (
     <View className="w-full gap-2">
       <Text
-        className="text-[11.5px] font-bold uppercase"
+        className="text-[13.5px] font-bold uppercase"
         style={{ color: palette.subtle, letterSpacing: 0.6 }}
       >
         Medical Record
@@ -56,10 +56,10 @@ const MedicalRecordLink = ({
         </View>
 
         <View className="min-w-0 flex-1 gap-0.5">
-          <Text className="text-[13.5px] font-bold" style={{ color: tone.fg }}>
+          <Text className="text-[15.5px] font-bold" style={{ color: tone.fg }}>
             {loading ? "Opening your record…" : "View medical record"}
           </Text>
-          <Text className="text-[11.5px]" style={{ color: tone.fg, opacity: 0.85 }}>
+          <Text className="text-[13.5px]" style={{ color: tone.fg, opacity: 0.85 }}>
             What your health worker recorded during this visit
           </Text>
         </View>
@@ -68,7 +68,7 @@ const MedicalRecordLink = ({
       </Pressable>
 
       {error ? (
-        <Text className="text-[12px]" style={{ color: palette.statuses.declined.fg }}>
+        <Text className="text-[14px]" style={{ color: palette.statuses.declined.fg }}>
           {error}
         </Text>
       ) : null}

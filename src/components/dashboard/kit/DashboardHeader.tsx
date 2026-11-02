@@ -26,6 +26,8 @@ type DashboardHeaderProps = {
   /** "Updated 4 min ago"; shown beside the actions on wide screens. */
   updatedLabel?: string;
   compact: boolean;
+  /** Show only the actions while retaining the page name for screen readers. */
+  hideHeading?: boolean;
 };
 
 /**
@@ -40,25 +42,31 @@ const DashboardHeader = ({
   secondaryActions = [],
   updatedLabel,
   compact,
+  hideHeading = false,
 }: DashboardHeaderProps) => {
-  const heading = (
+  const heading = hideHeading ? (
+    <Text role="heading" aria-level={1} className="sr-only">{title}</Text>
+  ) : (
     <View className="min-w-0 gap-1" style={{ flexGrow: 1, flexShrink: 1, flexBasis: compact ? "auto" : 320 }}>
       <Text
         role="heading"
         aria-level={1}
-        className={compact ? "text-[22px] font-bold" : "text-[26px] font-bold"}
-        style={{ color: palette.heading, lineHeight: compact ? 28 : 32, letterSpacing: -0.3 }}
+        className={compact ? "text-[24px] font-bold" : "text-[28px] font-bold"}
+        style={{ color: palette.heading, lineHeight: compact ? 30 : 34, letterSpacing: -0.3 }}
       >
         {title}
       </Text>
-      <Text className="text-[14px] font-medium" style={{ color: palette.muted, lineHeight: 20 }}>
+      <Text className="text-[16px] font-medium" style={{ color: palette.muted, lineHeight: 22 }}>
         {subtitle}
       </Text>
     </View>
   );
 
+  const visibleSecondary = compact ? secondaryActions.filter((action) => action.showOnPhone) : secondaryActions;
+  if (hideHeading && !primaryAction && visibleSecondary.length === 0 && (compact || !updatedLabel)) return heading;
+
   if (compact) {
-    const phoneSecondary = secondaryActions.filter((action) => action.showOnPhone);
+    const phoneSecondary = visibleSecondary;
 
     return (
       <View className="gap-3">
@@ -101,12 +109,12 @@ const DashboardHeader = ({
   }
 
   return (
-    <View className="flex-row flex-wrap items-end justify-between" style={{ columnGap: 24, rowGap: 16 }}>
+    <View className={`flex-row flex-wrap items-end ${hideHeading ? "justify-end" : "justify-between"}`} style={{ columnGap: 24, rowGap: 16 }}>
       {heading}
       {/* Views default to flexShrink 0; without it this row keeps its one-line width and runs off tablet screens instead of wrapping. */}
       <View className="flex-row flex-wrap items-center" style={{ gap: 10, flexShrink: 1, minWidth: 0, maxWidth: "100%" }}>
         {updatedLabel ? (
-          <Text className="text-[12.5px] font-medium" style={{ color: palette.subtle }}>
+          <Text className="text-[14.5px] font-medium" style={{ color: palette.subtle }}>
             {updatedLabel}
           </Text>
         ) : null}

@@ -27,6 +27,7 @@ const PhoneListHeader = ({ screen, onExport }: PhoneListHeaderProps) => {
     <View className="gap-3 pb-3 pt-4">
       <View className="px-4">
         <DashboardHeader
+          hideHeading
           palette={palette}
           compact
           title={ANNOUNCEMENTS_TITLE}

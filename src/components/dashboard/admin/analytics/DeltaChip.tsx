@@ -33,7 +33,7 @@ const DeltaChip = ({
       style={{ backgroundColor: tone.bg, borderRadius: DASHBOARD_RADIUS.pill }}
     >
       <Feather name={ICONS[direction]} size={12} color={tone.text} />
-      <Text className="text-[12px] font-bold" style={{ color: tone.text, fontVariant: ["tabular-nums"] }}>
+      <Text className="text-[14px] font-bold" style={{ color: tone.text, fontVariant: ["tabular-nums"] }}>
         {value}
       </Text>
     </View>

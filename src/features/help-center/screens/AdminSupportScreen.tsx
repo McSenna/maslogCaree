@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 
-import AdminSupportHeader from "../admin/AdminSupportHeader";
 import AdminSupportStats from "../admin/AdminSupportStats";
 import AdminSupportTable from "../admin/AdminSupportTable";
 import AdminSupportToolbar from "../admin/AdminSupportToolbar";
@@ -23,14 +22,9 @@ const AdminSupportScreen = () => {
   const [openTicketId, setOpenTicketId] = useState<string | null>(null);
   const [contentWidth, setContentWidth] = useState<number | null>(null);
 
-  // The table needs SUPPORT_TABLE_MIN_WIDTH; on a laptop or tablet beside the sidebar it
-  // would hide Status and Action behind a sideways scroll, so the card list (two-up
-  // when it fits) is used until the table has room.
   const isDesktop =
     isDesktopWeb && (contentWidth === null || contentWidth >= SUPPORT_TABLE_MIN_WIDTH);
-  // The card list adds pages as the user scrolls; only the table restores a page.
   const support = useAdminSupportTickets({ appendPages: !isDesktop });
-  // A new table page starts at its first row; the card list adds pages, so it never jumps.
   const scrollRef = useScrollTopOnChange<ScrollView>(isDesktop ? support.page : 0);
 
   return (
@@ -52,11 +46,9 @@ const AdminSupportScreen = () => {
           paddingBottom: insets.paddingBottom + 40,
         }}
       >
-        <AdminSupportHeader
-          total={support.total}
-          refreshing={support.refreshing}
-          onRefresh={support.refresh}
-        />
+        <Text role="heading" aria-level={1} className="sr-only">
+          Support Management
+        </Text>
 
         <AdminSupportStats
           counts={support.statusCounts}

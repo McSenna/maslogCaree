@@ -19,10 +19,10 @@ import type { Linkage, MasterlistSource } from "../types";
 
 const CONTROL_HEIGHT = 44;
 const WIDE_SEARCH = { flex: 2, minWidth: 220 } as const;
-const WIDE_SELECT = { flex: 1, minWidth: 150 } as const;
+const WIDE_SELECT = { flex: 1, minWidth: 206 } as const;
 const FULL_ROW = { width: "100%" } as const;
 // Phones: two selects per row, so the list starts higher up the screen.
-const PHONE_SELECT = { flexGrow: 1, minWidth: 140 } as const;
+const PHONE_SELECT = { flexGrow: 1, minWidth: 160 } as const;
 const YEARS = yearOptions();
 
 type Props = { list: MasterlistRecordsState; forms: CompletionForm[]; phone?: boolean };

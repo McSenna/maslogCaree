@@ -89,7 +89,7 @@ const RegistrationInput = ({
           accessibilityLabel={label}
           accessibilityHint={accessibilityHint}
           style={[
-            { flex: 1, height: "100%", fontSize: 15, color: fieldTextColor(disabled) },
+            { flex: 1, height: "100%", fontSize: 17, color: fieldTextColor(disabled) },
             Platform.OS === "web" ? ({ outlineStyle: "none" } as never) : null,
           ]}
           {...inputProps}

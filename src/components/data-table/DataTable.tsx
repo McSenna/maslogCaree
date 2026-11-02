@@ -5,7 +5,7 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { RADII } from "@/theme/radius";
 
-import { planColumns } from "./columnLayout";
+import { centerColumns, planColumns } from "./columnLayout";
 import MobileCardList from "./MobileCardList";
 import Pagination from "./Pagination";
 import TableEmptyState from "./TableEmptyState";
@@ -41,7 +41,7 @@ const DataTable = <T,>(props: DataTableProps<T>) => {
 
   const plain = surface === "plain";
   const tableWidth = outerWidth > 0 && !plain ? outerWidth - 2 * (TABLE_INSET + 1) : outerWidth;
-  const plan = planColumns(columns, windowWidth, tableWidth);
+  const plan = planColumns(centerColumns(columns), windowWidth, tableWidth);
   // Below 768px, or when even the essential columns would need a sideways scroll, auto shows cards:
   // the app hides scrollbars, so a scrolling table would read as clipped.
   const cards = layout === "cards" || (layout === "auto" && (isMobile || plan.scrolls));

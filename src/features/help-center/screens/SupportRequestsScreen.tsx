@@ -33,7 +33,7 @@ const SupportRequestsScreen = () => {
       >
         <Text
           accessibilityRole="header"
-          style={{ fontSize: 20, fontWeight: "700", color: palette.heading }}
+          style={{ fontSize: 22, fontWeight: "700", color: palette.heading }}
         >
           My Support Requests
         </Text>

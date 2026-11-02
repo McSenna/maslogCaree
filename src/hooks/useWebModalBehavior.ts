@@ -97,7 +97,8 @@ export const useFocusTrap = (visible: boolean) => {
     const opener = document.activeElement as HTMLElement | null;
     const openerOutside = opener && !node.contains(opener) ? opener : null;
 
-    focusable()[0]?.focus?.();
+    const initial = node.querySelector<HTMLElement>('[data-initial-focus="true"]');
+    (initial ?? focusable()[0])?.focus?.();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Tab") return;

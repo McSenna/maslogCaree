@@ -25,7 +25,7 @@ const RegistrationChrome = ({
       <Text
         style={{
           flex: 1,
-          fontSize: isSheet ? 15 : 16,
+          fontSize: isSheet ? 17 : 18,
           fontWeight: "800",
           letterSpacing: -0.3,
           color: REG_COLORS.heading,
@@ -56,7 +56,7 @@ const RegistrationChrome = ({
       <Text
         accessibilityRole="header"
         style={{
-          fontSize: isSheet ? 21 : 24,
+          fontSize: isSheet ? 23 : 26,
           fontWeight: "800",
           letterSpacing: -0.5,
           color: REG_COLORS.heading,
@@ -64,7 +64,7 @@ const RegistrationChrome = ({
       >
         {title}
       </Text>
-      <Text style={{ fontSize: 13.5, lineHeight: 20, color: REG_COLORS.muted }}>
+      <Text style={{ fontSize: 15.5, lineHeight: 22, color: REG_COLORS.muted }}>
         {subtitle}
       </Text>
     </View>

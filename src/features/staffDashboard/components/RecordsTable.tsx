@@ -49,12 +49,12 @@ const RecordsTable = ({
 
   const columns: Column<StaffActivity>[] = [
     {
-      key: "patient",
+      key: "patient", nameColumn: true,
       header: personNoun === "resident" ? "Resident" : "Patient",
       flex: 1.4,
       minWidth: 150,
       render: (row) => (
-        <Text className="text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+        <Text className="text-[15.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
           {row.patientName}
         </Text>
       ),
@@ -64,7 +64,8 @@ const RecordsTable = ({
           {
             key: "service",
             header: "Service",
-            width: 172,
+            align: "center" as const,
+            width: 194,
             hideBelow: "lg" as const,
             render: (row: StaffActivity) => (
               <ServiceBadge serviceKey={row.serviceType} label={row.serviceLabel} compact />
@@ -79,7 +80,7 @@ const RecordsTable = ({
       minWidth: 140,
       hideBelow: "md",
       render: (row) => (
-        <Text className="text-[13px]" numberOfLines={1} style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
+        <Text className="text-[15px]" numberOfLines={1} style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
           {detailOf(row)}
         </Text>
       ),
@@ -87,10 +88,10 @@ const RecordsTable = ({
     {
       key: "completed",
       header: "Filed",
-      width: 150,
-      align: "right",
+      width: 168,
+      align: "center",
       render: (row) => (
-        <Text className="text-[12.5px] font-medium" numberOfLines={1} style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
+        <Text className="text-[14.5px] font-medium" numberOfLines={1} style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
           {completedLabel(row.completedAt)}
         </Text>
       ),
@@ -111,17 +112,17 @@ const RecordsTable = ({
         renderMobileCard={(row) => (
           <>
             <View className="flex-row items-center gap-3">
-              <Text className="min-w-0 flex-1 text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+              <Text className="min-w-0 flex-1 text-[15.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
                 {row.patientName}
               </Text>
-              <Text className="text-[12px] font-medium" style={{ color: palette.subtle, fontVariant: ["tabular-nums"] }}>
+              <Text className="text-[14px] font-medium" style={{ color: palette.subtle, fontVariant: ["tabular-nums"] }}>
                 {completedLabel(row.completedAt)}
               </Text>
             </View>
             <View className="flex-row flex-wrap items-center gap-2">
               {showService ? <ServiceBadge serviceKey={row.serviceType} label={row.serviceLabel} compact /> : null}
               {detailOf(row) ? (
-                <Text className="text-[12.5px] font-medium" style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
+                <Text className="text-[14.5px] font-medium" style={{ color: palette.body, fontVariant: ["tabular-nums"] }}>
                   {detailOf(row)}
                 </Text>
               ) : null}

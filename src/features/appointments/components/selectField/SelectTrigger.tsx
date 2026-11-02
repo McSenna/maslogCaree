@@ -68,14 +68,14 @@ const SelectTrigger = ({
       {loading ? (
         <View className="min-w-0 flex-1 flex-row items-center gap-2">
           <ActivityIndicator size="small" color={APPOINTMENT_COLORS.primaryBright} />
-          <Text style={{ fontSize: 15, color: APPOINTMENT_COLORS.mutedText }}>{loadingText}</Text>
+          <Text style={{ fontSize: 17, color: APPOINTMENT_COLORS.mutedText }}>{loadingText}</Text>
         </View>
       ) : (
         <Text
           numberOfLines={1}
           className="min-w-0 flex-1"
           style={{
-            fontSize: 15,
+            fontSize: 17,
             fontWeight: selected ? "600" : "400",
             color: selected ? APPOINTMENT_COLORS.bodyText : APPOINTMENT_COLORS.placeholder,
           }}

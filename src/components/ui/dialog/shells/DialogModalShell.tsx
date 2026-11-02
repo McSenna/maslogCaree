@@ -44,7 +44,7 @@ export const DialogModalShell = ({
   if (!visible) return null;
 
   return (
-    <Modal visible transparent animationType="fade" onRequestClose={handleDismiss}>
+    <Modal visible accessibilityLabel={title} transparent animationType="fade" onRequestClose={handleDismiss}>
       <View style={DIALOG_BACKDROP_STYLE}>
         <Pressable
           accessibilityRole="button"
@@ -57,7 +57,7 @@ export const DialogModalShell = ({
           ref={attachFocusTrap as never}
           accessibilityViewIsModal
           {...Platform.select({
-            web: { role: "dialog", "aria-modal": true, "aria-labelledby": titleId } as object,
+            web: { role: "group", "aria-labelledby": titleId } as object,
           })}
           style={buildDialogSurfaceStyle(palette, frame)}
         >

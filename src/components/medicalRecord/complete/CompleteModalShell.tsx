@@ -32,6 +32,8 @@ const CompleteModalShell = ({
   onLayoutWidth,
   closeLabel = "Close without completing",
   scrollToTopKey,
+  scrollToY = 0,
+  maxWidth = 920,
 }: {
   visible: boolean;
   onRequestClose: () => void;
@@ -45,11 +47,14 @@ const CompleteModalShell = ({
   closeLabel?: string;
   /** Changing this scrolls the body back to the top, for a form that starts over. */
   scrollToTopKey?: number;
+  /** Optional form section offset, in scroll content coordinates. */
+  scrollToY?: number;
+  maxWidth?: number;
 }) => {
   const scrollRef = useRef<ScrollView>(null);
   useEffect(() => {
-    if (scrollToTopKey) scrollRef.current?.scrollTo({ y: 0, animated: false });
-  }, [scrollToTopKey]);
+    if (scrollToTopKey) scrollRef.current?.scrollTo({ y: scrollToY, animated: false });
+  }, [scrollToTopKey, scrollToY]);
 
   const palette = useQueuePalette();
   const { isMobile } = useResponsive();
@@ -65,6 +70,7 @@ const CompleteModalShell = ({
 
   return (
     <Modal
+      accessibilityLabel={title}
       visible={visible}
       transparent
       animationType={isSheet ? "slide" : "fade"}
@@ -89,7 +95,7 @@ const CompleteModalShell = ({
           className="w-full overflow-hidden"
           onLayout={(event) => onLayoutWidth?.(event.nativeEvent.layout.width)}
           style={{
-            maxWidth: isSheet ? undefined : 920,
+            maxWidth: isSheet ? undefined : maxWidth,
             maxHeight: layout.maxHeight,
             borderTopLeftRadius: 24,
             borderTopRightRadius: 24,

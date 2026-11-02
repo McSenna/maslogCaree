@@ -68,7 +68,7 @@ const DateOfBirthModal = ({ visible, draft, title, confirmLabel, onCancel, onCon
           >
             <Text
               accessibilityRole="header"
-              style={{ flex: 1, fontSize: 17, fontWeight: "800", color: REG_COLORS.text }}
+              style={{ flex: 1, fontSize: 19, fontWeight: "800", color: REG_COLORS.text }}
             >
               {title}
             </Text>

@@ -41,21 +41,22 @@ export const useMasterList = ({ append }: { append: boolean }) => {
   });
   const { page, setPage, search, filters } = list;
 
-  const reloadFilteredPhone = append && (filters.role !== "all" || filters.civilStatus !== "all" || filters.purok !== "all");
+  // Deletions can shift every page, so appended lists reload from the start.
+  const reloadPhone = append;
   const query = { search, status: "all" as const, ...filters, page, limit: MASTER_PAGE_SIZE };
   const result = useRemoteData({
     key: `master:${JSON.stringify(query)}`,
     load: () => fetchMasterResidents(query),
     merge: append && page > 1 ? appendPage : undefined,
-    live: reloadFilteredPhone ? [] : MASTER_LIST_SOURCES,
+    live: reloadPhone ? [] : MASTER_LIST_SOURCES,
     liveMerge: refreshPage,
   });
 
-  // A deeper page cannot tell us which earlier rows stopped matching a filter.
+  // A deeper page cannot tell us which earlier rows were removed or stopped matching.
   useRealtimeRefetch(MASTER_LIST_SOURCES, () => {
     setPage(1);
     result.refetch();
-  }, { enabled: reloadFilteredPhone });
+  }, { enabled: reloadPhone });
 
   const records = result.data?.records ?? [];
   const total = result.data?.total ?? 0;

@@ -34,11 +34,11 @@ export const SectionCard = ({
           <Feather name={icon} size={15} color={palette.primary} />
         </View>
         <View className="min-w-0 flex-1">
-          <Text className="text-[14px] font-bold" style={{ color: palette.heading }} numberOfLines={1}>
+          <Text className="text-[16px] font-bold" style={{ color: palette.heading }} numberOfLines={1}>
             {title}
           </Text>
           {caption ? (
-            <Text className="text-[11.5px]" style={{ color: palette.muted }} numberOfLines={1}>
+            <Text className="text-[13.5px]" style={{ color: palette.muted }} numberOfLines={1}>
               {caption}
             </Text>
           ) : null}

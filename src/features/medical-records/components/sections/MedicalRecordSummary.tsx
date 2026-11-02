@@ -1,3 +1,4 @@
+import { immunizationProgressLabel } from "@/services/immunizationRecordProgress";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
@@ -27,6 +28,7 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
   const provider = providerOf(record);
   // A paper record has a visit day but no time.
   const historical = isEncodedRecord(record);
+  const baby = typeof record.immunizationBabyId === "object" ? record.immunizationBabyId : null;
 
   return (
     <View
@@ -50,7 +52,7 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
         <View style={{ minWidth: 0, flex: 1 }}>
           <Text
             style={{
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: "600",
               color: palette.accent,
               textTransform: "uppercase",
@@ -59,7 +61,7 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
           >
             Medical Record
           </Text>
-          <Text style={{ fontSize: 18, fontWeight: "700", color: palette.heading, marginTop: 2 }}>
+          <Text style={{ fontSize: 20, fontWeight: "700", color: palette.heading, marginTop: 2 }}>
             {serviceLabel}
           </Text>
         </View>
@@ -69,17 +71,18 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
             paddingHorizontal: 10,
             paddingVertical: 4,
             borderRadius: 20,
-            backgroundColor: palette.successSoft,
+            backgroundColor: record.recordStatus === "in_progress" ? palette.accentSoft : palette.successSoft,
             borderColor: palette.successBorder,
             borderWidth: 1,
           }}
         >
-          <Text style={{ fontSize: 12, fontWeight: "600", color: palette.successFg }}>
-            {historical ? "Historical record" : "Completed"}
+          <Text style={{ fontSize: 14, fontWeight: "600", color: record.recordStatus === "in_progress" ? palette.accent : palette.successFg }}>
+            {record.recordStatus === "in_progress" ? "In progress" : record.recordStatus === "completed" ? "Completed" : historical ? "Historical record" : "Completed"}
           </Text>
         </View>
       </View>
 
+      {baby ? <Text className="mt-3" style={{color:palette.body}}>Baby: {baby.name}{"\n"}{immunizationProgressLabel(record)}</Text> : null}
       <View
         style={{
           marginTop: 12,
@@ -94,7 +97,7 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
         {provider.name ? (
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
             <Feather name="user-check" size={14} color={palette.accent} />
-            <Text style={{ fontSize: 13, color: palette.body, fontWeight: "500" }}>
+            <Text style={{ fontSize: 15, color: palette.body, fontWeight: "500" }}>
               {provider.name}
               {provider.role ? ` (${provider.role})` : ""}
             </Text>
@@ -103,7 +106,7 @@ export const MedicalRecordSummary = ({ palette, record, serviceLabel }: Props) =
 
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <Feather name="calendar" size={14} color={palette.muted} />
-          <Text style={{ fontSize: 13, color: palette.muted }}>
+          <Text style={{ fontSize: 15, color: palette.muted }}>
             {historical ? formatDate(record.completedAt) : formatDateTime(record.completedAt ?? record.createdAt)}
           </Text>
         </View>

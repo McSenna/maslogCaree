@@ -31,6 +31,7 @@ const WideHeader = ({ screen, width, onExport }: WideHeaderProps) => {
   return (
     <View className="gap-4">
       <DashboardHeader
+        hideHeading
         palette={palette}
         compact={false}
         title={ANNOUNCEMENTS_TITLE}

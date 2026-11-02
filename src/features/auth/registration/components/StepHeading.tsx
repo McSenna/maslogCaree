@@ -7,11 +7,11 @@ const StepHeading = ({ title, subtitle }: StepHeadingProps) => (
   <View style={{ gap: 4 }}>
     <Text
       accessibilityRole="header"
-      style={{ fontSize: 17, fontWeight: "700", color: REG_COLORS.heading, letterSpacing: -0.2 }}
+      style={{ fontSize: 19, fontWeight: "700", color: REG_COLORS.heading, letterSpacing: -0.2 }}
     >
       {title}
     </Text>
-    <Text style={{ fontSize: 13.5, lineHeight: 20, color: REG_COLORS.muted }}>{subtitle}</Text>
+    <Text style={{ fontSize: 15.5, lineHeight: 22, color: REG_COLORS.muted }}>{subtitle}</Text>
   </View>
 );
 

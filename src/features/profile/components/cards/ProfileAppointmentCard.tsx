@@ -39,7 +39,7 @@ const ProfileAppointmentCard = ({ appointment }: ProfileAppointmentCardProps) =>
           style={{
             flex: 1,
             minWidth: 0,
-            fontSize: 15,
+            fontSize: 17,
             fontWeight: "700",
             color: colors.heading,
           }}
@@ -57,7 +57,7 @@ const ProfileAppointmentCard = ({ appointment }: ProfileAppointmentCardProps) =>
             <Text
               numberOfLines={2}
               maxFontSizeMultiplier={1.2}
-              style={{ flex: 1, minWidth: 0, fontSize: 13, color: colors.body }}
+              style={{ flex: 1, minWidth: 0, fontSize: 15, color: colors.body }}
             >
               {line.value}
             </Text>

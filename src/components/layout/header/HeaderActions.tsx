@@ -84,7 +84,7 @@ const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
             <PillIcon name="layout" />
 
             {!isMobile && (
-              <Text style={{ fontSize: 14, fontWeight: "700", color: PILL_TEXT }}>
+              <Text style={{ fontSize: 16, fontWeight: "700", color: PILL_TEXT }}>
                 Dashboard
               </Text>
             )}
@@ -96,7 +96,7 @@ const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
 
           <Text
             style={{
-              fontSize: isMobile ? 13 : 14,
+              fontSize: isMobile ? 15 : 16,
               fontWeight: "700",
               color: PILL_TEXT,
             }}

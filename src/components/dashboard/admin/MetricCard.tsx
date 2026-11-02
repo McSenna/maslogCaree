@@ -24,6 +24,8 @@ export type MetricCardProps = {
   value: number;
   icon: keyof typeof Feather.glyphMap;
   description: string;
+  /** Draws the description as a small tinted chip in the card's tone. */
+  descriptionChip?: boolean;
   growth?: number | null;
   /** A thin bar under the description, for counts that are part of a known whole. */
   progress?: MetricProgress;
@@ -71,6 +73,7 @@ const MetricCard = ({
   value,
   icon,
   description,
+  descriptionChip = false,
   growth,
   progress,
   compact = false,
@@ -111,9 +114,9 @@ const MetricCard = ({
     >
       <View className="flex-row items-start justify-between gap-2">
         <Text
-          className={`min-w-0 flex-1 font-semibold ${compact ? "text-[12.5px]" : "text-[13.5px]"}`}
-          numberOfLines={compact ? 2 : 1}
-          style={{ color: palette.body, lineHeight: compact ? 16 : 18 }}
+          className="min-w-0 flex-1 font-semibold"
+          numberOfLines={2}
+          style={{ color: palette.body, fontSize: compact ? 14.5 : 15.5, lineHeight: compact ? 18 : 20 }}
         >
           {label}
         </Text>
@@ -128,10 +131,11 @@ const MetricCard = ({
       <View className={`flex-row flex-wrap items-center ${compact ? "mt-1" : "mt-1.5"}`} style={{ columnGap: 8 }}>
         <AnimatedCount
           value={value}
-          className={`font-bold ${compact ? (dense ? "text-[22px]" : "text-[24px]") : "text-[30px]"}`}
+          className="font-bold"
           style={{
             color: palette.heading,
-            lineHeight: compact ? 30 : 36,
+            fontSize: compact ? (dense ? 24 : 26) : 32,
+            lineHeight: compact ? 32 : 38,
             letterSpacing: -0.5,
             fontVariant: ["tabular-nums"],
           }}
@@ -139,14 +143,22 @@ const MetricCard = ({
         {showTrend ? <TrendPill palette={palette} growth={growth as number} compact={compact} /> : null}
       </View>
 
-      <Text
-        className={compact ? "text-[12px] font-medium" : "text-[12.5px] font-medium"}
-        // Phone cards are narrow: two lines rather than cutting the description off.
-        numberOfLines={compact ? 2 : 1}
-        style={{ color: palette.muted }}
-      >
-        {description}
-      </Text>
+      {descriptionChip ? (
+        <View className="mt-1 self-start rounded-full px-2 py-0.5" style={{ backgroundColor: toneStyle.iconBg }}>
+          <Text className="font-medium" style={{ color: palette.body, fontSize: 14 }}>
+            {description}
+          </Text>
+        </View>
+      ) : (
+        <Text
+          className="font-medium"
+          // Two lines rather than cutting the description off.
+          numberOfLines={2}
+          style={{ color: palette.muted, fontSize: compact ? 14 : 14.5 }}
+        >
+          {description}
+        </Text>
+      )}
 
       {progress ? <ProgressBar palette={palette} progress={progress} /> : null}
     </MetricCardFrame>

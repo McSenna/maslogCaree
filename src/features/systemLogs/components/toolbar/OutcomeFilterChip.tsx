@@ -20,7 +20,7 @@ const OutcomeFilterChip = ({ onClear }: { onClear: () => void }) => {
         style={{ height: 32, backgroundColor: palette.cardBg, borderColor: palette.cardBorder }}
       >
         <Feather name="check-circle" size={13} color={palette.primary} />
-        <Text className="text-[12.5px] font-semibold" style={{ color: palette.heading }}>
+        <Text className="text-[14.5px] font-semibold" style={{ color: palette.heading }}>
           Successful actions only
         </Text>
         <Feather name="x" size={14} color={palette.muted} />

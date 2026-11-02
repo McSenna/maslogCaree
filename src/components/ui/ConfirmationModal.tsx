@@ -8,6 +8,8 @@ type ConfirmationModalProps = {
   cancelLabel?: string;
   destructive?: boolean;
   loading?: boolean;
+  focusCancel?: boolean;
+  error?: string;
   onConfirm: () => void;
   onCancel: () => void;
 };
@@ -20,6 +22,8 @@ const ConfirmationModal = ({
   cancelLabel = "Cancel",
   destructive = false,
   loading = false,
+  focusCancel = false,
+  error,
   onConfirm,
   onCancel,
 }: ConfirmationModalProps) => (
@@ -29,9 +33,10 @@ const ConfirmationModal = ({
     message={message}
     destructive={destructive}
     busy={loading}
+    error={error}
     onClose={onCancel}
     actions={[
-      { label: cancelLabel, variant: "secondary", onPress: onCancel },
+      { label: cancelLabel, variant: "secondary", onPress: onCancel, initialFocus: focusCancel },
       { label: confirmLabel, variant: destructive ? "danger" : "primary", onPress: onConfirm, loading },
     ]}
   />

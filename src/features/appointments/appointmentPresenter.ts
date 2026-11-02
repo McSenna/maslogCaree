@@ -25,7 +25,7 @@ export const canCancelAppointment = (appointment: AppointmentRecord): boolean =>
   CANCELLABLE_STATUSES.includes(appointment.status);
 
 export const canRescheduleAppointment = (appointment: AppointmentRecord): boolean =>
-  RESCHEDULABLE_STATUSES.includes(appointment.status);
+  appointment.consultationType !== "immunization" && RESCHEDULABLE_STATUSES.includes(appointment.status);
 
 export const appointmentServiceLabel = (appointment: AppointmentRecord): string => {
   return getServiceLabel(appointment.consultationType) || appointment.consultationType;
@@ -60,7 +60,7 @@ export const childDetailRows = (appointment: AppointmentRecord): { label: string
       label: "Child's date of birth",
       value: appointment.childDateOfBirth ? formatBirthDate(appDateKey(appointment.childDateOfBirth)) : "",
     },
-    { label: "Time", value: "Assigned first come, first served" },
+    { label: "Scheduling", value: "Thursday date and time assigned by the system" },
   ];
 };
 

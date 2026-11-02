@@ -10,7 +10,7 @@ export const DetailsLoading = ({ palette }: { palette: ResidentDialogPalette }) 
     style={{ paddingVertical: 48, alignItems: "center", justifyContent: "center" }}
   >
     <ActivityIndicator size="large" color={palette.accent} />
-    <Text style={{ color: palette.muted, marginTop: 14, fontSize: 14, fontWeight: "500" }}>
+    <Text style={{ color: palette.muted, marginTop: 14, fontSize: 16, fontWeight: "500" }}>
       Loading medical details...
     </Text>
   </View>
@@ -37,10 +37,10 @@ export const DetailsError = ({
     }}
   >
     <Feather name="alert-circle" size={30} color={palette.danger} />
-    <Text style={{ color: palette.dangerFg, fontSize: 16, fontWeight: "600", marginTop: 8 }}>
+    <Text style={{ color: palette.dangerFg, fontSize: 18, fontWeight: "600", marginTop: 8 }}>
       Unable to load medical details
     </Text>
-    <Text style={{ color: palette.muted, fontSize: 13, textAlign: "center", marginTop: 4 }}>
+    <Text style={{ color: palette.muted, fontSize: 15, textAlign: "center", marginTop: 4 }}>
       {message}
     </Text>
     {onRetry ? (
@@ -56,7 +56,7 @@ export const DetailsError = ({
           backgroundColor: palette.accent,
         }}
       >
-        <Text style={{ color: PALETTE.white, fontSize: 13, fontWeight: "600" }}>Try Again</Text>
+        <Text style={{ color: PALETTE.white, fontSize: 15, fontWeight: "600" }}>Try Again</Text>
       </Pressable>
     ) : null}
   </View>
@@ -86,16 +86,16 @@ export const DetailsEmpty = ({ palette }: { palette: ResidentDialogPalette }) =>
     >
       <Feather name="clipboard" size={24} color={palette.accent} />
     </View>
-    <Text style={{ color: palette.heading, fontSize: 16, fontWeight: "600" }}>
+    <Text style={{ color: palette.heading, fontSize: 18, fontWeight: "600" }}>
       No medical details available yet.
     </Text>
     <Text
       style={{
         color: palette.muted,
-        fontSize: 13,
+        fontSize: 15,
         textAlign: "center",
         marginTop: 6,
-        lineHeight: 18,
+        lineHeight: 20,
         maxWidth: 320,
       }}
     >

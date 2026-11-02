@@ -35,13 +35,13 @@ const ResidentProfileSummary = ({ resident }: { resident: ResidentRecord }) => {
       </View>
 
       <Text
-        className="mt-3 text-center text-[19px] font-bold"
+        className="mt-3 text-center text-[21px] font-bold"
         numberOfLines={2}
         style={{ color: palette.heading }}
       >
         {resident.fullname}
       </Text>
-      <Text className="mt-0.5 text-center text-[13px]" style={{ color: palette.muted }}>
+      <Text className="mt-0.5 text-center text-[15px]" style={{ color: palette.muted }}>
         {resident.reference}
       </Text>
 

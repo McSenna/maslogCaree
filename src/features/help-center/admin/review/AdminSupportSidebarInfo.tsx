@@ -23,11 +23,11 @@ const InfoRow = ({ label, value, icon }: { label: string; value: string; icon: k
     <View style={{ gap: 2 }}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
         <Feather name={icon} size={12} color={palette.muted} />
-        <Text style={{ fontSize: 11, fontWeight: "700", color: palette.subtle, letterSpacing: 0.3, textTransform: "uppercase" }}>
+        <Text style={{ fontSize: 13, fontWeight: "700", color: palette.subtle, letterSpacing: 0.3, textTransform: "uppercase" }}>
           {label}
         </Text>
       </View>
-      <Text style={{ fontSize: 13, color: palette.body, paddingLeft: 18 }}>{value || "Not set"}</Text>
+      <Text style={{ fontSize: 15, color: palette.body, paddingLeft: 18 }}>{value || "Not set"}</Text>
     </View>
   );
 };
@@ -43,7 +43,7 @@ const AdminSupportSidebarInfo = ({ ticket, busy, onStatusChange }: AdminSupportS
     gap: 10,
   };
   const sectionTitleStyle = {
-    fontSize: 11.5,
+    fontSize: 13.5,
     fontWeight: "700" as const,
     color: palette.subtle,
     letterSpacing: 0.4,
@@ -62,10 +62,10 @@ const AdminSupportSidebarInfo = ({ ticket, busy, onStatusChange }: AdminSupportS
             fallbackBackgroundColor={palette.primary}
           />
           <View style={{ flex: 1, minWidth: 0 }}>
-            <Text numberOfLines={1} style={{ fontSize: 14, fontWeight: "700", color: palette.heading }}>
+            <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "700", color: palette.heading }}>
               {ticket.requesterName}
             </Text>
-            <Text numberOfLines={1} style={{ fontSize: 11.5, color: palette.muted }}>
+            <Text numberOfLines={1} style={{ fontSize: 13.5, color: palette.muted }}>
               {ticket.requesterRole || "Resident"}
             </Text>
           </View>
@@ -108,7 +108,7 @@ const AdminSupportSidebarInfo = ({ ticket, busy, onStatusChange }: AdminSupportS
                   opacity: busy && !active ? 0.5 : 1,
                 })}
               >
-                <Text style={{ fontSize: 11.5, fontWeight: active ? "700" : "500", color: active ? PALETTE.white : palette.body }}>
+                <Text style={{ fontSize: 13.5, fontWeight: active ? "700" : "500", color: active ? PALETTE.white : palette.body }}>
                   {SUPPORT_STATUS_LABELS[status]}
                 </Text>
               </Pressable>

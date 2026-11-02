@@ -58,13 +58,13 @@ const UserProfileSummary = ({ user }: { user: AdminUser }) => {
       </View>
 
       <Text
-        className="mt-3 text-center text-[19px] font-bold"
+        className="mt-3 text-center text-[21px] font-bold"
         numberOfLines={2}
         style={{ color: palette.heading }}
       >
         {user.fullname}
       </Text>
-      <Text className="mt-0.5 text-center text-[13px]" numberOfLines={1} style={{ color: palette.muted }}>
+      <Text className="mt-0.5 text-center text-[15px]" numberOfLines={1} style={{ color: palette.muted }}>
         {user.email}
       </Text>
 

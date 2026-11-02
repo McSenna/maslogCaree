@@ -86,8 +86,8 @@ describe("sessionEndNotice", () => {
     assert.match(notice.description, /health center/);
   });
 
-  it("tells a resident on the web where to sign in", () => {
-    assert.match(sessionEndNotice(ERROR_CODES.RESIDENT_WEB_ACCESS_DENIED).description, /mobile app/);
+  it("explains a resident web revocation and points to support", () => {
+    assert.match(sessionEndNotice(ERROR_CODES.RESIDENT_WEB_ACCESS_DENIED).description, /web access is disabled.*health center/);
   });
 
   it("never uses an em dash", () => {

@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 import PanelCard from "@/components/dashboard/admin/PanelCard";
-import { DataTable, type Column } from "@/components/data-table";
+import { DataTable, useCellSelfAlign, type Column } from "@/components/data-table";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
 import type { StaffAppointment } from "@/services/staffDashboardService";
 import ServiceBadge from "./ServiceBadge";
@@ -23,13 +23,14 @@ const parts = (iso: string | null): { day: string; time: string } => {
 
 const When = ({ palette, iso }: { palette: AdminDashboardPalette; iso: string | null }) => {
   const { day, time } = parts(iso);
+  const alignItems = useCellSelfAlign();
   return (
-    <View className="items-end">
-      <Text className="text-[13px] font-semibold" numberOfLines={1} style={{ color: palette.body }}>
+    <View style={{ alignItems }}>
+      <Text className="text-[15px] font-semibold" numberOfLines={1} style={{ color: palette.body }}>
         {day}
       </Text>
       {time ? (
-        <Text className="text-[12px]" numberOfLines={1} style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
+        <Text className="text-[14px]" numberOfLines={1} style={{ color: palette.muted, fontVariant: ["tabular-nums"] }}>
           {time}
         </Text>
       ) : null}
@@ -56,20 +57,20 @@ const UpcomingTable = ({
 
   const columns: Column<StaffAppointment>[] = [
     {
-      key: "patient",
+      key: "patient", nameColumn: true,
       header: personNoun === "resident" ? "Resident" : "Patient",
       flex: 1,
       minWidth: 150,
       render: (row) => (
         <View className="min-w-0 gap-1" style={{ alignSelf: "stretch" }}>
-          <Text className="text-[13.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+          <Text className="text-[15.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
             {row.patientName}
           </Text>
           {showService ? <ServiceBadge serviceKey={row.consultationType} label={row.serviceLabel} compact /> : null}
         </View>
       ),
     },
-    { key: "when", header: "When", width: 144, align: "right", render: (row) => <When palette={palette} iso={row.slotStart} /> },
+    { key: "when", header: "When", width: 162, align: "center", render: (row) => <When palette={palette} iso={row.slotStart} /> },
   ];
 
   return (

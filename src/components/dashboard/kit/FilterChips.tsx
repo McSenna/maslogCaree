@@ -84,7 +84,7 @@ const Chip = <T extends string>({
           />
         ) : null}
         <Text
-          className="text-[13px] font-semibold"
+          className="text-[15px] font-semibold"
           numberOfLines={1}
           style={{ color: selected ? palette.primary : palette.body }}
         >

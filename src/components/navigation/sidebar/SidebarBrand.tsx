@@ -18,7 +18,7 @@ const SidebarBrand = ({ palette }: { palette: SidebarPalette }) => {
 
       <Text
         numberOfLines={1}
-        className="mt-2.5 text-[26px] font-extrabold"
+        className="mt-2.5 text-[28px] font-extrabold"
         style={{ letterSpacing: -0.6 }}
       >
         <Text style={{ color: palette.brandNavy }}>Maslog</Text>
@@ -26,8 +26,8 @@ const SidebarBrand = ({ palette }: { palette: SidebarPalette }) => {
       </Text>
 
       <Text
-        className="mt-1 text-center text-[8.5px] font-semibold uppercase"
-        style={{ color: palette.tagline, letterSpacing: 1.9, lineHeight: 13 }}
+        className="mt-1 text-center text-[10.5px] font-semibold uppercase"
+        style={{ color: palette.tagline, letterSpacing: 1.9, lineHeight: 15 }}
       >
         Healthier Maslog{"\n"}Brighter Tomorrow
       </Text>

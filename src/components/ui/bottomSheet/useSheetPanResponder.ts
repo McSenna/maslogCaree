@@ -18,11 +18,14 @@ export const useSheetPanResponder = ({
   translateY,
   animateOut,
   onClose,
+  onDismissRequest,
 }: {
   translateY: Animated.Value;
   animateOut: (then: () => void) => void;
   onClose: () => void;
+  onDismissRequest?: () => boolean;
 }) => {
+  const dismissGuardRef = useLatestRef(onDismissRequest);
   const onCloseRef = useLatestRef(onClose);
   const animateOutRef = useLatestRef(animateOut);
 
@@ -40,7 +43,7 @@ export const useSheetPanResponder = ({
       onPanResponderRelease: (_event, gesture) => {
         const dismiss = gesture.dy > DISMISS_DISTANCE || gesture.vy > DISMISS_VELOCITY;
 
-        if (dismiss) {
+        if (dismiss && !dismissGuardRef.current?.()) {
           animateOutRef.current(onCloseRef.current);
           return;
         }

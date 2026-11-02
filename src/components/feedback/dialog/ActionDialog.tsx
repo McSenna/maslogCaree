@@ -14,6 +14,7 @@ export type ActionDialogButton = {
   onPress: () => void;
   loading?: boolean;
   disabled?: boolean;
+  initialFocus?: boolean;
 };
 
 type ActionDialogProps = {
@@ -26,9 +27,10 @@ type ActionDialogProps = {
   actions: ActionDialogButton[];
   onClose: () => void;
   busy?: boolean;
+  error?: string;
 };
 
-const ActionDialog = ({ visible, title, message, icon, media, destructive = false, actions, onClose, busy = false }: ActionDialogProps) => {
+const ActionDialog = ({ visible, title, message, icon, media, destructive = false, actions, onClose, busy = false, error }: ActionDialogProps) => {
   const colors = useThemeColors();
   const { isMobile } = useResponsive();
   const stacked = isMobile && actions.length > 2;
@@ -49,6 +51,7 @@ const ActionDialog = ({ visible, title, message, icon, media, destructive = fals
         <Button
           key={action.label}
           label={action.label}
+          initialFocus={action.initialFocus}
           variant={action.variant}
           onPress={action.onPress}
           loading={action.loading}
@@ -73,7 +76,10 @@ const ActionDialog = ({ visible, title, message, icon, media, destructive = fals
       maxWidth={440}
       footer={footer}
     >
-      {message ? <Text style={[TYPE.body, { color: colors.body }]}>{message}</Text> : null}
+      <View style={{ gap: SPACING.md }}>
+        {message ? <Text style={[TYPE.body, { color: colors.body }]}>{message}</Text> : null}
+        {error ? <Text role="alert" accessibilityLiveRegion="assertive" style={[TYPE.body, { color: colors.danger.fg }]}>{error}</Text> : null}
+      </View>
     </ResponsiveDialog>
   );
 };

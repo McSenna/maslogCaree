@@ -59,7 +59,7 @@ const UserAvatar = ({
         initials ? (
           <Text
             allowFontScaling={false}
-            style={{ color: fallbackIconColor, fontSize: size * 0.36, fontWeight: "700" }}
+            style={{ color: fallbackIconColor, fontSize: size * 0.36 + 2, fontWeight: "700" }}
           >
             {initials}
           </Text>

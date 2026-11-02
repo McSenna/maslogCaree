@@ -53,6 +53,7 @@ const ResidentVerificationModal = ({
   const resident = request?.resident;
   const verification = request?.verification;
   const isPending = verification?.verificationStatus === "pending";
+  const canApprove = isPending || verification?.verificationStatus === "rejected";
 
   return (
     <>
@@ -106,6 +107,7 @@ const ResidentVerificationModal = ({
 
             <VerificationModalFooter
               isPending={Boolean(isPending)}
+              canApprove={Boolean(canApprove)}
               approving={approving}
               rejecting={rejecting}
               onClose={onClose}
@@ -121,7 +123,7 @@ const ResidentVerificationModal = ({
         residentName={resident?.fullname}
         approving={approving}
         rejecting={rejecting}
-        hasLinkChoices={choosableCandidates(request?.masterList, isPending).length > 0}
+        hasLinkChoices={choosableCandidates(request?.masterList, canApprove).length > 0}
         approveMessage={`This will approve the registration, set the account status to Approved, and immediately allow ${
           resident?.fullname || "the resident"
         } to log in to MaslogCare.`}

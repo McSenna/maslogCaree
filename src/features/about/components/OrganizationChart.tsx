@@ -82,7 +82,7 @@ const OrganizationChart = ({ members, isTablet }: OrganizationChartProps) => {
             style={{
               color: PALETTE.white,
               fontWeight: "800",
-              fontSize: isTablet ? 9.5 : 8,
+              fontSize: isTablet ? 11.5 : 10,
               letterSpacing: 0.8,
               textTransform: "uppercase",
             }}

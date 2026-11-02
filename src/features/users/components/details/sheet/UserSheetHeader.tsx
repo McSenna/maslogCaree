@@ -17,12 +17,12 @@ const UserSheetHeader = ({ titleId, onClose }: Props) => {
         <Text
           nativeID={titleId}
           accessibilityRole="header"
-          className="text-[17px] font-bold"
+          className="text-[19px] font-bold"
           style={{ color: palette.heading }}
         >
           User Details
         </Text>
-        <Text className="mt-0.5 text-[12.5px]" style={{ color: palette.muted }}>
+        <Text className="mt-0.5 text-[14.5px]" style={{ color: palette.muted }}>
           Account information and access
         </Text>
       </View>

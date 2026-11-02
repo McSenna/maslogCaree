@@ -48,7 +48,7 @@ const ActionButton = ({ action, palette }: { action: ActionSpec; palette: Return
     >
       <Feather name={action.icon} size={15} color={primary ? PALETTE.white : palette.body} />
       <Text
-        className="text-[13px] font-semibold"
+        className="text-[15px] font-semibold"
         numberOfLines={1}
         style={{ color: primary ? PALETTE.white : palette.body }}
       >
@@ -108,7 +108,7 @@ const InventoryActions = ({
 
   if (!actions.length) {
     return (
-      <Text className="text-[12.5px]" style={{ color: palette.subtle }}>
+      <Text className="text-[14.5px]" style={{ color: palette.subtle }}>
         You have view-only access to inventory.
       </Text>
     );

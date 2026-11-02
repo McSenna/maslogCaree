@@ -26,6 +26,3 @@ export const lastLoginLines = (iso: string | null): { date: string; time: string
   return date ? { date, time: formatTime(iso) } : { date: "Never", time: "" };
 };
 
-/** "Since 1 Oct 2026": the start of the current month. */
-export const monthStartNote = (now: Date = new Date()): string =>
-  `Since 1 ${shortMonth(now)} ${now.getFullYear()}`;

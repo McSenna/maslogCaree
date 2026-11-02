@@ -11,7 +11,7 @@ const SectionHeader = ({ title, actionLabel, onActionPress }: SectionHeaderProps
   <View className="w-full flex-row items-center justify-between">
     <Text
       accessibilityRole="header"
-      className="text-[16px] font-bold"
+      className="text-[18px] font-bold"
       style={{ color: RESIDENT_COLORS.heading }}
     >
       {title}
@@ -25,7 +25,7 @@ const SectionHeader = ({ title, actionLabel, onActionPress }: SectionHeaderProps
         hitSlop={8}
         className="active:opacity-60"
       >
-        <Text className="text-[13px] font-semibold" style={{ color: RESIDENT_COLORS.primary }}>
+        <Text className="text-[15px] font-semibold" style={{ color: RESIDENT_COLORS.primary }}>
           {actionLabel}
         </Text>
       </Pressable>

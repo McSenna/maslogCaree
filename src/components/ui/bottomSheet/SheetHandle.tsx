@@ -7,8 +7,9 @@ type SheetHandleProps = {
 const SheetHandle = ({ color }: SheetHandleProps) => (
   <View className="w-full items-center pb-1 pt-2.5">
     <View
-      accessible
-      accessibilityLabel="Drag down to close"
+      accessibilityElementsHidden
+      importantForAccessibility="no-hide-descendants"
+      aria-hidden
       style={{ width: 44, height: 4.5, borderRadius: 3, backgroundColor: color }}
     />
   </View>

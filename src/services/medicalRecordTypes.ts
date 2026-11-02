@@ -1,3 +1,4 @@
+import type { ImmunizationProgramProgress } from "./immunizationRecordProgress";
 import type { AppointmentRecord } from "@/services/appointments";
 
 export type MedicalFieldType = "text" | "textarea" | "number" | "date" | "select" | "boolean";
@@ -56,7 +57,9 @@ export type InventoryMovement = {
   newStock: number;
 };
 
-export type MedicalRecord = {
+export type MedicalRecord = ImmunizationProgramProgress & {
+  immunizationBabyId?: string | { _id: string; name: string; dateOfBirth: string };
+  immunizationScheduleVersion?: string;
   _id: string;
   resident?: { _id?: string; fullname?: string; email?: string; dateOfBirth?: string } | string;
   appointment?: (Partial<AppointmentRecord> & { _id: string }) | string;

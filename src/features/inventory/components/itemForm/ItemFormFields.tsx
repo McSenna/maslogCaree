@@ -131,7 +131,7 @@ const ItemFormFields = ({ form, suppliers, isEdit, currentStock, unit }: Props) 
             borderColor: palette.bannerBorder,
           }}
         >
-          <Text className="text-[12px] font-medium leading-[17px]" style={{ color: palette.body }}>
+          <Text className="text-[14px] font-medium leading-[19px]" style={{ color: palette.body }}>
             Current stock is {currentStock?.toLocaleString()} {unit} and cannot be edited here.
             Use Add Stock or Release Stock so the change is recorded in the item&apos;s history.
           </Text>

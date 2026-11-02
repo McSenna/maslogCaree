@@ -45,8 +45,8 @@ const SearchField = ({
     >
       <Feather name="search" size={17} color={palette.subtle} />
       <TextInput
-        className="min-w-0 flex-1 text-[14px]"
-        style={{ color: palette.body, outlineStyle: "none" } as never}
+        className="min-w-0 flex-1"
+        style={{ color: palette.body, fontSize: 16, outlineStyle: "none" } as never}
         value={value}
         onChangeText={onChangeText}
         onKeyPress={onKeyPress}

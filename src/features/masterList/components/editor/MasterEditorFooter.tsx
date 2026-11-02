@@ -56,7 +56,7 @@ const MasterEditorFooter = ({
         }}
       >
         <Text
-          style={{ fontSize: 15, fontWeight: "600", color: REG_COLORS.muted }}
+          style={{ fontSize: 17, fontWeight: "600", color: REG_COLORS.muted }}
         >
           Cancel
         </Text>
@@ -88,7 +88,7 @@ const MasterEditorFooter = ({
           <ActivityIndicator size="small" color={REG_COLORS.surface} />
         ) : null}
         <Text
-          style={{ fontSize: 15, fontWeight: "700", color: REG_COLORS.surface }}
+          style={{ fontSize: 17, fontWeight: "700", color: REG_COLORS.surface }}
         >
           {form.submitting ? "Saving…" : "Save Resident"}
         </Text>

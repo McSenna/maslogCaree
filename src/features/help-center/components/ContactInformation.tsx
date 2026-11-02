@@ -27,10 +27,10 @@ const ContactRow = ({
     <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 10 }}>
       <Feather name={icon} size={15} color={palette.primary} style={{ marginTop: 2 }} />
       <View style={{ flex: 1, minWidth: 0 }}>
-        <Text style={{ fontSize: 11.5, fontWeight: "700", color: palette.subtle }}>
+        <Text style={{ fontSize: 13.5, fontWeight: "700", color: palette.subtle }}>
           {label.toUpperCase()}
         </Text>
-        <Text style={{ fontSize: 13.5, lineHeight: 19, color: palette.body }}>{value}</Text>
+        <Text style={{ fontSize: 15.5, lineHeight: 21, color: palette.body }}>{value}</Text>
       </View>
     </View>
   );

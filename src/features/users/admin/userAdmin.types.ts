@@ -1,56 +1,67 @@
 /** Display types for the admin Users screen. `userAdminModel.ts` builds them from API records. */
 
 export type Role = "Admin" | "Doctor" | "Midwife" | "BHW" | "Resident";
-export type Access = "web_and_mobile" | "mobile_only";
-export type UserStatus = "active" | "approved" | "deactivated";
-export type RequestStatus = "pending" | "rejected";
+export type UserStatus = "requested" | "approved" | "active" | "rejected" | "deactivated";
+export type WebOverride = "allow" | "block" | null;
+export type PortalState =
+  | "staff"
+  | "global_blocked"
+  | "exception_allowed"
+  | "global_allowed"
+  | "individual_allowed"
+  | "individual_blocked"
+  | "ineligible"
+  | "unavailable";
+
+/** The server computes this; the client never works out who can sign in. */
+export interface PortalAccess {
+  web: boolean;
+  mobile: boolean;
+  override: WebOverride;
+  globalEnabled: boolean;
+  eligible: boolean;
+  revision: number;
+  state: PortalState;
+}
 
 export interface User {
   id: string;
   fullName: string;
   email: string;
   role: Role;
-  access: Access;
-  location: string;
   status: UserStatus;
-  avatarUrl: string | null;
-  createdAt: string;
-  lastLoginAt: string | null;
-}
-
-export interface SignupRequest {
-  id: string;
-  fullName: string;
-  email: string;
-  role: Role;
   location: string;
-  status: RequestStatus;
-  submittedAt: string;
   avatarUrl: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  lastLoginAt: string | null;
+  /** The ID review for this account, when a request is open or was rejected. */
+  verificationId: string | null;
+  portalAccess: PortalAccess;
 }
 
 export interface UserSummary {
   total: number;
   staff: number;
   residents: number;
-  /** Accounts that can sign in: staff marked active plus approved residents. */
+  /** Accounts that can sign in: Approved and Active. */
   active: number;
-  addedThisMonth: number;
-  masterlist: number;
+  approved: number;
+  requests: number;
+  rejected: number;
   deactivated: number;
-  pendingRequests: number;
-  rejectedRequests: number;
+  activePercent: number;
+  masterlist: number;
 }
 
-/** "accounts" lists every user account; "masterlist" is the separate Barangay Master List of official records. */
+/** "accounts" is every account; "masterlist" is the separate Barangay Master List of official records. */
 export type UserTab = "active" | "requests" | "rejected" | "deactivated" | "accounts" | "masterlist";
-export type UserSort = "last_login_desc" | "last_login_asc" | "name_asc" | "joined_desc";
+export type UserSegment = "active" | "requests" | "rejected" | "deactivated" | "all";
+export type UserSort = "name_asc" | "joined_desc";
 export type RoleFilter = Role | "all";
 export type StatusFilter = UserStatus | "all";
-export type StatusAction = "deactivate" | "reactivate";
-
-/** The window rect of the button a menu opened from, and how to hand focus back to it on dismiss. */
-export type MenuAnchor = { x: number; y: number; width: number; height: number; returnFocus: () => void };
+export type StatusAction = "deactivate" | "reactivate" | "approve" | "reject";
+export type RowActionKey = "edit" | "approve" | "reject" | "deactivate" | "reactivate" | "resetPassword" | "allowWeb" | "blockWeb";
 
 export interface UserListParams {
   tab: UserTab;
@@ -62,36 +73,21 @@ export interface UserListParams {
   pageSize: number;
 }
 
-/** The backend's user record, trimmed to the fields this screen reads. */
+/** A row of GET /users. */
 export interface ApiUser {
-  _id: string;
+  id: string;
   fullname: string;
   email: string;
   role: string;
   status: string;
-  address?: string;
-  profilePhoto?: string | null;
-  platformAccess?: { web: boolean; mobile: boolean };
-  createdAt: string;
-  lastLogin?: string | null;
+  statusGroup: UserStatus;
+  location: string;
+  avatarUrl: string | null;
+  lastLogin: string | null;
+  createdAt: string | null;
+  updatedAt: string | null;
+  verificationId: string | null;
+  portalAccess: PortalAccess;
 }
 
-export interface ApiSignupRequest {
-  _id: string;
-  verificationStatus: string;
-  registeredAt: string;
-  resident: { fullname: string; email: string; address: string; avatarUrl?: string | null };
-}
-
-export interface ApiUserSummary {
-  total: number;
-  staff: number;
-  residents: number;
-  active: number;
-  approved: number;
-  deactivated: number;
-  addedThisMonth: number;
-  masterlist: number;
-  pendingRequests: number;
-  rejectedRequests: number;
-}
+export type ApiUserSummary = UserSummary;

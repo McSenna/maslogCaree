@@ -62,7 +62,7 @@ const DurationStepper = ({
 
   return (
     <View className="items-center gap-1">
-      <Text className="text-[11px] font-medium" style={{ color: palette.muted }}>
+      <Text className="text-[13px] font-medium" style={{ color: palette.muted }}>
         Duration (minutes)
       </Text>
 
@@ -79,7 +79,7 @@ const DurationStepper = ({
         {button("minus")}
         <Text
           accessibilityLabel={`${label} duration: ${value} minutes`}
-          className="text-center text-[15px] font-bold tabular-nums"
+          className="text-center text-[17px] font-bold tabular-nums"
           style={{ color: palette.heading, minWidth: 34 }}
         >
           {value}
@@ -87,7 +87,7 @@ const DurationStepper = ({
         {button("plus")}
       </View>
 
-      <Text className="text-[11px]" style={{ color: palette.faint }}>
+      <Text className="text-[13px]" style={{ color: palette.faint }}>
         {min}–{max} min
       </Text>
     </View>

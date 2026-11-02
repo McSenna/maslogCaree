@@ -35,7 +35,7 @@ const BookingSummaryRows = ({ appointment }: { appointment: AppointmentRecord })
         />
         <AppointmentSummaryRow label="Appointment Date" value={date} />
         <AppointmentSummaryRow label="Assigned Time" value={`${timeRange(appointment)} (assigned automatically)`} />
-        <AppointmentSummaryRow label="Scheduling" value="First come, first served" />
+        <AppointmentSummaryRow label="Scheduling" value="Thursday date and time assigned by the system" />
         {minutes ? <AppointmentSummaryRow label="Interval" value={`${minutes} minutes`} /> : null}
         <AppointmentSummaryRow label="Reference" value={appointmentReference(appointment)} />
         <AppointmentSummaryRow label="Status" value={getStatusLabel(appointment.status, "resident")} />

@@ -11,27 +11,22 @@ type OverviewCardsProps = {
   summary: UserSummary | null;
   tab: UserTab;
   onSelectTab: (tab: UserTab) => void;
-  /** Four in a row when there is room, otherwise two by two (as on the dashboard). */
-  columns: 2 | 4;
+  /** Three in a row when there is room, otherwise stacked. */
+  columns: 1 | 3;
   /** Phone sizes: smaller type and padding. */
   compact?: boolean;
-  dense?: boolean;
 };
 
-type CardSpec = Omit<MetricCardProps, "palette" | "compact" | "dense">;
+type CardSpec = Omit<MetricCardProps, "palette" | "compact" | "dense" | "descriptionChip">;
 
-// Same tones and icons as the dashboard's account cards, so the numbers read as the same family.
-const buildCards = (
-  summary: UserSummary,
-  tab: UserTab,
-  onSelectTab: (tab: UserTab) => void
-): CardSpec[] => [
+// Each card opens the list whose count it shows.
+const buildCards = (summary: UserSummary, tab: UserTab, onSelectTab: (tab: UserTab) => void): CardSpec[] => [
   {
     tone: "primary",
     icon: "users",
-    label: "Total users",
+    label: "Total accounts",
     value: summary.total,
-    description: `${summary.staff} staff, ${summary.residents} residents`,
+    description: `${summary.staff} staff · ${summary.residents} residents`,
     onPress: () => onSelectTab("accounts"),
     accessibilityHint: "Shows every account",
     selected: tab === "accounts",
@@ -39,50 +34,33 @@ const buildCards = (
   {
     tone: "care",
     icon: "user-check",
-    label: "Active",
+    label: "Active accounts",
     value: summary.active,
     description: activeShareNote(summary),
     onPress: () => onSelectTab("active"),
-    accessibilityHint: "Shows active users",
+    accessibilityHint: "Shows active accounts",
     selected: tab === "active",
   },
   {
-    tone: "accent",
-    icon: "clipboard",
-    label: "Masterlist",
-    value: summary.masterlist,
-    description: "Official resident records",
-    onPress: () => onSelectTab("masterlist"),
-    accessibilityHint: "Shows the barangay master list",
-    selected: tab === "masterlist",
-  },
-  {
-    tone: "neutral",
+    tone: "danger",
     icon: "user-x",
     label: "Deactivated",
     value: summary.deactivated,
-    description: "Accounts can be reactivated",
+    description: "Can be reactivated",
     onPress: () => onSelectTab("deactivated"),
     accessibilityHint: "Shows deactivated accounts",
     selected: tab === "deactivated",
   },
 ];
 
-const OverviewCards = ({
-  summary,
-  tab,
-  onSelectTab,
-  columns,
-  compact = false,
-  dense = false,
-}: OverviewCardsProps) => {
+const OverviewCards = ({ summary, tab, onSelectTab, columns, compact = false }: OverviewCardsProps) => {
   const palette = useAdminSurfacePalette();
   const gap = compact ? 12 : 16;
 
   if (!summary) {
     return (
       <MetricRow columns={columns} gap={gap}>
-        {[0, 1, 2, 3].map((index) => (
+        {[0, 1, 2].map((index) => (
           <MetricCardSkeleton key={index} palette={palette} compact={compact} />
         ))}
       </MetricRow>
@@ -92,7 +70,7 @@ const OverviewCards = ({
   return (
     <MetricRow columns={columns} gap={gap}>
       {buildCards(summary, tab, onSelectTab).map((card) => (
-        <MetricCard key={card.label} palette={palette} compact={compact} dense={dense} {...card} />
+        <MetricCard key={card.label} palette={palette} compact={compact} descriptionChip {...card} />
       ))}
     </MetricRow>
   );

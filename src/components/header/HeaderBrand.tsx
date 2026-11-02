@@ -31,8 +31,8 @@ const HeaderBrand = ({ compact, isDark, onPress }: HeaderBrandProps) => {
           numberOfLines={1}
           style={{
             fontFamily: HEADER_FONT,
-            fontSize: compact ? 15.5 : 19,
-            lineHeight: compact ? 19 : 23,
+            fontSize: compact ? 17.5 : 21,
+            lineHeight: compact ? 21 : 25,
             fontWeight: "700",
             letterSpacing: -0.2,
             color: palette.brand,
@@ -45,8 +45,8 @@ const HeaderBrand = ({ compact, isDark, onPress }: HeaderBrandProps) => {
           numberOfLines={1}
           style={{
             fontFamily: HEADER_FONT,
-            fontSize: compact ? 9.5 : 11.5,
-            lineHeight: compact ? 13 : 15,
+            fontSize: compact ? 11.5 : 13.5,
+            lineHeight: compact ? 15 : 17,
             fontWeight: "400",
             color: palette.muted,
           }}

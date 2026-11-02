@@ -62,10 +62,10 @@ const AnnouncementItem = ({
       </View>
 
       <View className="min-w-0 flex-1">
-        <Text className="text-[14px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+        <Text className="text-[16px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
           {announcement.title}
         </Text>
-        <Text className="mt-0.5 text-[12.5px]" numberOfLines={1} style={{ color: palette.muted }}>
+        <Text className="mt-0.5 text-[14.5px]" numberOfLines={1} style={{ color: palette.muted }}>
           {meta}
         </Text>
       </View>

@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
-import { TableLink, TablePrimaryCell, TableText, TableTwoLine, type Column } from "@/components/data-table";
+import { TableCellRow, TableLink, TablePrimaryCell, TableText, TableTwoLine, type Column } from "@/components/data-table";
 import { TABLE_TEXT } from "@/components/data-table/tableTokens";
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import type { AppointmentRecord } from "@/services/appointments";
@@ -53,18 +53,19 @@ export const appointmentColumns = ({ palette, serviceLabelOf, ...actions }: Opti
   {
     key: "position",
     header: "#",
+    align: "center",
     width: 64,
     render: (_appointment, index) => <TableText value={String(index + 1).padStart(3, "0")} tone="muted" weight="strong" />,
   },
   {
-    key: "patient",
+    key: "patient", nameColumn: true,
     header: "Patient name",
     flex: 2.4,
     minWidth: 220,
     render: (appointment) => (
-      <View className="min-w-0 flex-row items-center gap-3 self-stretch">
+      <TableCellRow className="gap-3">
         <QueueAvatar name={appointmentPatientName(appointment, "")} palette={palette} />
-        <View className="min-w-0 flex-1">
+        <View className="min-w-0 shrink">
           {actions.canAct && actions.onRowPress ? (
             // Rows with buttons open by pointer; the name is the same action for keyboards and screen readers.
             <PatientLink appointment={appointment} onOpen={actions.onRowPress} palette={palette} />
@@ -72,7 +73,7 @@ export const appointmentColumns = ({ palette, serviceLabelOf, ...actions }: Opti
             <TablePrimaryCell title={appointmentPatientName(appointment)} detail={childCaption(appointment) || undefined} />
           )}
         </View>
-      </View>
+      </TableCellRow>
     ),
   },
   {
@@ -84,14 +85,15 @@ export const appointmentColumns = ({ palette, serviceLabelOf, ...actions }: Opti
       <TableTwoLine value={serviceLabelOf(appointment)} detail={isRescheduledRequest(appointment) ? "Rescheduled" : undefined} />
     ),
   },
-  { key: "date", header: "Date", width: 130, accessor: (appointment) => scheduleFor(appointment).date },
-  { key: "time", header: "Time", width: 110, accessor: (appointment) => scheduleFor(appointment).time },
-  { key: "status", header: "Status", width: 150, render: (appointment) => <AppointmentStatusBadge status={appointment.status} /> },
+  { key: "date", header: "Date", align: "center", width: 146, accessor: (appointment) => scheduleFor(appointment).date },
+  { key: "time", header: "Time", align: "center", width: 122, accessor: (appointment) => scheduleFor(appointment).time },
+  { key: "status", header: "Status", align: "center", width: 168, render: (appointment) => <AppointmentStatusBadge status={appointment.status} /> },
   ...(actions.canAct || actions.onRowPress
     ? [
         {
           key: "actions",
           header: "Actions",
+          align: "center" as const,
           width: 180,
           render: (appointment: AppointmentRecord) =>
             actions.canAct ? <RowActions appointment={appointment} {...actions} /> : <ViewRecordHint palette={palette} />,

@@ -19,10 +19,10 @@ const UserDetailsError = ({
       >
         <Feather name="alert-circle" size={20} color={palette.dangerText} />
       </View>
-      <Text className="text-[15px] font-semibold" style={{ color: palette.heading }}>
+      <Text className="text-[17px] font-semibold" style={{ color: palette.heading }}>
         Unable to load user details.
       </Text>
-      <Text className="max-w-[420px] text-center text-[13px]" style={{ color: palette.muted }}>
+      <Text className="max-w-[420px] text-center text-[15px]" style={{ color: palette.muted }}>
         {message ?? "This account could not be read. It may have been removed since the list loaded."}
       </Text>
       {onRetry ? (
@@ -33,7 +33,7 @@ const UserDetailsError = ({
           className="mt-1 h-11 justify-center px-5"
           style={{ borderRadius: DETAIL_RADIUS.control, backgroundColor: palette.primary }}
         >
-          <Text className="text-[14px] font-semibold text-white">Try Again</Text>
+          <Text className="text-[16px] font-semibold text-white">Try Again</Text>
         </Pressable>
       ) : null}
     </View>

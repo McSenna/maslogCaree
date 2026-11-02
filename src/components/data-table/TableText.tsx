@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { Platform, Text, View, type TextStyle } from "react-native";
 
 import { useThemeColors } from "@/hooks/useThemeColors";
 
+import { useCellSelfAlign, useCellTextAlign } from "./TablePlacement";
 import { TABLE_TEXT } from "./tableTokens";
 import type { Align } from "./types";
 
@@ -32,11 +33,12 @@ export const TableText = ({
   value,
   tone = "body",
   weight = "regular",
-  align = "left",
+  align,
   lines = 1,
   selectable = false,
 }: TableTextProps) => {
   const colors = useThemeColors();
+  const cellAlign = useCellTextAlign();
   const ref = useWebTitle(value);
   const color = tone === "danger" ? colors.danger.fg : colors[tone];
   const style: TextStyle = weight === "strong" ? { ...TABLE_TEXT.cell, fontWeight: "600" } : TABLE_TEXT.cell;
@@ -47,7 +49,7 @@ export const TableText = ({
       numberOfLines={lines}
       selectable={selectable}
       accessibilityLabel={value}
-      style={[style, { color, textAlign: align }]}
+      style={[style, { color, textAlign: align ?? cellAlign }]}
     >
       {value}
     </Text>
@@ -64,6 +66,7 @@ type PrimaryCellProps = {
 /** The first column: a name over its ID, centred as one block. */
 export const TablePrimaryCell = ({ title, detail, detailSelectable = true }: PrimaryCellProps) => {
   const colors = useThemeColors();
+  const textAlign = useCellTextAlign();
   const titleRef = useWebTitle(title);
   const detailRef = useWebTitle(detail ?? "");
 
@@ -73,7 +76,7 @@ export const TablePrimaryCell = ({ title, detail, detailSelectable = true }: Pri
         ref={titleRef}
         numberOfLines={1}
         accessibilityLabel={title}
-        style={[TABLE_TEXT.primary, { color: colors.heading }]}
+        style={[TABLE_TEXT.primary, { color: colors.heading, textAlign }]}
       >
         {title}
       </Text>
@@ -83,7 +86,7 @@ export const TablePrimaryCell = ({ title, detail, detailSelectable = true }: Pri
           numberOfLines={1}
           selectable={detailSelectable}
           accessibilityLabel={detail}
-          style={[TABLE_TEXT.secondary, { color: colors.muted }]}
+          style={[TABLE_TEXT.secondary, { color: colors.muted, textAlign }]}
         >
           {detail}
         </Text>
@@ -94,14 +97,28 @@ export const TablePrimaryCell = ({ title, detail, detailSelectable = true }: Pri
 
 type TwoLineProps = { value: string; detail?: string; tone?: "body" | "muted"; align?: Align };
 
+type CellRowProps = { children: ReactNode; className?: string };
+
+/** An avatar or icon beside text, as one block that follows the cell's alignment: centred in a table, left on a card. */
+export const TableCellRow = ({ children, className = "" }: CellRowProps) => {
+  const justifyContent = useCellSelfAlign();
+  return (
+    <View className={`min-w-0 flex-row items-center self-stretch ${className}`} style={{ justifyContent }}>
+      {children}
+    </View>
+  );
+};
+
 /** A value over a muted detail, e.g. a date over its time. */
-export const TableTwoLine = ({ value, detail, tone = "body", align = "left" }: TwoLineProps) => {
+export const TableTwoLine = ({ value, detail, tone = "body", align }: TwoLineProps) => {
   const colors = useThemeColors();
+  const cellAlign = useCellTextAlign();
+  const textAlign = align ?? cellAlign;
   return (
     <View className="min-w-0 gap-0.5 self-stretch">
-      <TableText value={value} tone={tone} align={align} />
+      <TableText value={value} tone={tone} align={textAlign} />
       {detail ? (
-        <Text numberOfLines={1} style={[TABLE_TEXT.secondary, { color: colors.muted, textAlign: align }]}>
+        <Text numberOfLines={1} style={[TABLE_TEXT.secondary, { color: colors.muted, textAlign }]}>
           {detail}
         </Text>
       ) : null}

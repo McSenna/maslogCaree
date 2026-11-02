@@ -63,7 +63,7 @@ const TopTierCard = ({
             <Text
               style={{
                 color: HC.tealLight,
-                fontSize: isTablet ? 16 : 15,
+                fontSize: isTablet ? 18 : 17,
                 fontWeight: "800",
                 textAlign: "center",
               }}
@@ -76,7 +76,7 @@ const TopTierCard = ({
           <Text
             style={{
               color: withAlpha(PALETTE.white, 0.88),
-              fontSize: isTablet ? 12 : 11,
+              fontSize: isTablet ? 14 : 13,
               fontWeight: "700",
               textTransform: "uppercase",
               letterSpacing: 1.2,
@@ -88,7 +88,7 @@ const TopTierCard = ({
           <Text
             style={{
               color: withAlpha(PALETTE.white, 0.8),
-              fontSize: isTablet ? 13 : 12,
+              fontSize: isTablet ? 15 : 14,
               textAlign: "center",
               marginTop: 2,
             }}

@@ -27,7 +27,7 @@ export const DetailSection = ({ palette, title, icon, iconColor, children }: Pro
       <Feather name={icon} size={16} color={iconColor ?? palette.accent} />
       <Text
         accessibilityRole="header"
-        style={{ fontSize: 15, fontWeight: "700", color: palette.heading }}
+        style={{ fontSize: 17, fontWeight: "700", color: palette.heading }}
       >
         {title}
       </Text>
@@ -53,11 +53,11 @@ export const KeyValueRow = ({
       gap: 12,
     }}
   >
-    <Text style={{ fontSize: 13, color: palette.muted, flexShrink: 0 }}>{label}</Text>
+    <Text style={{ fontSize: 15, color: palette.muted, flexShrink: 0 }}>{label}</Text>
     <Text
       style={{
         flex: 1,
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: "600",
         color: palette.heading,
         textAlign: "right",
@@ -82,7 +82,7 @@ export const Paragraph = ({
   <View>
     <Text
       style={{
-        fontSize: 12,
+        fontSize: 14,
         fontWeight: "600",
         color: palette.muted,
         textTransform: "uppercase",
@@ -93,10 +93,10 @@ export const Paragraph = ({
     </Text>
     <Text
       style={{
-        fontSize: 14,
+        fontSize: 16,
         color: palette.body,
         marginTop: 3,
-        lineHeight: 20,
+        lineHeight: 22,
         fontWeight: emphasis ? "600" : "400",
       }}
     >

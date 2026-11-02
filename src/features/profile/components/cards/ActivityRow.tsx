@@ -47,14 +47,14 @@ const ActivityRow = ({ item, showDivider }: ActivityRowProps) => {
         <Text
           numberOfLines={1}
           maxFontSizeMultiplier={1.2}
-          style={{ fontSize: 14, fontWeight: "700", color: colors.heading }}
+          style={{ fontSize: 16, fontWeight: "700", color: colors.heading }}
         >
           {item.title}
         </Text>
         <Text
           numberOfLines={2}
           maxFontSizeMultiplier={1.2}
-          style={{ fontSize: 13, lineHeight: 18, color: colors.muted }}
+          style={{ fontSize: 15, lineHeight: 20, color: colors.muted }}
         >
           {item.detail}
         </Text>
@@ -64,7 +64,7 @@ const ActivityRow = ({ item, showDivider }: ActivityRowProps) => {
         <Text
           numberOfLines={1}
           maxFontSizeMultiplier={1.2}
-          style={{ fontSize: 11.5, color: colors.subtle }}
+          style={{ fontSize: 13.5, color: colors.subtle }}
         >
           {item.time}
         </Text>

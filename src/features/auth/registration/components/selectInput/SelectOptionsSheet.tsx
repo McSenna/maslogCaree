@@ -95,7 +95,7 @@ const SelectOptionsSheet = <T extends string>({
             style={{
               paddingHorizontal: 20,
               paddingVertical: 10,
-              fontSize: 13,
+              fontSize: 15,
               fontWeight: "700",
               color: REG_COLORS.muted,
             }}
@@ -140,7 +140,7 @@ const SelectOptionsSheet = <T extends string>({
                   >
                     <Text
                       style={{
-                        fontSize: 15.5,
+                        fontSize: 17.5,
                         fontWeight: isSelected ? "600" : "400",
                         color: isSelected
                           ? REG_COLORS.primary

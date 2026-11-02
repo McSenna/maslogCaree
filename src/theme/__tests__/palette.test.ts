@@ -24,7 +24,7 @@ describe("brand anchors", () => {
   it("keeps the eleven MaslogCare colours exactly", () => {
     assert.deepEqual(
       [blue[600], green[500], orange[400], PALETTE.canvas, PALETTE.white, PALETTE.ink, slate[500], success[500], amber[500], red[500], slate[200]],
-      ["#2D5BFF", "#2BB673", "#FFA726", "#F5F7FA", "#FFFFFF", "#1F2933", "#64748B", "#22C55E", "#F59E0B", "#EF4444", "#E2E8F0"]
+      ["#1557D6", "#2BB673", "#FFA726", "#F5F7FA", "#FFFFFF", "#1F2933", "#64748B", "#22C55E", "#F59E0B", "#EF4444", "#E2E8F0"]
     );
   });
 });
@@ -88,11 +88,11 @@ describe("palette contrast (WCAG 1.4.11 UI parts)", () => {
 
 describe("colour helpers", () => {
   it("withAlpha keeps the channel values", () => {
-    assert.equal(withAlpha("#2D5BFF", 0.16), "rgba(45,91,255,0.16)");
+    assert.equal(withAlpha("#1557D6", 0.16), "rgba(21,87,214,0.16)");
   });
 
   it("mix blends toward the base", () => {
     assert.equal(mix("#FFFFFF", "#000000", 0.5), "#808080");
-    assert.equal(mix("#2D5BFF", "#19212B", 0), "#19212B");
+    assert.equal(mix("#1557D6", "#19212B", 0), "#19212B");
   });
 });

@@ -25,7 +25,7 @@ const MissionPickerField = ({
 
   return (
     <View className={className}>
-      <Text className="mb-1.5 text-[13.5px] font-semibold" style={{ color: palette.body }}>
+      <Text className="mb-1.5 text-[15.5px] font-semibold" style={{ color: palette.body }}>
         {label}
       </Text>
 
@@ -57,11 +57,11 @@ const MissionPickerField = ({
         </View>
 
         <View className="min-w-0 flex-1">
-          <Text numberOfLines={1} className="text-[15px] font-bold" style={{ color: palette.heading }}>
+          <Text numberOfLines={1} className="text-[17px] font-bold" style={{ color: palette.heading }}>
             {value}
           </Text>
           {hint ? (
-            <Text numberOfLines={1} className="mt-0.5 text-[12px]" style={{ color: palette.muted }}>
+            <Text numberOfLines={1} className="mt-0.5 text-[14px]" style={{ color: palette.muted }}>
               {hint}
             </Text>
           ) : null}

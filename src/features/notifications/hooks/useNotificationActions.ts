@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import { openImmunizationBaby } from "@/features/immunization/selection";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
 import { openAnnouncementDetail } from "@/features/announcements/detail/announcementDetailStore";
@@ -57,10 +58,11 @@ export const useNotificationActions = ({
       const destination = destinationFor(item);
       if (!destination) return;
 
+      if (role === "resident" && item.immunizationBabyId) openImmunizationBaby(item.immunizationBabyId);
       onBeforeNavigate?.();
       router.push(destination);
     },
-    [destinationFor, markRead, onBeforeNavigate, openAfterClose, router]
+    [destinationFor, markRead, onBeforeNavigate, openAfterClose, role, router]
   );
 
   return useMemo(() => ({ handlePress, isNavigable }), [handlePress, isNavigable]);
