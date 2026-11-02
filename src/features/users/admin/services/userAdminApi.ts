@@ -1,4 +1,5 @@
 import api from "@/services/api";
+import type { ResidentWebAccess } from "@/features/webAccess/accessTypes";
 
 import type { AdminUser } from "../../services/userService";
 import type { ApiUser, ApiUserSummary, Role, StatusAction, User, UserListParams, UserSummary, WebOverride } from "../userAdmin.types";
@@ -53,8 +54,12 @@ export const sendPasswordReset = async (id: string): Promise<string> => {
   return data.message;
 };
 
-export const setWebOverride = async (id: string, override: WebOverride, revision: number): Promise<void> => {
-  await api.patch(`/admin/users/${id}/web-access`, { override, revision });
+export type WebAccessSaved = { changed: boolean; access: ResidentWebAccess & { status: "on" | "off" } };
+
+/** The answer is what the app reports, so a toast never claims more than the server did. */
+export const setWebOverride = async (id: string, override: WebOverride, revision: number, reason = ""): Promise<WebAccessSaved> => {
+  const { data } = await api.patch<WebAccessSaved>(`/admin/users/${id}/web-access`, { override, revision, reason: reason.trim() || null });
+  return data;
 };
 
 export const exportUsers = async (params: Omit<UserListParams, "page" | "pageSize">): Promise<{ csv: string; truncated: boolean }> => {

@@ -4,6 +4,7 @@ import { ScrollView, View } from "react-native";
 import { DataTable } from "@/components/data-table";
 import type { RoleScreenInsets } from "@/hooks/useRoleScreenInsets";
 import { useScrollTopOnChange } from "@/hooks/useScrollTopOnChange";
+import { useCanManageWebAccess } from "@/features/webAccess/webAccessPermission";
 
 import { PAGE_SIZE } from "../../hooks/useUserQueries";
 import type { UsersScreenState } from "../../hooks/useUsersScreen";
@@ -20,12 +21,13 @@ type WideUsersViewProps = {
 
 const WideUsersView = ({ screen, width, insets }: WideUsersViewProps) => {
   const { view, filters, details, users, actions, selfId } = screen;
+  const canManageWebAccess = useCanManageWebAccess();
   // A new page starts at its first row.
   const scrollRef = useScrollTopOnChange<ScrollView>(filters.page);
 
   const columns = useMemo(
-    () => userColumns({ selfId, savingOverrideId: actions.savingOverrideId, onOpenProfile: details.openDetails, onAction: actions.run }),
-    [selfId, actions.savingOverrideId, actions.run, details.openDetails]
+    () => userColumns({ selfId, savingOverrideId: actions.savingOverrideId, onOpenProfile: details.openDetails, onAction: actions.run }, canManageWebAccess),
+    [selfId, actions.savingOverrideId, actions.run, details.openDetails, canManageWebAccess]
   );
 
   if (screen.masterTab) return <MasterListWideList screen={screen} width={width} insets={insets} />;

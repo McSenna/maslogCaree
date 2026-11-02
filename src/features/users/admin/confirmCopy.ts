@@ -43,6 +43,32 @@ export const confirmCopy = (action: ConfirmAction, name: string, detail = ""): C
   }
 };
 
+/** `identity` tells two residents with the same name apart. */
+export const webAccessCopy = (override: "allow" | "block" | null, identity: string, globalEnabled: boolean): ConfirmCopy => {
+  if (override === "allow") {
+    return {
+      title: "Enable web access?",
+      body: `${identity} can use the web portal after signing in. Account status and verification rules still apply. The mobile app is not affected.`,
+      confirmLabel: "Enable web access",
+      destructive: false,
+    };
+  }
+  if (override === "block") {
+    return {
+      title: "Disable web access?",
+      body: `${identity} loses the web portal on their next action and cannot sign in there. Their records and the mobile app are not affected.`,
+      confirmLabel: "Disable web access",
+      destructive: true,
+    };
+  }
+  return {
+    title: "Use the global setting?",
+    body: `${identity} will follow the global switch, which is ${globalEnabled ? "On" : "Off"}. The mobile app is not affected.`,
+    confirmLabel: "Use global setting",
+    destructive: false,
+  };
+};
+
 export const globalAccessCopy = (turningOn: boolean): ConfirmCopy =>
   turningOn
     ? {

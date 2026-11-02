@@ -4,23 +4,21 @@ import { describe, it } from "node:test";
 
 const read = (path: string) => readFileSync(new URL(`../../../${path}`, import.meta.url), "utf8");
 
-// Residents use the Android app with no setup, and revoking a device is not a
-// lockout, so no text may tell someone otherwise.
-describe("device credentials are optional in the wording", () => {
-  it("does not tell a resident a device must be provisioned", () => {
-    assert.doesNotMatch(read("config/platformAccess.ts"), /must provision/i);
-    assert.doesNotMatch(read("features/webAccess/ManagedDeviceSetup.tsx"), /need a credential/i);
+describe("resident mobile access requires a provisioned credential", () => {
+  it("explains device setup on the native login and web restriction notice", () => {
+    assert.match(read("config/platformAccess.ts"), /provisioned device credential/i);
+    const setup = read("features/webAccess/ManagedDeviceSetup.tsx");
+    assert.match(setup, /credential is required/i);
+    assert.doesNotMatch(setup, /credential is optional/i);
   });
-
-  it("does not tell an admin that revoking locks the resident out", () => {
+  it("explains that a revoked device needs a new credential", () => {
     const control = read("features/webAccess/ManagedDevicesControl.tsx");
-    assert.doesNotMatch(control, /will need a new provisioned credential/i);
-    assert.match(control, /deactivate the account/i);
+    assert.match(control, /new credential/i);
+    assert.doesNotMatch(control, /without a credential/i);
   });
-
-  it("tells someone with a bad saved credential how to get past it", () => {
+  it("tells someone whose session lost device access how to restore it", () => {
     const policy = read("utils/errorToast/errorToastPolicy.ts");
-    assert.doesNotMatch(policy, /Ask the administrator to provision this device/);
-    assert.match(policy, /Remove the saved credential under Device setup/);
+    assert.match(policy, /Ask the administrator to provision this device/);
+    assert.doesNotMatch(policy, /Remove the saved credential under Device setup, then sign in again/);
   });
 });

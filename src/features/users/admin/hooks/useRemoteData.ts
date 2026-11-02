@@ -81,6 +81,15 @@ export const useRemoteData = <T,>({ key, load, merge, live = NO_LIVE_RESOURCES, 
     setRetry((count) => count + 1);
   }, []);
 
+  const replaceData = useCallback((next: T) => {
+    // A read started before a successful mutation must not overwrite its response.
+    sequence.current += 1;
+    setData(next);
+    setError(null);
+    setIsFetching(false);
+    setIsRefreshing(false);
+  }, []);
+
   return {
     data,
     error,
@@ -89,5 +98,6 @@ export const useRemoteData = <T,>({ key, load, merge, live = NO_LIVE_RESOURCES, 
     isFetching,
     isRefreshing,
     refetch,
+    replaceData,
   };
 };

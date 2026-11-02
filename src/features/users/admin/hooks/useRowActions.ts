@@ -1,9 +1,13 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { toast } from "@/components/feedback";
 import { toastError } from "@/utils/errorToast/toastError";
+import { normalizeApiError } from "@/utils/apiErrorHandler";
+import { requestResync } from "@/lib/realtime/realtimeBus";
 
-import { confirmCopy, type ConfirmAction } from "../confirmCopy";
+import { buildDisplayId } from "@/features/profile/utils/profileHelpers";
+
+import { confirmCopy, webAccessCopy, type ConfirmAction } from "../confirmCopy";
 import { sendPasswordReset, setUserStatus, setWebOverride } from "../services/userAdminApi";
 import type { PortalAccess, RowActionKey, User } from "../userAdmin.types";
 
@@ -32,37 +36,42 @@ export const useRowActions = ({ openReview, refresh }: Options) => {
   const [rejecting, setRejecting] = useState<ActionTarget | null>(null);
   const [editing, setEditing] = useState<ActionTarget | null>(null);
   const [busy, setBusy] = useState(false);
-  // A web access button saves on one click, so it shows progress and ignores a second one.
+  const [webChange, setWebChange] = useState<{ target: ActionTarget; override: "allow" | "block" } | null>(null);
   const [savingOverrideId, setSavingOverrideId] = useState<string | null>(null);
+  const savingOverride = useRef(false);
 
-  const saveOverride = useCallback(
-    async (target: ActionTarget, override: "allow" | "block") => {
-      setSavingOverrideId(target.id);
-      try {
-        await setWebOverride(target.id, override, target.portalAccess?.revision ?? 0);
-        toast.success(override === "allow" ? "Web access allowed" : "Web access blocked", target.fullName);
-      } catch (error) {
-        toastError("Web access not changed", error);
-      } finally {
-        setSavingOverrideId(null);
-        refresh();
-      }
-    },
-    [refresh]
-  );
+  const confirmWebChange = async (reason: string) => {
+    if (!webChange || savingOverride.current) return;
+    const { target, override } = webChange;
+    savingOverride.current = true;
+    setSavingOverrideId(target.id);
+    try {
+      const saved = await setWebOverride(target.id, override, target.portalAccess?.revision ?? 0, reason);
+      toast.success(`Web access is ${saved.access.status === "on" ? "ON" : "OFF"}`, target.fullName);
+    } catch (error) {
+      if (normalizeApiError(error).status === 403) requestResync();
+      toastError("Web access not changed", error);
+    } finally {
+      savingOverride.current = false;
+      setSavingOverrideId(null);
+      setWebChange(null);
+      // Reloads even after a refusal, so the row always shows the server's real state.
+      refresh();
+    }
+  };
 
   const run = useCallback(
     (target: ActionTarget, action: RowActionKey) => {
       if (action === "edit") return setEditing(target);
-      if (action === "allowWeb") return void saveOverride(target, "allow");
-      if (action === "blockWeb") return void saveOverride(target, "block");
+      if (action === "allowWeb") return setWebChange({ target, override: "allow" });
+      if (action === "blockWeb") return setWebChange({ target, override: "block" });
       if ((action === "approve" || action === "reject") && target.verificationId) {
         return openReview(target.verificationId, action === "reject");
       }
       if (action === "reject") return setRejecting(target);
       setConfirming({ action, target });
     },
-    [openReview, saveOverride]
+    [openReview]
   );
 
   const confirm = async () => {
@@ -101,6 +110,13 @@ export const useRowActions = ({ openReview, refresh }: Options) => {
     run,
     busy,
     savingOverrideId,
+    webChangeWords: webChange
+      ? webAccessCopy(webChange.override, `${webChange.target.fullName} (${buildDisplayId(webChange.target.id, "RES")})`, Boolean(webChange.target.portalAccess?.globalEnabled))
+      : null,
+    confirmWebChange,
+    cancelWebChange: () => {
+      if (!savingOverride.current) setWebChange(null);
+    },
     confirming,
     confirmWords: confirming ? confirmCopy(confirming.action, confirming.target.fullName) : null,
     confirm,

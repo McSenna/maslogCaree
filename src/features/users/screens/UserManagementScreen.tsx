@@ -5,6 +5,7 @@ import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
 import { getSidebarWidth } from "@/components/navigation/sidebar/sidebarTheme";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
+import { WebAccessPermissionProvider } from "@/features/webAccess/webAccessPermission";
 
 import PhoneUsersView from "../admin/components/phone/PhoneUsersView";
 import ScreenOverlays from "../admin/components/shared/ScreenOverlays";
@@ -35,11 +36,13 @@ const UserManagementScreen = () => {
   const handleLayout = (event: LayoutChangeEvent) => setMeasuredWidth(event.nativeEvent.layout.width);
 
   return (
-    <View style={theme.vars} onLayout={handleLayout} className="w-full flex-1">
-      <RoleScreenBackdrop color={theme.palette.page} insets={insets} />
-      {wide ? <WideUsersView screen={screen} width={width} insets={insets} /> : <PhoneUsersView screen={screen} width={width} />}
-      <ScreenOverlays screen={screen} phone={!wide} />
-    </View>
+    <WebAccessPermissionProvider>
+      <View style={theme.vars} onLayout={handleLayout} className="w-full flex-1">
+        <RoleScreenBackdrop color={theme.palette.page} insets={insets} />
+        {wide ? <WideUsersView screen={screen} width={width} insets={insets} /> : <PhoneUsersView screen={screen} width={width} />}
+        <ScreenOverlays screen={screen} phone={!wide} />
+      </View>
+    </WebAccessPermissionProvider>
   );
 };
 

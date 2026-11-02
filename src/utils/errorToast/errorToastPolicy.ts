@@ -68,11 +68,11 @@ export const sessionEndNotice = (code: string): Notice => {
       description: "This account can no longer sign in. Contact the barangay health center for help.",
     };
   }
-  if (code === ERROR_CODES.DEVICE_CREDENTIAL_REQUIRED) return { title: "This device's credential no longer works", description: "Remove the saved credential under Device setup, then sign in again." };
+  if (code === ERROR_CODES.DEVICE_CREDENTIAL_REQUIRED) return { title: "Device setup required", description: "Ask the administrator to provision this device. Save the new credential under Device setup, then sign in again." };
   if (code === ERROR_CODES.RESIDENT_WEB_ACCESS_DENIED) {
     return {
       title: "You have been signed out",
-      description: "Resident web access is disabled. Contact the barangay health center to request access.",
+      description: "Your web access has been disabled. Please contact the administrator.",
     };
   }
   if (code === ERROR_CODES.PLATFORM_ACCESS_DENIED || code === ERROR_CODES.PLATFORM_CONTEXT_MISMATCH) {

@@ -37,7 +37,7 @@ const ManagedDevicesControl = ({ residentId }: { residentId: string }) => {
         Managed mobile devices
       </Text>
       <Text style={[TYPE.body, { color: palette.body }]}>
-        Provision a credential while setting up a managed phone for a resident.
+        Provision a credential to enable resident mobile sign-in on this device.
         Enter it under Device setup on the native login screen. The resident
         still needs their password.
       </Text>
@@ -100,7 +100,7 @@ const ManagedDevicesControl = ({ residentId }: { residentId: string }) => {
       <ConfirmationModal
         visible={revokeTarget !== null}
         title="Revoke managed device?"
-        message={`Device ${revokeTarget?.slice(-8) ?? ""} will be signed out. The resident can still sign in on the app without a credential. To block them completely, deactivate the account.`}
+        message={`Device ${revokeTarget?.slice(-8) ?? ""} will be signed out. This device will need a new credential before the resident can sign in again. Other provisioned devices and web access keep their existing settings.`}
         confirmLabel="Revoke device"
         destructive
         loading={remote.busy}

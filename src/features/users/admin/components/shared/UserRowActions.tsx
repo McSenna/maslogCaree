@@ -2,9 +2,11 @@ import { View } from "react-native";
 
 import { TableButton } from "@/components/data-table";
 
+import { useCanManageWebAccess } from "@/features/webAccess/webAccessPermission";
+
 import { ROW_ACTION_ITEMS, rowActions } from "../../rowActions";
 import type { RowActionKey, User } from "../../userAdmin.types";
-import { INLINE_ACTIONS_WIDTH } from "../../userColumnWidths";
+import { actionWidthsForPermission } from "../../userColumnWidths";
 
 export type UserRowActionHandlers = {
   selfId: string | number | null;
@@ -19,15 +21,17 @@ type UserRowActionsProps = UserRowActionHandlers & {
   touch?: boolean;
 };
 
-const TABLE_BLOCK = { width: INLINE_ACTIONS_WIDTH };
+const TABLE_BLOCK = { width: actionWidthsForPermission(true).block };
+const STANDARD_TABLE_BLOCK = { width: actionWidthsForPermission(false).block };
 
 /** Every action as its own icon, named for the person, on table rows and phone cards alike. */
 const UserRowActions = ({ user, selfId, savingOverrideId, onOpenProfile, onAction, touch = false }: UserRowActionsProps) => {
   const size = touch ? "comfortable" : "default";
+  const canManageWebAccess = useCanManageWebAccess();
   return (
-    <View role="group" accessibilityLabel={`Actions for ${user.fullName}`} className={`flex-row flex-wrap items-center ${touch ? "gap-2" : "gap-1"}`} style={touch ? undefined : TABLE_BLOCK}>
+    <View role="group" accessibilityLabel={`Actions for ${user.fullName}`} className={`flex-row flex-wrap items-center ${touch ? "gap-2" : "gap-1"}`} style={touch ? undefined : (canManageWebAccess ? TABLE_BLOCK : STANDARD_TABLE_BLOCK)}>
       <TableButton size={size} iconOnly icon="eye" label="View account" accessibilityLabel={`View account of ${user.fullName}`} onPress={() => onOpenProfile(user.id)} />
-      {rowActions(user, selfId).map((key) => {
+      {rowActions(user, selfId, canManageWebAccess).map((key) => {
         const { label, icon, danger } = ROW_ACTION_ITEMS[key];
         return (
           <TableButton

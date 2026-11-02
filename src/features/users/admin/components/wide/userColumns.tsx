@@ -3,7 +3,7 @@ import DashboardRoleBadge from "@/components/dashboard/admin/DashboardRoleBadge"
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 
 import type { User } from "../../userAdmin.types";
-import { COLUMN_WIDTHS } from "../../userColumnWidths";
+import { COLUMN_WIDTHS, actionWidthsForPermission } from "../../userColumnWidths";
 import { roleToApi } from "../../userAdminModel";
 import { lastLoginLines } from "../../userDates";
 import PortalAccessCell from "../shared/PortalAccessCell";
@@ -17,7 +17,7 @@ const RoleBadge = ({ role }: { role: string }) => {
   return <DashboardRoleBadge role={role} palette={palette} isDark={palette.isDark} />;
 };
 
-export const userColumns = (handlers: UserRowActionHandlers): Column<User>[] => {
+export const userColumns = (handlers: UserRowActionHandlers, canManageWebAccess = false): Column<User>[] => {
   const widths = COLUMN_WIDTHS;
   return [
   {
@@ -52,7 +52,7 @@ export const userColumns = (handlers: UserRowActionHandlers): Column<User>[] => 
     header: "Actions",
     align: "center",
     cardRole: "actions",
-    width: widths.actions,
+    width: actionWidthsForPermission(canManageWebAccess).column,
     render: (user) => <UserRowActions user={user} {...handlers} />,
   },
   ];

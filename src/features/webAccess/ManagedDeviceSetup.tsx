@@ -52,8 +52,9 @@ const ManagedDeviceSetup = ({ disabled }: { disabled: boolean }) => {
       {expanded ? (
         <>
           <Text style={[TYPE.body, { color: palette.body }]}>
-            A credential is optional. If the administrator gave you one for this
-            device, save it here and it is used for future sign-ins.
+            A provisioned device credential is required for resident mobile
+            sign-in. Ask the administrator to provision this device, then save
+            the credential here. You still need your email and password.
           </Text>
           <AuthField
             label="Device credential"

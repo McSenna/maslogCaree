@@ -1,5 +1,6 @@
 import ResidentWebAccessControl from "@/features/webAccess/ResidentWebAccessControl";
 import ManagedDevicesControl from "@/features/webAccess/ManagedDevicesControl";
+import { useCanManageWebAccess } from "@/features/webAccess/webAccessPermission";
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import { describePlatformAccess } from "@/config/platformAccess";
@@ -43,8 +44,20 @@ const AccessRow = ({
 };
 
 export const PlatformAccessRows = ({ user }: { user: AdminUser }) => {
-  if (user.role === "resident") return <><ResidentWebAccessControl key={`web-${user._id}`} residentId={user._id} /><ManagedDevicesControl key={`devices-${user._id}`} residentId={user._id} /></>;
+  const canManageWebAccess = useCanManageWebAccess();
   const access = user.platformAccess ?? describePlatformAccess(user.role);
+  if (user.role === "resident") {
+    return (
+      <>
+        {canManageWebAccess ? (
+          <ResidentWebAccessControl key={`web-${user._id}`} residentId={user._id} residentName={user.fullname} />
+        ) : (
+          <AccessRow icon="globe" label="Web Access" enabled={access.web} divided={false} />
+        )}
+        <ManagedDevicesControl key={`devices-${user._id}`} residentId={user._id} />
+      </>
+    );
+  }
 
   return (
     <>

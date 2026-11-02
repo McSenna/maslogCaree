@@ -8,3 +8,8 @@ export const COLUMN_WIDTHS = { userMin: 200, role: 124, status: 160, access: 220
 
 /** Five 36px icons and their gaps. A fixed block, so rows with fewer icons still line up while staying centred. */
 export const INLINE_ACTIONS_WIDTH = 5 * 36 + 4 * 4;
+
+export const actionWidthsForPermission = (canManageWebAccess: boolean) => {
+  const hiddenActionWidth = canManageWebAccess ? 0 : 36 + 4;
+  return { block: INLINE_ACTIONS_WIDTH - hiddenActionWidth, column: COLUMN_WIDTHS.actions - hiddenActionWidth };
+};

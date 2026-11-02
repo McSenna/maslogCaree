@@ -28,9 +28,10 @@ type ActionDialogProps = {
   onClose: () => void;
   busy?: boolean;
   error?: string;
+  children?: ReactNode;
 };
 
-const ActionDialog = ({ visible, title, message, icon, media, destructive = false, actions, onClose, busy = false, error }: ActionDialogProps) => {
+const ActionDialog = ({ visible, title, message, icon, media, destructive = false, actions, onClose, busy = false, error, children }: ActionDialogProps) => {
   const colors = useThemeColors();
   const { isMobile } = useResponsive();
   const stacked = isMobile && actions.length > 2;
@@ -78,6 +79,7 @@ const ActionDialog = ({ visible, title, message, icon, media, destructive = fals
     >
       <View style={{ gap: SPACING.md }}>
         {message ? <Text style={[TYPE.body, { color: colors.body }]}>{message}</Text> : null}
+        {children}
         {error ? <Text role="alert" accessibilityLiveRegion="assertive" style={[TYPE.body, { color: colors.danger.fg }]}>{error}</Text> : null}
       </View>
     </ResponsiveDialog>

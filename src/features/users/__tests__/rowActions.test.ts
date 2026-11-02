@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import { ROW_ACTION_ITEMS, rowActions } from "../admin/rowActions.ts";
-import { COLUMN_WIDTHS, INLINE_ACTIONS_WIDTH } from "../admin/userColumnWidths.ts";
+import { COLUMN_WIDTHS, INLINE_ACTIONS_WIDTH, actionWidthsForPermission } from "../admin/userColumnWidths.ts";
 import type { PortalAccess, User } from "../admin/userAdmin.types.ts";
 
 const access = (overrides: Partial<PortalAccess> = {}): PortalAccess => ({
@@ -42,13 +42,20 @@ describe("rowActions", () => {
     assert.deepEqual(rowActions(user({ status: "rejected" }), "admin"), ["approve"]);
   });
 
-  it("offers Allow web access to a resident the web currently blocks", () => {
-    assert.deepEqual(rowActions(user(), "admin"), ["edit", "deactivate", "resetPassword", "allowWeb"]);
+  it("offers Enable web access to a resident the web currently blocks, for the designated admin", () => {
+    assert.deepEqual(rowActions(user(), "admin", true), ["edit", "deactivate", "resetPassword", "allowWeb"]);
   });
 
-  it("offers Block web access to a resident the web currently allows", () => {
+  it("offers no web access action to other admins, on any resident", () => {
+    const allowed = user({ portalAccess: access({ web: true, state: "global_allowed", globalEnabled: true }) });
+    assert.deepEqual(rowActions(user(), "admin", false), ["edit", "deactivate", "resetPassword"]);
+    assert.deepEqual(rowActions(allowed, "admin", false), ["edit", "deactivate", "resetPassword"]);
+    assert.deepEqual(rowActions(user(), "admin"), ["edit", "deactivate", "resetPassword"], "hidden unless the server said otherwise");
+  });
+
+  it("offers Disable web access to a resident the web currently allows", () => {
     const allowed = user({ status: "approved", portalAccess: access({ web: true, state: "global_allowed", globalEnabled: true }) });
-    assert.deepEqual(rowActions(allowed, "admin"), ["edit", "deactivate", "resetPassword", "blockWeb"]);
+    assert.deepEqual(rowActions(allowed, "admin", true), ["edit", "deactivate", "resetPassword", "blockWeb"]);
   });
 
   it("has no web access items for staff", () => {
@@ -68,6 +75,11 @@ describe("rowActions", () => {
 });
 
 describe("row action items", () => {
+  it("keeps the globe control for either saved web access state", () => {
+    assert.equal(ROW_ACTION_ITEMS.allowWeb.icon, "globe");
+    assert.equal(ROW_ACTION_ITEMS.blockWeb.icon, "globe");
+  });
+
   it("names every action a resident can have, with its own icon", () => {
     const keys = ["edit", "approve", "reject", "deactivate", "reactivate", "resetPassword", "allowWeb", "blockWeb"] as const;
     for (const key of keys) assert.ok(ROW_ACTION_ITEMS[key].label.length > 0, key);
@@ -77,6 +89,10 @@ describe("row action items", () => {
 });
 
 describe("column widths", () => {
+  it("does not reserve a globe slot when web management is hidden", () => {
+    assert.deepEqual(actionWidthsForPermission(false), { block: 4 * 36 + 3 * 4, column: 4 * 36 + 3 * 4 + 2 * 16 });
+    assert.deepEqual(actionWidthsForPermission(true), { block: INLINE_ACTIONS_WIDTH, column: COLUMN_WIDTHS.actions });
+  });
   // The content beside the sidebar at a 1280px window, less the card's inset and border.
   const TABLE_AT_1280 = 942;
   const { userMin, role, status, access, lastLogin, actions } = COLUMN_WIDTHS;

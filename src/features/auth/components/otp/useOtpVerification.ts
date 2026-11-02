@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPath } from "@/config/roleRoutes";
 import { resendOtp, verifyOtp } from "@/services/auth";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
+import { registrationAccessNotice } from "@/features/webAccess/registrationAccessCopy";
 
 export const OTP_LENGTH = 6;
 const RESEND_COOLDOWN_SEC = 60;
@@ -28,7 +29,7 @@ export const useOtpVerification = ({ email, onClose, onVerified }: Options) => {
   const [verified, setVerified] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [verificationError, setVerificationError] = useState("");
-  const [showPlatformNotice, setShowPlatformNotice] = useState(false);
+  const [platformNotice, setPlatformNotice] = useState<ReturnType<typeof registrationAccessNotice> | null>(null);
 
   const otpComplete = isOtpComplete(code, OTP_LENGTH);
   const resendDisabled = isResending || resendTimer > 0;
@@ -64,11 +65,11 @@ export const useOtpVerification = ({ email, onClose, onVerified }: Options) => {
     try {
       setIsVerifying(true);
       setVerificationError("");
-      const { token, user } = await verifyOtp(email.trim(), code);
+      const { token, user, code: accessCode } = await verifyOtp(email.trim(), code);
 
       if (!token) {
-        resetCode();
-        setShowPlatformNotice(true);
+        setVerified(true);
+        setPlatformNotice(registrationAccessNotice(accessCode));
         return;
       }
 
@@ -115,6 +116,7 @@ export const useOtpVerification = ({ email, onClose, onVerified }: Options) => {
     setVerificationError("");
     setResendTimer(0);
     setVerified(false);
+    setPlatformNotice(null);
     onClose();
   };
 
@@ -129,9 +131,10 @@ export const useOtpVerification = ({ email, onClose, onVerified }: Options) => {
     resendTimer,
     resendDisabled,
     verificationError,
-    showPlatformNotice,
+    showPlatformNotice: platformNotice !== null,
+    platformNotice,
     dismissPlatformNotice: () => {
-      setShowPlatformNotice(false);
+      setPlatformNotice(null);
       finishVerification();
     },
     handleVerify,

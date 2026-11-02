@@ -1,4 +1,5 @@
 import ConfirmationModal from "@/components/ui/ConfirmationModal";
+import WebAccessConfirmDialog from "@/features/webAccess/WebAccessConfirmDialog";
 
 import { LinkChoiceProvider } from "../../../components/requests/masterList/LinkChoiceContext";
 import RejectRequestModal from "../../../components/requests/RejectRequestModal";
@@ -62,6 +63,13 @@ const ScreenOverlays = ({ screen, phone }: ScreenOverlaysProps) => {
         loading={actions.busy}
         onConfirm={() => void actions.confirm()}
         onCancel={actions.cancelConfirm}
+      />
+      <WebAccessConfirmDialog
+        visible={actions.webChangeWords !== null}
+        copy={actions.webChangeWords}
+        saving={actions.savingOverrideId !== null}
+        onConfirm={(reason) => void actions.confirmWebChange(reason)}
+        onCancel={actions.cancelWebChange}
       />
       <RejectRequestModal
         visible={actions.rejecting !== null}

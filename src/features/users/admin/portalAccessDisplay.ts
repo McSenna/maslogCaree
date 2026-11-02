@@ -13,16 +13,18 @@ export type PortalAccessLines = {
   toneLine: 1 | 2;
 };
 
+const ON = "Web access: ON";
+const OFF = "Web access: OFF";
+
 const LINES: Record<PortalState, PortalAccessLines> = {
   staff: { line1: "Web + mobile", line2: "", tone: "neutral", icon: "monitor", toneLine: 1 },
-  global_blocked: { line1: "Blocked globally", line2: "Mobile only", tone: "danger", icon: "slash", toneLine: 1 },
-  // That resident can sign in, so the exception must read as the one in effect.
-  exception_allowed: { line1: "Blocked globally", line2: "Individual access enabled", tone: "success", icon: "check-circle", toneLine: 2 },
-  global_allowed: { line1: "Web + mobile", line2: "Follows global setting", tone: "success", icon: "globe", toneLine: 1 },
-  individual_allowed: { line1: "Web + mobile", line2: "Individual access enabled", tone: "success", icon: "check-circle", toneLine: 2 },
-  individual_blocked: { line1: "Web blocked", line2: "Individually blocked", tone: "danger", icon: "slash", toneLine: 1 },
-  ineligible: { line1: "No web access", line2: "Account not active", tone: "neutral", icon: "minus-circle", toneLine: 1 },
-  unavailable: { line1: "Web access unavailable", line2: "Ask an admin to restore the setting", tone: "danger", icon: "alert-circle", toneLine: 1 },
+  global_blocked: { line1: OFF, line2: "Blocked globally", tone: "danger", icon: "slash", toneLine: 1 },
+  exception_allowed: { line1: ON, line2: "Individual access enabled", tone: "success", icon: "check-circle", toneLine: 1 },
+  global_allowed: { line1: ON, line2: "Follows global setting", tone: "success", icon: "globe", toneLine: 1 },
+  individual_allowed: { line1: ON, line2: "Individual access enabled", tone: "success", icon: "check-circle", toneLine: 1 },
+  individual_blocked: { line1: OFF, line2: "Individually blocked", tone: "danger", icon: "slash", toneLine: 1 },
+  ineligible: { line1: OFF, line2: "Account not active", tone: "neutral", icon: "minus-circle", toneLine: 1 },
+  unavailable: { line1: OFF, line2: "Setting unavailable", tone: "danger", icon: "alert-circle", toneLine: 1 },
 };
 
 export const portalAccessLines = (state: PortalState): PortalAccessLines => LINES[state];

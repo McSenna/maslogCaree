@@ -63,7 +63,7 @@ const ResidentSessionGate = ({ children }: { children: ReactNode }) => {
         style={[TYPE.headline, { color: palette.heading }]}
       >
         {blocked
-          ? "Resident web access disabled"
+          ? "Web access disabled"
           : "Access could not be verified"}
       </Text>
       <Text
@@ -71,7 +71,7 @@ const ResidentSessionGate = ({ children }: { children: ReactNode }) => {
         style={[TYPE.body, { color: palette.body }]}
       >
         {blocked
-          ? "The administrator has disabled your web access. Contact the barangay health center to request access. Provisioned mobile access is unchanged."
+          ? "Your web access has been disabled. Please contact the administrator. The mobile app is not affected."
           : "Protected services are unavailable until your access can be checked. Retry or contact the health center."}
       </Text>
       <DashboardButton

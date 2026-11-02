@@ -8,18 +8,18 @@ export const ROW_ACTION_ITEMS = {
   deactivate: { label: "Deactivate account", icon: "power", danger: true },
   reactivate: { label: "Reactivate account", icon: "rotate-ccw", danger: false },
   resetPassword: { label: "Send password reset", icon: "lock", danger: false },
-  allowWeb: { label: "Allow web access", icon: "globe", danger: false },
-  blockWeb: { label: "Block web access", icon: "slash", danger: true },
+  allowWeb: { label: "Enable web access", icon: "globe", danger: false },
+  blockWeb: { label: "Disable web access", icon: "globe", danger: true },
 } as const satisfies Record<RowActionKey, { label: string; icon: string; danger: boolean }>;
 
 /** The server refuses all of these when they do not apply; this only hides what would fail. */
-export const rowActions = (user: User, selfId: string | number | null): RowActionKey[] => {
+export const rowActions = (user: User, selfId: string | number | null, canManageWebAccess = false): RowActionKey[] => {
   if (user.status === "requested") return ["approve", "reject"];
   if (user.status === "rejected") return ["approve"];
   if (user.id === selfId) return ["edit"];
   if (user.status === "deactivated") return ["edit", "reactivate"];
 
   const actions: RowActionKey[] = ["edit", "deactivate", "resetPassword"];
-  if (user.role === "Resident") actions.push(user.portalAccess.web ? "blockWeb" : "allowWeb");
+  if (canManageWebAccess && user.role === "Resident") actions.push(user.portalAccess.web ? "blockWeb" : "allowWeb");
   return actions;
 };

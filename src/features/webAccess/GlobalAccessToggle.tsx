@@ -1,11 +1,11 @@
 import { useState } from "react";
-import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import { globalAccessCopy } from "@/features/users/admin/confirmCopy";
 import api from "@/services/api";
 import AccessLoadState from "./AccessLoadState";
 import AccessToggle from "./AccessToggle";
 import type { GlobalWebPolicy } from "./accessTypes";
 import { useAccessResource } from "./useAccessResource";
+import WebAccessConfirmDialog from "./WebAccessConfirmDialog";
 
 const PATH = "/admin/resident-web-access";
 
@@ -20,11 +20,12 @@ const GlobalAccessToggle = () => {
   }
 
   const copy = globalAccessCopy(!policy.enabled);
-  const save = () => {
-    setConfirming(false);
-    void remote.mutate(async () => {
-      await api.patch(PATH, { enabled: !policy.enabled, revision: policy.revision });
+  const save = async (reason: string) => {
+    const saved = await remote.mutate(async () => {
+      const { data } = await api.patch<{ policy: GlobalWebPolicy }>(PATH, { enabled: !policy.enabled, revision: policy.revision, reason: reason.trim() || null });
+      return data;
     }, "Resident web access setting saved");
+    if (saved) setConfirming(false);
   };
 
   return (
@@ -37,13 +38,11 @@ const GlobalAccessToggle = () => {
         hint="Asks you to confirm before changing"
         onChange={() => setConfirming(true)}
       />
-      <ConfirmationModal
+      <WebAccessConfirmDialog
         visible={confirming}
-        title={copy.title}
-        message={copy.body}
-        confirmLabel={copy.confirmLabel}
-        destructive={copy.destructive}
-        onConfirm={save}
+        copy={copy}
+        saving={remote.saving}
+        onConfirm={(reason) => void save(reason)}
         onCancel={() => setConfirming(false)}
       />
     </>

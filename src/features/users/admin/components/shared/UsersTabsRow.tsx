@@ -3,6 +3,7 @@ import { Platform, View } from "react-native";
 import DashboardButton from "@/components/dashboard/admin/DashboardButton";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import GlobalAccessToggle from "@/features/webAccess/GlobalAccessToggle";
+import { useCanManageWebAccess } from "@/features/webAccess/webAccessPermission";
 import { useResponsive } from "@/hooks/useResponsive";
 
 import type { UsersScreenState } from "../../hooks/useUsersScreen";
@@ -21,6 +22,7 @@ type UsersTabsRowProps = {
 const UsersTabsRow = ({ screen, onAddRecord }: UsersTabsRowProps) => {
   const palette = useAdminSurfacePalette();
   const { isMobile, width } = useResponsive();
+  const canManageWebAccess = useCanManageWebAccess();
   const showTabIcons = width >= TAB_ICONS_MIN_WIDTH;
   // The file is account data, and a phone's share sheet is no place for it.
   const showExport = !screen.masterTab && Platform.OS === "web";
@@ -42,8 +44,8 @@ const UsersTabsRow = ({ screen, onAddRecord }: UsersTabsRowProps) => {
 
   const actions = (
     <View className={`max-w-full flex-row flex-wrap items-center gap-3 ${isMobile ? "w-full" : ""}`}>
-      <GlobalAccessToggle />
-      {showExport || onAddRecord ? (
+      {canManageWebAccess ? <GlobalAccessToggle /> : null}
+      {canManageWebAccess && (showExport || onAddRecord) ? (
         isMobile ? null : <View className="h-7 w-px bg-divider" accessibilityElementsHidden importantForAccessibility="no" />
       ) : null}
       {/* ml-auto holds the action at the right edge, even when it wraps onto its own line. */}

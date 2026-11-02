@@ -54,7 +54,7 @@ export const describePlatformAccess = (
 
 export const MOBILE_ONLY_NOTICE = {
   title: "Resident web access disabled",
-  message: "Your resident web access is disabled. Contact the barangay health center to request access.",
-  supporting: "The MaslogCare mobile app is not affected. Sign in there with the same email and password.",
+  message: "Your web access has been disabled. Please contact the administrator.",
+  supporting: "The MaslogCare mobile app is not affected. Sign in there with a provisioned device credential and your existing email and password.",
   action: "Close notice",
 } as const;
