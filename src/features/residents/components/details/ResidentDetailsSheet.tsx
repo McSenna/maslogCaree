@@ -3,6 +3,7 @@ import { Platform, ScrollView, View } from "react-native";
 import BottomSheet, { SHEET_SCROLL_STYLE } from "@/components/ui/BottomSheet";
 import { useUserDetailsPalette } from "@/features/users/components/details/detailsTheme";
 
+import { detailsScrollRegionProps, detailsScrollRegionStyle } from "./detailsScrollRegion";
 import ResidentSheetBody from "./ResidentSheetBody";
 import ResidentSheetHeader, { TITLE_ID } from "./ResidentSheetHeader";
 import type { ResidentDetailsProps } from "./ResidentDetailsPanel";
@@ -36,7 +37,8 @@ const ResidentDetailsSheet = ({
       )}
     >
       <ScrollView
-        style={SHEET_SCROLL_STYLE}
+        {...detailsScrollRegionProps}
+        style={[SHEET_SCROLL_STYLE, detailsScrollRegionStyle]}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 12 }}
       >

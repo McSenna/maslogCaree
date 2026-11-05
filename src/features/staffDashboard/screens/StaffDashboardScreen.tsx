@@ -5,14 +5,11 @@ import {
   DashboardHeader,
   DashboardScroll,
   DashboardSkeleton,
-  greetingLine,
   longDate,
-  updatedLabel,
   useDashboardLayout,
   useMinuteClock,
   type DashboardAction,
 } from "@/components/dashboard/kit";
-import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { getAdminDashboardPalette } from "@/design/adminDashboardTheme";
 import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
@@ -37,7 +34,6 @@ const todayLine = (data: StaffDashboardData | null, config: RoleDashboardConfig)
 
 const StaffDashboardScreen = ({ role }: { role: StaffRole }) => {
   const router = useGuardedNavigation();
-  const { user } = useAuth();
   const { resolvedTheme } = useTheme();
   const palette = getAdminDashboardPalette(resolvedTheme);
   const isDark = resolvedTheme === "dark";
@@ -89,11 +85,11 @@ const StaffDashboardScreen = ({ role }: { role: StaffRole }) => {
       <DashboardHeader
         palette={palette}
         compact={layout.isMobile}
-        title={greetingLine(user?.name, now)}
+        title="Dashboard"
+        hideTitle
         subtitle={`${longDate(now)} · ${todayLine(data, config)}`}
         primaryAction={primaryAction}
         secondaryActions={secondaryActions}
-        updatedLabel={data ? updatedLabel(data.generatedAt, now) : undefined}
       />
 
       {error && data ? (

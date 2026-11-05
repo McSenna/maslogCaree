@@ -16,6 +16,7 @@ export const useHeaderProfileMenu = (compact: boolean, width: number) => {
   const router = useGuardedNavigation();
 
   const anchorRef = useRef<View>(null);
+  const opensProfileOnExit = useRef(false);
   const [anchor, setAnchor] = useState<ProfileAnchor | null>(null);
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -59,9 +60,25 @@ export const useHeaderProfileMenu = (compact: boolean, width: number) => {
     router.push(getProfilePath(role));
   }, [role, router, useProfileModal]);
 
+  // The modal waits for the menu to leave the page. A closing menu hands focus back to the header,
+  // and a modal already open would take that as a Tab and lose its initial focus on the close button.
+  const openProfileFromMenu = useCallback(() => {
+    if (useProfileModal) {
+      opensProfileOnExit.current = true;
+      return;
+    }
+    openProfile();
+  }, [openProfile, useProfileModal]);
+
+  const handleMenuExited = useCallback(() => {
+    if (!opensProfileOnExit.current) return;
+    opensProfileOnExit.current = false;
+    setProfileOpen(true);
+  }, []);
+
   const menuItems = useMemo<ProfileMenuItem[]>(
     () => [
-      { key: "profile", label: "My Profile", icon: "user", onPress: openProfile },
+      { key: "profile", label: "My Profile", icon: "user", onPress: openProfileFromMenu },
       {
         key: "logout",
         label: "Logout",
@@ -70,7 +87,7 @@ export const useHeaderProfileMenu = (compact: boolean, width: number) => {
         onPress: handleLogout,
       },
     ],
-    [handleLogout, openProfile]
+    [handleLogout, openProfileFromMenu]
   );
 
   const handlePress = useCallback(() => {
@@ -101,6 +118,7 @@ export const useHeaderProfileMenu = (compact: boolean, width: number) => {
     open,
     profileOpen,
     closeProfileModal: () => setProfileOpen(false),
+    handleMenuExited,
     logoutOpen,
     cancelLogout: () => setLogoutOpen(false),
     confirmLogout,

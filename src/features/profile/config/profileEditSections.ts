@@ -23,8 +23,8 @@ export const EMPTY_EDIT_PROFILE_VALUES: EditProfileValues = {
 };
 
 export const PROFILE_EDIT_SECTION_FIELDS: Record<ProfileEditSection, EditProfileField[]> = {
-  personal: ["firstName", "middleName", "surname", "dateOfBirth", "gender"],
-  contact: ["phone", "address"],
+  personal: ["firstName", "middleName", "surname", "dateOfBirth", "gender", "address"],
+  contact: ["phone"],
 };
 
 export const PROFILE_EDIT_SECTION_COPY: Record<

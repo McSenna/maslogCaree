@@ -9,19 +9,18 @@ import BookingActionButton from "./BookingActionButton";
 import ConfirmationCheckbox from "./ConfirmationCheckbox";
 import FormSelectField from "./FormSelectField";
 import MissionVisitFields from "./MissionVisitFields";
-import ResidentInfoCard from "./ResidentInfoCard";
 
 type BookingRequestStepProps = {
   booking: AppointmentBooking;
+  /** Asks first when there is input to lose. */
+  onCancel: () => void;
 };
 
-const BookingRequestStep = ({ booking }: BookingRequestStepProps) => {
+const BookingRequestStep = ({ booking, onCancel }: BookingRequestStepProps) => {
   const { errors, submitting, servicesUnavailable } = booking;
 
   return (
     <>
-      <ResidentInfoCard resident={booking.resident} />
-
       <View style={{ gap: 12 }}>
         <Text
           accessibilityRole="header"
@@ -84,7 +83,7 @@ const BookingRequestStep = ({ booking }: BookingRequestStepProps) => {
           onPress={() => void booking.submit()}
           disabled={submitting || servicesUnavailable}
           busy={submitting}
-          opacity={submitting || servicesUnavailable ? 0.55 : booking.isComplete ? 1 : 0.75}
+          opacity={submitting || servicesUnavailable ? 0.55 : 1}
           icon={
             submitting ? (
               <ActivityIndicator size="small" color={APPOINTMENT_COLORS.white} />
@@ -98,7 +97,7 @@ const BookingRequestStep = ({ booking }: BookingRequestStepProps) => {
           variant="neutral"
           label="Cancel"
           accessibilityLabel="Cancel booking"
-          onPress={booking.close}
+          onPress={onCancel}
           disabled={submitting}
           opacity={submitting ? 0.6 : 1}
         />

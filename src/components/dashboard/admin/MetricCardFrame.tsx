@@ -49,7 +49,7 @@ const MetricCardFrame = ({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ selected }}
-      aria-selected={selected}
+      aria-pressed={selected}
       className={className}
       style={[style, FRAME_WEB, !selected && (hovered || pressed) ? activeStyle : null]}
     >

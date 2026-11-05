@@ -8,22 +8,26 @@ import { webStyle } from "@/theme/webStyle";
 
 type ProfilePhotoProps = {
   size: number;
+  radius: number;
   imageUrl?: string | null;
   initials: string;
   name: string;
-  shape?: "circle" | "rounded";
   onChangePhoto?: () => void;
   changingPhoto?: boolean;
 };
 
 const BADGE_WEB = webStyle({ cursor: "pointer", transition: webTransition("background-color") });
+const BADGE_SIZE = 36;
+const BADGE_ICON = 17;
+const BADGE_HIT_SLOP = 8;
+const BADGE_OVERHANG = -6;
 
 const ProfilePhoto = ({
   size,
+  radius,
   imageUrl,
   initials,
   name,
-  shape = "circle",
   onChangePhoto,
   changingPhoto = false,
 }: ProfilePhotoProps) => {
@@ -33,9 +37,6 @@ const ProfilePhoto = ({
 
   const uri = imageUrl?.trim() ? imageUrl.trim() : null;
   const showFallback = !uri || failed;
-  const radius = shape === "circle" ? size / 2 : Math.round(size * 0.22);
-  const ring = size >= 120 ? 4 : 3;
-  const badge = Math.min(40, Math.max(32, Math.round(size * 0.26)));
   const badgeActive = badgeState.hovered || badgeState.pressed;
 
   return (
@@ -43,7 +44,7 @@ const ProfilePhoto = ({
       <View
         accessible
         accessibilityRole="image"
-        accessibilityLabel={`${name}'s profile photo`}
+        accessibilityLabel={showFallback ? `${name}, no photo added` : `${name}'s profile photo`}
         style={{
           width: size,
           height: size,
@@ -51,9 +52,9 @@ const ProfilePhoto = ({
           overflow: "hidden",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: colors.primary,
-          borderWidth: ring,
-          borderColor: colors.surface,
+          backgroundColor: colors.surfaceMuted,
+          borderWidth: 1,
+          borderColor: colors.border,
         }}
       >
         {showFallback ? (
@@ -64,13 +65,13 @@ const ProfilePhoto = ({
                 fontSize: Math.round(size * 0.34) + 2,
                 fontWeight: "700",
                 letterSpacing: 0.5,
-                color: colors.onPrimary,
+                color: colors.body,
               }}
             >
               {initials}
             </Text>
           ) : (
-            <Feather name="user" size={Math.round(size * 0.42)} color={colors.onPrimary} />
+            <Feather name="user" size={Math.round(size * 0.42)} color={colors.muted} />
           )
         ) : (
           <Image
@@ -86,23 +87,23 @@ const ProfilePhoto = ({
         <Pressable
           {...badgeState.handlers}
           accessibilityRole="button"
-          accessibilityLabel="Change profile photo"
-          accessibilityState={{ disabled: changingPhoto, busy: changingPhoto }}
-          onPress={onChangePhoto}
-          disabled={changingPhoto}
-          hitSlop={8}
+          accessibilityLabel={changingPhoto ? "Saving profile photo" : "Change profile photo"}
+          aria-busy={changingPhoto}
+          // Stays focusable while saving, so keyboard users keep their place.
+          onPress={changingPhoto ? undefined : onChangePhoto}
+          hitSlop={BADGE_HIT_SLOP}
           style={{
             position: "absolute",
-            right: shape === "circle" ? Math.round(size * 0.02) : -4,
-            bottom: shape === "circle" ? Math.round(size * 0.02) : -4,
-            width: badge,
-            height: badge,
-            borderRadius: badge / 2,
+            right: BADGE_OVERHANG,
+            bottom: BADGE_OVERHANG,
+            width: BADGE_SIZE,
+            height: BADGE_SIZE,
+            borderRadius: BADGE_SIZE / 2,
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: badgeActive ? colors.borderStrong : colors.surfaceMuted,
-            borderWidth: 3,
-            borderColor: colors.surface,
+            backgroundColor: badgeActive ? colors.surfaceHover : colors.surface,
+            borderWidth: 1,
+            borderColor: colors.border,
             opacity: changingPhoto ? 0.6 : 1,
             outlineWidth: badgeState.focused ? 3 : 0,
             outlineColor: colors.focusRing,
@@ -114,7 +115,7 @@ const ProfilePhoto = ({
           {changingPhoto ? (
             <ActivityIndicator size="small" color={colors.heading} />
           ) : (
-            <Feather name="camera" size={Math.round(badge * 0.45)} color={colors.heading} />
+            <Feather name="camera" size={BADGE_ICON} color={colors.heading} />
           )}
         </Pressable>
       ) : null}

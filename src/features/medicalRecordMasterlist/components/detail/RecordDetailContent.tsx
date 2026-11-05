@@ -1,4 +1,3 @@
-import { immunizationProgressLabel } from "@/services/immunizationRecordProgress";
 import { View } from "react-native";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
@@ -11,18 +10,29 @@ import {
 import { Block, Row } from "@/components/medicalRecord/details/RecordPrimitives";
 
 import { formatVisitDate, recordReference, SOURCE_LABELS } from "../../masterlistLabels";
+import type { VaccinationTabsState } from "@/features/immunization/recordView/useVaccinationTabs";
+import { isImmunizationRecord } from "@/features/immunization/recordView/vaccinationScope";
+
 import type { MasterlistDetail } from "../../types";
 import { providerOf } from "../rowText";
+import ImmunizationRecordContent from "./ImmunizationRecordContent";
 import RecordHistoryBlock from "./RecordHistoryBlock";
 import ResidentBlock from "./ResidentBlock";
 
-type Props = { detail: MasterlistDetail; onShowHistory?: () => void };
+type Props = {
+  detail: MasterlistDetail;
+  tabs: VaccinationTabsState;
+  onShowHistory?: () => void;
+  onOpenChecklist?: () => void;
+  onOpenProgram?: (programRecordId: string) => void;
+};
 
 /** The full record for staff, including the care team's private notes and its history. */
-const RecordDetailContent = ({ detail, onShowHistory }: Props) => {
-  const basePalette = useQueuePalette();
-  // This ongoing clinical record needs readable section labels in both themes.
-  const palette = detail.baby ? { ...basePalette, subtle: basePalette.body } : basePalette;
+const RecordDetailContent = ({ detail, tabs, onShowHistory, onOpenChecklist, onOpenProgram }: Props) => {
+  const palette = useQueuePalette();
+  if (isImmunizationRecord(detail)) {
+    return <ImmunizationRecordContent key={detail._id} detail={detail} tabs={tabs} onShowHistory={onShowHistory} onOpenChecklist={onOpenChecklist} onOpenProgram={onOpenProgram} />;
+  }
   const { record, form } = detail;
 
   return (
@@ -36,14 +46,6 @@ const RecordDetailContent = ({ detail, onShowHistory }: Props) => {
         <Row label="Provider" value={providerOf(detail)} palette={palette} />
         {record.visitReason ? <Row label="Reason for visit" value={record.visitReason} palette={palette} /> : null}
       </Block>
-      {detail.baby ? <Block title="Baby immunization program" palette={palette}>
-        <Row label="Baby" value={detail.baby.name} palette={palette} />
-        <Row label="Baby ID" value={detail.baby._id} palette={palette} />
-        <Row label="Date of birth" value={detail.baby.dateOfBirth} palette={palette} />
-        <Row label="Status" value={immunizationProgressLabel(detail) || "In progress"} palette={palette} />
-        <Row label="Schedule version" value={record.immunizationScheduleVersion || "Not recorded"} palette={palette} />
-        <Row label="Recording doses" value="Open each saved dose to view details. Midwives can use Edit record to continue drafts or make an audited correction." palette={palette} />
-      </Block> : null}
       <ServiceDetailsBlock record={record} form={form} palette={palette} />
       <ClinicalBlock record={record} palette={palette} />
       {record.notes ? (

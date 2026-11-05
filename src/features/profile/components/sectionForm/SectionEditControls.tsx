@@ -6,7 +6,7 @@ import { SPACING } from "@/theme/spacing";
 import { TYPE } from "@/theme/typography";
 
 export const SectionEditLink = ({ label, onPress }: { label: string; onPress: () => void }) => (
-  <Button label="Edit" icon="edit-2" variant="ghost" size="sm" accessibilityLabel={label} onPress={onPress} />
+  <Button label="Edit" icon="edit-2" variant="ghost" accessibilityLabel={label} onPress={onPress} />
 );
 
 export const SectionEditingBadge = () => {

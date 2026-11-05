@@ -6,6 +6,7 @@ import { SegmentedControl } from "@/components/dashboard/kit";
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
 import { dateParts, residentAppointmentColumns } from "./residentAppointmentColumns";
 import type { AdminDashboardPalette } from "@/design/adminDashboardTheme";
+import { getStatusLabel } from "@/components/status/appointmentStatusModel";
 import { appointmentsFor, tabOf, type AppointmentTab } from "@/screens/resident/dashboard/appointmentTabs";
 import type { AppointmentRecord } from "@/services/appointments";
 import { formatConsultationTypeLabel } from "@/utils/residentDashboard";
@@ -74,10 +75,10 @@ const ResidentAppointmentsTable = ({
         rowKey={(row) => row._id}
         rowLabel={(row) => {
           const { date, time } = dateParts(row);
-          return `${formatConsultationTypeLabel(row.consultationType)}, ${date}${time ? ` at ${time}` : ""}, ${row.status}`;
+          return `${formatConsultationTypeLabel(row.consultationType)}, ${date}${time ? ` at ${time}` : ""}, ${getStatusLabel(row.status, "resident")}`;
         }}
         onRowPress={onOpen}
-        rowHint="Opens your appointments"
+        rowHint="Opens this appointment's details"
         renderMobileCard={(row) => {
           const { date, time } = dateParts(row);
           return (

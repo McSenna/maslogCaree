@@ -61,6 +61,15 @@ const PersonalInfoForm = ({ form }: PersonalInfoFormProps) => {
         onChange={(gender) => setField("gender", gender)}
         error={errors.gender}
       />
+
+      <ProfileFieldInput
+        label="Address"
+        value={values.address}
+        onChangeText={(text) => setField("address", text)}
+        autoCapitalize="sentences"
+        multiline
+        error={errors.address}
+      />
     </View>
   );
 };

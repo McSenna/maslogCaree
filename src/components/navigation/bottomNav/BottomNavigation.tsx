@@ -1,5 +1,5 @@
 import { usePathname } from "expo-router";
-import { View, useWindowDimensions } from "react-native";
+import { Platform, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useOptionalTheme } from "@/contexts/ThemeContext";
 import {
@@ -12,6 +12,12 @@ import { isRouteActive } from "./isRouteActive";
 import { useKeyboardVisible } from "./useKeyboardVisible";
 import { BOTTOM_NAV_METRICS, getBottomNavPalette } from "./bottomNavTokens";
 import type { BottomNavEntry } from "./types";
+
+// Web items render as links, which a tablist may not contain. Android keeps its tab semantics.
+const landmarkProps =
+  Platform.OS === "web"
+    ? ({ role: "navigation", accessibilityLabel: "Main" } as const)
+    : ({ accessibilityRole: "tablist" } as const);
 
 type BottomNavigationProps = {
   items: BottomNavEntry[];
@@ -32,7 +38,7 @@ const BottomNavigation = ({ items, replace = false }: BottomNavigationProps) => 
 
   return (
     <View
-      accessibilityRole="tablist"
+      {...landmarkProps}
       style={{
         position: "absolute",
         left: 0,

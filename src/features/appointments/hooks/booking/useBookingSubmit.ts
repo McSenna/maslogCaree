@@ -4,6 +4,7 @@ import { getApiErrorMessage, normalizeApiError } from "@/utils/apiErrorHandler";
 import { createBookingRequestKey } from "./bookingRules";
 import { classifyDraftFailure, draftBody, validateDraft, type BookingDraft } from "./bookingDraft";
 import type { BookingErrors } from "./bookingTypes";
+import { dismissToast } from "@/components/feedback";
 import { toastError } from "@/utils/errorToast/toastError";
 
 const CONNECTION_MESSAGE =
@@ -52,6 +53,8 @@ export const useBookingSubmit = ({
     setSubmitError(null);
     try {
       const { appointment } = await createResidentAppointment(draftBody(draft, requestKey.current));
+      // A retry that worked must not leave "Appointment not booked" over the confirmation.
+      dismissToast();
       onBooked(appointment);
     } catch (error: unknown) {
       const failure = classifyDraftFailure(draft, normalizeApiError(error));

@@ -3,10 +3,12 @@ import type { ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
+import { TYPE } from "@/theme/typography";
 
 export type DialogHeaderProps = {
   palette: ResidentDialogPalette;
   title: string;
+  subtitle?: string;
   icon: keyof typeof Feather.glyphMap;
   media?: ReactNode;
   tint?: string;
@@ -18,6 +20,7 @@ export type DialogHeaderProps = {
 export const DialogHeader = ({
   palette,
   title,
+  subtitle,
   icon,
   media,
   tint,
@@ -54,14 +57,17 @@ export const DialogHeader = ({
       >
         {media ?? <Feather name={icon} size={17} color={tint ?? palette.accent} />}
       </View>
-      <Text
-        nativeID={titleId}
-        accessibilityRole="header"
-        numberOfLines={2}
-        style={{ minWidth: 0, flex: 1, fontSize: 19, fontWeight: "700", color: palette.heading }}
-      >
-        {title}
-      </Text>
+      <View style={{ minWidth: 0, flex: 1 }}>
+        <Text
+          nativeID={titleId}
+          accessibilityRole="header"
+          numberOfLines={2}
+          style={{ fontSize: 19, fontWeight: "700", color: palette.heading }}
+        >
+          {title}
+        </Text>
+        {subtitle ? <Text style={[TYPE.body, { color: palette.muted }]}>{subtitle}</Text> : null}
+      </View>
     </View>
 
     <Pressable

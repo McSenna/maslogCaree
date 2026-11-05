@@ -9,6 +9,32 @@
 /** Breathing room kept between the status bar / notch and the top of a sheet. */
 export const TOP_SAFE_GAP = 8;
 
+/** Less than this is the browser's own toolbar collapsing, not a keyboard. */
+const WEB_KEYBOARD_MIN_HEIGHT = 120;
+
+/**
+ * Where a mobile browser's keyboard starts, or null when none is showing.
+ *
+ * Mobile browsers shrink the visual viewport for the keyboard and leave the
+ * layout viewport alone, so a fixed sheet would sit behind the keys. A pinch
+ * zoom shrinks the visual viewport too, so a zoomed page never counts.
+ */
+export const webKeyboardTop = ({
+  layoutHeight,
+  visualHeight,
+  visualOffsetTop,
+  scale,
+}: {
+  layoutHeight: number;
+  visualHeight: number;
+  visualOffsetTop: number;
+  scale: number;
+}): number | null => {
+  if (Math.abs(scale - 1) > 0.01) return null;
+  const visibleBottom = visualHeight + visualOffsetTop;
+  return layoutHeight - visibleBottom >= WEB_KEYBOARD_MIN_HEIGHT ? Math.round(visibleBottom) : null;
+};
+
 /**
  * How much of the sheet's container the keyboard actually covers.
  *

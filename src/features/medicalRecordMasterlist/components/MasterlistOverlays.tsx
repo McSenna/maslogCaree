@@ -24,6 +24,7 @@ const MasterlistOverlays = ({ screen }: { screen: MasterlistScreenState }) => {
         detail={detail}
         onEdit={screen.canWriteRecords && !editor ? screen.openEdit : undefined}
         onShowHistory={editor ? undefined : screen.showHistory}
+        onOpenProgram={editor || !screen.editImmunization ? undefined : (id) => void screen.editImmunization?.(id)}
       />
     </>
   );

@@ -1,6 +1,7 @@
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { QUEUE_RADIUS, useQueuePalette } from "@/components/appointmentQueue/queueTheme";
+import { errorTextColor } from "@/components/medicalRecord/fields/fieldShell";
 import { PALETTE, withAlpha } from "@/theme/palette";
 
 export const ErrorBanner = ({ message }: { message: string }) => {
@@ -16,8 +17,8 @@ export const ErrorBanner = ({ message }: { message: string }) => {
         backgroundColor: palette.isDark ? withAlpha(PALETTE.red[600], 0.14) : PALETTE.red[50],
       }}
     >
-      <Feather name="alert-circle" size={15} color={PALETTE.red[600]} style={{ marginTop: 1 }} />
-      <Text className="min-w-0 flex-1 text-[14.5px] font-medium leading-[19px]" style={{ color: PALETTE.red[600] }}>
+      <Feather name="alert-circle" size={15} color={errorTextColor(palette)} style={{ marginTop: 1 }} />
+      <Text className="min-w-0 flex-1 text-[14.5px] font-medium leading-[19px]" style={{ color: errorTextColor(palette) }}>
         {message}
       </Text>
     </View>
@@ -96,8 +97,8 @@ export const FooterButtons = ({
           opacity: busy || disabled ? 0.6 : 1,
         }}
       >
-        {busy ? <ActivityIndicator size="small" color={PALETTE.white} /> : null}
-        <Text className="text-[16px] font-semibold text-white">{nextLabel}</Text>
+        {busy ? <ActivityIndicator size="small" color={palette.onPrimary} /> : null}
+        <Text className="text-[16px] font-semibold" style={{ color: palette.onPrimary }}>{nextLabel}</Text>
       </Pressable>
     </View>
   );

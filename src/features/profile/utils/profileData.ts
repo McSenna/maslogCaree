@@ -1,13 +1,11 @@
+import { civilStatusLabel } from "@/config/civilStatus";
+import type { UserRole } from "@/config/roleRoutes";
 import type { CurrentUser } from "@/contexts/AuthContext";
 import { formatDate } from "@/utils/dateFormatter";
+import { getProfileRoleConfig, type ProfileRoleConfig } from "../config/profileRoleConfig";
+import type { ProfileFieldValues } from "../config/profileFields";
+import { buildProfileSections, type ProfileSection } from "./buildProfileSections";
 import {
-  PROFILE_FIELDS,
-  getProfileRoleConfig,
-  type ProfileFieldKey,
-  type ProfileRoleConfig,
-} from "../config/profileRoleConfig";
-import {
-  NOT_PROVIDED,
   buildDisplayId,
   calculateAge,
   getCreationDateFromId,
@@ -15,101 +13,62 @@ import {
   titleCase,
 } from "./profileHelpers";
 
-export {
-  NOT_PROVIDED,
-  buildDisplayId,
-  calculateAge,
-  getCreationDateFromId,
-  getInitials,
-} from "./profileHelpers";
-
-export type ProfileField = {
-  key: ProfileFieldKey;
-  label: string;
-  value: string;
-  icon: (typeof PROFILE_FIELDS)[ProfileFieldKey]["icon"];
-  provided: boolean;
-};
-
 export type ProfileData = {
+  roleId: UserRole;
   role: ProfileRoleConfig;
   name: string;
   email: string;
-  phone: string | null;
   address: string | null;
   avatarUrl: string | null;
   initials: string;
   displayId: string;
-  accountStatus: string;
   verified: boolean;
-  age: number | null;
-  joinedOn: string | null;
-  fields: ProfileField[];
+  sections: ProfileSection[];
 };
 
-const resolveFieldValue = (
-  key: ProfileFieldKey,
-  user: CurrentUser,
-  ctx: { displayId: string; accountStatus: string }
-): string | null => {
-  switch (key) {
-    case "fullName":
-      return user.name?.trim() || null;
-    case "userId":
-      return ctx.displayId;
-    case "address":
-      return user.address?.trim() || null;
-    case "phone":
-      return user.phone?.trim() || null;
-    case "email":
-      return user.email?.trim() || null;
-    case "dateOfBirth":
-      return user.dateOfBirth ? formatDate(user.dateOfBirth) : null;
-    case "gender":
-      return titleCase(user.gender);
-    case "dateJoined": {
-      const created = getCreationDateFromId(user.id);
-      return created ? formatDate(created) : null;
-    }
-    case "accountStatus":
-      return ctx.accountStatus;
-    default:
-      return null;
-  }
+const blankToNull = (value?: string | null) => value?.trim() || null;
+
+/** Undefined stays undefined: the server has not answered yet, which is not the same as blank. */
+const optional = (value: string | undefined, read: (present: string) => string) =>
+  value === undefined ? undefined : blankToNull(read(value));
+
+const describeAge = (age: number | null) => {
+  if (age === null) return null;
+  return age === 1 ? "1 year old" : `${age} years old`;
+};
+
+const toFieldValues = (user: CurrentUser, role: ProfileRoleConfig): ProfileFieldValues => {
+  const joined = getCreationDateFromId(user.id);
+
+  return {
+    fullName: blankToNull(user.name),
+    dateOfBirth: user.dateOfBirth ? formatDate(user.dateOfBirth) : null,
+    age: describeAge(calculateAge(user.dateOfBirth)),
+    gender: titleCase(user.gender),
+    address: blankToNull(user.address),
+    civilStatus: optional(user.civilStatus, civilStatusLabel),
+    houseOrPurok: optional(user.houseOrPurok, (value) => value),
+    email: blankToNull(user.email),
+    phone: blankToNull(user.phone),
+    role: role.label,
+    dateJoined: joined ? formatDate(joined) : null,
+    accountStatus: user.verified ? "Active" : "Pending",
+  };
 };
 
 export const buildProfileData = (user: CurrentUser): ProfileData => {
   const role = getProfileRoleConfig(user.role);
-  const displayId = buildDisplayId(user.id, role.idPrefix);
-  const accountStatus = user.verified ? "Active" : "Pending";
-  const createdAt = getCreationDateFromId(user.id);
-
-  const fields: ProfileField[] = role.fields.map((key) => {
-    const definition = PROFILE_FIELDS[key];
-    const value = resolveFieldValue(key, user, { displayId, accountStatus });
-
-    return {
-      key,
-      label: key === "userId" ? role.idLabel : definition.label,
-      icon: definition.icon,
-      value: value ?? NOT_PROVIDED,
-      provided: value !== null,
-    };
-  });
 
   return {
+    roleId: user.role,
     role,
     name: user.name?.trim() || "MaslogCare User",
     email: user.email?.trim() || "",
-    phone: user.phone?.trim() || null,
-    address: user.address?.trim() || null,
+    address: blankToNull(user.address),
     avatarUrl: user.avatarUrl ?? null,
     initials: getInitials(user.name),
-    displayId,
-    accountStatus,
+    displayId: buildDisplayId(user.id, role.idPrefix),
     verified: Boolean(user.verified),
-    age: calculateAge(user.dateOfBirth),
-    joinedOn: createdAt ? formatDate(createdAt) : null,
-    fields,
+    sections: buildProfileSections(role.sections, toFieldValues(user, role)),
   };
 };

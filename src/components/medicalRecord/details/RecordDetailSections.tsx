@@ -17,7 +17,7 @@ export const CompletedBadge = ({ record, palette }: Omit<SectionProps, "form">) 
   const tone = record.recordStatus === "in_progress" ? palette.statuses.processing : palette.statuses.completed;
   return <View className="w-full flex-row items-center gap-2 self-start px-3 py-1.5" style={{ borderRadius:QUEUE_RADIUS.pill,backgroundColor:tone.bg }}>
     <Text className="text-[14.5px] font-semibold" style={{color:tone.fg}}>
-      {immunizationProgressLabel(record) || `Completed ${formatWhen(record.completedAt)}`}
+      {immunizationProgressLabel(record) || `${record.serviceDetails?.ledgerSummary ? "Visit completed" : "Completed"} ${formatWhen(record.completedAt)}`}
     </Text>
   </View>;
 };

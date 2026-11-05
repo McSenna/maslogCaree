@@ -5,11 +5,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 import DateOfBirthPicker from "@/features/auth/components/datePicker/DateOfBirthPicker";
 import { formatBirthDate } from "@/features/auth/utils/dateOfBirth";
-import { PALETTE } from "@/theme/palette";
 
 import { useVisitDay } from "../form/VisitDayContext";
 import { boundsForField, openingMonth } from "./dateFieldBounds";
-import { FieldLabel, buildShellStyle, parseDateKey, toDateKey, type FieldPartProps } from "./fieldShell";
+import { FieldLabel, buildShellStyle, errorTextColor, parseDateKey, toDateKey, type FieldPartProps } from "./fieldShell";
 
 const asLocalDate = (iso: string | null) => (iso ? parseDateKey(iso) : undefined);
 
@@ -47,7 +46,7 @@ const DateField = ({ field, value, onChange, palette, helper, error, disabled, b
       </Pressable>
 
       <View className="mt-1 flex-row items-center justify-between gap-3">
-        <Text className="min-w-0 flex-1 text-[13.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
+        <Text className="min-w-0 flex-1 text-[13.5px]" style={{ color: error ? errorTextColor(palette) : palette.subtle }}>
           {helper ?? ""}
         </Text>
         {day ? (

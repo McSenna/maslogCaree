@@ -1,7 +1,6 @@
-import { RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView, Text, View } from "react-native";
 
 import RoleScreenBackdrop from "@/components/layout/RoleScreenBackdrop";
-import { PageSubtitle, PageTitle } from "@/components/ui/Typography";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import { usePageMaxWidth } from "@/hooks/useResponsive";
 import { useRoleScreenInsets } from "@/hooks/useRoleScreenInsets";
@@ -39,13 +38,7 @@ const ResidentAnnouncementsScreen = () => {
         }}
       >
         <View style={{ width: "100%", maxWidth, alignSelf: "center", gap: 20 }}>
-          <View style={{ gap: 4 }}>
-            <PageTitle>Announcements</PageTitle>
-            <PageSubtitle>
-              News and upcoming activities from Barangay Maslog Health Center. Pull down to check for
-              new posts.
-            </PageSubtitle>
-          </View>
+          <Text role="heading" aria-level={1} className="sr-only">Announcements</Text>
 
           <AnnouncementFeedList
             feed={feed}

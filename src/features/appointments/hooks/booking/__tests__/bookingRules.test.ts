@@ -5,6 +5,7 @@ import {
   classifyBookingFailure,
   classifyWeeklyFailure,
   createBookingRequestKey,
+  hasBookingInput,
   keepOpenDay,
   keepOpenSelection,
   validateBooking,
@@ -128,5 +129,39 @@ describe("keepOpenDay", () => {
 
   it("selects nothing when every day is full", () => {
     assert.equal(keepOpenDay([{ dateKey: "2026-10-08", openPositions: 0 }], null), null);
+  });
+});
+
+describe("hasBookingInput", () => {
+  const empty = {
+    serviceType: null,
+    scheduleId: null,
+    slotStart: null,
+    dateKey: null,
+    reason: "",
+    notes: "",
+    childName: "",
+    childDob: "",
+    confirmed: false,
+  };
+
+  it("has nothing to lose on an untouched form, so closing asks nothing", () => {
+    assert.equal(hasBookingInput(empty), false);
+    assert.equal(hasBookingInput({ ...empty, reason: "   " }), false);
+  });
+
+  it("protects any single choice or typed field", () => {
+    for (const change of [
+      { serviceType: "bp_checking" },
+      { slotStart: "2026-10-08T00:00:00.000Z" },
+      { dateKey: "2026-10-08" },
+      { reason: "Cough" },
+      { notes: "Morning" },
+      { childName: "Fixture" },
+      { childDob: "2026-01-01" },
+      { confirmed: true },
+    ]) {
+      assert.equal(hasBookingInput({ ...empty, ...change }), true, JSON.stringify(change));
+    }
   });
 });

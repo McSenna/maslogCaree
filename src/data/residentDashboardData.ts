@@ -15,7 +15,7 @@ export const quickActions: QuickAction[] = [
     shortLabel: "Records",
     icon: "document-text-outline",
     tone: "care",
-    href: "/resident/records",
+    href: "/resident/medical-records",
   },
   {
     id: "services",

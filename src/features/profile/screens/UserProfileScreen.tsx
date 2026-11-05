@@ -1,73 +1,74 @@
-import { useRef } from "react";
-import { ScrollView, View } from "react-native";
-import AboutMaslogCareDialog from "@/components/about/AboutMaslogCareDialog";
-import { toast } from "@/components/feedback/toast/toastStore";
-import { HelpSupportOverlays } from "@/features/help-center";
-import { useGuardedNavigation } from "@/hooks/useGuardedNavigation";
-import { usePageMaxWidth, useResponsive } from "@/hooks/useResponsive";
+import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from "react-native";
+import { useResponsive } from "@/hooks/useResponsive";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
 import { SPACING } from "@/theme/spacing";
-import { useCardReveal } from "../hooks/useCardReveal";
-import { useProfileScreen } from "../hooks/useProfileScreen";
+import { TYPE } from "@/theme/typography";
+import LogoutButton from "../components/LogoutButton";
 import LogoutConfirmModal from "../components/LogoutConfirmModal";
-import ProfileEditConfirmations from "../components/ProfileEditConfirmations";
+import ProfileAccordionList from "../components/ProfileAccordionList";
+import ProfileColumns from "../components/ProfileColumns";
 import ProfileErrorState from "../components/ProfileErrorState";
-import ProfileNoticeModal from "../components/ProfileNoticeModal";
-import ProfileScreenContent from "../components/ProfileScreenContent";
-import ProfileScreenSkeleton from "../components/ProfileScreenSkeleton";
-import { ChangePasswordDialog } from "../change-password/ChangePasswordDialog";
+import ProfileOverlays from "../components/ProfileOverlays";
+import ProfilePageHeader from "../components/ProfilePageHeader";
+import ProfileSkeleton from "../components/ProfileSkeleton";
+import { PROFILE_MAX_WIDTH } from "../config/profileTheme";
+import { useProfileScreen } from "../hooks/useProfileScreen";
 
 const UserProfileScreen = () => {
-  const scrollRef = useRef<ScrollView>(null);
-
-  const reveal = useCardReveal(scrollRef);
-  const state = useProfileScreen({ onEditProfileStarted: reveal.revealCard });
+  const state = useProfileScreen();
   const { isMobile, isDesktop } = useResponsive();
-  const maxWidth = usePageMaxWidth("content");
   const colors = useThemeColors();
-  const navigation = useGuardedNavigation();
-
-  const wide = !isMobile;
-  const twoColumn = isDesktop;
-  const bookAppointment = state.isResident
-    ? () => navigation.push("/resident/appointments?book=1")
-    : undefined;
-
   const showSkeleton = state.loading || (state.refreshing && !state.profile);
 
+  const renderContent = () => {
+    if (showSkeleton) return <ProfileSkeleton twoColumn={isDesktop} />;
+    if (!state.profile) return <ProfileErrorState onRetry={state.reloadAll} message={state.refreshError ?? undefined} />;
+    if (isMobile) return <ProfileAccordionList profile={state.profile} state={state} />;
+    return <ProfileColumns profile={state.profile} state={state} twoColumn={isDesktop} />;
+  };
+
   return (
-    <View style={{ flex: 1, backgroundColor: colors.page }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: colors.page }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <ScrollView
-        ref={scrollRef}
         showsVerticalScrollIndicator={false}
-        onLayout={reveal.onViewportLayout}
-        onScroll={reveal.onScroll}
-        scrollEventThrottle={16}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
-          paddingHorizontal: wide ? SPACING.xs : SPACING.sm,
+          paddingHorizontal: isMobile ? SPACING.md : SPACING.lg,
           paddingTop: SPACING.md,
           paddingBottom: SPACING.xxl,
         }}
       >
-        <View style={{ width: "100%", maxWidth, alignSelf: "center" }}>
-          {showSkeleton ? (
-            <ProfileScreenSkeleton wide={wide} twoColumn={twoColumn} />
-          ) : !state.profile ? (
-            <ProfileErrorState
-              onRetry={state.reloadAll}
-              message={state.refreshError ?? undefined}
-            />
+        <View style={{ width: "100%", maxWidth: PROFILE_MAX_WIDTH, alignSelf: "center", gap: SPACING.lg }}>
+          {isMobile ? (
+            <Text accessibilityRole="header" aria-level={1} style={{ ...TYPE.headline, color: colors.heading }}>
+              Profile
+            </Text>
+          ) : null}
+
+          {isMobile ? (
+            renderContent()
           ) : (
-            <ProfileScreenContent
-              profile={state.profile}
-              state={state}
-              wide={wide}
-              twoColumn={twoColumn}
-              onBookAppointment={bookAppointment}
-              onTabPanelLayout={reveal.onPanelLayout}
-              onPersonalCardLayout={reveal.onCardLayout}
-            />
+            <View
+              style={{
+                borderRadius: RADII.large,
+                borderWidth: 1,
+                borderColor: colors.border,
+                backgroundColor: colors.surface,
+              }}
+            >
+              <ProfilePageHeader
+                title={state.profile?.role.title ?? "Profile"}
+                onEdit={state.profile && !state.edit.editingSection ? state.onEditProfile : undefined}
+              />
+              <View style={{ paddingHorizontal: SPACING.xxl, paddingVertical: SPACING.xl }}>{renderContent()}</View>
+            </View>
           )}
+
+          {state.profile ? <LogoutButton onPress={state.requestLogout} /> : null}
         </View>
       </ScrollView>
 
@@ -78,21 +79,8 @@ const UserProfileScreen = () => {
         onConfirm={state.confirmLogout}
       />
 
-      <ProfileNoticeModal notice={state.notice} onClose={state.dismissNotice} />
-
-      <AboutMaslogCareDialog visible={state.aboutVisible} onClose={state.closeAbout} />
-
-      <HelpSupportOverlays overlay={state.supportOverlay} />
-
-      <ProfileEditConfirmations edit={state.edit} />
-
-      <ChangePasswordDialog
-        visible={state.changePasswordVisible}
-        onClose={state.closeChangePassword}
-        onSuccess={() => toast.success("Password changed", "Use your new password the next time you sign in.")}
-      />
-
-    </View>
+      <ProfileOverlays state={state} />
+    </KeyboardAvoidingView>
   );
 };
 

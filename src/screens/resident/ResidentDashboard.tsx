@@ -151,7 +151,7 @@ const ResidentDashboard = () => {
       palette={palette}
       appointments={model.appointments}
       compact={isMobile}
-      onOpen={handlers.onViewAppointment}
+      onOpen={(appointment) => handlers.onViewAppointment({ id: appointment._id })}
       onViewAll={handlers.onViewAllAppointments}
       fill={!stackPanels}
     />

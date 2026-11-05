@@ -17,6 +17,9 @@ export interface CurrentUser {
   address?: string | null;
   phone?: string | null;
   verified?: boolean;
+  /** Undefined until the server answers: both stay out of the stored session. */
+  civilStatus?: string;
+  houseOrPurok?: string;
 }
 
 export interface AuthContextValue {

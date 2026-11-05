@@ -53,19 +53,19 @@ const validatePersonal = (values: EditProfileValues, errors: EditProfileErrors) 
   if (!values.gender.trim()) {
     errors.gender = "Gender is required.";
   }
-};
-
-const validateContact = (values: EditProfileValues, errors: EditProfileErrors) => {
-  const phone = values.phone.trim();
-  if (phone && !isValidPhMobile(phone)) {
-    errors.phone = "Enter a valid PH mobile number (e.g. 09171234567).";
-  }
 
   const address = values.address.trim();
   if (!address) {
     errors.address = "Address is required.";
   } else if (address.length < 5 || address.length > 255) {
     errors.address = "Address must be between 5 and 255 characters.";
+  }
+};
+
+const validateContact = (values: EditProfileValues, errors: EditProfileErrors) => {
+  const phone = values.phone.trim();
+  if (phone && !isValidPhMobile(phone)) {
+    errors.phone = "Enter a valid PH mobile number (e.g. 09171234567).";
   }
 };
 

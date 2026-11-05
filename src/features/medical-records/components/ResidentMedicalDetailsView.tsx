@@ -1,32 +1,20 @@
 import { useMemo } from "react";
 import { View } from "react-native";
 
-import {
-  buildDetailGroups,
-  buildFollowUp,
-} from "@/components/medicalRecord/history/recordDetailGroups";
+import DashboardButton from "@/components/dashboard/admin/DashboardButton";
+import { CompletionPlaceholder } from "@/components/medicalRecord/complete/CompletionChrome";
+import { buildDetailGroups, buildFollowUp } from "@/components/medicalRecord/history/recordDetailGroups";
 import { getServiceLabel } from "@/config/appointmentServices";
-import { useResidentDialogPalette } from "@/design/residentDialogTheme";
+import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import type { VaccinationTabsState } from "@/features/immunization/recordView/useVaccinationTabs";
+import { isImmunizationRecord } from "@/features/immunization/recordView/vaccinationScope";
 import type { CompletionForm, MedicalRecord } from "@/services/medicalRecords";
 import type { AppointmentRecord } from "@/types/appointments.types";
 
-import { isEncodedRecord } from "@/services/medicalRecordTypes";
+import ResidentImmunizationRecord from "./ResidentImmunizationRecord";
+import { ClinicalFacts, DetailGroups, FollowUpFacts, ItemsGivenFacts, VisitFacts } from "./ResidentRecordSections";
 
-import { AppointmentInfoSection } from "./sections/AppointmentInfoSection";
-import { HistoricalVisitSection } from "./sections/HistoricalVisitSection";
-import {
-  AssessmentSection,
-  RecommendationsSection,
-} from "./sections/AssessmentSections";
-import { DetailSection, KeyValueRow } from "./sections/DetailSection";
-import { ItemsGivenSection } from "./sections/ItemsGivenSection";
-import {
-  DetailsEmpty,
-  DetailsError,
-  DetailsLoading,
-} from "./sections/MedicalDetailsStates";
-import { MedicalRecordSummary } from "./sections/MedicalRecordSummary";
-import { VitalSignsGrid } from "./sections/VitalSignsGrid";
+const NOT_FILED = "No medical details are available yet. They appear here once your health worker files the record for this visit.";
 
 export type ResidentMedicalDetailsViewProps = {
   record: MedicalRecord | null;
@@ -35,8 +23,13 @@ export type ResidentMedicalDetailsViewProps = {
   error?: string | null;
   appointment?: AppointmentRecord | null;
   onRetry?: () => void;
+  /** Immunization records only: the tab state, which lives with the dialog's pinned tab bar. */
+  vaccinationTabs?: VaccinationTabsState;
+  /** Closes the dialog before a shortcut leaves it. */
+  onLeave?: () => void;
 };
 
+/** One record for its owner: the staff view's blocks, without the care team's notes or its edit history. */
 export const ResidentMedicalDetailsView = ({
   record,
   form = null,
@@ -44,65 +37,48 @@ export const ResidentMedicalDetailsView = ({
   error = null,
   appointment = null,
   onRetry,
+  vaccinationTabs,
+  onLeave,
 }: ResidentMedicalDetailsViewProps) => {
-  const palette = useResidentDialogPalette();
+  const palette = useAdminSurfacePalette();
+  const groups = useMemo(() => (record ? buildDetailGroups(record, form) : []), [record, form]);
+  const followUp = useMemo(() => (record ? buildFollowUp(record, form) : null), [record, form]);
 
-  const groups = useMemo(
-    () => (record ? buildDetailGroups(record, form) : []),
-    [record, form]
-  );
-  const followUp = useMemo(
-    () => (record ? buildFollowUp(record, form) : null),
-    [record, form]
-  );
-
-  if (loading) return <DetailsLoading palette={palette} />;
-  if (error) return <DetailsError palette={palette} message={error} onRetry={onRetry} />;
-  if (!record) return <DetailsEmpty palette={palette} />;
-
-  const vitalsGroup = groups.find((group) => group.isVitals);
-  const otherGroups = groups.filter((group) => group !== vitalsGroup);
+  if (loading) return <CompletionPlaceholder message="Loading the medical record." />;
+  if (error) {
+    return (
+      <View className="items-center gap-3">
+        <CompletionPlaceholder message={error} error />
+        {onRetry ? <DashboardButton palette={palette} variant="secondary" icon="refresh-cw" label="Try again" onPress={onRetry} /> : null}
+      </View>
+    );
+  }
+  if (!record) return <CompletionPlaceholder message={NOT_FILED} />;
 
   const serviceKey = record.serviceType || appointment?.consultationType || "";
   const serviceLabel = getServiceLabel(serviceKey) || serviceKey;
 
+  if (isImmunizationRecord(record) && vaccinationTabs) {
+    return (
+      <ResidentImmunizationRecord
+        key={record._id}
+        record={record}
+        form={form}
+        serviceLabel={serviceLabel}
+        followUp={followUp}
+        tabs={vaccinationTabs}
+        onLeave={onLeave}
+      />
+    );
+  }
+
   return (
-    <View style={{ gap: 16 }}>
-      <MedicalRecordSummary palette={palette} record={record} serviceLabel={serviceLabel} />
-
-      {isEncodedRecord(record) ? (
-        <HistoricalVisitSection palette={palette} record={record} serviceLabel={serviceLabel} />
-      ) : (
-        <AppointmentInfoSection
-          palette={palette}
-          record={record}
-          serviceLabel={serviceLabel}
-          appointment={appointment}
-        />
-      )}
-
-      <VitalSignsGrid palette={palette} entries={vitalsGroup?.entries ?? []} />
-
-      {otherGroups.map((group) => (
-        <DetailSection key={group.title} palette={palette} title={group.title} icon="file-text">
-          <View style={{ gap: 8 }}>
-            {group.entries.map((entry) => (
-              <KeyValueRow
-                key={entry.key}
-                palette={palette}
-                label={entry.label}
-                value={entry.value}
-              />
-            ))}
-          </View>
-        </DetailSection>
-      ))}
-
-      <AssessmentSection palette={palette} record={record} />
-
-      <RecommendationsSection palette={palette} record={record} followUp={followUp} />
-
-      <ItemsGivenSection palette={palette} items={record.itemsGiven ?? []} />
+    <View className="w-full gap-4">
+      <VisitFacts record={record} serviceLabel={serviceLabel} appointment={appointment} />
+      <DetailGroups groups={groups} />
+      <ClinicalFacts record={record} />
+      <ItemsGivenFacts record={record} />
+      <FollowUpFacts followUp={followUp} />
     </View>
   );
 };

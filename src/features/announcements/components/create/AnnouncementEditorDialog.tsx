@@ -1,24 +1,29 @@
 import { useCallback } from "react";
-import { View } from "react-native";
 
 import { toast } from "@/components/feedback";
 import ResponsiveDialog from "@/components/ui/dialog/ResponsiveDialog";
-import { DialogActions, InlineError } from "@/components/ui/dialog/DialogPieces";
-import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 import { useDialogPresentation } from "@/hooks/useDialogPresentation";
+import { RADII } from "@/theme/radius";
+import { showAlert } from "@/utils/notify";
 
-import type { AnnouncementRecord } from "../../announcement.types";
+import type { AnnouncementRecord, AnnouncementSubmitPayload } from "../../announcement.types";
 import type { EditableAnnouncement } from "../../announcementFormValues";
 import { useAnnouncementForm } from "../../hooks/useAnnouncementForm";
+import AnnouncementEditorFooter from "./AnnouncementEditorFooter";
 import AnnouncementForm from "./AnnouncementForm";
 import { dialogCopy } from "./formCopy";
 
-type AnnouncementEditorDialogProps = {
+export type AnnouncementEditorDialogProps = {
   /** The announcement to edit; null writes a new one. */
   editing: EditableAnnouncement | null;
   onClose: () => void;
+  /** Saves the announcement. A rejection keeps the form open with the person's input. */
+  onSubmit: (payload: AnnouncementSubmitPayload) => Promise<AnnouncementRecord>;
   onSaved: (announcement: AnnouncementRecord) => void;
 };
+
+const MAX_WIDTH = 930;
+const SHEET_HEIGHT_RATIO = 1;
 
 const recipientLine = (count: number | undefined): string =>
   count === undefined
@@ -34,13 +39,12 @@ const savedToast = (saved: AnnouncementRecord, wasEditing: boolean, wasDraft: bo
 };
 
 /**
- * Create or edit, centred from tablet width up and a bottom sheet on phones;
- * `ResponsiveDialog` makes that choice and owns focus, Escape, scroll lock and
- * keyboard insets. Mounted only while open, so each opening starts from the
- * announcement it was opened for.
+ * Create or edit, centred from tablet width up and a full-height sheet on
+ * phones; `ResponsiveDialog` makes that choice and owns focus, Escape, scroll
+ * lock and keyboard insets. Mounted only while open, so each opening starts
+ * from the announcement it was opened for.
  */
-const AnnouncementEditorDialog = ({ editing, onClose, onSaved }: AnnouncementEditorDialogProps) => {
-  const palette = useResidentDialogPalette();
+const AnnouncementEditorDialog = ({ editing, onClose, onSubmit, onSaved }: AnnouncementEditorDialogProps) => {
   const compact = useDialogPresentation() === "sheet";
 
   const handleSaved = useCallback(
@@ -57,32 +61,49 @@ const AnnouncementEditorDialog = ({ editing, onClose, onSaved }: AnnouncementEdi
     toast.error(editing ? "Changes not saved" : "Announcement not posted");
   }, [editing]);
 
-  const form = useAnnouncementForm({ editing, onSaved: handleSaved, onFailed: handleFailed });
-  const copy = dialogCopy(form.values, form.isEditing, form.canChooseDraft);
+  const form = useAnnouncementForm({ editing, onSubmit, onSaved: handleSaved, onFailed: handleFailed });
+  const copy = dialogCopy(form.isEditing, form.canChooseDraft);
+
+  // True when closing was stopped: a save is running, or there is input to confirm losing.
+  const holdClose = (): boolean => {
+    if (form.submitting) return true;
+    if (!form.hasUnsavedInput) return false;
+    showAlert(editing ? "Discard your changes?" : "Discard this announcement?", "The details you have entered will not be saved.", [
+      { text: "Keep editing", style: "cancel" },
+      { text: "Discard", style: "destructive", onPress: onClose },
+    ]);
+    return true;
+  };
+
+  const requestClose = () => {
+    if (!holdClose()) onClose();
+  };
 
   return (
     <ResponsiveDialog
       visible
       title={copy.title}
+      subtitle={copy.subtitle}
       icon={form.isEditing ? "edit-2" : "volume-2"}
-      maxWidth={600}
-      onClose={onClose}
+      maxWidth={MAX_WIDTH}
+      radius={RADII.medium}
+      sheetHeightRatio={SHEET_HEIGHT_RATIO}
+      flush
+      onClose={requestClose}
+      onDismissRequest={holdClose}
       footer={
-        <View style={{ gap: 10 }}>
-          {form.submitError ? <InlineError palette={palette} message={form.submitError} /> : null}
-          <DialogActions
-            palette={palette}
-            secondaryLabel="Cancel"
-            onSecondary={onClose}
-            primaryLabel={form.submitting ? copy.submitting : copy.submit}
-            onPrimary={() => void form.submit()}
-            busy={form.submitting}
-            icon={form.values.isDraft || (form.isEditing && !form.canChooseDraft) ? "check" : "send"}
-          />
-        </View>
+        <AnnouncementEditorFooter
+          form={form}
+          compact={compact}
+          note={copy.note}
+          submitLabel={copy.submit}
+          submittingLabel={copy.submitting}
+          submitIcon={form.canChooseDraft ? "send" : "check"}
+          onCancel={requestClose}
+        />
       }
     >
-      <AnnouncementForm form={form} compact={compact} />
+      <AnnouncementForm form={form} compact={compact} maxWidth={MAX_WIDTH} />
     </ResponsiveDialog>
   );
 };

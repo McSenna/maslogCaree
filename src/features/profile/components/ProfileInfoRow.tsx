@@ -9,37 +9,35 @@ type ProfileInfoRowProps = {
   value: string;
   icon: keyof typeof Feather.glyphMap;
   provided?: boolean;
-  iconColor?: string;
+  fullWidth?: boolean;
 };
 
-/** Facebook "Intro" style: the value leads, its label sits quietly underneath. */
-const ProfileInfoRow = ({ label, value, icon, provided = true, iconColor }: ProfileInfoRowProps) => {
+const ICON_SIZE = 20;
+// Under 40% two fields would share a row with a third. The minimum drops a narrow card to one column.
+const HALF_BASIS = "40%";
+const MIN_FIELD_WIDTH = 200;
+
+/** One field in the details grid. Its value sits under its label and is never cut off. */
+const ProfileInfoRow = ({ label, value, icon, provided = true, fullWidth = false }: ProfileInfoRowProps) => {
   const colors = useThemeColors();
 
   return (
     <View
       accessible
       accessibilityLabel={`${label}: ${value}`}
-      style={{ flexDirection: "row", alignItems: "flex-start", gap: SPACING.md, paddingVertical: SPACING.sm }}
+      style={{
+        flexGrow: 1,
+        flexBasis: fullWidth ? "100%" : HALF_BASIS,
+        minWidth: MIN_FIELD_WIDTH,
+        flexDirection: "row",
+        alignItems: "flex-start",
+        gap: SPACING.md,
+      }}
     >
-      <View style={{ width: 24, height: TYPE.body.lineHeight, alignItems: "center", justifyContent: "center" }}>
-        <Feather name={icon} size={18} color={iconColor ?? colors.muted} />
-      </View>
-
-      <View style={{ flex: 1, minWidth: 0 }}>
-        <Text
-          maxFontSizeMultiplier={1.3}
-          style={{
-            ...(provided ? TYPE.bodyStrong : TYPE.body),
-            color: provided ? colors.heading : colors.subtle,
-            fontStyle: provided ? "normal" : "italic",
-          }}
-        >
-          {value}
-        </Text>
-        <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.caption, color: colors.muted }}>
-          {label}
-        </Text>
+      <Feather name={icon} size={ICON_SIZE} color={colors.muted} />
+      <View style={{ flex: 1, minWidth: 0, gap: SPACING.xxs }}>
+        <Text style={{ ...TYPE.caption, fontWeight: "400", color: colors.muted }}>{label}</Text>
+        <Text style={{ ...TYPE.body, color: provided ? colors.heading : colors.muted }}>{value}</Text>
       </View>
     </View>
   );

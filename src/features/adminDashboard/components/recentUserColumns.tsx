@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 
 import { TableCellRow, Badge, type Column } from "@/components/data-table";
 import DashboardRoleBadge from "@/components/dashboard/admin/DashboardRoleBadge";
@@ -37,18 +37,13 @@ export const UserCell = ({
       fallbackBackgroundColor={palette.divider}
       fallbackIconColor={palette.subtle}
     />
-    <View className="min-w-0 shrink">
-      <Text className="text-[15.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
-        {user.fullname}
-      </Text>
-      <Text className="text-[14px]" numberOfLines={1} style={{ color: palette.muted }}>
-        {user.email}
-      </Text>
-    </View>
+    <Text className="min-w-0 shrink text-[15.5px] font-semibold" numberOfLines={1} style={{ color: palette.heading }}>
+      {user.fullname}
+    </Text>
   </TableCellRow>
 );
 
-/** Newest accounts, declared once for the header, rows and skeleton. */
+/** Shared columns distribute spare space equally while retaining their content minimums. */
 export const recentUserColumns = ({
   palette,
   isDark,
@@ -59,7 +54,7 @@ export const recentUserColumns = ({
   {
     key: "user", nameColumn: true,
     header: "User",
-    flex: 2.4,
+    flex: 1,
     minWidth: 200,
     render: (user) => <UserCell palette={palette} user={user} />,
   },
@@ -67,21 +62,24 @@ export const recentUserColumns = ({
     key: "role",
     header: "Role",
     align: "center",
-    width: 134,
+    flex: 1,
+    minWidth: 134,
     render: (user) => <DashboardRoleBadge role={user.role} palette={palette} isDark={isDark} />,
   },
   {
     key: "status",
     header: "Status",
     align: "center",
-    width: 134,
+    flex: 1,
+    minWidth: 134,
     hideBelow: "lg",
     render: (user) => <AccountBadge verified={user.verified} />,
   },
   {
     key: "joined",
     header: "Joined",
-    width: 106,
+    flex: 1,
+    minWidth: 106,
     align: "center",
     hideBelow: "md",
     render: (user) => (

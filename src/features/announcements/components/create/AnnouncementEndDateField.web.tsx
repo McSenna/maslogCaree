@@ -7,7 +7,7 @@ import ClearEndDateButton from "./ClearEndDateButton";
 import { END_DATE_HELPER, END_DATE_LABEL, type AnnouncementEndDateFieldProps } from "./endDateField.types";
 import NativeInput from "./WebPickerInput";
 
-const AnnouncementEndDateField = ({ value, eventDate, onChange, error, disabled }: AnnouncementEndDateFieldProps) => {
+const AnnouncementEndDateField = ({ value, eventDate, onChange, error, disabled, inputRef, onBlur }: AnnouncementEndDateFieldProps) => {
   const id = useId();
   const range = useMemo(() => announcementDateRange(), []);
   const earliest = eventDate && eventDate > range.min ? eventDate : range.min;
@@ -16,6 +16,8 @@ const AnnouncementEndDateField = ({ value, eventDate, onChange, error, disabled 
     <View className="gap-1">
       <NativeInput
         id={`${id}-end`}
+        inputRef={inputRef}
+        onBlur={onBlur}
         type="date"
         label={END_DATE_LABEL}
         value={value}

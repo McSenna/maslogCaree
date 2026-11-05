@@ -24,6 +24,8 @@ export const toCurrentUser = (userData: AuthUser): CurrentUser => ({
   phone: userData.phone ?? null,
   verified: userData.verified,
   avatarUrl: userData.avatarUrl ?? null,
+  civilStatus: userData.civilStatus ?? "",
+  houseOrPurok: userData.addressDetails?.houseNumberOrPurok ?? "",
 });
 
 export const toStoredUser = (

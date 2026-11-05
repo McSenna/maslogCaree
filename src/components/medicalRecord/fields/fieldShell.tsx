@@ -62,6 +62,10 @@ export const FieldLabel = ({
   </View>
 );
 
+/** Red text that stays readable on the dark panels; the lighter step fails contrast on white. */
+export const errorTextColor = (palette: Pick<QueuePalette, "isDark">) =>
+  palette.isDark ? PALETTE.red[300] : PALETTE.red[600];
+
 export const FieldHelper = ({
   helper,
   error,
@@ -73,7 +77,7 @@ export const FieldHelper = ({
 }) => {
   if (!helper) return null;
   return (
-    <Text className="mt-1 text-[13.5px]" style={{ color: error ? PALETTE.red[600] : palette.subtle }}>
+    <Text className="mt-1 text-[13.5px]" style={{ color: error ? errorTextColor(palette) : palette.subtle }}>
       {helper}
     </Text>
   );

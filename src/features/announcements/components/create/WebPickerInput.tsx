@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from "react";
+import { useState, type CSSProperties, type Ref } from "react";
 
 import { resolveFieldAppearance } from "@/components/forms/fieldAppearance";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -21,6 +21,8 @@ type NativeInputProps = {
   min?: string;
   max?: string;
   required?: boolean;
+  inputRef?: Ref<HTMLInputElement>;
+  onBlur?: () => void;
 };
 
 /**
@@ -39,6 +41,8 @@ const NativeInput = ({
   min,
   max,
   required = true,
+  inputRef,
+  onBlur,
 }: NativeInputProps) => {
   const colors = useThemeColors();
   const { resolvedTheme } = useTheme();
@@ -75,8 +79,9 @@ const NativeInput = ({
   };
 
   return (
-    <PickerFieldShell label={label} messageId={messageId} error={error} helper={helper} required={required}>
+    <PickerFieldShell label={label} htmlFor={id} messageId={messageId} error={error} helper={helper} required={required}>
       <input
+        ref={inputRef}
         id={id}
         type={type}
         value={value}
@@ -90,7 +95,10 @@ const NativeInput = ({
         aria-describedby={error || helper ? messageId : undefined}
         onChange={(event) => onChange(event.currentTarget.value)}
         onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onBlur={() => {
+          setFocused(false);
+          onBlur?.();
+        }}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
         style={style}

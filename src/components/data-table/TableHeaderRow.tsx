@@ -26,6 +26,8 @@ const TableHeaderRow = <T,>({ columns, hiddenFromReaders = false, debug = false 
       accessibilityRole={IS_WEB ? undefined : "header"}
       accessibilityElementsHidden={hiddenFromReaders}
       importantForAccessibility={hiddenFromReaders ? "no-hide-descendants" : "auto"}
+      // The two props above only apply on native.
+      aria-hidden={hiddenFromReaders || undefined}
       style={[
         styles.row,
         {

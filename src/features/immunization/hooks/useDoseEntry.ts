@@ -1,6 +1,6 @@
 import { toast } from "@/components/feedback";
 import { useState } from "react";
-import { isAdministered, validateAdministration } from "../immunizationLogic";
+import { doseEntryErrors, doseRequestOf, isAdministered, type DoseEntryField } from "../immunizationLogic";
 import { immunizationApi } from "../services/immunizationApi";
 import type { Administration, Checklist, DoseView } from "../types";
 import useClinicalSave from "./useClinicalSave";
@@ -26,61 +26,33 @@ const useDoseEntry = (
     route: record?.route ?? "",
     site: record?.site ?? "",
     remarks: record?.remarks ?? "",
+    immediateReaction: record?.immediateReaction ?? "",
+    aefi: record?.aefi ?? "",
     historical: record?.historical ?? false,
   });
   const [reason, setReason] = useState("");
   const [reviewing, setReviewing] = useState(false);
+  const [checked, setChecked] = useState(false);
   const saving = useClinicalSave();
   const patient = {
     motherMasterResidentId: checklist.mother.masterResidentId,
     babyId: checklist.baby._id,
     doseKey: dose.key,
   };
-  const review = () => {
-    const issue =
-      action === "void" && completed
-        ? ""
-        : validateAdministration(
-            administration.administeredOn,
-            checklist.baby.dateOfBirth,
-          );
-    if (issue) {
-      saving.setError(issue);
-      return;
-    }
-    if (
-      action !== "void" &&
-      administration.administeredAt &&
-      !/^([01]\d|2[0-3]):[0-5]\d$/.test(administration.administeredAt)
-    ) {
-      saving.setError("Use a valid time in HH:mm format, or leave time blank.");
-      return;
-    }
-    if (
-      administration.historical &&
-      !administration.administeredBy?.trim() &&
-      action !== "void"
-    ) {
-      saving.setError(
-        "Enter the clinician who administered this historical dose.",
-      );
-      return;
-    }
-    if (completed && !reason.trim()) {
-      saving.setError(
-        "Enter the reason for correcting or voiding this record.",
-      );
-      return;
-    }
-    saving.setError("");
-    setReviewing(true);
-  };
+  const currentErrors = () =>
+    doseEntryErrors({
+      ...administration,
+      birth: checklist.baby.dateOfBirth,
+      amending: completed,
+      voiding: completed && action === "void",
+      reason,
+    });
   const finish = async () => {
     await onSaved();
     onClose();
   };
   const saveDraft = () => void saving.save(
-    () => immunizationApi.saveDraft({ ...patient, ...administration, expectedRevision: record?.revision ?? null }),
+    () => immunizationApi.saveDraft({ ...patient, ...doseRequestOf(administration), expectedRevision: record?.revision ?? null }),
     async () => { toast.success("Immunization draft saved"); await finish(); },
   );
   const save = () =>
@@ -91,12 +63,27 @@ const useDoseEntry = (
               ...patient,
               action,
               reason: reason.trim(),
-              expectedRevision: record.revision,
-              ...(action === "correct" ? { administration } : {}),
+              expectedRevision: record.revision ?? 0,
+              ...(action === "correct" ? { administration: doseRequestOf(administration) } : {}),
             })
-          : immunizationApi.administer({ ...patient, ...administration, expectedRevision: record?.revision ?? null }),
+          : immunizationApi.administer({ ...patient, ...doseRequestOf(administration), expectedRevision: record?.revision ?? null }),
       async () => { toast.success(completed ? "Immunization correction saved" : "Immunization record completed"); await finish(); },
     );
+  /**
+   * Returns the first field that needs fixing, so the modal can scroll to it.
+   * A new dose saves at once. A correction or void is reviewed first, because it
+   * changes a record already on file.
+   */
+  const submit = (): DoseEntryField | null => {
+    setChecked(true);
+    const errors = currentErrors();
+    const first = (["reason", "administeredOn", "administeredAt", "administeredBy"] as const).find((field) => errors[field]);
+    if (first) return first;
+    saving.setError("");
+    if (completed) setReviewing(true);
+    else save();
+    return null;
+  };
   return {
     completed,
     mode,
@@ -109,9 +96,10 @@ const useDoseEntry = (
     setReason,
     reviewing,
     setReviewing,
+    errors: checked ? currentErrors() : {},
     saving,
     patient,
-    review,
+    submit,
     finish,
     save,
     saveDraft,

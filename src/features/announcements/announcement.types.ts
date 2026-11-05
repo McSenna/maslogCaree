@@ -55,3 +55,18 @@ export type CreateAnnouncementPayload = {
   expiresAt: string | null;
   isDraft: boolean;
 };
+
+export type AnnouncementAudienceKey = Lowercase<Audience>;
+
+/** What the form hands to `onSubmit`. Dates were entered in the device's local timezone. */
+export type AnnouncementSubmitPayload = {
+  title: string;
+  message: string;
+  location: string;
+  audience: AnnouncementAudienceKey;
+  /** ISO timestamp of the event being announced. */
+  scheduledAt: string;
+  /** YYYY-MM-DD, the last day it stays visible; null keeps it up until deleted. */
+  showUntil: string | null;
+  isDraft: boolean;
+};

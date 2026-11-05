@@ -29,7 +29,7 @@ const UserRowActions = ({ user, selfId, savingOverrideId, onOpenProfile, onActio
   const size = touch ? "comfortable" : "default";
   const canManageWebAccess = useCanManageWebAccess();
   return (
-    <View role="group" accessibilityLabel={`Actions for ${user.fullName}`} className={`flex-row flex-wrap items-center ${touch ? "gap-2" : "gap-1"}`} style={touch ? undefined : (canManageWebAccess ? TABLE_BLOCK : STANDARD_TABLE_BLOCK)}>
+    <View role="group" accessibilityLabel={`Actions for ${user.fullName}`} className={`flex-row flex-wrap items-center ${touch ? "gap-2" : "justify-center gap-1"}`} style={touch ? undefined : (canManageWebAccess ? TABLE_BLOCK : STANDARD_TABLE_BLOCK)}>
       <TableButton size={size} iconOnly icon="eye" label="View account" accessibilityLabel={`View account of ${user.fullName}`} onPress={() => onOpenProfile(user.id)} />
       {rowActions(user, selfId, canManageWebAccess).map((key) => {
         const { label, icon, danger } = ROW_ACTION_ITEMS[key];

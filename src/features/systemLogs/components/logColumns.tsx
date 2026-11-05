@@ -27,13 +27,13 @@ const IpAddress = ({ value }: { value: string }) => {
   );
 };
 
-/** System logs, declared once for the header, rows, skeleton and phone cards. */
+/** Shared columns distribute spare space equally while retaining their content minimums. */
 export const logColumns = ({ onOpen }: Handlers): Column<SystemLog>[] => [
-  { key: "timestamp", header: "Timestamp", align: "center", width: 156, render: (log) => <TableText value={formatSystemLogDate(log.createdAt)} lines={2} /> },
+  { key: "timestamp", header: "Timestamp", align: "center", flex: 1, minWidth: 156, render: (log) => <TableText value={formatSystemLogDate(log.createdAt)} lines={2} /> },
   {
     key: "user", nameColumn: true,
     header: "User",
-    flex: 1.4,
+    flex: 1,
     minWidth: 140,
     render: (log) => (
       <TableLink
@@ -48,7 +48,8 @@ export const logColumns = ({ onOpen }: Handlers): Column<SystemLog>[] => [
     key: "role",
     header: "Role",
     align: "center",
-    width: 146,
+    flex: 1,
+    minWidth: 146,
     // Beside the details panel the table is narrow; the role is also in the panel and on the card.
     hideBelow: "lg",
     cardRole: "badge",
@@ -58,12 +59,12 @@ export const logColumns = ({ onOpen }: Handlers): Column<SystemLog>[] => [
   {
     key: "action",
     header: "Action",
-    flex: 1.8,
+    flex: 1,
     minWidth: 150,
     render: (log) => <TableText value={formatSystemLogActionLabel(log)} tone="heading" lines={2} />,
   },
-  { key: "module", header: "Module", align: "center", width: 146, hideBelow: "lg", accessor: (log) => log.module },
-  { key: "severity", header: "Severity", align: "center", width: 134, hideBelow: "md", render: (log) => <SeverityIndicator severity={log.severity} /> },
-  { key: "ip", header: "IP address", align: "center", width: 156, hideBelow: "lg", render: (log) => <IpAddress value={log.ipAddress} /> },
-  { key: "status", header: "Status", align: "center", width: 134, cardRole: "badge", render: (log) => <StatusBadge status={log.status} /> },
+  { key: "module", header: "Module", align: "center", flex: 1, minWidth: 146, hideBelow: "lg", accessor: (log) => log.module },
+  { key: "severity", header: "Severity", align: "center", flex: 1, minWidth: 134, hideBelow: "md", render: (log) => <SeverityIndicator severity={log.severity} /> },
+  { key: "ip", header: "IP address", align: "center", flex: 1, minWidth: 156, hideBelow: "lg", render: (log) => <IpAddress value={log.ipAddress} /> },
+  { key: "status", header: "Status", align: "center", flex: 1, minWidth: 134, cardRole: "badge", render: (log) => <StatusBadge status={log.status} /> },
 ];

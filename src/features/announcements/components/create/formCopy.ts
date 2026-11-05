@@ -1,24 +1,33 @@
-import type { AnnouncementFormValues, Audience } from "../../announcement.types";
-
-const WHO: Record<Audience, string> = {
-  Patients: "Patients with an approved account",
-  Staff: "Health staff and admins",
-  Everyone: "Every active MaslogCare account",
+type DialogCopy = {
+  title: string;
+  subtitle: string;
+  submit: string;
+  submitting: string;
+  note: string;
 };
 
-/** The line above the form: who hears about this, and when. */
-export const formIntro = (values: AnnouncementFormValues, isEditing: boolean, canChooseDraft: boolean): string => {
-  if (values.isDraft) return "Only admins can see a draft. Nobody is notified until you post it.";
+const POSTING_NOTE =
+  "Selected active accounts will receive notifications, and this announcement will also appear on the announcements page.";
+
+export const dialogCopy = (isEditing: boolean, canChooseDraft: boolean): DialogCopy => {
   if (isEditing && !canChooseDraft) {
-    return "Saving updates the notification people already received. Nobody is notified again.";
+    return {
+      title: "Edit announcement",
+      subtitle: "Update what people have already received.",
+      submit: "Save changes",
+      submitting: "Saving…",
+      note: "Saving updates the notification people already received. Nobody is notified again.",
+    };
   }
-  return `${WHO[values.audience]} will get this in their notifications, and it stays on the announcements page.`;
+  return {
+    title: isEditing ? "Edit draft" : "New announcement",
+    subtitle: isEditing ? "Finish this update, then post it or keep it as a draft." : "Create an update for your community.",
+    submit: "Post announcement",
+    submitting: "Posting…",
+    note: POSTING_NOTE,
+  };
 };
 
-type DialogCopy = { title: string; submit: string; submitting: string };
-
-export const dialogCopy = (values: AnnouncementFormValues, isEditing: boolean, canChooseDraft: boolean): DialogCopy => {
-  if (values.isDraft) return { title: isEditing ? "Edit draft" : "New announcement", submit: "Save draft", submitting: "Saving…" };
-  if (isEditing && !canChooseDraft) return { title: "Edit announcement", submit: "Save changes", submitting: "Saving…" };
-  return { title: isEditing ? "Edit draft" : "New announcement", submit: "Post announcement", submitting: "Posting…" };
-};
+export const AUDIENCE_SCHEDULE_HELPER = "Choose who will see this announcement and when the event happens.";
+// The date is the event's. Posting is what reaches people, so the form says so beside the date.
+export const SCHEDULE_HELPER = "The date and time of the event. People are notified as soon as you post, not at this time.";

@@ -6,6 +6,8 @@ export type Baby = {
   dateOfBirth: string;
   motherMasterResidentId: string;
   temporaryName: boolean;
+  /** Staff only: left out of a resident's response. */
+  birthRecordId?: string;
   scheduleVersion: string;
   age: { months: number; days: number; weeks: number };
 };
@@ -18,6 +20,8 @@ export type Administration = {
   route?: string;
   site?: string;
   remarks?: string;
+  immediateReaction?: string;
+  aefi?: string;
   historical?: boolean;
 };
 export type DoseRecord = Partial<Administration> & {
@@ -26,10 +30,12 @@ export type DoseRecord = Partial<Administration> & {
   doseKey: string;
   state: "administered" | "deferred" | "void" | "pending";
   workflowStatus?: "draft" | "completed";
-  recordedBy: string;
+  /** Staff only: absent from a resident's response, along with an empty history. */
+  recordedBy?: string;
   followUpOn?: string;
   reason?: string;
-  revision: number;
+  /** Staff only. Every save a midwife can make sends this back. */
+  revision?: number;
   history: {
     action: string;
     reason: string;
@@ -90,6 +96,10 @@ export type Checklist = {
   legacyReviewRequired: boolean;
   history: DoseRecord[];
 };
+/** A completed visit, resolved to its baby by the server. Older or ambiguous visits stay unlinked. */
+export type VisitLedger =
+  | { linked: false }
+  | { linked: true; visitDay: string; visitDoseKeys: string[]; checklist: Checklist };
 export type PatientDose = {
   motherMasterResidentId: string;
   babyId: string;
@@ -99,5 +109,5 @@ export type Correction = PatientDose & {
   reason: string;
   action: "void" | "correct";
   expectedRevision: number;
-  administration?: Administration;
+  administration?: Partial<Administration> & Pick<Administration, "administeredOn">;
 };

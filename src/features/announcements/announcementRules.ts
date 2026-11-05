@@ -2,16 +2,11 @@
  * Pure rules for the announcement form. Import-free (type imports are erased)
  * so `node --test` can load it; the API re-checks every rule.
  */
-import type {
-  AnnouncementFormErrors,
-  AnnouncementFormValues,
-  CreateAnnouncementPayload,
-} from "./announcement.types.ts";
+import type { AnnouncementFormErrors, AnnouncementFormValues } from "./announcement.types.ts";
 import {
   MAX_DAYS_AHEAD,
   addDays,
   combineDateTime,
-  endOfDateKey,
   parseClock,
   parseDateKey,
   startOfDay,
@@ -59,9 +54,18 @@ const dateError = (key: string, now: Date, unchanged: boolean): string | undefin
   return undefined;
 };
 
-const timeError = (clock: string): string | undefined => {
-  if (!clock) return "Choose the time.";
-  return parseClock(clock) === null ? "Enter a valid time." : undefined;
+const timeError = (values: AnnouncementFormValues, now: Date, unchanged: boolean): string | undefined => {
+  if (!values.time) return "Choose the time.";
+  if (parseClock(values.time) === null) return "Enter a valid time.";
+  if (unchanged) return undefined;
+  const day = parseDateKey(values.date);
+  const event = combineDateTime(values.date, values.time);
+  // A past day is the date field's error. The current minute still counts as on time.
+  const minuteNow = new Date(now).setSeconds(0, 0);
+  if (day && day >= startOfDay(now) && event && event.getTime() < minuteNow) {
+    return "That time has already passed. Choose a later time.";
+  }
+  return undefined;
 };
 
 const endDateError = (values: AnnouncementFormValues, now: Date, unchanged: boolean): string | undefined => {
@@ -89,7 +93,7 @@ export const validateAnnouncementForm = (
     title: lengthError("Title", values.title.trim(), L.titleMin, L.titleMax),
     message: lengthError("Message", values.message.trim(), L.messageMin, L.messageMax),
     date: dateError(values.date, now, eventUnchanged),
-    time: timeError(values.time),
+    time: timeError(values, now, eventUnchanged),
     location: lengthError("Location", values.location.trim(), L.locationMin, L.locationMax),
     endDate: endDateError(values, now, endUnchanged),
   };
@@ -103,22 +107,6 @@ export const validateAnnouncementForm = (
 
 export const hasAnnouncementErrors = (errors: AnnouncementFormErrors): boolean =>
   Object.values(errors).some(Boolean);
-
-/** Call only after validation passes. */
-export const toCreatePayload = (values: AnnouncementFormValues): CreateAnnouncementPayload => {
-  const eventAt = combineDateTime(values.date, values.time);
-  if (!eventAt) throw new Error("toCreatePayload needs a valid date and time");
-
-  return {
-    title: values.title.trim(),
-    message: values.message.trim(),
-    eventAt: eventAt.toISOString(),
-    location: values.location.trim(),
-    audience: values.audience,
-    expiresAt: endOfDateKey(values.endDate)?.toISOString() ?? null,
-    isDraft: values.isDraft,
-  };
-};
 
 // The API names the combined timestamp `eventAt` and the end date `expiresAt`.
 const SERVER_FIELDS: Record<string, keyof AnnouncementFormErrors> = {

@@ -80,7 +80,7 @@ const RecentUsersTable = ({
         data={rows}
         rowKey={(user) => user._id}
         rowLabel={(user) =>
-          `${user.fullname}, ${user.email}, ${user.role}, ${user.verified ? "active" : "inactive"}, joined ${joinedLabel(user.createdAt)}`
+          `${user.fullname}, ${user.role}, ${user.verified ? "active" : "inactive"}, joined ${joinedLabel(user.createdAt)}`
         }
         renderMobileCard={(user) => (
           <>

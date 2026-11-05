@@ -7,6 +7,7 @@ import { DETAIL_RADIUS, useUserDetailsPalette } from "@/features/users/component
 
 import type { ResidentRecord } from "../../../services/residentService";
 import ResidentProfileSummary from "../ResidentProfileSummary";
+import { detailsScrollRegionProps, detailsScrollRegionStyle } from "../detailsScrollRegion";
 import { buildAccountRows, buildAddressRows, buildContactRows } from "../residentDetailRows";
 
 type Props = {
@@ -22,7 +23,9 @@ export const PanelBody = ({ resident, loading, error, onRetry, compact }: Props)
 
   return (
     <ScrollView
+      {...detailsScrollRegionProps}
       className="w-full"
+      style={detailsScrollRegionStyle}
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ paddingHorizontal: 28, paddingBottom: 28 }}
     >

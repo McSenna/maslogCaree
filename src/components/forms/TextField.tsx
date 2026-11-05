@@ -1,10 +1,11 @@
 import { Feather } from "@expo/vector-icons";
 import { useId, useState, type Ref } from "react";
-import { Pressable, Text, TextInput, View, type TextInputProps } from "react-native";
+import { Platform, Pressable, Text, TextInput, View, type TextInputProps } from "react-native";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { RADII } from "@/theme/radius";
 import { TIMING } from "@/theme/motion";
 import { webStyle } from "@/theme/webStyle";
+import FieldLabel from "./FieldLabel";
 import FieldMessage from "./FieldMessage";
 import { resolveFieldAppearance } from "./fieldAppearance";
 
@@ -18,6 +19,14 @@ export type TextFieldProps = Omit<TextInputProps, "style" | "editable"> & {
   leftIcon?: keyof typeof Feather.glyphMap;
   secureToggle?: boolean;
   inputRef?: Ref<TextInput>;
+  /** The input's id, which also ties a real label element to it on web. */
+  inputId?: string;
+  /** A short count shown at the end of the message row, such as "12 / 800". */
+  counter?: string;
+  /** Takes focus when its dialog opens. */
+  initialFocus?: boolean;
+  /** Replaces the default height of a multiline input. */
+  inputMinHeight?: number;
 };
 
 const MULTILINE_INPUT = { minHeight: 120, maxHeight: 200, paddingTop: 12, paddingBottom: 12, lineHeight: 23 } as const;
@@ -32,6 +41,10 @@ const TextField = ({
   leftIcon,
   secureToggle = false,
   inputRef,
+  inputId,
+  counter,
+  initialFocus = false,
+  inputMinHeight,
   secureTextEntry,
   onFocus,
   onBlur,
@@ -48,10 +61,12 @@ const TextField = ({
 
   return (
     <View style={{ width: "100%", gap: 6 }}>
-      <Text style={{ fontSize: 15, fontWeight: "600", color: colors.heading }}>
-        {label}
-        {required ? <Text style={{ color: colors.danger.fg }}> *</Text> : null}
-      </Text>
+      <FieldLabel htmlFor={inputId}>
+        <Text style={{ fontSize: 15, fontWeight: "600", color: colors.heading }}>
+          {label}
+          {required ? <Text style={{ color: colors.danger.fg }}> *</Text> : null}
+        </Text>
+      </FieldLabel>
 
       <View
         onPointerEnter={() => setHovered(true)}
@@ -80,11 +95,14 @@ const TextField = ({
         ) : null}
         <TextInput
           ref={inputRef}
+          nativeID={inputId}
           {...inputProps}
+          {...(initialFocus ? (Platform.OS === "web" ? { dataSet: { initialFocus: "true" } } : { autoFocus: true }) : {})}
           editable={!disabled}
           secureTextEntry={hidden}
           accessibilityLabel={inputProps.accessibilityLabel ?? label}
           aria-invalid={Boolean(error) || undefined}
+          aria-required={required || undefined}
           aria-describedby={error || helper ? messageId : undefined}
           placeholderTextColor={colors.subtle}
           onFocus={(event) => {
@@ -99,6 +117,7 @@ const TextField = ({
           style={[
             { flex: 1, minWidth: 0, minHeight: 44, fontSize: 17, color: colors.heading },
             multiline ? MULTILINE_INPUT : null,
+            multiline && inputMinHeight ? { minHeight: inputMinHeight, maxHeight: inputMinHeight } : null,
             webStyle({ outlineStyle: "none" }),
           ]}
         />
@@ -117,7 +136,16 @@ const TextField = ({
         ) : null}
       </View>
 
-      <FieldMessage nativeID={messageId} error={error} helper={helper} />
+      {counter ? (
+        <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <FieldMessage nativeID={messageId} error={error} helper={helper} />
+          </View>
+          <Text style={{ fontSize: 14.5, lineHeight: 19, color: colors.muted, fontVariant: ["tabular-nums"] }}>{counter}</Text>
+        </View>
+      ) : (
+        <FieldMessage nativeID={messageId} error={error} helper={helper} />
+      )}
     </View>
   );
 };

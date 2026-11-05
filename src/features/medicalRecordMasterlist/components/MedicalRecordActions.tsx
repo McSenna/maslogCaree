@@ -37,7 +37,7 @@ const MedicalRecordActions = ({ row, onView, onEdit, onDelete, editLoadingId, de
       <View role="group" accessibilityLabel="Medical record actions"
         style={[styles.row, onCard && styles.card, onCard && { borderTopColor: colors.divider }]}>
         <IconHint label="View record">
-          <TableButton iconOnly size="comfortable" icon="eye" label="View"
+          <TableButton size="comfortable" icon="eye" label="View"
             disabled={busy}
             accessibilityLabel={`View the ${row.serviceLabel} record for ${name}, ${visit}`}
             onPress={() => onView(row._id)} />

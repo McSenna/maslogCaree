@@ -7,9 +7,10 @@ type Props = { isMobile: boolean; logoSize: number };
 
 const HeaderBrand = ({ isMobile, logoSize }: Props) => {
   return (
-    <View className="flex-row items-center" style={{ flexShrink: 0, gap: 12 }}>
+    <View className="flex-row items-center" style={{ flexShrink: 1, minWidth: 0, gap: 12 }}>
       <View
         style={{
+          flexShrink: 0,
           width: logoSize,
           height: logoSize,
           borderRadius: logoSize / 2,
@@ -26,7 +27,8 @@ const HeaderBrand = ({ isMobile, logoSize }: Props) => {
         <MaslogCareLogo size={Math.round(logoSize * 0.82)} />
       </View>
 
-      <View>
+      {/* Larger system text can still outgrow the row, so this may wrap rather than push Login off screen. */}
+      <View style={{ flexShrink: 1, minWidth: 0 }}>
         <Text
           style={{
             color: PALETTE.white,

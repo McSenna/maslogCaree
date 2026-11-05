@@ -27,6 +27,10 @@ const AboutMaslogCareModal = ({ visible, onClose }: AboutMaslogCareModalProps) =
   useWebModalBehavior(visible, onClose);
   const attachFocusTrap = useFocusTrap(visible);
 
+  // RN-web stacks modals by the order they first mounted. Staying mounted while closed would
+  // leave this one underneath any modal opened later, such as the profile it opens from.
+  if (!visible) return null;
+
   const wide = frame.width >= WIDE_CONTENT_WIDTH;
   const gutter = wide ? CONTENT_GUTTER.wide : CONTENT_GUTTER.compact;
 

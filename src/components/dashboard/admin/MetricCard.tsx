@@ -36,6 +36,8 @@ export type MetricCardProps = {
   accessibilityHint?: string;
   /** The card matching what is shown below it: a 2px primary border. */
   selected?: boolean;
+  /** Icon on the value's row, for half-width phone cards where a corner icon would break the label mid-word. */
+  iconBesideValue?: boolean;
 };
 
 
@@ -81,6 +83,7 @@ const MetricCard = ({
   onPress,
   accessibilityHint,
   selected = false,
+  iconBesideValue = false,
 }: MetricCardProps) => {
   const toneStyle = palette.tones[tone];
   const showTrend = typeof growth === "number" && Number.isFinite(growth);
@@ -95,6 +98,14 @@ const MetricCard = ({
     .join(", ");
 
   const iconSize = compact ? (dense ? 30 : 32) : 36;
+  const iconTile = (
+    <View
+      className="shrink-0 items-center justify-center"
+      style={{ width: iconSize, height: iconSize, borderRadius: 10, backgroundColor: toneStyle.iconBg }}
+    >
+      <Feather name={icon} size={compact ? 16 : 18} color={toneStyle.icon} />
+    </View>
+  );
 
   return (
     <MetricCardFrame
@@ -120,15 +131,13 @@ const MetricCard = ({
         >
           {label}
         </Text>
-        <View
-          className="shrink-0 items-center justify-center"
-          style={{ width: iconSize, height: iconSize, borderRadius: 10, backgroundColor: toneStyle.iconBg }}
-        >
-          <Feather name={icon} size={compact ? 16 : 18} color={toneStyle.icon} />
-        </View>
+        {iconBesideValue ? null : iconTile}
       </View>
 
-      <View className={`flex-row flex-wrap items-center ${compact ? "mt-1" : "mt-1.5"}`} style={{ columnGap: 8 }}>
+      <View
+        className={`flex-row flex-wrap items-center ${iconBesideValue ? "justify-between" : ""} ${compact ? "mt-1" : "mt-1.5"}`}
+        style={{ columnGap: 8 }}
+      >
         <AnimatedCount
           value={value}
           className="font-bold"
@@ -141,6 +150,7 @@ const MetricCard = ({
           }}
         />
         {showTrend ? <TrendPill palette={palette} growth={growth as number} compact={compact} /> : null}
+        {iconBesideValue ? iconTile : null}
       </View>
 
       {descriptionChip ? (

@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import QueueStatCards, { QUEUE_CARD_STATUS, type QueueCardKey } from "@/components/appointmentQueue/QueueStatCards";
 import {
   FOUR_CARD_WIDTH,
@@ -79,21 +79,14 @@ const MissionControlScreen = () => {
         }}
       >
         <View ref={topRef}>
-          <Text className="text-[24px] font-bold" style={{ color: palette.heading }}>
-            Appointments &amp; Queue
-          </Text>
-          <Text className="mt-1 text-[15px]" style={{ color: palette.muted }}>
-            {control.scopeDescription}
-          </Text>
+          <QueueStatCards
+            overview={control.dashboard.overview}
+            loading={control.dashboard.overviewLoading}
+            wide={fourCards}
+            activeStatus={control.dashboard.activeStatus}
+            onSelectCard={selectCard}
+          />
         </View>
-
-        <QueueStatCards
-          overview={control.dashboard.overview}
-          loading={control.dashboard.overviewLoading}
-          wide={fourCards}
-          activeStatus={control.dashboard.activeStatus}
-          onSelectCard={selectCard}
-        />
 
         <QueueDashboardSections
           control={control}

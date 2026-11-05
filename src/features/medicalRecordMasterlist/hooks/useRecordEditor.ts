@@ -129,7 +129,6 @@ export const useRecordEditor = ({ editing, forms, onSaved, onDone, initialServic
 
   return {
     isEditing: Boolean(editing),
-    initialBabyId: editing?.baby?._id ?? null,
     resident,
     chooseResident,
     confirmed,

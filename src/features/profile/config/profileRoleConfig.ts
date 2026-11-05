@@ -1,132 +1,57 @@
-import type { Feather } from "@expo/vector-icons";
 import type { UserRole } from "@/config/roleRoutes";
 
-import { getAdminDashboardPalette, ROLE_TONE } from "@/design/adminDashboardTheme";
-
-// Profile screens are light-only; badges wear the role's tone from the shared map.
-const tones = getAdminDashboardPalette("light").tones;
-const roleBadge = (role: keyof typeof ROLE_TONE) => {
-  const tone = tones[ROLE_TONE[role]];
-  return { background: tone.iconBg, text: tone.label, border: tone.iconBg };
-};
-export type ProfileFieldKey =
-  | "fullName"
-  | "userId"
-  | "specialization"
-  | "facility"
-  | "assignedArea"
-  | "address"
-  | "phone"
-  | "email"
-  | "dateOfBirth"
-  | "gender"
-  | "dateJoined"
-  | "accountStatus";
-
-export type ProfileFieldDefinition = {
-  label: string;
-  icon: keyof typeof Feather.glyphMap;
-};
-
-export const PROFILE_FIELDS: Record<ProfileFieldKey, ProfileFieldDefinition> = {
-  fullName: { label: "Full name", icon: "user" },
-  userId: { label: "User ID", icon: "credit-card" },
-  specialization: { label: "Specialization", icon: "activity" },
-  facility: { label: "Assigned facility", icon: "home" },
-  assignedArea: { label: "Assigned purok or area", icon: "map" },
-  address: { label: "Address", icon: "map-pin" },
-  phone: { label: "Contact number", icon: "phone" },
-  email: { label: "Email address", icon: "mail" },
-  dateOfBirth: { label: "Date of birth", icon: "calendar" },
-  gender: { label: "Gender", icon: "users" },
-  dateJoined: { label: "Date joined", icon: "clock" },
-  accountStatus: { label: "Account status", icon: "check-circle" },
-};
-
-export type RoleBadgeStyle = {
-  background: string;
-  text: string;
-  border: string;
-};
+import {
+  RESIDENT_SECTIONS,
+  STAFF_SECTIONS,
+  type ProfileSectionDefinition,
+} from "./profileSections.ts";
 
 export type ProfileRoleConfig = {
   label: string;
   title: string;
   idLabel: string;
   idPrefix: string;
-  badge: RoleBadgeStyle;
-  tagline: string;
-  fields: ProfileFieldKey[];
+  sections: ProfileSectionDefinition[];
 };
 
-const STAFF_FIELDS_TAIL: ProfileFieldKey[] = [
-  "phone",
-  "email",
-  "dateJoined",
-  "accountStatus",
-  "dateOfBirth",
-  "gender",
-];
+export const PROFILE_SUBTITLE = "View and manage your personal information and account settings.";
 
+/** Adding a role takes one entry here; no component reads the role itself. */
 export const PROFILE_ROLE_CONFIG: Record<UserRole, ProfileRoleConfig> = {
   admin: {
     label: "Admin",
     title: "Admin Profile",
     idLabel: "Admin ID",
     idPrefix: "ADM",
-    badge: roleBadge("admin"),
-    tagline: "Keeping MaslogCare running for every barangay.",
-    fields: ["fullName", "userId", ...STAFF_FIELDS_TAIL],
+    sections: STAFF_SECTIONS,
   },
   doctor: {
     label: "Doctor",
     title: "Doctor Profile",
     idLabel: "Doctor ID",
     idPrefix: "DOC",
-    badge: roleBadge("doctor"),
-    tagline: "Caring for a healthier Maslog, one patient at a time.",
-    fields: [
-      "fullName",
-      "userId",
-      "specialization",
-      "facility",
-      ...STAFF_FIELDS_TAIL,
-    ],
+    sections: STAFF_SECTIONS,
   },
   midwife: {
     label: "Midwife",
     title: "Midwife Profile",
     idLabel: "Midwife ID",
     idPrefix: "MID",
-    badge: roleBadge("midwife"),
-    tagline: "Safe mothers, healthy babies, stronger community.",
-    fields: ["fullName", "userId", "facility", ...STAFF_FIELDS_TAIL],
+    sections: STAFF_SECTIONS,
   },
   bhw: {
     label: "BHW",
     title: "BHW Profile",
     idLabel: "BHW ID",
     idPrefix: "BHW",
-    badge: roleBadge("bhw"),
-    tagline: "Health care that reaches every doorstep.",
-    fields: ["fullName", "userId", "assignedArea", ...STAFF_FIELDS_TAIL],
+    sections: STAFF_SECTIONS,
   },
   resident: {
     label: "Resident",
-    title: "Resident Profile",
+    title: "My Profile",
     idLabel: "Resident ID",
     idPrefix: "RES",
-    badge: roleBadge("resident"),
-    tagline: "A healthier me for a stronger Maslog.",
-    fields: [
-      "fullName",
-      "userId",
-      "address",
-      "phone",
-      "email",
-      "dateOfBirth",
-      "gender",
-    ],
+    sections: RESIDENT_SECTIONS,
   },
 };
 

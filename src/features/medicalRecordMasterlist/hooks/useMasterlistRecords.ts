@@ -19,6 +19,7 @@ const SOURCES: readonly string[] = ["", "appointment", "historical_masterlist", 
 const LINKAGES: readonly string[] = ["", "linked", "pending_review", "unlinked"];
 
 type UrlCriteria = Pick<MasterlistCriteria, "serviceType" | "source" | "linkage" | "from" | "to">;
+type MasterlistResult = MasterlistPage & { filterKey: string };
 
 /**
  * What the masterlist keeps in its URL: page, service, source, linkage and
@@ -37,15 +38,15 @@ const MASTERLIST_SCHEMA: ListSchema<UrlCriteria> = {
   limits: [MASTERLIST_PAGE_SIZE],
 };
 
-const appendPage = (previous: MasterlistPage | null, next: MasterlistPage): MasterlistPage => {
-  if (!previous) return next;
+const appendPage = (previous: MasterlistResult | null, next: MasterlistResult): MasterlistResult => {
+  if (!previous || previous.filterKey !== next.filterKey) return next;
   const seen = new Set(previous.records.map((record) => record._id));
   return { ...next, records: [...previous.records, ...next.records.filter((record) => !seen.has(record._id))] };
 };
 
 /** A quiet realtime reload of a deeper page: swap in updated rows, keep the rest. */
-const refreshPage = (previous: MasterlistPage | null, next: MasterlistPage): MasterlistPage =>
-  previous ? { ...next, records: replaceKnown(previous.records, next.records, (record) => record._id) } : next;
+const refreshPage = (previous: MasterlistResult | null, next: MasterlistResult): MasterlistResult =>
+  previous?.filterKey === next.filterKey ? { ...next, records: replaceKnown(previous.records, next.records, (record) => record._id) } : next;
 
 const urlPart = ({ serviceType, source, linkage, from, to }: Partial<MasterlistCriteria>): Partial<UrlCriteria> =>
   Object.fromEntries(
@@ -77,10 +78,14 @@ export const useMasterlistRecords = ({ append }: { append: boolean }) => {
     masterResidentId,
   };
 
-  const query = { ...criteria, search, page, limit: MASTERLIST_PAGE_SIZE };
-  const result = useRemoteData({
+  // In patient history, the name is display text. The ID alone matches records,
+  // including namesakes and records whose saved name differs from today's name.
+  const queryCriteria = { ...criteria, search: masterResidentId ? "" : search };
+  const filterKey = JSON.stringify(queryCriteria);
+  const query = { ...queryCriteria, page, limit: MASTERLIST_PAGE_SIZE };
+  const result = useRemoteData<MasterlistResult>({
     key: `medical-masterlist:${JSON.stringify(query)}`,
-    load: () => searchMasterlist(query),
+    load: async () => ({ ...await searchMasterlist(query), filterKey }),
     merge: append && page > 1 ? appendPage : undefined,
     live: MASTERLIST_SOURCES,
     liveMerge: refreshPage,
@@ -97,11 +102,16 @@ export const useMasterlistRecords = ({ append }: { append: boolean }) => {
 
   const update = useCallback(
     (patch: Partial<MasterlistCriteria>) => {
-      if (patch.search !== undefined) setSearchInput(patch.search);
+      if (patch.search !== undefined) {
+        // Leaving patient history must not briefly search for the previous name.
+        if (masterResidentId) replaceSearch(patch.search);
+        else setSearchInput(patch.search);
+        changeResidentId("");
+      }
       if (patch.masterResidentId !== undefined) changeResidentId(patch.masterResidentId);
       setFilters(urlPart(patch));
     },
-    [changeResidentId, setFilters, setSearchInput]
+    [changeResidentId, masterResidentId, replaceSearch, setFilters, setSearchInput]
   );
 
   const replace = useCallback(
@@ -114,9 +124,11 @@ export const useMasterlistRecords = ({ append }: { append: boolean }) => {
     [replaceSearch, setFilters, setPage]
   );
 
-  const records = result.data?.records ?? [];
-  const total = result.data?.total ?? 0;
-  const settled = !result.isFetching && result.data !== null;
+  // A new patient's name must never appear above the previous patient's rows.
+  const currentData = result.data?.filterKey === filterKey ? result.data : null;
+  const records = currentData?.records ?? [];
+  const total = currentData?.total ?? 0;
+  const settled = !result.isFetching && currentData !== null;
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- mirrors the server's count once a load settles
     if (settled) setListTotal(total);
@@ -144,8 +156,8 @@ export const useMasterlistRecords = ({ append }: { append: boolean }) => {
     filtered,
     records,
     total,
-    serviceCounts: result.data?.serviceCounts ?? null,
-    isLoading: result.isLoading || pastEnd,
+    serviceCounts: currentData?.serviceCounts ?? null,
+    isLoading: (!currentData && !result.error) || result.isLoading || pastEnd,
     isFetching: result.isFetching,
     isRefreshing: result.isRefreshing,
     error: result.error,

@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import { Animated, Pressable, Text, View } from "react-native";
+import { Animated, Pressable, Text } from "react-native";
 import { useInteractionState } from "@/hooks/useInteractionState";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { webTransition } from "@/theme/motion";
@@ -12,17 +12,29 @@ import SettingsRowAccessory from "./settingsRow/SettingsRowAccessory";
 type SettingsRowProps = {
   label: string;
   icon: keyof typeof Feather.glyphMap;
-  description?: string;
+  hint?: string;
   value?: string;
   badge?: string;
+  /** One link standing alone, like About: accent icon and a section-weight label. */
+  prominent?: boolean;
+  showDivider?: boolean;
   onPress?: () => void;
 };
 
 const ROW_WEB = webStyle({ cursor: "pointer", transition: webTransition("background-color") });
+const MIN_ROW_HEIGHT = 48;
+const ICON_SIZE = 20;
 
-const CHIP = 36;
-
-const SettingsRow = ({ label, icon, description, value, badge, onPress }: SettingsRowProps) => {
+const SettingsRow = ({
+  label,
+  icon,
+  hint,
+  value,
+  badge,
+  prominent = false,
+  showDivider = false,
+  onPress,
+}: SettingsRowProps) => {
   const colors = useThemeColors();
   const { hovered, pressed, focused, scaleStyle, handlers } = useInteractionState({
     disabled: !onPress,
@@ -30,22 +42,23 @@ const SettingsRow = ({ label, icon, description, value, badge, onPress }: Settin
   });
 
   return (
-    <Animated.View style={scaleStyle}>
+    <Animated.View style={[scaleStyle, showDivider ? { borderBottomWidth: 1, borderBottomColor: colors.divider } : null]}>
       <Pressable
         {...handlers}
         accessibilityRole="button"
-        accessibilityLabel={[label, description, badge, value].filter(Boolean).join(", ")}
+        accessibilityLabel={[label, badge, value].filter(Boolean).join(", ")}
+        accessibilityHint={hint}
         onPress={onPress}
         disabled={!onPress}
         style={{
-          minHeight: 52,
+          minHeight: MIN_ROW_HEIGHT,
           flexDirection: "row",
           alignItems: "center",
           gap: SPACING.md,
           paddingVertical: SPACING.sm,
           paddingHorizontal: SPACING.sm,
           marginHorizontal: -SPACING.sm,
-          borderRadius: RADII.medium,
+          borderRadius: RADII.small,
           backgroundColor: hovered || pressed ? colors.surfaceHover : "transparent",
           outlineWidth: focused ? 3 : 0,
           outlineColor: colors.focusRing,
@@ -53,31 +66,17 @@ const SettingsRow = ({ label, icon, description, value, badge, onPress }: Settin
           ...ROW_WEB,
         }}
       >
-        <View
+        <Feather name={icon} size={ICON_SIZE} color={prominent ? colors.primary : colors.muted} />
+        <Text
           style={{
-            width: CHIP,
-            height: CHIP,
-            borderRadius: RADII.small,
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: colors.surfaceMuted,
+            ...(prominent ? TYPE.bodyStrong : TYPE.body),
+            flex: 1,
+            minWidth: 0,
+            color: prominent ? colors.heading : colors.body,
           }}
         >
-          <Feather name={icon} size={17} color={colors.body} />
-        </View>
-
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.bodyStrong, color: colors.heading }}>
-            {label}
-          </Text>
-
-          {description ? (
-            <Text maxFontSizeMultiplier={1.3} style={{ ...TYPE.caption, color: colors.muted }}>
-              {description}
-            </Text>
-          ) : null}
-        </View>
-
+          {label}
+        </Text>
         <SettingsRowAccessory value={value} badge={badge} />
       </Pressable>
     </Animated.View>

@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import ActiveQueuePanel from "@/components/appointmentQueue/ActiveQueuePanel";
 import AppointmentsPanel from "@/components/appointmentQueue/AppointmentsPanel";
 import QueueStatCards, { QUEUE_CARD_STATUS, type QueueCardKey } from "@/components/appointmentQueue/QueueStatCards";
@@ -61,21 +61,14 @@ const BhwQueueScreen = () => {
         }}
       >
         <View ref={topRef}>
-          <Text className="text-[24px] font-bold" style={{ color: palette.heading }}>
-            Appointments &amp; Queue
-          </Text>
-          <Text className="mt-1 text-[15px]" style={{ color: palette.muted }}>
-            {queue.scopeDescription}
-          </Text>
+          <QueueStatCards
+            overview={dashboard.overview}
+            loading={dashboard.overviewLoading}
+            wide={fourCards}
+            activeStatus={dashboard.activeStatus}
+            onSelectCard={selectCard}
+          />
         </View>
-
-        <QueueStatCards
-          overview={dashboard.overview}
-          loading={dashboard.overviewLoading}
-          wide={fourCards}
-          activeStatus={dashboard.activeStatus}
-          onSelectCard={selectCard}
-        />
 
         <View className={`w-full gap-4 ${twoColumn ? "flex-row items-start" : "flex-col"}`}>
           <View className="min-w-0 gap-4" style={twoColumn ? { flex: 2 } : undefined}>

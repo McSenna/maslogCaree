@@ -5,6 +5,7 @@ import { Pressable, Text, View } from "react-native";
 import UserAvatar from "@/components/ui/UserAvatar";
 import type { CurrentUser } from "@/contexts/AuthContext";
 import { getDashboardPath, getProfilePath } from "@/config/roleRoutes";
+import { useResponsive } from "@/hooks/useResponsive";
 import { PALETTE, withAlpha } from "@/theme/palette";
 
 type Props = {
@@ -15,10 +16,15 @@ type Props = {
 
 const PILL_TEXT = PALETTE.blue[900];
 
+// Below this the brand and a Login button with its icon do not fit on one row.
+const LOGIN_ICON_MIN_WIDTH = 360;
+const MIN_TOUCH_TARGET = 44;
+
 const pillStyle = (isMobile: boolean) => ({ pressed }: { pressed: boolean }) => ({
   flexDirection: "row" as const,
   alignItems: "center" as const,
   gap: 8,
+  minHeight: MIN_TOUCH_TARGET,
   borderRadius: 8,
   paddingHorizontal: isMobile ? 14 : 18,
   paddingVertical: isMobile ? 10 : 11,
@@ -44,6 +50,7 @@ const PillIcon = ({ name }: { name: "layout" | "user" }) => (
 
 const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
   const router = useRouter();
+  const { width } = useResponsive();
 
   return (
     <View
@@ -92,7 +99,7 @@ const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
         </>
       ) : (
         <Pressable onPress={onPressLogin} accessibilityRole="button" accessibilityLabel="Log in" style={pillStyle(isMobile)}>
-          <PillIcon name="user" />
+          {width >= LOGIN_ICON_MIN_WIDTH ? <PillIcon name="user" /> : null}
 
           <Text
             style={{

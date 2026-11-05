@@ -1,118 +1,69 @@
-import { Text, View } from "react-native";
-import Button from "@/components/buttons/Button";
-import CompleteModalShell from "@/components/medicalRecord/complete/CompleteModalShell";
-import { savedDoseStatus } from "../savedDosePresentation";
-import { isAdministered } from "../immunizationLogic";
+import { View } from "react-native";
+import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
+import { SectionCard } from "@/components/medicalRecord/complete/SectionCard";
+import { formatClock } from "@/components/medicalRecord/fields/clockFormat";
+import FocusableRegion from "@/components/ui/FocusableRegion";
+import { Row } from "@/components/medicalRecord/details/RecordPrimitives";
+import { formatCalendarDay } from "@/features/medicalRecordMasterlist/masterlistLabels";
 import type { Checklist, DoseView } from "../types";
 import DoseAudit from "./DoseAudit";
-import DoseTiming from "./DoseTiming";
+import { DoseFacts, DoseSchedule } from "./DoseIdentity";
 import useImmunizationStyles from "./immunizationStyles";
 
-export default function DoseDetails({
-  checklist,
-  dose,
-  canEdit,
-  embedded,
-  onEdit,
-  onClose,
-}: {
-  checklist: Checklist;
-  dose: DoseView;
-  canEdit: boolean;
-  embedded: boolean;
-  onEdit: () => void;
-  onClose: () => void;
-}) {
-  const { styles, colors } = useImmunizationStyles();
+type Props = { checklist: Checklist; dose: DoseView };
+
+/** The modal's read-first body: looking at a saved dose can never start an edit. */
+const DoseDetails = ({ checklist, dose }: Props) => {
+  const { styles } = useImmunizationStyles();
+  const palette = useQueuePalette();
   const record = dose.record;
   if (!record) return null;
-  const vaccine = checklist.schedule.vaccines.find(
-    (item) => item.key === dose.vaccineKey,
-  );
-  const completed = isAdministered(record);
-  const fields = [
-    ["Actual administration date", record.administeredOn?.slice(0, 10)],
-    ["Administration time", record.administeredAt],
-    ["Administering clinician", record.administeredBy],
-    ["Facility", record.facility],
-    ["Batch / lot number", record.lotNumber],
-    ["Recorded route", record.route],
-    ["Site", record.site],
-    ["Remarks", record.remarks],
-    ["Reason / deferral", record.reason],
-    ["Historical documentation", record.historical ? "Yes" : "No"],
-  ];
-  const body = (
-    <View style={styles.section}>
-      <Text accessibilityRole="header" style={styles.title}>
-        Vaccination details
-      </Text>
-      <Text style={styles.heading}>
-        {vaccine?.name ?? dose.vaccineKey} · {dose.label}
-      </Text>
-      <Text
-        style={[
-          styles.strong,
-          { color: completed ? colors.success.fg : colors.warning.fg },
-        ]}
-      >
-        {savedDoseStatus(record)}
-      </Text>
-      <View style={styles.divider}>
-        <Text style={styles.strong}>{checklist.baby.name}</Text>
-        <Text style={styles.body}>Baby ID: {checklist.baby._id}</Text>
-        <Text style={styles.body}>
-          Born: {checklist.baby.dateOfBirth.slice(0, 10)}
-        </Text>
-        <Text style={styles.body}>
-          Mother: {checklist.mother.name} · {checklist.mother.masterResidentId}
-        </Text>
+  const blank = record.workflowStatus === "draft" ? "Not yet recorded (draft)" : "Not recorded";
+  const rows = (fields: (readonly [string, string | undefined])[]) =>
+    fields.map(([label, value]) => (
+      <View key={label} style={styles.detailField}>
+        <Row label={label} value={value || blank} palette={palette} />
       </View>
-      <View style={styles.detailFields}>
-        {fields.map(([label, value]) => (
-          <View key={label} style={styles.detailField}>
-            <Text style={styles.muted}>{label}</Text>
-            <Text selectable style={styles.body}>
-              {value || (record.workflowStatus === "draft" ? "Not yet recorded (draft)" : "Not recorded")}
-            </Text>
-          </View>
-        ))}
-      </View>
-      <DoseTiming dose={dose} />
-      <DoseAudit record={record} />
-      <View style={styles.row}>
-        {canEdit ? (
-          <Button
-            label={completed ? "Edit saved record" : record.workflowStatus === "draft" ? "Edit draft" : "Update dose record"}
-            icon="edit-2"
-            onPress={onEdit}
-          />
-        ) : null}
-        <Button
-          label="Back to checklist"
-          variant="secondary"
-          icon="arrow-left"
-          onPress={onClose}
-        />
-      </View>
-      {canEdit && completed ? (
-        <Text style={styles.muted}>
-          Corrections and voids require a reason and retain the original audit
-          history.
-        </Text>
-      ) : null}
-    </View>
-  );
-  if (embedded) return body;
+    ));
   return (
-    <CompleteModalShell
-      visible
-      dismissible
-      onRequestClose={onClose}
-      title="Saved vaccination"
-      closeLabel="Close vaccination details"
-    >
-      {body}
-    </CompleteModalShell>
+    <FocusableRegion accessibilityLabel="Saved dose details">
+      <View style={styles.section}>
+      <SectionCard icon="shield" title="Vaccination Information">
+        <DoseFacts checklist={checklist} dose={dose} />
+        <View style={styles.detailFields}>
+          {rows([
+            ["Actual administration date", record.administeredOn ? formatCalendarDay(record.administeredOn) : ""],
+            ["Administration time", formatClock(record.administeredAt)],
+          ])}
+        </View>
+        <DoseSchedule dose={dose} />
+      </SectionCard>
+      <SectionCard icon="clipboard" title="Administration Details">
+        <View style={styles.detailFields}>
+          {rows([
+            ["Clinician", record.administeredBy],
+            ["Location", record.facility],
+            // No longer entered by hand, so each appears only when the dose has one.
+            ...(record.lotNumber ? ([["Batch / lot number", record.lotNumber]] as const) : []),
+            ...(record.route ? ([["Recorded route", record.route]] as const) : []),
+            ...(record.site ? ([["Site", record.site]] as const) : []),
+          ])}
+        </View>
+      </SectionCard>
+      <SectionCard icon="file-text" title="Additional Information">
+        <View style={styles.detailFields}>
+          {rows([
+            ["Remarks", record.remarks],
+            ["Immediate reaction", record.immediateReaction],
+            ["Adverse event (AEFI)", record.aefi],
+            ["Reason / deferral", record.reason],
+            ["Historical documentation", record.historical ? "Yes" : "No"],
+          ])}
+        </View>
+      </SectionCard>
+      {record.history.length ? <DoseAudit record={record} /> : null}
+      </View>
+    </FocusableRegion>
   );
-}
+};
+export default DoseDetails;

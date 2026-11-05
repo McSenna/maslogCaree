@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 export type DialogShellProps = {
   visible: boolean;
   title: string;
+  /** A short line under the title. */
+  subtitle?: string;
   icon: keyof typeof Feather.glyphMap;
   /** Replaces the icon badge, e.g. the barangay seal. Decorative: hidden from screen readers. */
   media?: ReactNode;
@@ -14,6 +16,19 @@ export type DialogShellProps = {
   /** Pinned below the scroll region in both presentations. */
   footer?: ReactNode;
   maxWidth?: number;
+  /** Corner radius of the centred dialog; defaults to the modal token. */
+  radius?: number;
+  /** The content draws its own padding, for panels that reach the dialog's edges. */
+  flush?: boolean;
+  /** How much of the screen height the sheet may take; defaults to the sheet's own. */
+  sheetHeightRatio?: number;
+  /** Pinned between the header and the scroll region, e.g. tabs. */
+  subheader?: ReactNode;
+  /** Changing this moves the body to `scrollToY`. */
+  scrollToKey?: number;
+  scrollToY?: number;
+  /** For a form with its own fixed light colors: the frame stays light in dark mode to match. */
+  lightSurface?: boolean;
   /** Return true to consume Escape or the Android back press without closing. */
   onDismissRequest?: () => boolean;
 };

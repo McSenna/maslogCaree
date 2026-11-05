@@ -29,16 +29,8 @@ export const PROFILE_RADIUS = {
   pill: 999,
 } as const;
 
-export const PROFILE_TYPE = {
-  modalTitle: 29,
-  screenTitle: 24,
-  name: 27,
-  nameCompact: 24,
-  sectionTitle: 20,
-  label: 15.5,
-  value: 16.5,
-  meta: 14.5,
-} as const;
+/** The modal and the wide page share one width, so the two read as the same surface. */
+export const PROFILE_MAX_WIDTH = 1000;
 
 export const PROFILE_SHADOW = {
   card: {

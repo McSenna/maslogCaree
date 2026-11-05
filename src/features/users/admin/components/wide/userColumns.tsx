@@ -23,7 +23,7 @@ export const userColumns = (handlers: UserRowActionHandlers, canManageWebAccess 
   {
     key: "user", nameColumn: true,
     header: "User",
-    flex: 1.5,
+    flex: 1,
     minWidth: widths.userMin,
     cardRole: "title",
     render: (user, _index, { hiddenKeys }) => (
@@ -35,13 +35,15 @@ export const userColumns = (handlers: UserRowActionHandlers, canManageWebAccess 
       />
     ),
   },
-  { key: "role", header: "Role", width: widths.role, hideBelow: "lg", render: (user) => <RoleBadge role={roleToApi(user.role)} /> },
-  { key: "status", header: "Account status", width: widths.status, render: (user) => <UserStatusPill status={user.status} /> },
-  { key: "access", header: "Portal access", width: widths.access, render: (user) => <PortalAccessCell state={user.portalAccess.state} /> },
+  // Equal flex weights share spare space evenly while preserving each column's content minimum.
+  { key: "role", header: "Role", flex: 1, minWidth: widths.role, hideBelow: "lg", render: (user) => <RoleBadge role={roleToApi(user.role)} /> },
+  { key: "status", header: "Account status", flex: 1, minWidth: widths.status, render: (user) => <UserStatusPill status={user.status} /> },
+  { key: "access", header: "Portal access", flex: 1, minWidth: widths.access, render: (user) => <PortalAccessCell state={user.portalAccess.state} /> },
   {
     key: "lastLogin",
     header: "Last login",
-    width: widths.lastLogin,
+    flex: 1,
+    minWidth: widths.lastLogin,
     render: (user) => {
       const login = lastLoginLines(user.lastLoginAt);
       return <TableTwoLine value={login.date} detail={login.time} tone={login.time ? "body" : "muted"} />;
@@ -52,7 +54,8 @@ export const userColumns = (handlers: UserRowActionHandlers, canManageWebAccess 
     header: "Actions",
     align: "center",
     cardRole: "actions",
-    width: actionWidthsForPermission(canManageWebAccess).column,
+    flex: 1,
+    minWidth: actionWidthsForPermission(canManageWebAccess).column,
     render: (user) => <UserRowActions user={user} {...handlers} />,
   },
   ];

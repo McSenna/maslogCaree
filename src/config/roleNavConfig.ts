@@ -36,8 +36,6 @@ export const residentNavItems: NavItem[] = [
   { label: "Dashboard", href: "/resident/dashboard", icon: "home" },
   { label: "My Appointments", href: "/resident/appointments", icon: "calendar" },
   { label: "Medical Records", href: "/resident/medical-records", icon: "file-text" },
-  { label: "Announcements", href: "/resident/announcements", icon: "bell" },
-  { label: "My Profile", href: "/resident/profile", icon: "user" },
 ];
 
 export const adminBottomNavItems: NavItem[] = [

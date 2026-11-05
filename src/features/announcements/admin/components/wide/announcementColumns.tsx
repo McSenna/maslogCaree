@@ -17,17 +17,17 @@ type Handlers = {
   onDelete: (item: Announcement) => void;
 };
 
-/** Announcements, declared once for the header, rows, skeleton and phone cards. */
+/** Shared columns distribute spare space equally while retaining their content minimums. */
 export const announcementColumns = ({ expandedId, onToggle, onEdit, onDelete }: Handlers): Column<Announcement>[] => [
   {
     key: "title", nameColumn: true,
     header: "Title",
-    flex: 3,
+    flex: 1,
     minWidth: 240,
     render: (item) => <AnnouncementTitle item={item} expanded={item.id === expandedId} onToggle={onToggle} />,
   },
   { key: "audience", header: "Audience", align: "center", flex: 1, minWidth: 120, accessor: (item) => item.audience },
-  { key: "status", header: "Status", align: "center", width: 146, cardRole: "badge", render: (item) => <StatusLabel status={statusOf(item)} /> },
+  { key: "status", header: "Status", align: "center", flex: 1, minWidth: 146, cardRole: "badge", render: (item) => <StatusLabel status={statusOf(item)} /> },
   {
     key: "posted",
     header: "Posted",
@@ -41,7 +41,8 @@ export const announcementColumns = ({ expandedId, onToggle, onEdit, onDelete }: 
     key: "expires",
     header: "Expires",
     align: "center",
-    width: 146,
+    flex: 1,
+    minWidth: 146,
     hideBelow: "lg",
     render: (item) => {
       const muted = !item.expiresAt || statusOf(item) === "expired";
@@ -52,7 +53,8 @@ export const announcementColumns = ({ expandedId, onToggle, onEdit, onDelete }: 
     key: "actions",
     header: "Actions",
     align: "center",
-    width: 160,
+    flex: 1,
+    minWidth: 160,
     render: (item) => {
       const expanded = item.id === expandedId;
       return (

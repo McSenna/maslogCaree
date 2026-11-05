@@ -46,7 +46,7 @@ export const masterlistColumns = (actions: MedicalRecordActionHandlers): Column<
   {
     key: "actions",
     header: "Actions",
-    width: 192,
+    width: 216,
     align: "center",
     render: (row) => <MedicalRecordActions row={row} {...actions} />,
   },

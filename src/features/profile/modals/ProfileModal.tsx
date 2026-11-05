@@ -1,77 +1,96 @@
+import { useRef } from "react";
 import { ScrollView, View } from "react-native";
 
-import { toast } from "@/components/feedback/toast/toastStore";
 import { useModalFrame } from "@/hooks/useModalFrame";
 import { useResponsive } from "@/hooks/useResponsive";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import { SPACING } from "@/theme/spacing";
 
-import { PROFILE_COLORS, PROFILE_RADIUS, PROFILE_SHADOW } from "../config/profileTheme";
-import { useProfile } from "../hooks/useProfile";
+import ProfileColumns from "../components/ProfileColumns";
 import ProfileErrorState from "../components/ProfileErrorState";
-import ProfileEditConfirmations from "../components/ProfileEditConfirmations";
-import ProfileNoticeModal from "../components/ProfileNoticeModal";
 import ProfileOverlay from "../components/ProfileOverlay";
+import ProfileOverlays from "../components/ProfileOverlays";
+import ProfilePageHeader from "../components/ProfilePageHeader";
 import ProfileSkeleton from "../components/ProfileSkeleton";
-import { ChangePasswordDialog } from "../change-password/ChangePasswordDialog";
-import ProfileModalContent from "./profileModal/ProfileModalContent";
-import ProfileModalFooter from "./profileModal/ProfileModalFooter";
-import ProfileModalHeader from "./profileModal/ProfileModalHeader";
+import { PROFILE_MAX_WIDTH, PROFILE_SHADOW } from "../config/profileTheme";
+import { useProfileScreen } from "../hooks/useProfileScreen";
 
 type ProfileModalProps = {
   visible: boolean;
   onClose: () => void;
 };
 
-const MODAL_MAX_WIDTH = 1180;
+const AVATAR_SIZE = 96;
 
 const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
-  const state = useProfile();
-  const frame = useModalFrame(MODAL_MAX_WIDTH);
+  const state = useProfileScreen(visible);
+  const frame = useModalFrame(PROFILE_MAX_WIDTH);
   const twoColumn = useResponsive().isDesktop;
-  const title = state.profile?.role.title ?? "Profile";
+  const colors = useThemeColors();
+  const scrollRef = useRef<ScrollView>(null);
+  const { edit } = state;
+  const isEditing = Boolean(edit.editingSection);
+
+  // Leaving mid-edit asks first, like Cancel. Leaving mid-save would strand its result.
+  const dismiss = () => {
+    if (edit.editSaving) return;
+    if (isEditing) {
+      edit.requestCancelEdit();
+      return;
+    }
+    onClose();
+  };
+
+  const startEditing = () => {
+    if (!isEditing) state.onEditProfile();
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
+  };
 
   return (
     <>
-      <ProfileOverlay visible={visible} onClose={onClose} accessibilityLabel={title}>
+      <ProfileOverlay
+        visible={visible}
+        onClose={dismiss}
+        accessibilityLabel={state.profile?.role.title ?? "Profile"}
+        dismissOnBackdropPress={!isEditing}
+      >
         <View
           style={{
             width: frame.width,
             maxHeight: frame.maxHeight,
-            borderRadius: PROFILE_RADIUS.modal,
-            backgroundColor: PROFILE_COLORS.surface,
+            borderRadius: RADII.modal,
+            backgroundColor: colors.surface,
             overflow: "hidden",
             ...PROFILE_SHADOW.modal,
+            // A shadow does not show on a dark page, so the edge needs a hairline there.
+            ...(colors.scheme === "dark" ? { borderWidth: 1, borderColor: colors.border } : null),
           }}
         >
-          <ProfileModalHeader title={title} onClose={onClose} />
+          <ProfilePageHeader
+            title={state.profile?.role.title ?? "Profile"}
+            onEdit={state.profile ? startEditing : undefined}
+            onClose={dismiss}
+          />
 
           <ScrollView
+            ref={scrollRef}
             style={{ flexShrink: 1 }}
-            contentContainerStyle={{ paddingHorizontal: 28, paddingBottom: 24, gap: 18 }}
+            contentContainerStyle={{ paddingHorizontal: SPACING.xxl, paddingVertical: SPACING.xl }}
             showsVerticalScrollIndicator={false}
           >
             {state.loading ? (
-              <ProfileSkeleton twoColumn={twoColumn} />
+              <ProfileSkeleton twoColumn={twoColumn} avatarSize={AVATAR_SIZE} />
             ) : !state.profile ? (
               <ProfileErrorState onRetry={state.retry} />
             ) : (
-              <ProfileModalContent state={state} twoColumn={twoColumn} />
+              <ProfileColumns profile={state.profile} state={state} twoColumn={twoColumn} />
             )}
           </ScrollView>
-
-          <ProfileModalFooter />
         </View>
       </ProfileOverlay>
 
-      <ProfileNoticeModal notice={state.notice} onClose={state.dismissNotice} />
-
-      <ProfileEditConfirmations edit={state.edit} />
-
-      <ChangePasswordDialog
-        visible={state.changePasswordVisible}
-        onClose={state.closeChangePassword}
-        onSuccess={() => toast.success("Password changed", "Use your new password the next time you sign in.")}
-      />
-
+      <ProfileOverlays state={state} />
     </>
   );
 };

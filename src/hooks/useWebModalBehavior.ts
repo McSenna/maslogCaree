@@ -27,6 +27,10 @@ const unlockPageScroll = () => {
   }
 };
 
+const swallowEscapeKeyUp = (event: KeyboardEvent) => {
+  if (event.key === "Escape") event.stopPropagation();
+};
+
 export const useWebModalBehavior = (visible: boolean, onClose: () => void) => {
   const closeRef = useLatestRef(onClose);
 
@@ -44,6 +48,9 @@ export const useWebModalBehavior = (visible: boolean, onClose: () => void) => {
       if (dialogStack[dialogStack.length - 1] !== id) return;
 
       event.stopPropagation();
+      // React Native Web's Modal closes on keyup. Without this, the same key press
+      // would go on to close whatever this dialog was sitting on top of.
+      document.addEventListener("keyup", swallowEscapeKeyUp, { capture: true, once: true });
       closeRef.current();
     };
 

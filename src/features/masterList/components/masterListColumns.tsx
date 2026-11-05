@@ -20,13 +20,13 @@ const folded = (record: MasterResidentRecord, { hiddenKeys }: CellContext) =>
     .filter(Boolean)
     .join(" · ");
 
-/** The Resident Records table, declared once for its header, rows, skeleton and phone cards. */
+/** Shared columns distribute spare space equally while retaining their content minimums. */
 const masterListColumns = (handlers: Handlers): Column<MasterResidentRecord>[] => [
   {
     key: "record", nameColumn: true,
     header: "Resident record",
     align: "left",
-    flex: 2.2,
+    flex: 1,
     minWidth: 180,
     render: (record, _index, context) => (
       <TablePrimaryCell title={masterFullName(record)} detail={folded(record, context)} />
@@ -36,7 +36,8 @@ const masterListColumns = (handlers: Handlers): Column<MasterResidentRecord>[] =
     key: "role",
     header: "Role",
     align: "center",
-    width: 130,
+    flex: 1,
+    minWidth: 130,
     cardRole: "badge",
     render: (record) => <ResidentRolePill role={record.role} />,
   },
@@ -44,17 +45,19 @@ const masterListColumns = (handlers: Handlers): Column<MasterResidentRecord>[] =
     key: "birthDate",
     header: "Birth date",
     align: "center",
-    width: 124,
+    flex: 1,
+    minWidth: 124,
     hideBelow: "md",
     render: (record) => <TableText value={formatBirthDate(record.dateOfBirth)} />,
   },
-  { key: "sex", header: "Sex", align: "center", width: 90, hideBelow: "lg", accessor: (record) => capitalize(record.sex) },
+  { key: "sex", header: "Sex", align: "center", flex: 1, minWidth: 90, hideBelow: "lg", accessor: (record) => capitalize(record.sex) },
   {
     key: "civilStatus",
     header: "Civil status",
     align: "center",
     // Fits "Single - Solo Parent" in full.
-    width: 176,
+    flex: 1,
+    minWidth: 176,
     hideBelow: "lg",
     accessor: (record) => civilStatusLabel(record.civilStatus) || "Not set",
   },
@@ -62,7 +65,7 @@ const masterListColumns = (handlers: Handlers): Column<MasterResidentRecord>[] =
     key: "address",
     header: "Purok and street",
     align: "left",
-    flex: 1.8,
+    flex: 1,
     minWidth: 150,
     hideBelow: "md",
     accessor: (record) => record.address,
@@ -71,7 +74,8 @@ const masterListColumns = (handlers: Handlers): Column<MasterResidentRecord>[] =
     key: "actions",
     header: "Actions",
     align: "center",
-    width: 184,
+    flex: 1,
+    minWidth: 184,
     cardRole: "actions",
     render: (record) => <MasterRecordActions record={record} {...handlers} />,
   },

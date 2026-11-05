@@ -15,6 +15,10 @@ const AnnouncementDateTimeFields = ({
   timeError,
   disabled,
   stacked = false,
+  dateInputRef,
+  timeInputRef,
+  onBlurDate,
+  onBlurTime,
 }: AnnouncementDateTimeFieldsProps) => {
   const baseId = useId();
   const range = useMemo(() => announcementDateRange(), []);
@@ -24,6 +28,8 @@ const AnnouncementDateTimeFields = ({
       <View style={stacked ? undefined : { flex: 1.4, minWidth: 0 }}>
         <NativeInput
           id={`${baseId}-date`}
+          inputRef={dateInputRef}
+          onBlur={onBlurDate}
           type="date"
           label="Date"
           value={date}
@@ -38,6 +44,8 @@ const AnnouncementDateTimeFields = ({
       <View style={stacked ? undefined : { flex: 1, minWidth: 0 }}>
         <NativeInput
           id={`${baseId}-time`}
+          inputRef={timeInputRef}
+          onBlur={onBlurTime}
           type="time"
           label="Time"
           value={time}

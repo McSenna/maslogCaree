@@ -25,6 +25,8 @@ type IconButtonProps = {
   tone?: "default" | "danger" | "inverse";
   showTooltip?: boolean;
   style?: StyleProp<ViewStyle>;
+  /** Takes first keyboard focus when a dialog's focus trap opens (web). */
+  initialFocus?: boolean;
 };
 
 const IconButton = ({
@@ -37,6 +39,7 @@ const IconButton = ({
   tone = "default",
   showTooltip = Platform.OS === "web",
   style,
+  initialFocus = false,
 }: IconButtonProps) => {
   const colors = useThemeColors();
   const { hovered, pressed, focused, scaleStyle, handlers } = useInteractionState({ disabled, pressScale: 0.96 });
@@ -58,6 +61,7 @@ const IconButton = ({
     <Animated.View style={[{ position: "relative" }, scaleStyle, style]}>
       <Pressable
         {...handlers}
+        {...(Platform.OS === "web" && initialFocus ? { dataSet: { initialFocus: "true" } } : {})}
         onPress={disabled ? undefined : onPress}
         disabled={disabled}
         accessibilityRole="button"

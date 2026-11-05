@@ -1,6 +1,7 @@
 import { todayKey } from "../immunizationLogic";
 import DateField from "@/components/medicalRecord/fields/DateField";
 import TextField from "@/components/medicalRecord/fields/TextField";
+import TimeField from "@/components/medicalRecord/fields/TimeField";
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import type { MedicalField } from "@/services/medicalRecordTypes";
 
@@ -9,22 +10,28 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   date?: boolean;
+  time?: boolean;
   past?: boolean;
   future?: boolean;
   required?: boolean;
   disabled?: boolean;
   multiline?: boolean;
+  maxLength?: number;
+  error?: string;
 };
 const ClinicalField = ({
   label,
   value,
   onChange,
   date,
+  time,
   past,
   future,
   required,
   disabled,
   multiline,
+  maxLength = 500,
+  error,
 }: Props) => {
   const palette = useQueuePalette();
   const field: MedicalField = {
@@ -32,7 +39,7 @@ const ClinicalField = ({
     label,
     required,
     type: "text",
-    maxLength: 500,
+    maxLength,
   };
   if (date) {
     field.type = "date";
@@ -40,7 +47,7 @@ const ClinicalField = ({
     if (future) field.when = "after_visit";
   }
   if (multiline) field.type = "textarea";
-  const Control = date ? DateField : TextField;
+  const Control = date ? DateField : time ? TimeField : TextField;
   return (
     <Control
       field={field}
@@ -53,6 +60,8 @@ const ClinicalField = ({
           : undefined
       }
       disabled={disabled}
+      error={error}
+      helper={error}
     />
   );
 };

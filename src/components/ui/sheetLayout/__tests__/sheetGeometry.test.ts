@@ -8,6 +8,7 @@ import {
   reservedEdges,
   sheetBottomInset,
   sheetMaxHeight,
+  webKeyboardTop,
 } from "../sheetGeometry.ts";
 
 // A tall Android phone (dp): 48dp status bar, 48dp navigation bar, 300dp keyboard.
@@ -110,5 +111,25 @@ describe("edges and insets", () => {
     assert.equal(clampMinHeight(560, 320), 320);
     assert.equal(clampMinHeight(280, 600), 280);
     assert.equal(clampMinHeight(280, -5), 0);
+  });
+});
+
+describe("webKeyboardTop", () => {
+  const PHONE = { layoutHeight: 800, visualOffsetTop: 0, scale: 1 };
+
+  it("finds the keyboard from the shrunken visual viewport", () => {
+    assert.equal(webKeyboardTop({ ...PHONE, visualHeight: 450 }), 450);
+  });
+
+  it("counts a page the browser panned to show the field", () => {
+    assert.equal(webKeyboardTop({ ...PHONE, visualHeight: 450, visualOffsetTop: 40 }), 490);
+  });
+
+  it("ignores the browser's toolbar collapsing", () => {
+    assert.equal(webKeyboardTop({ ...PHONE, visualHeight: 744 }), null);
+  });
+
+  it("ignores a pinch zoom, which also shrinks the visual viewport", () => {
+    assert.equal(webKeyboardTop({ ...PHONE, visualHeight: 400, scale: 2 }), null);
   });
 });

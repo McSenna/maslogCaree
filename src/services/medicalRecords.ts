@@ -90,31 +90,33 @@ export const fetchMyMedicalRecords = async (): Promise<MedicalRecord[]> => {
   return data.medicalRecords ?? [];
 };
 
-export type MyRecordsCursor = { completedAt: string; id: string };
-
 export type MyRecordsQuery = {
   service: string;
   range: string;
   query: string;
-  before?: MyRecordsCursor | null;
+  page: number;
+  /** One baby's program record, for a notification tap. */
+  babyId?: string;
 };
+
+export type BabyWithoutRecord = { _id: string; name: string; temporaryName: boolean; dateOfBirth: string };
 
 export type MyRecordsPage = {
   records: MedicalRecord[];
-  total: number | null;
-  nextCursor: MyRecordsCursor | null;
+  total: number;
+  babiesWithoutRecords: BabyWithoutRecord[];
 };
 
-// Paged history for the records screen. A POST, so the search text never sits in a URL.
+// The signed-in resident's records. A POST, so the search text never sits in a URL.
 export const searchMyMedicalRecords = async (query: MyRecordsQuery): Promise<MyRecordsPage> => {
   const { data } = await api.post<{
     medicalRecords?: MedicalRecord[];
-    total?: number | null;
-    nextCursor?: MyRecordsCursor | null;
+    total?: number;
+    babiesWithoutRecords?: BabyWithoutRecord[];
   }>("/medical-records/me/search", query);
   return {
     records: data.medicalRecords ?? [],
-    total: data.total ?? null,
-    nextCursor: data.nextCursor ?? null,
+    total: data.total ?? 0,
+    babiesWithoutRecords: data.babiesWithoutRecords ?? [],
   };
 };

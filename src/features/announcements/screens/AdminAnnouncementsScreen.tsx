@@ -14,6 +14,7 @@ import { useAnnouncementsScreen } from "../admin/hooks/useAnnouncementsScreen";
 import { useExportCsv } from "../admin/hooks/useExportCsv";
 import { useAnnouncementTheme } from "../admin/useAnnouncementTheme";
 import AnnouncementEditorDialog from "../components/create/AnnouncementEditorDialog";
+import { saveAnnouncement } from "../services/announcementService";
 
 // The role shell's content padding on either side of the page from tablet width up.
 const SHELL_PADDING_X = 48;
@@ -54,6 +55,7 @@ const AdminAnnouncementsScreen = () => {
           key={screen.editor === "new" ? "new" : screen.editor.id}
           editing={screen.editor === "new" ? null : screen.editor}
           onClose={screen.closeEditor}
+          onSubmit={(payload) => saveAnnouncement(screen.editor === "new" || !screen.editor ? null : screen.editor.id, payload)}
           onSaved={screen.data.upsert}
         />
       ) : null}

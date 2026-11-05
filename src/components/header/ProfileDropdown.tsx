@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   Animated,
   Pressable,
@@ -7,6 +7,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import Modal from "@/components/ui/AppModal";
+import { useLatestRef } from "@/hooks/useLatestRef";
 
 import { getHeaderPalette } from "./headerTokens";
 import {
@@ -29,12 +30,21 @@ type ProfileDropdownProps = {
   anchor: ProfileAnchor | null;
   items: ProfileMenuItem[];
   isDark: boolean;
+  /** Runs after the close animation, once the menu has left the page. */
+  onExited?: () => void;
 };
 
-const ProfileDropdown = ({ visible, onClose, anchor, items, isDark }: ProfileDropdownProps) => {
+const ProfileDropdown = ({ visible, onClose, anchor, items, isDark, onExited }: ProfileDropdownProps) => {
   const palette = getHeaderPalette(isDark);
   const { width: screenWidth } = useWindowDimensions();
   const { mounted, style: transitionStyle } = useMenuTransition(visible);
+  const wasMounted = useRef(mounted);
+  const onExitedRef = useLatestRef(onExited);
+
+  useEffect(() => {
+    if (wasMounted.current && !mounted) onExitedRef.current?.();
+    wasMounted.current = mounted;
+  }, [mounted, onExitedRef]);
 
   const position = useMemo(
     () => ({

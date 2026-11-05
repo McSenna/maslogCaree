@@ -28,6 +28,8 @@ type DashboardHeaderProps = {
   compact: boolean;
   /** Show only the actions while retaining the page name for screen readers. */
   hideHeading?: boolean;
+  /** Keep the subtitle but show the title to screen readers only. */
+  hideTitle?: boolean;
 };
 
 /**
@@ -43,19 +45,24 @@ const DashboardHeader = ({
   updatedLabel,
   compact,
   hideHeading = false,
+  hideTitle = false,
 }: DashboardHeaderProps) => {
   const heading = hideHeading ? (
     <Text role="heading" aria-level={1} className="sr-only">{title}</Text>
   ) : (
     <View className="min-w-0 gap-1" style={{ flexGrow: 1, flexShrink: 1, flexBasis: compact ? "auto" : 320 }}>
-      <Text
-        role="heading"
-        aria-level={1}
-        className={compact ? "text-[24px] font-bold" : "text-[28px] font-bold"}
-        style={{ color: palette.heading, lineHeight: compact ? 30 : 34, letterSpacing: -0.3 }}
-      >
-        {title}
-      </Text>
+      {hideTitle ? (
+        <Text role="heading" aria-level={1} className="sr-only">{title}</Text>
+      ) : (
+        <Text
+          role="heading"
+          aria-level={1}
+          className={compact ? "text-[24px] font-bold" : "text-[28px] font-bold"}
+          style={{ color: palette.heading, lineHeight: compact ? 30 : 34, letterSpacing: -0.3 }}
+        >
+          {title}
+        </Text>
+      )}
       <Text className="text-[16px] font-medium" style={{ color: palette.muted, lineHeight: 22 }}>
         {subtitle}
       </Text>

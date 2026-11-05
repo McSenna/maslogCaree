@@ -11,8 +11,8 @@ type OverviewCardsProps = {
   summary: UserSummary | null;
   tab: UserTab;
   onSelectTab: (tab: UserTab) => void;
-  /** Three in a row when there is room, otherwise stacked. */
-  columns: 1 | 3;
+  /** Four in a row when there is room, otherwise two rows of two. */
+  columns: 2 | 4;
   /** Phone sizes: smaller type and padding. */
   compact?: boolean;
 };
@@ -43,6 +43,16 @@ const buildCards = (summary: UserSummary, tab: UserTab, onSelectTab: (tab: UserT
   },
   {
     tone: "danger",
+    icon: "x-circle",
+    label: "Rejected",
+    value: summary.rejected,
+    description: "Can still be approved",
+    onPress: () => onSelectTab("rejected"),
+    accessibilityHint: "Shows rejected accounts",
+    selected: tab === "rejected",
+  },
+  {
+    tone: "danger",
     icon: "user-x",
     label: "Deactivated",
     value: summary.deactivated,
@@ -60,7 +70,7 @@ const OverviewCards = ({ summary, tab, onSelectTab, columns, compact = false }: 
   if (!summary) {
     return (
       <MetricRow columns={columns} gap={gap}>
-        {[0, 1, 2].map((index) => (
+        {[0, 1, 2, 3].map((index) => (
           <MetricCardSkeleton key={index} palette={palette} compact={compact} />
         ))}
       </MetricRow>
@@ -70,7 +80,7 @@ const OverviewCards = ({ summary, tab, onSelectTab, columns, compact = false }: 
   return (
     <MetricRow columns={columns} gap={gap}>
       {buildCards(summary, tab, onSelectTab).map((card) => (
-        <MetricCard key={card.label} palette={palette} compact={compact} descriptionChip {...card} />
+        <MetricCard key={card.label} palette={palette} compact={compact} iconBesideValue={compact} descriptionChip {...card} />
       ))}
     </MetricRow>
   );

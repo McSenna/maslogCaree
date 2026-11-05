@@ -1,38 +1,41 @@
 import { View } from "react-native";
-import CardSkeleton from "./skeleton/CardSkeleton";
-import HeroSkeleton from "./skeleton/HeroSkeleton";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { RADII } from "@/theme/radius";
+import { SPACING } from "@/theme/spacing";
+import Block from "./skeleton/Block";
+import SectionSkeleton from "./skeleton/SectionSkeleton";
 import { useShimmer } from "./skeleton/useShimmer";
 
 type ProfileSkeletonProps = {
   twoColumn?: boolean;
+  avatarSize?: number;
 };
 
-const ProfileSkeleton = ({ twoColumn = false }: ProfileSkeletonProps) => {
+const DETAILS_COLUMN_FLEX = 1.5;
+
+const ProfileSkeleton = ({ twoColumn = false, avatarSize = 96 }: ProfileSkeletonProps) => {
   const opacity = useShimmer();
+  const colors = useThemeColors();
 
   return (
-    <View accessibilityRole="progressbar" accessibilityLabel="Loading profile" style={{ gap: 16 }}>
-      <HeroSkeleton opacity={opacity} />
-
-      <View
-        style={{
-          flexDirection: twoColumn ? "row" : "column",
-          gap: 16,
-          alignItems: "flex-start",
-        }}
-      >
-        <View style={{ flex: twoColumn ? 1.15 : undefined, width: twoColumn ? undefined : "100%" }}>
-          <CardSkeleton rows={6} opacity={opacity} />
+    <View accessibilityRole="progressbar" accessibilityLabel="Loading profile" style={{ gap: SPACING.xl }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: SPACING.lg }}>
+        <Block width={avatarSize} height={avatarSize} radius={RADII.large} opacity={opacity} />
+        <View style={{ flex: 1, gap: SPACING.sm }}>
+          <Block width="50%" height={22} opacity={opacity} />
+          <Block width="25%" height={14} opacity={opacity} />
+          <Block width="35%" height={14} opacity={opacity} />
         </View>
-        <View
-          style={{
-            flex: twoColumn ? 1 : undefined,
-            width: twoColumn ? undefined : "100%",
-            gap: 16,
-          }}
-        >
-          <CardSkeleton rows={3} opacity={opacity} />
-          <CardSkeleton rows={3} opacity={opacity} />
+      </View>
+      <View style={{ height: 1, backgroundColor: colors.divider }} />
+      <View style={{ flexDirection: twoColumn ? "row" : "column", gap: SPACING.xl }}>
+        <View style={{ flex: twoColumn ? DETAILS_COLUMN_FLEX : undefined, gap: SPACING.xl }}>
+          <SectionSkeleton rows={4} opacity={opacity} shape="fields" />
+          <SectionSkeleton rows={2} opacity={opacity} shape="fields" />
+        </View>
+        <View style={{ flex: twoColumn ? 1 : undefined, gap: SPACING.xl }}>
+          <SectionSkeleton rows={2} opacity={opacity} />
+          <SectionSkeleton rows={3} opacity={opacity} />
         </View>
       </View>
     </View>

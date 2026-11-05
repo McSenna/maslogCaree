@@ -18,6 +18,8 @@ import {
   VisitBlock,
 } from "./details/RecordDetailSections";
 import { Block, Row } from "./details/RecordPrimitives";
+import { isImmunizationRecord } from "@/features/immunization/recordView/vaccinationScope";
+import VaccinationRecordDialog from "@/features/immunization/recordView/VaccinationRecordDialog";
 import { useResponsive } from "@/hooks/useResponsive";
 
 
@@ -47,6 +49,9 @@ const MedicalRecordDetails = ({
   });
 
   if (!record) return null;
+  if (isImmunizationRecord(record)) {
+    return <VaccinationRecordDialog visible={visible} record={record} form={form} onClose={onClose} showProviderNotes={showProviderNotes} />;
+  }
 
   return (
     <Modal

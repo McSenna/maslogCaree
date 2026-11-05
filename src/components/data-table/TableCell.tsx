@@ -17,6 +17,8 @@ const ALIGN_ITEMS = {
 type TableCellProps = {
   column: ColumnSizing & { align?: Align };
   header?: boolean;
+  /** No cell role, for cells outside a table row: inside a row that is a single button, or a loading placeholder. */
+  plain?: boolean;
   debug?: boolean;
   children?: ReactNode;
 };
@@ -25,9 +27,9 @@ type TableCellProps = {
  * The one cell used by the header, the rows and the skeleton. Size, padding and
  * alignment all come from the column, so a column's edges match in every row.
  */
-const TableCell = ({ column, header = false, debug = false, children }: TableCellProps) => {
+const TableCell = ({ column, header = false, plain = false, debug = false, children }: TableCellProps) => {
   const colors = useThemeColors();
-  const semantic = Platform.OS === "web" ? (header ? "columnheader" : "cell") : undefined;
+  const semantic = Platform.OS === "web" && !plain ? (header ? "columnheader" : "cell") : undefined;
 
   return (
     <View

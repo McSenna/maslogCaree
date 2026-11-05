@@ -9,9 +9,13 @@ import ConfirmationModal from "@/components/ui/ConfirmationModal";
 import DateOfBirthPicker from "@/features/auth/components/datePicker/DateOfBirthPicker";
 import type { CompletionForm } from "@/services/medicalRecords";
 
+import { useVaccinationTabs, VACCINATION_DIALOG_WIDTH } from "@/features/immunization/recordView/useVaccinationTabs";
+import VaccinationTabBar from "@/features/immunization/recordView/VaccinationTabBar";
+
 import { useRecordEditor } from "../../hooks/useRecordEditor";
 import type { MasterlistDetail } from "../../types";
 import EditorFooter from "./editorFooter";
+import ImmunizationRecordEditContent from "./ImmunizationRecordEditContent";
 import RecordEditorForm from "./RecordEditorForm";
 
 type Props = {
@@ -51,6 +55,9 @@ const RecordEditorDialog = ({ editing, forms, formsLoading, onClose, onSaved, on
   }, []);
   const immunization = (!editing || Boolean(editing.baby)) && editor.serviceType === "immunization" && user?.role === "midwife";
   const busy = editor.saving || clinicalSaving;
+  // A baby's existing record edits in the Medical Record view's layout. Adding one still starts by choosing the mother and baby.
+  const babyRecord = immunization && editing?.baby ? editing : null;
+  const tabs = useVaccinationTabs(babyRecord?._id ?? null);
   const [panelWidth, setPanelWidth] = useState(0);
   const [pickingDate, setPickingDate] = useState(false);
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
@@ -71,17 +78,19 @@ const RecordEditorDialog = ({ editing, forms, formsLoading, onClose, onSaved, on
         dismissible={!busy}
         closeLabel="Close without saving"
         onLayoutWidth={setPanelWidth}
-        scrollToTopKey={editor.nextCount + contentVersion}
-        scrollToY={immunization ? scrollToY : 0}
+        scrollToTopKey={babyRecord ? tabs.scroll.key : editor.nextCount + contentVersion}
+        scrollToY={babyRecord ? tabs.scroll.y : immunization ? scrollToY : 0}
+        subheader={babyRecord ? <VaccinationTabBar tabs={tabs} /> : undefined}
+        maxWidth={babyRecord ? VACCINATION_DIALOG_WIDTH : undefined}
         title={editing ? "Edit medical record" : "Add medical record"}
-        subtitle={editor.resident?.fullName ?? "A record from the health center's files"}
+        subtitle={babyRecord ? `${editor.resident?.fullName ?? babyRecord.resident.fullName}, ${babyRecord.serviceLabel}` : (editor.resident?.fullName ?? "A record from the health center's files")}
         footer={immunization ? <Button label="Close medical record" variant="secondary" disabled={busy} onPress={requestClose} /> : <EditorFooter editor={editor} onClose={requestClose} />}
       >
         {waitingForForms ? (
           <CompletionPlaceholder message="Loading the record forms." />
         ) : (
           <ClinicalSaveBoundary onBusyChange={setClinicalSaving} onDraftChange={setClinicalDirty}>
-            <RecordEditorForm editor={editor} forms={forms} busy={busy} onContentChange={contentChanged} onClinicalLayout={clinicalLayout} twoColumn={panelWidth >= PANEL_TWO_COLUMN_WIDTH} onOpenDate={() => setPickingDate(true)} />
+            {babyRecord ? <ImmunizationRecordEditContent detail={babyRecord} tabs={tabs} busy={busy} /> : <RecordEditorForm editor={editor} forms={forms} busy={busy} onContentChange={contentChanged} onClinicalLayout={clinicalLayout} twoColumn={panelWidth >= PANEL_TWO_COLUMN_WIDTH} onOpenDate={() => setPickingDate(true)} />}
           </ClinicalSaveBoundary>
         )}
       </CompleteModalShell>

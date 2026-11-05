@@ -1,3 +1,5 @@
+import { IMMUNIZATION_LOCATION } from "../../config/healthCenter.ts";
+
 export const isAdministered = (record: { state: string } | null): boolean =>
   record?.state === "administered";
 
@@ -39,6 +41,51 @@ export const validateAdministration = (
   if (day > todayKey(now))
     return "The administration date cannot be in the future.";
   return "";
+};
+
+export type DoseEntryField = "administeredOn" | "administeredAt" | "administeredBy" | "reason";
+export type DoseEntryErrors = Partial<Record<DoseEntryField, string>>;
+
+type DoseEntryInput = {
+  administeredOn: string;
+  administeredAt?: string;
+  administeredBy?: string;
+  historical?: boolean;
+  birth: string;
+  /** Correcting or voiding a saved dose needs a reason. */
+  amending: boolean;
+  voiding: boolean;
+  reason: string;
+};
+
+/** Each message names its field. A void replaces no clinical values, so only its reason is checked. */
+export const doseEntryErrors = (entry: DoseEntryInput, now = new Date()): DoseEntryErrors => {
+  const errors: DoseEntryErrors = {};
+  if (entry.amending && !entry.reason.trim()) errors.reason = "Enter the reason for correcting or voiding this record.";
+  if (entry.voiding) return errors;
+  const date = validateAdministration(entry.administeredOn, entry.birth, now);
+  if (date) errors.administeredOn = date;
+  if (entry.administeredAt && !/^([01]\d|2[0-3]):[0-5]\d$/.test(entry.administeredAt)) errors.administeredAt = "Select a valid time, or clear it.";
+  if (entry.historical && !entry.administeredBy?.trim()) errors.administeredBy = "Enter the clinician who administered this historical dose.";
+  return errors;
+};
+
+type SavedIdentity = { state: string; historical?: boolean; administeredBy?: string; facility?: string };
+
+/**
+ * What the server will store, shown before saving. A correction keeps who gave the
+ * dose and where; anything else recorded here is the signed-in midwife at the center.
+ */
+export const doseIdentity = (saved: SavedIdentity | null, signedInName: string) =>
+  saved?.state === "administered" && !saved.historical
+    ? { clinician: saved.administeredBy ?? "", location: saved.facility ?? "", keepsSaved: true }
+    : { clinician: signedInName, location: IMMUNIZATION_LOCATION, keepsSaved: false };
+
+/** Only a dose copied from an earlier record sends a clinician or location; the server ignores any other. */
+export const doseRequestOf = <T extends { historical?: boolean; administeredBy?: string; facility?: string }>(administration: T) => {
+  if (administration.historical) return administration;
+  const { administeredBy: _clinician, facility: _location, ...request } = administration;
+  return request;
 };
 
 let birthSequence = 0;

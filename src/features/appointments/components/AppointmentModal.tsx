@@ -1,9 +1,9 @@
-import { KeyboardAvoidingView, ScrollView, View } from "react-native";
-import Modal from "@/components/ui/AppModal";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { View } from "react-native";
+
+import ResponsiveDialog from "@/components/ui/dialog/ResponsiveDialog";
+import { showAlert } from "@/utils/notify";
+
 import { useAppointmentBooking } from "../hooks/useAppointmentBooking";
-import { APPOINTMENT_COLORS } from "./appointmentTheme";
-import AppointmentFormHeader from "./AppointmentFormHeader";
 import BookingConfirmedStep from "./BookingConfirmedStep";
 import BookingRequestStep from "./BookingRequestStep";
 import StepProgress from "./StepProgress";
@@ -14,46 +14,54 @@ export type AppointmentModalProps = {
   onBooked?: () => void;
 };
 
-const AppointmentModal = ({
-  visible,
-  onClose,
-  onBooked,
-}: AppointmentModalProps) => {
-  const insets = useSafeAreaInsets();
+const MAX_WIDTH = 640;
+
+/**
+ * Booking, centred from tablet width up and a bottom sheet on phones. The state
+ * lives above `ResponsiveDialog`, so crossing the breakpoint swaps the frame and
+ * keeps every value and error. `ResponsiveDialog` owns focus, Escape, scroll
+ * lock, safe areas and the keyboard.
+ */
+const AppointmentModal = ({ visible, onClose, onBooked }: AppointmentModalProps) => {
   const booking = useAppointmentBooking(visible, onClose, onBooked);
 
-  if (!visible) return null;
+  // True when closing was stopped: a booking is being sent, or there is input to confirm losing.
+  const holdClose = (): boolean => {
+    if (booking.submitting) return true;
+    if (!booking.hasUnsavedInput) return false;
+    showAlert("Discard this booking?", "The details you have entered will be lost.", [
+      { text: "Keep editing", style: "cancel" },
+      { text: "Discard", style: "destructive", onPress: booking.close },
+    ]);
+    return true;
+  };
+
+  const requestClose = () => {
+    if (!holdClose()) booking.close();
+  };
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={booking.close} transparent={false}>
-      <View className="flex-1" style={{ backgroundColor: APPOINTMENT_COLORS.pageBg }}>
-        {/* "padding" on Android too: with edge-to-edge the OS does not reliably
-            resize this window for the keyboard. KeyboardAvoidingView measures the
-            real overlap against its own frame, so it adds nothing when the OS did. */}
-        <KeyboardAvoidingView className="flex-1" behavior="padding">
-          <ScrollView
-            className="flex-1"
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingTop: Math.max(insets.top, 12) + 4,
-              paddingBottom: Math.max(insets.bottom, 16) + 20,
-              paddingHorizontal: 16,
-              gap: 16,
-            }}
-          >
-            <AppointmentFormHeader onClose={booking.close} disabled={booking.submitting} />
-            <StepProgress step={booking.step} />
-
-            {booking.booked ? (
-              <BookingConfirmedStep appointment={booking.booked} onClose={booking.close} />
-            ) : (
-              <BookingRequestStep booking={booking} />
-            )}
-          </ScrollView>
-        </KeyboardAvoidingView>
+    <ResponsiveDialog
+      visible={visible}
+      title="Book an Appointment"
+      subtitle="Resident Appointment Form"
+      icon="calendar"
+      maxWidth={MAX_WIDTH}
+      lightSurface
+      // Submit sits at the end of a long form; the confirmation starts from the top.
+      scrollToKey={booking.booked ? 1 : 0}
+      onClose={requestClose}
+      onDismissRequest={holdClose}
+    >
+      <View style={{ gap: 16 }}>
+        <StepProgress step={booking.step} />
+        {booking.booked ? (
+          <BookingConfirmedStep appointment={booking.booked} onClose={booking.close} />
+        ) : (
+          <BookingRequestStep booking={booking} onCancel={requestClose} />
+        )}
       </View>
-    </Modal>
+    </ResponsiveDialog>
   );
 };
 

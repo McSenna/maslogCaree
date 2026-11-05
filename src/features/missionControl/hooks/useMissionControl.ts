@@ -81,12 +81,6 @@ export const useMissionControl = () => {
     [categories]
   );
 
-  const scopeDescription = useMemo(() => {
-    const names = (dashboard.overview?.breakdown ?? []).map((row) => row.label);
-    if (!names.length) return "Appointments assigned to your services.";
-    return `Your services: ${names.join(" · ")}`;
-  }, [dashboard.overview]);
-
   const scopeEmptyMessage = useMemo(() => {
     const names = (dashboard.overview?.breakdown ?? []).map((row) => row.label);
     if (!names.length) return "Nothing is assigned to your services yet.";
@@ -127,7 +121,6 @@ export const useMissionControl = () => {
     selectedMission,
     timeline,
     serviceLabels,
-    scopeDescription,
     scopeEmptyMessage,
     todayLabel,
     canManageMissions: canCreateMission(user?.role),

@@ -1,3 +1,4 @@
+import { formatCalendarDay } from "@/features/medicalRecordMasterlist/masterlistLabels";
 import { Platform, Text, View } from "react-native";
 import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/theme/breakpoints";
@@ -11,11 +12,18 @@ export default function ChecklistGrid({
   checklist,
   readOnly,
   disabled = false,
+  ageGroupHeader = true,
+  hoverPreview = true,
+  gridFrom = BREAKPOINTS.xl,
   onSelect,
 }: {
   checklist: Checklist;
   readOnly: boolean;
   disabled?: boolean;
+  ageGroupHeader?: boolean;
+  hoverPreview?: boolean;
+  /** Window width where the grid replaces stacked cards. A wide dialog has room sooner than the page does. */
+  gridFrom?: number;
   onSelect: (dose: DoseView) => void;
 }) {
   const { styles } = useImmunizationStyles();
@@ -36,11 +44,12 @@ export default function ChecklistGrid({
       }
       readOnly={readOnly}
       disabled={disabled}
-      centered={width >= BREAKPOINTS.xl}
+      centered={width >= gridFrom}
+      hoverPreview={hoverPreview}
       onSelect={onSelect}
     />
   );
-  if (width < BREAKPOINTS.xl)
+  if (width < gridFrom)
     return (
       <View style={styles.section}>
         {schedule.vaccines.map((vaccine) => (
@@ -58,7 +67,7 @@ export default function ChecklistGrid({
                       }
                     </Text>
                     <Text style={styles.muted}>
-                      Target: {dose.targetOn?.slice(0, 10) || "Not set"}
+                      Target: {dose.targetOn ? formatCalendarDay(dose.targetOn) : "Not set"}
                     </Text>
                   </View>
                   <View style={grid.mobileControl}>{cell(dose)}</View>
@@ -71,18 +80,20 @@ export default function ChecklistGrid({
   return (
     <View role={Platform.OS === "web" ? "table" : undefined}
       accessibilityLabel="Infant immunization checklist" style={grid.table}>
-      <View role={Platform.OS === "web" ? "row" : undefined} style={[grid.row, grid.header]}>
-        <View role={Platform.OS === "web" ? "columnheader" : undefined} style={grid.vaccine}>
-          <Text accessibilityRole="header" style={styles.strong}>
-            BAKUNA
-          </Text>
+      {ageGroupHeader ? (
+        <View role={Platform.OS === "web" ? "row" : undefined} style={[grid.row, grid.header]}>
+          <View role={Platform.OS === "web" ? "columnheader" : undefined} style={grid.vaccine}>
+            <Text accessibilityRole="header" style={styles.strong}>
+              BAKUNA
+            </Text>
+          </View>
+          <View role={Platform.OS === "web" ? "columnheader" : undefined} aria-colspan={6} style={grid.group}>
+            <Text accessibilityRole="header" style={styles.strong}>
+              NIREREKOMENDANG EDAD NG BATA
+            </Text>
+          </View>
         </View>
-        <View role={Platform.OS === "web" ? "columnheader" : undefined} aria-colspan={6} style={grid.group}>
-          <Text accessibilityRole="header" style={styles.strong}>
-            NIREREKOMENDANG EDAD NG BATA
-          </Text>
-        </View>
-      </View>
+      ) : null}
       <View role={Platform.OS === "web" ? "row" : undefined} style={[grid.row, grid.header]}>
         <View role={Platform.OS === "web" ? "columnheader" : undefined} style={grid.vaccine}>
           <Text style={styles.muted}>

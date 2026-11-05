@@ -76,3 +76,27 @@ export const keepOpenDay = (days: DayLike[], dateKey: string | null): string | n
   if (chosen && chosen.openPositions > 0) return chosen.dateKey;
   return days.find((day) => day.openPositions > 0)?.dateKey ?? null;
 };
+
+/** Anything the resident chose or typed, which closing the form would lose. */
+export const hasBookingInput = (draft: {
+  serviceType: string | null;
+  scheduleId: string | null;
+  slotStart: string | null;
+  dateKey: string | null;
+  reason: string;
+  notes: string;
+  childName: string;
+  childDob: string;
+  confirmed: boolean;
+}): boolean =>
+  Boolean(
+    draft.serviceType ||
+      draft.scheduleId ||
+      draft.slotStart ||
+      draft.dateKey ||
+      draft.reason.trim() ||
+      draft.notes.trim() ||
+      draft.childName.trim() ||
+      draft.childDob.trim() ||
+      draft.confirmed
+  );

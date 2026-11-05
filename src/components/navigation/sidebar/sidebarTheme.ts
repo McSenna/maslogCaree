@@ -21,11 +21,6 @@ export const SIDEBAR_METRICS = {
 
 const { blue, green, slate, night } = PALETTE;
 
-/**
- * Sidebar colours for every role. The active item is primary blue text and
- * icon on a faint blue wash: clear, but never a heavy block. The MaslogCare
- * wordmark keeps Dark Navy plus brand blue.
- */
 export const useSidebarPalette = () => {
   const { resolvedTheme } = useTheme();
 

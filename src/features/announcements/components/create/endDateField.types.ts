@@ -1,3 +1,5 @@
+import type { Ref } from "react";
+
 export type AnnouncementEndDateFieldProps = {
   /** YYYY-MM-DD, or "" for no end date. */
   value: string;
@@ -6,7 +8,10 @@ export type AnnouncementEndDateFieldProps = {
   onChange: (value: string) => void;
   error?: string;
   disabled?: boolean;
+  /** Web only: see the date and time fields. */
+  inputRef?: Ref<HTMLInputElement>;
+  onBlur?: () => void;
 };
 
 export const END_DATE_LABEL = "Show until (optional)";
-export const END_DATE_HELPER = "Leave empty to keep it up until you delete it.";
+export const END_DATE_HELPER = "Leave empty to keep it visible until you delete it.";

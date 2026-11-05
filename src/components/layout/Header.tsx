@@ -45,6 +45,7 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
         <View
           className="flex-row items-center justify-between"
           style={{
+            gap: 8,
             paddingVertical: isMobile ? 10 : 12,
             paddingHorizontal: isDesktop ? 48 : isMobile ? 16 : 28,
           }}

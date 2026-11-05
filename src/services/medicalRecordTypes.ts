@@ -78,6 +78,9 @@ export type MedicalRecord = ImmunizationProgramProgress & {
   appointmentDate?: string | null;
   completedAt: string;
   createdAt?: string;
+  updatedAt?: string;
+  /** Staff only: the master list identity the record is filed under. */
+  masterResidentId?: string;
   /** Missing on records from before sources existed; those are appointments. */
   source?: "appointment" | "historical_masterlist" | "walk_in" | "medical_mission" | "manual_entry";
   /** Encoded records: the provider as written on the paper record. */

@@ -3,9 +3,9 @@ import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 import type { AppointmentRecord } from "@/services/appointments";
 import { isWeeklyService } from "@/utils/serviceDays";
 import { isDraftComplete, type BookingDraft } from "./booking/bookingDraft";
+import { hasBookingInput } from "./booking/bookingRules";
 import { buildServiceOptions } from "./booking/bookingServiceOptions";
 import type { BookingErrors } from "./booking/bookingTypes";
-import { useBookingResident } from "./booking/useBookingResident";
 import { useBookingServices } from "./booking/useBookingServices";
 import { useBookingSlots } from "./booking/useBookingSlots";
 import { useBookingSubmit } from "./booking/useBookingSubmit";
@@ -26,8 +26,6 @@ export const useAppointmentBooking = (visible: boolean, onClose: () => void, onB
   const [confirmed, setConfirmed] = useState(false);
   const [errors, setErrors] = useState<BookingErrors>({});
   const [booked, setBooked] = useState<AppointmentRecord | null>(null);
-
-  const resident = useBookingResident();
 
   // Start each booking from a clean slate.
   useSyncOnChange([visible], () => {
@@ -107,7 +105,6 @@ export const useAppointmentBooking = (visible: boolean, onClose: () => void, onB
   return {
     step: booked ? 2 : 1,
     booked,
-    resident,
     serviceOptions,
     selectedService,
     servicesLoading,
@@ -136,6 +133,8 @@ export const useAppointmentBooking = (visible: boolean, onClose: () => void, onB
     submit,
     close,
     isComplete: isDraftComplete(draft),
+    /** A confirmed booking is saved, so only an unsent form has anything to lose. */
+    hasUnsavedInput: !booked && hasBookingInput(draft),
   };
 };
 

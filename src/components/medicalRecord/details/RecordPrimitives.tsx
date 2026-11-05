@@ -33,20 +33,23 @@ export const Block = ({
   title,
   children,
   palette,
+  fill = false,
 }: {
   title: string;
   children: ReactNode;
   palette: QueuePalette;
+  /** Stretch to the row's height, so side-by-side blocks end on one line. */
+  fill?: boolean;
 }) => (
-  <View className="w-full">
+  <View className={fill ? "w-full flex-1" : "w-full"}>
     <Text
       className="mb-1 text-[14px] font-bold uppercase"
-      style={{ color: palette.subtle, letterSpacing: 0.5 }}
+      style={{ color: palette.body, letterSpacing: 0.5 }}
     >
       {title}
     </Text>
     <View
-      className="w-full px-3.5 py-1"
+      className={fill ? "w-full flex-1 px-3.5 py-1" : "w-full px-3.5 py-1"}
       style={{
         borderRadius: QUEUE_RADIUS.control,
         borderWidth: 1,

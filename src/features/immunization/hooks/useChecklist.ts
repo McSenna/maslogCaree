@@ -44,9 +44,10 @@ const useChecklist = (
     mother,
     babies: current?.babies ?? [],
     babyId,
-    checklist:
-      !result.isFetching && !result.error ? (current?.checklist ?? null) : null,
-    loading: !result.error && (result.isFetching || !current),
+    // A reload keeps the checklist on screen. Clearing it would unmount the grid
+    // and any dose modal above it in the middle of a save.
+    checklist: !result.error ? (current?.checklist ?? null) : null,
+    loading: !result.error && !current,
     error: result.error ? requestProblem(result.error) : "",
     load,
     chooseMother,

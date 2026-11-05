@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useNavLinkPress } from "../useNavLinkPress";
 import { useEffect } from "react";
-import { Animated, Pressable, Text, View } from "react-native";
+import { Animated, Platform, Pressable, Text, View } from "react-native";
 import { BOTTOM_NAV_ROW_HEIGHT } from "@/constants/layout";
 import NotificationBadge from "./NotificationBadge";
 import {
@@ -13,6 +13,9 @@ import {
 import type { BottomNavEntry } from "./types";
 import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+
+// RN-web drops accessibilityState, so the current page is announced through this instead.
+const currentPageProps = Platform.OS === "web" ? ({ "aria-current": "page" } as object) : {};
 
 type BottomNavItemProps = {
   item: BottomNavEntry;
@@ -67,6 +70,7 @@ const BottomNavItem = ({
         accessibilityRole="tab"
         accessibilityLabel={item.accessibilityLabel ?? item.label}
         accessibilityState={{ selected: isActive }}
+        {...(isActive ? currentPageProps : null)}
         accessibilityHint={
           item.badgeCount && item.badgeCount > 0
             ? `${item.badgeCount} unread`

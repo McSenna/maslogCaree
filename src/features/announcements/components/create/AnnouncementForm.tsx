@@ -1,63 +1,63 @@
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { Text, View, type TextInput } from "react-native";
 
 import TextField from "@/components/forms/TextField";
-import SegmentedControl from "@/components/dashboard/kit/SegmentedControl";
-import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
 import { useResidentDialogPalette } from "@/design/residentDialogTheme";
+import { useResponsive } from "@/hooks/useResponsive";
+import { PAGE_PADDING } from "@/theme/breakpoints";
+import { TYPE } from "@/theme/typography";
 
-import { ANNOUNCEMENT_AUDIENCES, type Audience } from "../../announcement.types";
 import { ANNOUNCEMENT_LIMITS } from "../../announcementRules";
 import type { AnnouncementFormState } from "../../hooks/useAnnouncementForm";
-import AnnouncementDateTimeFields from "./AnnouncementDateTimeFields";
-import AnnouncementEndDateField from "./AnnouncementEndDateField";
-import { formIntro } from "./formCopy";
+import AudienceSchedulePanel from "./AudienceSchedulePanel";
 
 type AnnouncementFormProps = {
   form: AnnouncementFormState;
   compact: boolean;
+  /** The dialog's widest size, which sets how much room each column gets. */
+  maxWidth: number;
 };
 
-const AUDIENCE_OPTIONS = ANNOUNCEMENT_AUDIENCES.map((value) => ({ value, label: value }));
+const DETAILS_FLEX = { flex: 5, minWidth: 0 };
+const DETAILS_SHARE = 5 / 9;
+const PANEL_PADDING_WIDE = 24;
+const PANEL_PADDING_COMPACT = 20;
+const DATE_TIME_MIN_WIDTH = 330;
+const MESSAGE_HEIGHT_WIDE = 220;
+const MESSAGE_HEIGHT_COMPACT = 140;
 
-const POSTING_OPTIONS = [
-  { value: "post", label: "Post now" },
-  { value: "draft", label: "Save as draft" },
-] as const;
-
-const FormSection = ({ label, children }: { label: string; children: React.ReactNode }) => {
+/** Announcement details on the left, audience and schedule beside them; one column on phones. */
+const AnnouncementForm = ({ form, compact, maxWidth }: AnnouncementFormProps) => {
   const palette = useResidentDialogPalette();
-
-  return (
-    <View style={{ gap: 12 }}>
-      <Text accessibilityRole="header" style={{ fontSize: 16, fontWeight: "600", color: palette.heading }}>
-        {label}
-      </Text>
-      {children}
-    </View>
-  );
-};
-
-const AnnouncementForm = ({ form, compact }: AnnouncementFormProps) => {
-  const palette = useResidentDialogPalette();
-  const controlPalette = useAdminSurfacePalette();
-  const messageRef = useRef<TextInput>(null);
-  const locationRef = useRef<TextInput>(null);
-  const { values, errors, submitting, setField } = form;
+  const { width } = useResponsive();
+  const id = useId();
+  const messageRef = useRef<TextInput | null>(null);
+  const locationRef = useRef<TextInput | null>(null);
+  const { values, errors, submitting, setField, blurField, fieldRef } = form;
   const L = ANNOUNCEMENT_LIMITS;
 
-  return (
-    <View style={{ gap: compact ? 20 : 24 }}>
-      <Text style={{ fontSize: 15.5, lineHeight: 22, color: palette.body }}>
-        {formIntro(values, form.isEditing, form.canChooseDraft)}
-      </Text>
+  const dialogWidth = Math.min(maxWidth, width - PAGE_PADDING.mobile * 2);
+  const panelWidth = compact ? width - PANEL_PADDING_COMPACT * 2 : dialogWidth * (1 - DETAILS_SHARE) - PANEL_PADDING_WIDE * 2;
 
-      <FormSection label="What">
+  const titleField = fieldRef("title");
+  const messageField = fieldRef("message");
+  const locationField = fieldRef("location");
+
+  return (
+    <View className={compact ? "" : "flex-row"}>
+      <View className={`gap-4 ${compact ? "p-5" : "p-6"}`} style={compact ? null : DETAILS_FLEX}>
+        <Text accessibilityRole="header" style={[TYPE.bodyStrong, { color: palette.heading }]}>
+          Announcement details
+        </Text>
         <TextField
+          inputId={`${id}-title`}
+          inputRef={titleField}
+          initialFocus
           label="Title"
           required
           value={values.title}
           onChangeText={(text) => setField("title", text)}
+          onBlur={() => blurField("title")}
           placeholder="e.g. Free vaccination drive"
           maxLength={L.titleMax}
           autoCapitalize="sentences"
@@ -68,82 +68,47 @@ const AnnouncementForm = ({ form, compact }: AnnouncementFormProps) => {
           error={errors.title}
         />
         <TextField
-          inputRef={messageRef}
+          inputId={`${id}-message`}
+          inputRef={(node) => {
+            messageRef.current = node;
+            messageField(node);
+          }}
           label="Message"
           required
           multiline
+          inputMinHeight={compact ? MESSAGE_HEIGHT_COMPACT : MESSAGE_HEIGHT_WIDE}
           value={values.message}
           onChangeText={(text) => setField("message", text)}
+          onBlur={() => blurField("message")}
           placeholder="What should residents know or bring?"
           maxLength={L.messageMax}
           autoCapitalize="sentences"
           disabled={submitting}
           error={errors.message}
-          helper={`${values.message.length} / ${L.messageMax}`}
+          counter={`${values.message.length} / ${L.messageMax}`}
         />
-      </FormSection>
-
-      <FormSection label="Who">
-        <SegmentedControl<Audience>
-          palette={controlPalette}
-          label="Audience"
-          value={values.audience}
-          options={AUDIENCE_OPTIONS}
-          onChange={(audience) => setField("audience", audience)}
-          fill={compact}
-        />
-      </FormSection>
-
-      <FormSection label="When">
-        <AnnouncementDateTimeFields
-          date={values.date}
-          time={values.time}
-          onChangeDate={(value) => setField("date", value)}
-          onChangeTime={(value) => setField("time", value)}
-          dateError={errors.date}
-          timeError={errors.time}
-          disabled={submitting}
-          stacked={compact}
-        />
-        <AnnouncementEndDateField
-          value={values.endDate}
-          eventDate={values.date}
-          onChange={(value) => setField("endDate", value)}
-          error={errors.endDate}
-          disabled={submitting}
-        />
-      </FormSection>
-
-      <FormSection label="Where">
         <TextField
-          inputRef={locationRef}
+          inputId={`${id}-location`}
+          inputRef={(node) => {
+            locationRef.current = node;
+            locationField(node);
+          }}
           label="Location or venue"
           required
           leftIcon="map-pin"
           value={values.location}
           onChangeText={(text) => setField("location", text)}
+          onBlur={() => blurField("location")}
           placeholder="e.g. Barangay Maslog Health Center"
           maxLength={L.locationMax}
           autoCapitalize="words"
           returnKeyType="done"
-          onSubmitEditing={() => void form.submit()}
           disabled={submitting}
           error={errors.location}
         />
-      </FormSection>
+      </View>
 
-      {form.canChooseDraft ? (
-        <FormSection label="Posting">
-          <SegmentedControl
-            palette={controlPalette}
-            label="Posting"
-            value={values.isDraft ? "draft" : "post"}
-            options={POSTING_OPTIONS}
-            onChange={(choice) => setField("isDraft", choice === "draft")}
-            fill={compact}
-          />
-        </FormSection>
-      ) : null}
+      <AudienceSchedulePanel form={form} compact={compact} stackDateTime={panelWidth < DATE_TIME_MIN_WIDTH} />
     </View>
   );
 };

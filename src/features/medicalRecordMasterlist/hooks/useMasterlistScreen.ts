@@ -57,9 +57,6 @@ export const useMasterlistScreen = ({ isPhone }: { isPhone: boolean }) => {
     list.refresh();
     refreshSummary();
   };
-  // The person whose history the list is narrowed to, for the banner above it.
-  const [historyOf, setHistoryOf] = useState<ResidentIdentity | null>(null);
-
   const view = resolveMasterListView({
     isLoading: list.isLoading,
     error: list.error,
@@ -79,7 +76,6 @@ export const useMasterlistScreen = ({ isPhone }: { isPhone: boolean }) => {
   };
 
   const selectCard = (key: MasterlistCardKey) => {
-    setHistoryOf(null);
     list.replace({ ...EMPTY_CRITERIA, ...CARD_CRITERIA[key] });
   };
 
@@ -87,12 +83,10 @@ export const useMasterlistScreen = ({ isPhone }: { isPhone: boolean }) => {
     if (!resident.masterResidentId) return;
     detail.close();
     setEditor(null);
-    setHistoryOf(resident);
-    list.replace({ ...EMPTY_CRITERIA, masterResidentId: resident.masterResidentId });
+    list.replace({ ...EMPTY_CRITERIA, search: resident.fullName?.trim() || "", masterResidentId: resident.masterResidentId });
   };
 
   const clearFilters = () => {
-    setHistoryOf(null);
     list.replace(EMPTY_CRITERIA);
   };
 
@@ -104,7 +98,6 @@ export const useMasterlistScreen = ({ isPhone }: { isPhone: boolean }) => {
     detail,
     editor,
     initialServiceType,
-    historyOf,
     openNew: () => {
       if (!canWriteRecords) return;
       setInitialServiceType("");

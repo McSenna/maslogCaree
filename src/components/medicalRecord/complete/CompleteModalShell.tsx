@@ -26,7 +26,9 @@ const CompleteModalShell = ({
   dismissible,
   title,
   subtitle,
+  subtitleLines,
   badge,
+  subheader,
   footer,
   children,
   onLayoutWidth,
@@ -40,7 +42,11 @@ const CompleteModalShell = ({
   dismissible: boolean;
   title: string;
   subtitle?: string;
+  /** For a subtitle that must be read whole, such as which dose this is. */
+  subtitleLines?: number;
   badge?: ReactNode;
+  /** Pinned between the header and the scroll region, e.g. tabs. */
+  subheader?: ReactNode;
   footer?: ReactNode;
   children: ReactNode;
   onLayoutWidth?: (width: number) => void;
@@ -113,12 +119,15 @@ const CompleteModalShell = ({
           <ModalHeader
             title={title}
             subtitle={subtitle}
+            subtitleLines={subtitleLines}
             badge={badge}
             dismissible={dismissible}
             onRequestClose={onRequestClose}
             palette={palette}
             closeLabel={closeLabel}
           />
+
+          {subheader}
 
           <ScrollView
             ref={scrollRef}

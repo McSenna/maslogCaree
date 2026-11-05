@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { formatCalendarDay } from "@/features/medicalRecordMasterlist/masterlistLabels";
 import Button from "@/components/buttons/Button";
 import useChecklist from "../hooks/useChecklist";
 import { useClinicalTransition } from "../hooks/useClinicalDraft";
@@ -11,15 +12,13 @@ const ImmunizationRecordFields = ({
   mother,
   onContentChange,
   busy,
-  initialBabyId = null,
 }: {
   mother: Mother;
-  initialBabyId?: string | null;
   onContentChange: () => void;
   busy?: boolean;
 }) => {
   const { styles } = useImmunizationStyles();
-  const screen = useChecklist(true, initialBabyId, mother);
+  const screen = useChecklist(true, null, mother);
   const transition = useClinicalTransition();
   return (
     <View testID="immunization-record-fields" style={styles.section}>
@@ -60,7 +59,7 @@ const ImmunizationRecordFields = ({
               <Text style={styles.strong}>{baby.name}</Text>
               <Text style={styles.body}>
                 Baby ID: {baby._id}
-                {"\n"}Born: {baby.dateOfBirth}
+                {"\n"}Born: {formatCalendarDay(baby.dateOfBirth)}
               </Text>
               <Button
                 label="Select baby"
@@ -91,9 +90,7 @@ const ImmunizationRecordFields = ({
             checklist={screen.checklist}
             isMidwife
             onReload={screen.load}
-            embedded
             busy={busy}
-            onContentChange={onContentChange}
           />
         </>
       )}

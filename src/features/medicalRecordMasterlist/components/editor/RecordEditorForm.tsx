@@ -39,7 +39,7 @@ const RecordEditorForm = ({ editor, forms, twoColumn, onOpenDate, busy, onConten
   const palette = useQueuePalette();
   const transition = useClinicalTransition();
   const { user } = useAuth();
-  const immunization = (!editor.isEditing || Boolean(editor.initialBabyId)) && editor.serviceType === "immunization" && user?.role === "midwife";
+  const immunization = !editor.isEditing && editor.serviceType === "immunization" && user?.role === "midwife";
   const visitValues: Record<string, string> = editor.visit;
   const serviceField: MedicalField = {
     key: "serviceType",
@@ -104,7 +104,7 @@ const RecordEditorForm = ({ editor, forms, twoColumn, onOpenDate, busy, onConten
 
       </> : editor.resident && editor.confirmed && editor.resident.masterResidentId ? (
         <View onLayout={event => onClinicalLayout(event.nativeEvent.layout.y + 16)}>
-          <ImmunizationRecordFields key={editor.resident.masterResidentId} mother={{masterResidentId:editor.resident.masterResidentId,name:editor.resident.fullName}} initialBabyId={editor.initialBabyId} busy={busy} onContentChange={onContentChange} />
+          <ImmunizationRecordFields key={editor.resident.masterResidentId} mother={{masterResidentId:editor.resident.masterResidentId,name:editor.resident.fullName}} busy={busy} onContentChange={onContentChange} />
         </View>
       ) : <Text className="text-[15px] leading-[21px]" style={{color:palette.muted}}>Select and confirm the mother above to show her babies and vaccine checklist.</Text>}
 

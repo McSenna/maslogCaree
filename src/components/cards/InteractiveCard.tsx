@@ -54,7 +54,7 @@ const InteractiveCard = ({
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={accessibilityHint}
         accessibilityState={{ selected }}
-        aria-selected={selected}
+        aria-pressed={selected}
         style={[{ flex: 1, borderRadius: radius }, CURSOR]}
       >
         {children}

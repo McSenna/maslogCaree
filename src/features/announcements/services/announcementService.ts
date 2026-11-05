@@ -3,8 +3,10 @@ import api from "@/services/api";
 import type {
   AnnouncementPage,
   AnnouncementRecord,
+  AnnouncementSubmitPayload,
   CreateAnnouncementPayload,
 } from "../announcement.types";
+import { toApiPayload } from "../announcementSubmit";
 
 type AnnouncementPageResponse = {
   success: boolean;
@@ -68,6 +70,13 @@ export const updateAnnouncement = async (
   );
   return data.announcement;
 };
+
+/** Writes a new announcement, or the one with this id. */
+export const saveAnnouncement = (
+  id: string | null,
+  payload: AnnouncementSubmitPayload
+): Promise<AnnouncementRecord> =>
+  id ? updateAnnouncement(id, toApiPayload(payload)) : createAnnouncement(toApiPayload(payload));
 
 /** Removes the announcement and the inbox alerts that point at it; admin only. */
 export const deleteAnnouncement = async (id: string): Promise<void> => {

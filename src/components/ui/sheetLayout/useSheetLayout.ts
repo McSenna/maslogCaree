@@ -1,5 +1,5 @@
-import { useCallback, useState } from "react";
-import { useWindowDimensions, type LayoutChangeEvent } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { Platform, useWindowDimensions, type LayoutChangeEvent } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
@@ -71,6 +71,16 @@ export const useSheetLayout = ({
     keyboardTop,
   });
   const keyboardVisible = keyboardTop !== null;
+
+  // The surface just got shorter around the field being typed in. Keep that field in view.
+  useEffect(() => {
+    if (Platform.OS !== "web" || keyboardTop === null) return;
+    const active = document.activeElement;
+    if (active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement) {
+      active.scrollIntoView({ block: "nearest" });
+    }
+  }, [keyboardTop]);
+
   const bottomInset = sheetBottomInset({ keyboardVisible, insetBottom: insets.bottom });
   const edges = reservedEdges({ variant, insetTop: insets.top, bottomInset, edgePadding });
 

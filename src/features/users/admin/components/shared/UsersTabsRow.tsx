@@ -2,8 +2,9 @@ import { Platform, View } from "react-native";
 
 import DashboardButton from "@/components/dashboard/admin/DashboardButton";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
+import AccessLoadState from "@/features/webAccess/AccessLoadState";
 import GlobalAccessToggle from "@/features/webAccess/GlobalAccessToggle";
-import { useCanManageWebAccess } from "@/features/webAccess/webAccessPermission";
+import { useWebAccessPermission } from "@/features/webAccess/webAccessPermission";
 import { useResponsive } from "@/hooks/useResponsive";
 
 import type { UsersScreenState } from "../../hooks/useUsersScreen";
@@ -22,7 +23,9 @@ type UsersTabsRowProps = {
 const UsersTabsRow = ({ screen, onAddRecord }: UsersTabsRowProps) => {
   const palette = useAdminSurfacePalette();
   const { isMobile, width } = useResponsive();
-  const canManageWebAccess = useCanManageWebAccess();
+  const permission = useWebAccessPermission();
+  const canManageWebAccess = permission.status === "granted";
+  const permissionPending = permission.status === "checking" || permission.status === "unavailable";
   const showTabIcons = width >= TAB_ICONS_MIN_WIDTH;
   // The file is account data, and a phone's share sheet is no place for it.
   const showExport = !screen.masterTab && Platform.OS === "web";
@@ -45,6 +48,7 @@ const UsersTabsRow = ({ screen, onAddRecord }: UsersTabsRowProps) => {
   const actions = (
     <View className={`max-w-full flex-row flex-wrap items-center gap-3 ${isMobile ? "w-full" : ""}`}>
       {canManageWebAccess ? <GlobalAccessToggle /> : null}
+      {permissionPending ? <AccessLoadState error={permission.status === "unavailable"} onRetry={permission.retry} /> : null}
       {canManageWebAccess && (showExport || onAddRecord) ? (
         isMobile ? null : <View className="h-7 w-px bg-divider" accessibilityElementsHidden importantForAccessibility="no" />
       ) : null}

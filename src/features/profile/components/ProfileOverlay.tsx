@@ -8,10 +8,11 @@ import {
 } from "react-native";
 import Modal from "@/components/ui/AppModal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useWebModalBehavior } from "@/hooks/useWebModalBehavior";
+import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 import { EASING, TIMING, USE_NATIVE_DRIVER, useReducedMotion } from "@/theme/motion";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
 import { PALETTE, withAlpha } from "@/theme/palette";
+import { SPACING } from "@/theme/spacing";
 
 type ProfileOverlayProps = {
   visible: boolean;
@@ -39,6 +40,7 @@ const ProfileOverlay = ({
   const restScale = reducedMotion ? 1 : 0.98;
 
   useWebModalBehavior(visible, onClose);
+  const attachFocusTrap = useFocusTrap(visible);
 
   // Mount synchronously on open; unmount only once the close animation has finished.
   if (visible && !mounted) setMounted(true);
@@ -91,22 +93,19 @@ const ProfileOverlay = ({
       transparent
       animationType="none"
       statusBarTranslucent
-      onRequestClose={onClose}
+      // On web useWebModalBehavior owns Escape. RN-web also closes on keyup, so passing this
+      // there would run onClose twice for one key press: leave edit mode, then close the modal.
+      onRequestClose={Platform.OS === "web" ? undefined : onClose}
     >
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
         <Animated.View style={[StyleSheet.absoluteFill, { opacity }]}>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={`Close ${accessibilityLabel}`}
+            tabIndex={-1}
             onPress={dismissOnBackdropPress ? onClose : undefined}
             disabled={!dismissOnBackdropPress}
-            style={{
-              flex: 1,
-              backgroundColor: withAlpha(PALETTE.slate[800], 0.40),
-              ...(Platform.OS === "web"
-                ? ({ backdropFilter: "blur(4px)" } as object)
-                : null),
-            }}
+            style={{ flex: 1, backgroundColor: withAlpha(PALETTE.slate[800], 0.4) }}
           />
         </Animated.View>
 
@@ -116,18 +115,13 @@ const ProfileOverlay = ({
           aria-modal
           accessibilityLabel={accessibilityLabel}
           style={{
-            width: "100%",
-            alignItems: "center",
-            justifyContent: "center",
-            paddingHorizontal: 20,
-            paddingTop: insets.top + 12,
-            paddingBottom: insets.bottom + 12,
+            paddingTop: insets.top + SPACING.md,
+            paddingBottom: insets.bottom + SPACING.md,
             opacity,
             transform: [{ scale }],
-            pointerEvents: "box-none",
           }}
         >
-          {children}
+          <View ref={attachFocusTrap}>{children}</View>
         </Animated.View>
       </View>
     </Modal>

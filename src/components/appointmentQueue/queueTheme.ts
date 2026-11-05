@@ -82,6 +82,7 @@ export const useQueuePalette = () => {
       muted: base.muted,
       subtle: base.subtle,
       primary: base.primary,
+      onPrimary: base.onPrimary,
       primarySoft: isDark ? withAlpha(PALETTE.blue[600], 0.18) : PALETTE.blue[50],
       tones: Object.fromEntries(
         Object.entries(base.tones).map(([tone, style]) => [tone, { bg: style.iconBg, fg: style.icon }])

@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { ScrollView, View } from "react-native";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import Button from "@/components/buttons/Button";
 import PageHeader from "@/components/layout/PageHeader";
 import { useTheme } from "@/contexts/ThemeContext";
+import { takeAppointmentDetailRequest } from "@/features/appointments/appointmentDetailRequest";
 import AppointmentDetailSheet from "@/features/appointments/components/AppointmentDetailSheet";
 import AppointmentModal from "@/features/appointments/components/AppointmentModal";
 import ResidentAppointmentList from "@/features/appointments/components/ResidentAppointmentList";
@@ -32,6 +33,15 @@ const ResidentAppointments = () => {
   const [selected, setSelected] = useState<AppointmentRecord | null>(null);
   const openBooking = () => setBookingOpen(true);
 
+  // The dashboard's "View details" names one appointment; open it once the list has it.
+  const requestedId = useRef(takeAppointmentDetailRequest());
+  useEffect(() => {
+    if (!requestedId.current || loading) return;
+    const requested = appointments.find((appointment) => appointment._id === requestedId.current);
+    requestedId.current = null;
+    if (requested) setSelected(requested);
+  }, [appointments, loading]);
+
   const openRecord = (recordId: string) => {
     setSelected(null);
     void recordViewer.openById(recordId);
@@ -47,14 +57,9 @@ const ResidentAppointments = () => {
         <View className="gap-6 pb-4">
           <PageHeader
             title="Appointments"
-            subtitle="Book a health visit and keep track of your appointments."
+            hideHeading
             actions={<Button label="Book appointment" icon="plus" onPress={openBooking} fullWidth={isMobile} />}
           />
-
-          <Text className={`text-sm leading-relaxed ${classes.textMuted}`}>
-            Your appointment is confirmed as soon as you book it. Immunization times are assigned first
-            come, first served. You can move or cancel any appointment from its card.
-          </Text>
 
           <ResidentAppointmentList
             appointments={appointments}

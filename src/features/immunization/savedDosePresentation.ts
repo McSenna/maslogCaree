@@ -4,7 +4,8 @@ export const savedDoseStatus = (record: DoseRecord): string => {
   if (record.workflowStatus === "draft") return "Draft. Not administered";
   if (record.state === "administered") return "Administered";
   if (record.state === "deferred") return "Deferred";
-  return record.history.at(-1)?.action === "follow_up"
+  // Residents get no audit history, so a documented follow-up date also identifies this.
+  return record.followUpOn || record.history.at(-1)?.action === "follow_up"
     ? "Requires review"
     : "Voided";
 };

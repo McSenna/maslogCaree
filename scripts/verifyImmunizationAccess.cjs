@@ -20,7 +20,8 @@ const checklist = {medicalRecord:null,baby,mother,accountLinked:true,remindersEn
 const reviewRecord={_id:'TEST-REVIEW-001',babyId:baby._id,doseKey:'hepb-1',state:'void',recordedBy:'TEST-STAFF',revision:0,followUpOn:today,reason:'Review paper card at follow-up',createdAt:today,updatedAt:today,history:[{action:'follow_up',reason:'Review paper card at follow-up',actor:'TEST-STAFF',at:today,previous:null}]};
 
 const output = process.env.IMMUNIZATION_SCREENSHOTS || '/tmp/immunization-modal-screenshots';
-const role = process.env.TEST_VIEWER_ROLE || 'admin';
+// Admin is read-only and has no Add button: scripts/verifyAdminMedicalRecordReadOnly.cjs covers it.
+const role = process.env.TEST_VIEWER_ROLE || 'doctor';
 const theme = process.env.UI_THEME || 'light';
 fs.mkdirSync(output,{recursive:true});
 

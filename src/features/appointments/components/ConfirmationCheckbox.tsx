@@ -1,5 +1,6 @@
 import { Pressable, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { spaceKeyActivates } from "@/utils/spaceKeyActivates";
 import { APPOINTMENT_COLORS } from "./appointmentTheme";
 import { PALETTE } from "@/theme/palette";
 
@@ -19,6 +20,8 @@ const ConfirmationCheckbox = ({
       <Pressable
         accessibilityRole="checkbox"
         accessibilityState={{ checked }}
+        aria-checked={checked}
+        {...spaceKeyActivates(onToggle)}
         accessibilityLabel="I confirm that the appointment details provided are correct, required"
         onPress={onToggle}
         className="flex-row items-start"

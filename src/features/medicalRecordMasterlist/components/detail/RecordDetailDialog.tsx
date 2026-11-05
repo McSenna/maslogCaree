@@ -9,6 +9,9 @@ import { CompletionPlaceholder, FooterButtons } from "@/components/medicalRecord
 import type { RecordDetailState } from "../../hooks/useRecordDetail";
 import type { MasterlistDetail, ResidentIdentity } from "../../types";
 import { mayWriteMedicalRecords } from "../../recordWriteAccess";
+import { useVaccinationTabs, VACCINATION_DIALOG_WIDTH } from "@/features/immunization/recordView/useVaccinationTabs";
+import { isImmunizationRecord } from "@/features/immunization/recordView/vaccinationScope";
+import VaccinationTabBar from "@/features/immunization/recordView/VaccinationTabBar";
 import { residentNameOf } from "../rowText";
 import RecordDetailContent from "./RecordDetailContent";
 
@@ -17,20 +20,35 @@ type Props = {
   /** Left out while an editor is already open (the detail then sits on top of it). */
   onEdit?: (detail: MasterlistDetail) => void;
   onShowHistory?: (resident: ResidentIdentity) => void;
+  /** Midwives only: opens a baby's program record in the editor. */
+  onOpenProgram?: (programRecordId: string) => void;
 };
 
 /** One record for staff: centred on wide screens, a bottom sheet on phones. Loaded only when opened. */
-const RecordDetailDialog = ({ detail, onEdit, onShowHistory }: Props) => {
+const RecordDetailDialog = ({ detail, onEdit, onShowHistory, onOpenProgram }: Props) => {
   const { user } = useAuth();
   const palette = useAdminSurfacePalette();
   const loaded = detail.detail;
+  const tabs = useVaccinationTabs(detail.isOpen ? (loaded?._id ?? null) : null);
+  const vaccination = isImmunizationRecord(loaded);
+  const midwifeBaby = Boolean(loaded?.baby && user?.role === "midwife");
 
-  const footer = mayWriteMedicalRecords(user) && loaded && (loaded.editable || (loaded.baby && user?.role === "midwife")) && onEdit ? (
+  const footer = mayWriteMedicalRecords(user) && loaded && (loaded.editable || midwifeBaby) && onEdit ? (
     <FooterButtons backLabel="Close" onBack={detail.close} nextLabel="Edit record" onNext={() => onEdit(loaded)} busy={false} disabled={false} />
   ) : undefined;
 
   const body = () => {
-    if (loaded) return <RecordDetailContent detail={loaded} onShowHistory={onShowHistory ? () => onShowHistory(loaded.resident) : undefined} />;
+    if (loaded) {
+      return (
+        <RecordDetailContent
+          detail={loaded}
+          tabs={tabs}
+          onShowHistory={onShowHistory ? () => onShowHistory(loaded.resident) : undefined}
+          onOpenChecklist={midwifeBaby && onEdit ? () => onEdit(loaded) : undefined}
+          onOpenProgram={onOpenProgram}
+        />
+      );
+    }
     if (detail.error) {
       return (
         <View className="items-center gap-3">
@@ -51,6 +69,10 @@ const RecordDetailDialog = ({ detail, onEdit, onShowHistory }: Props) => {
       title="Medical record"
       subtitle={loaded ? `${residentNameOf(loaded)}, ${loaded.serviceLabel}` : undefined}
       footer={footer}
+      subheader={vaccination ? <VaccinationTabBar tabs={tabs} /> : undefined}
+      scrollToTopKey={vaccination ? tabs.scroll.key : undefined}
+      scrollToY={tabs.scroll.y}
+      maxWidth={vaccination ? VACCINATION_DIALOG_WIDTH : undefined}
     >
       {body()}
     </CompleteModalShell>

@@ -47,6 +47,7 @@ const HeaderProfile = ({
         onClose={menu.closeMenu}
         anchor={menu.anchor}
         items={menu.menuItems}
+        onExited={menu.handleMenuExited}
         isDark={isDark}
       />
 

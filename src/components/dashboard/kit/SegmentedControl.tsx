@@ -94,7 +94,7 @@ const Segment = <T extends string,>({
       {typeof option.count === "number" ? (
         <Text
           className="font-semibold"
-          style={{ color: selected ? palette.primary : palette.subtle, fontVariant: ["tabular-nums"], fontSize: comfortable ? 15 : 14 }}
+          style={{ color: selected ? palette.primary : palette.muted, fontVariant: ["tabular-nums"], fontSize: comfortable ? 15 : 14 }}
         >
           {option.count}
         </Text>

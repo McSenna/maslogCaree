@@ -34,7 +34,7 @@ const TableSkeleton = <T,>({
         <View key={row} style={[styles.divided, { borderBottomColor: colors.rowDivider }]}>
           <View style={[styles.cells, { minHeight: ROW_MIN_HEIGHT[density] }]}>
             {columns.map((column, index) => (
-              <TableCell key={column.key} column={column} debug={debug}>
+              <TableCell key={column.key} column={column} plain debug={debug}>
                 <View className="w-full gap-2" style={column.align === "right" ? styles.end : column.align === "center" ? styles.center : null}>
                   <Skeleton className={index === 0 ? "h-3.5 w-[70%] rounded-xs" : "h-3 w-[60%] rounded-xs"} />
                   {index === 0 && density === "regular" ? <Skeleton className="h-3 w-[40%] rounded-xs" /> : null}

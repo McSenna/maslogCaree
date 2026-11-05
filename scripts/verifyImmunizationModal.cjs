@@ -63,6 +63,7 @@ fs.mkdirSync(output,{recursive:true});
   await page.goto('http://127.0.0.1:8091/midwife/medical-records');
   await page.getByRole('button',{name:'Add medical record',exact:true}).first().click();
   const dialog = page.getByRole('dialog',{name:'Add medical record',exact:true});
+  const doseDialog = page.getByRole('dialog',{name:'Vaccination Dose Details',exact:true});
   await dialog.waitFor();
   await page.addScriptTag({path:path.join(root,'node_modules/axe-core/axe.min.js')});
   const settleModal = () => page.waitForFunction(()=>{
@@ -74,7 +75,7 @@ fs.mkdirSync(output,{recursive:true});
   });
 
   const largeTextScreenshot = async (name) => {
-   const text=dialog.locator('[dir="auto"]');
+   const text=page.locator('[role=dialog]').last().locator('[dir="auto"]');
    const originals=await text.evaluateAll(elements=>elements.map(element=>{
     const original={fontSize:element.style.fontSize,lineHeight:element.style.lineHeight};
     const computed=getComputedStyle(element);
@@ -83,7 +84,7 @@ fs.mkdirSync(output,{recursive:true});
     if(Number.isFinite(line))element.style.lineHeight=`${line*1.3}px`;
     return original;
    }));
-   const anchor=name==='immunization-checklist'?dialog.getByRole('button',{name:'Show BCG vaccine information',exact:true}):dialog.getByRole('heading',{name:'Vaccination details',exact:true});
+   const anchor=name==='immunization-checklist'?dialog.getByRole('button',{name:'Show BCG vaccine information',exact:true}):page.getByRole('dialog',{name:'Vaccination Dose Details',exact:true}).getByText('Vaccination Information',{exact:true});
    await anchor.evaluate(element=>element.scrollIntoView({block:'start'}));
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`${name} text overflow`);
    await page.screenshot({path:path.join(output,`${name}-large-text-${theme}.png`),fullPage:true,animations:'disabled'});
@@ -119,13 +120,14 @@ fs.mkdirSync(output,{recursive:true});
   });
   await dialog.getByRole('button',{name:'Save baby name',exact:true}).click();
   await dialog.getByRole('button',{name:'Choose another baby',exact:true,disabled:true}).waitFor();
-  assert.equal(await dialog.getByRole('button',{name:/BCG, Dose 1,/}).count(),0,'checklist navigation is locked during other clinical saves');
+  assert.equal(await dialog.getByRole('button',{name:/BCG, Dose 1,/,disabled:true}).count(),1,'checklist navigation is locked during other clinical saves');
   releaseRename();
   await dialog.getByRole('button',{name:/BCG, Dose 1,/}).waitFor();
   await dialog.getByRole('button',{name:/Hepatitis B, Birth dose,/}).click();
-  await dialog.getByText('Requires review',{exact:true}).waitFor({timeout:5000});
-  assert.equal(await dialog.getByText('Voided',{exact:true}).count(),0,'a review request is not a voided administration');
-  await dialog.getByRole('button',{name:'Back to checklist',exact:true}).click();
+  await doseDialog.getByText('Requires review',{exact:true}).first().waitFor({timeout:5000});
+  assert.equal(await doseDialog.getByText('Voided',{exact:true}).count(),0,'a review request is not a voided administration');
+  await doseDialog.getByRole('button',{name:'Close',exact:true}).click();
+  await doseDialog.waitFor({state:'hidden'});
   for (const width of [375,768,1024,1280,1440,1920]) {
    await page.setViewportSize({width,height:1000});
    await page.waitForFunction(wide=>Boolean(document.querySelector('[role="table"][aria-label="Infant immunization checklist"]'))===wide,width>=1280);
@@ -143,112 +145,108 @@ fs.mkdirSync(output,{recursive:true});
   await dialog.getByText(schedule.title,{exact:true}).evaluate(element=>element.scrollIntoView({block:'start'}));
   await page.screenshot({path:path.join(output,`immunization-same-modal-checklist-${theme}.png`),fullPage:true,animations:'disabled'});
   await dialog.getByRole('button',{name:/BCG, Dose 1,/}).click();
-  await dialog.getByRole('textbox',{name:'Clinician who administered the dose (optional)',exact:true}).waitFor();
-  assert.equal(await page.getByRole('dialog').count(),1,'dose entry cannot stack a second modal');
+  await doseDialog.getByRole('textbox',{name:'Remarks (optional)',exact:true}).waitFor();
   for(const width of [375,768,1024,1280,1440,1920]){
    await page.setViewportSize({width,height:1000});
    // React Native Web applies its dimension subscription after the browser resize.
    await page.waitForFunction(()=>document.documentElement.scrollWidth<=innerWidth);
-   await page.waitForFunction(()=>{
-    const input=document.querySelector('input[aria-label="Clinician who administered the dose (optional)"]');
-    const bounds=input?.getBoundingClientRect();
-    return bounds && bounds.y>=0 && bounds.y<920;
-   });
+   // The form's first field must be in view. Later fields can sit below it on a phone.
+   const firstFieldY=()=>{
+    const label=[...document.querySelectorAll('*')].find(element=>element.childElementCount===0&&element.textContent.includes('Actual administration date'));
+    return label?.getBoundingClientRect().y;
+   };
+   await page.waitForFunction(`(${firstFieldY})()>=0 && (${firstFieldY})()<920`);
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`overflow at ${width}`);
-   const inputBounds = await dialog.getByRole('textbox',{name:'Clinician who administered the dose (optional)',exact:true}).boundingBox();
-   assert.ok(inputBounds && inputBounds.y>=0 && inputBounds.y<920,`dose entry is brought into view at ${width}`);
    await page.screenshot({path:path.join(output,`immunization-same-modal-${width}-${theme}.png`),fullPage:true,animations:'disabled'});
   }
   await page.setViewportSize({width:1440,height:1000});
-  await dialog.getByRole('button',{name:'Close dose entry',exact:true}).click();
+  await doseDialog.getByRole('button',{name:'Cancel',exact:true}).click();
+  await doseDialog.waitFor({state:'hidden'});
   await dialog.getByRole('radio',{name:'Prenatal',exact:true}).click();
   await dialog.getByRole('button',{name:'Save medical record',exact:true}).waitFor();
   assert.equal(await dialog.getByText('Baby immunization record',{exact:true}).count(),0);
   await dialog.getByRole('radio',{name:'Immunization',exact:true}).click();
   await dialog.getByRole('button',{name:'Select baby',exact:true}).click();
-  const openReview = async()=>{
+  const fillEntry = async()=>{
    await dialog.getByRole('button',{name:/BCG, Dose 1,/}).click();
-   await dialog.getByRole('textbox',{name:'Clinician who administered the dose (optional)',exact:true}).fill('Test fixture clinician');
-   await dialog.getByRole('button',{name:/Actual administration date, required/}).click();
+   await doseDialog.getByRole('textbox',{name:'Remarks (optional)',exact:true}).fill('Test remark');
+   await doseDialog.getByRole('button',{name:/Actual administration date, required/}).click();
    const dateLabel = new Date(`${today}T00:00:00Z`).toLocaleDateString('en-US',{timeZone:'UTC',month:'long',day:'numeric',year:'numeric'});
    await page.getByRole('button',{name:dateLabel,exact:true}).click();
    await page.getByRole('button',{name:'Confirm actual administration date',exact:true}).click();
-   await dialog.getByRole('button',{name:'Complete Record',exact:true}).click();
-   await dialog.getByRole('button',{name:'Complete Record',exact:true}).waitFor();
-   assert.equal(await page.getByRole('dialog').count(),1,'review must remain in the original modal');
   };
-  await openReview();
-  await page.screenshot({path:path.join(output,`immunization-same-modal-review-${theme}.png`),fullPage:true,animations:'disabled'});
-  await dialog.getByRole('button',{name:'Close medical record',exact:true}).click();
-  const closeDiscard=page.getByRole('dialog',{name:'Discard your unsaved changes?',exact:true});
-  await closeDiscard.getByRole('button',{name:'Keep editing',exact:true}).click();
-  await dialog.getByRole('button',{name:'Complete Record',exact:true}).waitFor();
-
-  await dialog.getByRole('radio',{name:'Prenatal',exact:true}).click();
+  await fillEntry();
+  await page.screenshot({path:path.join(output,`immunization-dose-modal-${theme}.png`),fullPage:true,animations:'disabled'});
+  await doseDialog.getByRole('button',{name:'Cancel',exact:true}).click();
   await discard.getByRole('button',{name:'Keep editing',exact:true}).click();
-  assert.equal(await dialog.getByRole('button',{name:'Complete Record',exact:true}).count(),1,'cancelling discard retains review input');
+  await doseDialog.getByRole('button',{name:'Save Vaccination Details',exact:true}).waitFor();
   await context.route('**/immunization/administrations',route=>route.fulfill({status:400,json:{message:'Test save failure. Retry the administration.'}}));
-  await dialog.getByRole('button',{name:'Complete Record',exact:true}).click();
-  await dialog.getByText(/Test save failure/).waitFor();
-  await dialog.getByRole('button',{name:'Close dose entry',exact:true}).click();
+  await doseDialog.getByRole('button',{name:'Save Vaccination Details',exact:true}).click();
+  await doseDialog.getByText(/Test save failure/).waitFor();
+  assert.equal(await doseDialog.getByRole('textbox',{name:'Remarks (optional)',exact:true}).inputValue(),'Test remark','a failed save keeps the entry');
+  await doseDialog.getByRole('button',{name:'Cancel',exact:true}).click();
   await discard.getByRole('button',{name:'Discard',exact:true}).click();
+  await doseDialog.waitFor({state:'hidden'});
   assert.ok(!(await dialog.getByRole('button',{name:/BCG, Dose 1,/}).getAttribute('aria-label')).includes('Administered.'));
-  await openReview();
+  await fillEntry();
   let releaseSave;
   const gate = new Promise(resolve=>releaseSave=resolve);
   await context.route('**/immunization/administrations',async route=>{
    await gate;
-   doses[0].record={_id:'TEST-DOSE-001',babyId:baby._id,doseKey:'bcg-1',state:'administered',administeredOn:today,administeredBy:'Test fixture clinician',facility:'Test health center',lotNumber:'TEST-LOT-01',route:'Intradermal',recordedBy:'TEST-STAFF',revision:0,createdAt:today,updatedAt:today,history:[{action:'administered',reason:'Initial administration record',actor:'TEST-STAFF',at:today,previous:null}]};doses[0].status='Administered';checklist.history=[doses[0].record,reviewRecord];
+   doses[0].record={_id:'TEST-DOSE-001',babyId:baby._id,doseKey:'bcg-1',state:'administered',administeredOn:today,administeredBy:'Test fixture clinician',facility:'Test health center',lotNumber:'TEST-LOT-01',route:'Test route',site:'Test site',remarks:'',historical:false,recordedBy:'TEST-STAFF',revision:0,createdAt:today,updatedAt:today,history:[{action:'administered',reason:'Initial administration record',actor:'TEST-STAFF',at:today,previous:null}]};
+   checklist.history=[doses[0].record,reviewRecord];
    checklist.medicalRecord={_id:'TEST-PROGRAM-001',recordStatus:'in_progress',immunizationProgress:{administered:1,total:15}};
    return route.fulfill({status:201,json:{success:true}});
   });
-  await dialog.getByRole('button',{name:'Complete Record',exact:true}).click();
-  await dialog.getByRole('button',{name:'Close medical record',exact:true,disabled:true}).waitFor();
-  assert.equal(await dialog.getByRole('radio',{name:'Immunization',exact:true}).getAttribute('aria-disabled'),'true');
+  await doseDialog.getByRole('button',{name:'Save Vaccination Details',exact:true}).click();
+  await doseDialog.getByRole('button',{name:'Cancel',exact:true,disabled:true}).waitFor();
   releaseSave();
+  await doseDialog.waitFor({state:'hidden'});
   await dialog.getByRole('button',{name:/BCG, Dose 1,.*Administered/}).waitFor();
   await dialog.getByText('Medical record: In progress · 1 of 15 doses administered',{exact:true}).waitFor();
   // Saved doses must open read-first details; inspecting must never start an edit.
   await dialog.getByRole('button',{name:/BCG, Dose 1,.*Administered/}).click();
-  await dialog.getByRole('heading',{name:'Vaccination details',exact:true}).waitFor({timeout:5000});
-  assert.equal(await dialog.getByRole('textbox').count(),0,'viewing a saved dose must not expose editable fields');
-  await dialog.getByText('TEST-LOT-01',{exact:true}).waitFor();
-  assert.equal(await page.getByRole('dialog').count(),1,'saved details stay in the original medical-record modal');
-  await dialog.getByRole('button',{name:'Edit saved record',exact:true}).click();
-  await dialog.getByRole('button',{name:'Review selected dose',exact:true}).click();
-  await dialog.getByText('Enter the reason for correcting or voiding this record.',{exact:false}).waitFor();
-  await dialog.getByRole('textbox',{name:'Reason for correction or void',exact:true}).fill('Correct facility from paper record');
-  await dialog.getByRole('textbox',{name:'Facility (optional)',exact:true}).fill('Corrected test health center');
-  await dialog.getByRole('button',{name:'Review selected dose',exact:true}).click();
+  await doseDialog.waitFor({timeout:5000});
+  assert.equal(await doseDialog.getByRole('textbox').count(),0,'viewing a saved dose must not expose editable fields');
+  await doseDialog.getByText('TEST-LOT-01',{exact:true}).waitFor();
+  await doseDialog.getByRole('button',{name:'Edit saved record',exact:true}).click();
+  await doseDialog.getByRole('button',{name:'Review correction',exact:true}).click();
+  await doseDialog.getByText('Enter the reason for correcting or voiding this record.',{exact:false}).waitFor();
+  await doseDialog.getByRole('textbox',{name:'Reason for correction or void',exact:true}).fill('Correct facility from paper record');
+  await doseDialog.getByRole('textbox',{name:'Remarks (optional)',exact:true}).fill('Corrected test remark');
+  await doseDialog.getByRole('button',{name:'Review correction',exact:true}).click();
   await context.route('**/immunization/corrections',async route=>{
    const body=route.request().postDataJSON();
    assert.equal(body.expectedRevision,0);assert.equal(body.reason,'Correct facility from paper record');
    assert.equal(body.babyId,'TEST-BABY-001');assert.equal(body.doseKey,'bcg-1');
    const record=doses[0].record;
-   record.history.push({action:'corrected',reason:body.reason,actor:'TEST-STAFF',at:today,previous:{facility:record.facility}});
-   record.facility=body.administration.facility;record.revision=1;
+   record.history.push({action:'corrected',reason:body.reason,actor:'TEST-STAFF',at:today,previous:{remarks:record.remarks}});
+   assert.equal(body.administration.administeredBy,undefined,'the app sends no clinician');assert.equal(body.administration.facility,undefined,'the app sends no location');
+   record.remarks=body.administration.remarks;record.revision=1;
    return route.fulfill({status:200,json:{success:true}});
   });
-  await dialog.getByRole('button',{name:'Save correction',exact:true}).click();
+  await doseDialog.getByRole('button',{name:'Save correction',exact:true}).click();
+  await doseDialog.waitFor({state:'hidden'});
   await dialog.getByRole('button',{name:/BCG, Dose 1,.*Administered/}).waitFor();
   assert.equal(await dialog.getByText('Saved dose history',{exact:true}).count(),0);
   const savedDoseButton=dialog.getByRole('button',{name:/BCG, Dose 1,.*Administered/});
   await savedDoseButton.focus();await page.keyboard.press('Enter');
-  await dialog.getByText('Corrected test health center',{exact:true}).waitFor();
-  await dialog.getByRole('button',{name:'Show audit history',exact:true}).click();
-  await dialog.getByText('Correct facility from paper record',{exact:true}).waitFor();
+  await doseDialog.getByText('Corrected test remark',{exact:true}).waitFor();
+  await doseDialog.getByRole('button',{name:'Show audit history',exact:true}).click();
+  await doseDialog.getByText('Correct facility from paper record',{exact:true}).waitFor();
   for (const width of [375,768,1440]) {
    await page.setViewportSize({width,height:1000});
-   await dialog.getByRole('heading',{name:'Vaccination details',exact:true}).evaluate(element=>element.scrollIntoView({block:'start'}));
+   await doseDialog.getByText('Vaccination Information',{exact:true}).evaluate(element=>element.scrollIntoView({block:'start'}));
    await settleModal();
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`vaccination details overflow at ${width}`);
    await page.screenshot({path:path.join(output,`immunization-vaccination-details-${width}-${theme}.png`),fullPage:true,animations:'disabled'});
    if(width===375)await largeTextScreenshot('immunization-vaccination-details');
   }
   await page.setViewportSize({width:1440,height:1000});
-  const vaccinationAxe=await page.evaluate(async()=>window.axe.run(document.querySelector('[aria-modal="true"]')));
+  const vaccinationAxe=await page.evaluate(async()=>window.axe.run([...document.querySelectorAll('[role=dialog]')].at(-1)));
   assert.deepEqual(vaccinationAxe.violations.map(v=>({id:v.id,nodes:v.nodes.map(n=>n.target)})),[]);
-  await dialog.getByRole('button',{name:'Back to checklist',exact:true}).click();
+  await doseDialog.getByRole('button',{name:'Close',exact:true}).click();
+  await doseDialog.waitFor({state:'hidden'});
   const savedTable=dialog.getByRole('table',{name:'Infant immunization checklist',exact:true});
   await savedTable.evaluate(element=>element.scrollIntoView({block:'center'}));
   await savedTable.screenshot({path:path.join(output,`immunization-checklist-saved-${theme}.png`),animations:'disabled'});
@@ -275,7 +273,7 @@ fs.mkdirSync(output,{recursive:true});
   assert.equal(await details.getByRole('button',{name:'Edit record',exact:true}).count(),1);
   for(const width of [375,768,1440]){
    await page.setViewportSize({width,height:1000});
-   await details.getByText('Baby immunization program',{exact:true}).evaluate(element=>element.scrollIntoView({block:'center'}));
+   await details.getByText('Vaccination History',{exact:true}).evaluate(element=>element.scrollIntoView({block:'center'}));
    await page.waitForFunction(()=>document.documentElement.scrollWidth<=innerWidth);
    await page.screenshot({path:path.join(output,`immunization-progress-detail-${width}-${theme}.png`),fullPage:true,animations:'disabled'});
   }

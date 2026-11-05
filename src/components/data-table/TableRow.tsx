@@ -71,7 +71,9 @@ const TableRow = <T,>({
       accessibilityLabel={isButton ? label : undefined}
       accessibilityHint={isButton ? hint : undefined}
       accessibilityState={selected ? { selected } : undefined}
-      aria-selected={selected || undefined}
+      // aria-selected is only valid on a row; a button row marks the open record as current.
+      aria-selected={!isButton && selected ? true : undefined}
+      aria-current={isButton && selected ? "true" : undefined}
       style={[
         {
           backgroundColor: background,
@@ -87,7 +89,7 @@ const TableRow = <T,>({
     >
       <View style={[styles.cells, { minHeight: ROW_MIN_HEIGHT[density] }]}>
         {columns.map((column) => (
-          <TableCell key={column.key} column={column} debug={debug}>
+          <TableCell key={column.key} column={column} plain={isButton} debug={debug}>
             {cellContent(column, row, index, context)}
           </TableCell>
         ))}

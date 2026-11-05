@@ -6,6 +6,7 @@ export type WebOnlyStyle = {
   boxShadow?: string;
   borderColor?: string;
   outlineStyle?: "none" | "solid";
+  outlineOffset?: number;
   appearance?: "none";
   position?: "sticky";
   top?: number;

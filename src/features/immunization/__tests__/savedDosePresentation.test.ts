@@ -24,6 +24,7 @@ describe("saved vaccination presentation", () => {
     assert.equal(savedDoseStatus(record), "Requires review");
     assert.equal(savedDoseStatus({ ...record, history: [{ ...record.history[0], action: "voided" }] }), "Voided");
     assert.equal(savedDoseStatus({ ...record, history: [] }), "Voided");
+    assert.equal(savedDoseStatus({ ...record, history: [], followUpOn: "2026-11-01" }), "Requires review");
     assert.equal(savedDoseStatus({ ...record, state: "deferred" }), "Deferred");
     assert.equal(savedDoseStatus({ ...record, state: "administered" }), "Administered");
   });

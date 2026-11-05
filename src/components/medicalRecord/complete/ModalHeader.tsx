@@ -6,6 +6,7 @@ import type { QueuePalette } from "@/components/appointmentQueue/queueTheme";
 const ModalHeader = ({
   title,
   subtitle,
+  subtitleLines = 1,
   badge,
   dismissible,
   onRequestClose,
@@ -14,6 +15,7 @@ const ModalHeader = ({
 }: {
   title: string;
   subtitle?: string;
+  subtitleLines?: number;
   badge?: ReactNode;
   dismissible: boolean;
   onRequestClose: () => void;
@@ -34,7 +36,7 @@ const ModalHeader = ({
         {title}
       </Text>
       {subtitle ? (
-        <Text className="text-[14.5px] font-medium" style={{ color: palette.muted }} numberOfLines={1}>
+        <Text className="text-[14.5px] font-medium" style={{ color: palette.muted }} numberOfLines={subtitleLines}>
           {subtitle}
         </Text>
       ) : null}

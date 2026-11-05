@@ -11,7 +11,7 @@ const AccessLoadState = ({
 }) => {
   const palette = useAdminSurfacePalette();
   return (
-    <View className="gap-3 py-3">
+    <View className="max-w-full shrink gap-3 py-3">
       {error ? (
         <>
           <Text

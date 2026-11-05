@@ -2,9 +2,12 @@ import { useCallback, useId } from "react";
 import { Platform, Pressable, ScrollView, View } from "react-native";
 import Modal from "@/components/ui/AppModal";
 
-import { useResidentDialogPalette } from "@/design/residentDialogTheme";
+import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
+import { useSheetLayout } from "@/components/ui/sheetLayout/useSheetLayout";
+import { residentDialogPalette, useResidentDialogPalette } from "@/design/residentDialogTheme";
 import { useModalFrame } from "@/hooks/useModalFrame";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
+import { useReducedMotion } from "@/theme/motion";
 
 import DialogFooter from "../DialogFooter";
 import { DialogHeader } from "../DialogHeader";
@@ -14,11 +17,16 @@ import {
   buildDialogSurfaceStyle,
 } from "../dialogModalStyle";
 import type { DialogShellProps } from "./dialogShell.types";
+import { useShellScrollRequest } from "./useShellScrollRequest";
 
-/** Centred dialog for desktop-width viewports. */
+const LIGHT_PALETTE = residentDialogPalette(false);
+const EDGE_PADDING = 16;
+
+/** Centred dialog for desktop-width viewports, and for a phone turned sideways. */
 export const DialogModalShell = ({
   visible,
   title,
+  subtitle,
   icon,
   media,
   tint,
@@ -27,10 +35,20 @@ export const DialogModalShell = ({
   children,
   footer,
   maxWidth = 560,
+  radius,
+  flush = false,
+  lightSurface = false,
   onDismissRequest,
+  subheader,
+  scrollToKey,
+  scrollToY,
 }: DialogShellProps) => {
   const frame = useModalFrame(maxWidth);
-  const palette = useResidentDialogPalette();
+  // A landscape phone is wide enough for this dialog but has a keyboard to clear.
+  const layout = useSheetLayout({ enabled: visible, variant: "centered", edgePadding: EDGE_PADDING });
+  const reducedMotion = useReducedMotion();
+  const themedPalette = useResidentDialogPalette();
+  const palette = lightSurface ? LIGHT_PALETTE : themedPalette;
   const titleId = useId();
 
   const handleDismiss = useCallback(() => {
@@ -40,12 +58,19 @@ export const DialogModalShell = ({
 
   useWebModalBehavior(visible, handleDismiss);
   const attachFocusTrap = useFocusTrap(visible);
+  const scrollRef = useShellScrollRequest(scrollToKey, scrollToY);
 
   if (!visible) return null;
 
   return (
-    <Modal visible accessibilityLabel={title} transparent animationType="fade" onRequestClose={handleDismiss}>
-      <View style={DIALOG_BACKDROP_STYLE}>
+    <Modal
+      visible
+      accessibilityLabel={title}
+      transparent
+      animationType={reducedMotion ? "none" : "fade"}
+      onRequestClose={handleDismiss}
+    >
+      <SheetViewport layout={layout} style={DIALOG_BACKDROP_STYLE}>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={`Close ${title}`}
@@ -59,11 +84,15 @@ export const DialogModalShell = ({
           {...Platform.select({
             web: { role: "group", "aria-labelledby": titleId } as object,
           })}
-          style={buildDialogSurfaceStyle(palette, frame)}
+          style={[
+            buildDialogSurfaceStyle(palette, { ...frame, maxHeight: Math.min(frame.maxHeight, layout.maxHeight) }),
+            radius === undefined ? null : { borderRadius: radius },
+          ]}
         >
           <DialogHeader
             palette={palette}
             title={title}
+            subtitle={subtitle}
             icon={icon}
           media={media}
             tint={tint}
@@ -72,9 +101,12 @@ export const DialogModalShell = ({
             onClose={onClose}
           />
 
+          {subheader}
+
           <ScrollView
+            ref={scrollRef}
             style={{ flexShrink: 1 }}
-            contentContainerStyle={{ padding: DIALOG_CONTENT_PADDING, paddingBottom: 24 }}
+            contentContainerStyle={flush ? undefined : { padding: DIALOG_CONTENT_PADDING, paddingBottom: 24 }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
@@ -87,7 +119,7 @@ export const DialogModalShell = ({
             </DialogFooter>
           ) : null}
         </View>
-      </View>
+      </SheetViewport>
     </Modal>
   );
 };
