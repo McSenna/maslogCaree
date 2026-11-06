@@ -3,8 +3,6 @@ import type { MetricTone } from "@/design/adminDashboard/paletteTypes";
 
 export type IoniconName = keyof typeof Ionicons.glyphMap;
 
-export type AppointmentStatus = "pending" | "confirmed" | "rescheduled" | "declined";
-
 export type AccentTone = MetricTone;
 
 export interface StatItem {
@@ -15,15 +13,6 @@ export interface StatItem {
   caption: string;
   icon: IoniconName;
   tone: AccentTone;
-}
-
-export interface QuickAction {
-  id: string;
-  label: string;
-  shortLabel: string;
-  icon: IoniconName;
-  tone: AccentTone;
-  href: string;
 }
 
 export interface Announcement {

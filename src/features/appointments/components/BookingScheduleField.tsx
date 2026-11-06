@@ -1,4 +1,3 @@
-import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 
 import { DialogStatus, EmptyNote } from "@/components/ui/dialog/DialogPieces";
@@ -8,6 +7,7 @@ import { TYPE } from "@/theme/typography";
 import type { BookingSlots } from "../hooks/booking/useBookingSlots";
 import { APPOINTMENT_COLORS } from "./appointmentTheme";
 import AppointmentAlert from "./AppointmentAlert";
+import { BookingFieldError } from "./BookingFieldError";
 import FieldLabel from "./FieldLabel";
 import { missionDayChoices } from "./reschedule/dayChoices";
 import { RescheduleDateList } from "./reschedule/RescheduleDateList";
@@ -25,6 +25,8 @@ type Props = {
   slots: BookingSlots;
   error?: string;
   onChange: () => void;
+  /** Off when a section heading already names the field. */
+  showLabel?: boolean;
 };
 
 const SubLabel = ({ children }: { children: string }) => (
@@ -81,9 +83,9 @@ const ScheduleChoices = ({ slots, onChange }: Pick<Props, "slots" | "onChange">)
 };
 
 /** Date and time picker for a new booking: only times the server says are open are offered. */
-const BookingScheduleField = ({ hasService, slots, error, onChange }: Props) => (
+const BookingScheduleField = ({ hasService, slots, error, onChange, showLabel = true }: Props) => (
   <View className="w-full">
-    <FieldLabel label="Date and Time" required />
+    {showLabel ? <FieldLabel label="Date and Time" required /> : null}
 
     {hasService ? (
       <ScheduleChoices slots={slots} onChange={onChange} />
@@ -91,14 +93,7 @@ const BookingScheduleField = ({ hasService, slots, error, onChange }: Props) => 
       <EmptyNote palette={PICKER_PALETTE} message="Choose a service first to see its open dates and times." />
     )}
 
-    {error ? (
-      <View className="mt-1.5 flex-row items-center gap-1.5">
-        <Feather name="alert-circle" size={13} color={APPOINTMENT_COLORS.danger} />
-        <Text accessibilityRole="alert" className="flex-1" style={[TYPE.caption, { color: APPOINTMENT_COLORS.danger }]}>
-          {error}
-        </Text>
-      </View>
-    ) : null}
+    <BookingFieldError message={error} />
   </View>
 );
 

@@ -130,6 +130,44 @@ export type WeeklyDayOption = {
 
 export type ServiceScheduling = "mission" | "weekly";
 
+/** Where a day stands on a regular-schedule service (BP checking); the server decides it. */
+export type RegularDayStatus = "open" | "full" | "ended" | "closed" | "past" | "beyond";
+
+export type RegularDay = {
+  dateKey: string;
+  status: RegularDayStatus;
+  openSlots: number;
+  totalSlots: number;
+};
+
+/** One open start. `time` is the wall clock in the app timezone ("13:20"). */
+export type RegularSlot = {
+  start: string;
+  end: string;
+  time: string;
+  period: "morning" | "afternoon";
+};
+
+export type RegularWindow = { start: string; end: string };
+
+/** The schedule as configured on the server, so the app never keeps its own copy of the hours. */
+export type RegularSchedule = {
+  timeZone: string;
+  intervalMinutes: number;
+  today: string;
+  weekdays: { weekday: number; windows: RegularWindow[] }[];
+  bookingHorizonWeeks: number | null;
+  lastBookableDate: string | null;
+};
+
+export type RegularOptions = {
+  schedule: RegularSchedule;
+  month: { monthKey: string; days: RegularDay[] };
+  day: (RegularDay & { slots: RegularSlot[] }) | null;
+};
+
+export type RegularQuery = { month?: string; date?: string };
+
 /** Open dates for a new booking: mission days and times, or a weekly service's own days. */
 export type BookingOptionsResponse = {
   consultationType: string;

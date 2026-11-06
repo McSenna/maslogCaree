@@ -1,6 +1,5 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import Button from "@/components/buttons/Button";
 import IconButton from "@/components/buttons/IconButton";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { RADII } from "@/theme/radius";
@@ -13,11 +12,10 @@ const TITLE_MIN_WIDTH = 240;
 
 type ProfilePageHeaderProps = {
   title: string;
-  onEdit?: () => void;
   onClose?: () => void;
 };
 
-const ProfilePageHeader = ({ title, onEdit, onClose }: ProfilePageHeaderProps) => {
+const ProfilePageHeader = ({ title, onClose }: ProfilePageHeaderProps) => {
   const colors = useThemeColors();
 
   return (
@@ -49,20 +47,17 @@ const ProfilePageHeader = ({ title, onEdit, onClose }: ProfilePageHeaderProps) =
         <Text style={{ ...TYPE.body, color: colors.muted }}>{PROFILE_SUBTITLE}</Text>
       </View>
 
-      <View style={{ flexDirection: "row", alignItems: "center", gap: SPACING.md }}>
-        {onEdit ? <Button label="Edit profile" icon="edit-2" onPress={onEdit} /> : null}
-        {onClose ? (
-          <IconButton
-            icon="x"
-            label="Close profile"
-            onPress={onClose}
-            size={CLOSE_SIZE}
-            showTooltip={false}
-            initialFocus
-            style={{ borderRadius: RADII.medium, backgroundColor: colors.surfaceMuted }}
-          />
-        ) : null}
-      </View>
+      {onClose ? (
+        <IconButton
+          icon="x"
+          label="Close profile"
+          onPress={onClose}
+          size={CLOSE_SIZE}
+          showTooltip={false}
+          initialFocus
+          style={{ borderRadius: RADII.medium, backgroundColor: colors.surfaceMuted }}
+        />
+      ) : null}
     </View>
   );
 };

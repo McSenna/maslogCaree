@@ -5,8 +5,13 @@ import type {
   BookingOptionsResponse,
   ConsultationCategory,
   QueueOverview,
+  RegularOptions,
+  RegularQuery,
   ServiceProvider,
 } from "@/types/appointments.types";
+import { readRegularOptions } from "@/features/appointments/regularSchedule/scheduleRules";
+
+const UNEXPECTED_SCHEDULE = "The schedule could not be read. Please try again.";
 
 export const fetchConsultationCategories = async (): Promise<ConsultationCategory[]> => {
   const { data } = await api.get<{ success: boolean; categories: ConsultationCategory[] }>(
@@ -37,6 +42,14 @@ export const fetchBookingOptions = async (consultationType: string): Promise<Boo
   };
 };
 
+/** A regular-schedule service (BP checking): the month's days and, when chosen, one date's open times. */
+export const fetchRegularBookingOptions = async (consultationType: string, query: RegularQuery): Promise<RegularOptions> => {
+  const { data } = await api.get<unknown>("/appointments/booking-options", { params: { consultationType, ...query } });
+  const options = readRegularOptions(data);
+  if (!options) throw new Error(UNEXPECTED_SCHEDULE);
+  return options;
+};
+
 type MissionBookingBody = {
   consultationType: string;
   description: string;
@@ -57,12 +70,22 @@ type WeeklyBookingBody = {
   requestKey: string;
 };
 
+/** A regular-schedule service (BP checking): the resident's chosen date and start. */
+type RegularBookingBody = {
+  consultationType: string;
+  description: string;
+  additionalNotes?: string;
+  appointmentDate: string;
+  slotStart: string;
+  requestKey: string;
+};
+
 /**
  * Books and confirms in one call. `requestKey` stays the same across retries of
  * one attempt, so a repeat returns the first booking instead of making another.
  */
 export const createResidentAppointment = async (
-  body: MissionBookingBody | WeeklyBookingBody
+  body: MissionBookingBody | WeeklyBookingBody | RegularBookingBody
 ): Promise<{ message?: string; appointment: AppointmentRecord }> => {
   const { data } = await api.post<{
     success: boolean;

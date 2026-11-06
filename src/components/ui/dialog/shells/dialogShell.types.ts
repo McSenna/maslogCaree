@@ -29,6 +29,8 @@ export type DialogShellProps = {
   scrollToY?: number;
   /** For a form with its own fixed light colors: the frame stays light in dark mode to match. */
   lightSurface?: boolean;
+  /** "prominent" is the larger task header (icon tile, headline, no rule) for multi-step forms. */
+  headerVariant?: "default" | "prominent";
   /** Return true to consume Escape or the Android back press without closing. */
   onDismissRequest?: () => boolean;
 };

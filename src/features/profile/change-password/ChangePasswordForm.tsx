@@ -1,96 +1,108 @@
-import { Text, View } from "react-native";
+import { useId } from "react";
+import { View } from "react-native";
 
-import Button from "@/components/buttons/Button";
-import TextField from "@/components/forms/TextField";
-import { PASSWORD_MAX_LENGTH } from "@/features/auth/forgotPassword/passwordRules";
+import PasswordField from "@/components/forms/PasswordField";
+import PasswordRequirements from "@/features/auth/forgotPassword/components/PasswordRequirements";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { SPACING } from "@/theme/spacing";
+
+import type { ChangePasswordLayout } from "./changePassword.types";
+import { CHANGE_PASSWORD_STRINGS as S } from "./changePasswordStrings";
+import { passwordRequirementRules } from "./changePasswordValidation";
 import { ChangePasswordNotice } from "./ChangePasswordNotice";
-import PasswordStrengthMeter from "./PasswordStrengthMeter";
-import { useChangePassword } from "./useChangePassword";
+import type { ChangePasswordFlow } from "./useChangePasswordFlow";
 
 type ChangePasswordFormProps = {
-  changePasswordState: ReturnType<typeof useChangePassword>;
-  onCancel: () => void;
-  compact?: boolean;
+  flow: ChangePasswordFlow;
+  layout: ChangePasswordLayout;
 };
 
-export const ChangePasswordForm = ({ changePasswordState, onCancel, compact = false }: ChangePasswordFormProps) => {
+/** Matches the mockup's label column (about a third of an 800px card). */
+const LABEL_COLUMN = 220;
+
+const toggleLabels = (label: string) => ({ show: S.toggle.show(label), hide: S.toggle.hide(label) });
+
+/** The banner and the three fields. Presentational: every decision comes from the flow. */
+export const ChangePasswordForm = ({ flow, layout }: ChangePasswordFormProps) => {
   const colors = useThemeColors();
-  const { values, errors, isSubmitting, strength, setValue, handleSubmit, currentRef, newRef, confirmRef, focusNew, focusConfirm } =
-    changePasswordState;
+  const requirementsId = useId();
+  const { form, banner, isSubmitting, submit } = flow;
+  const { values, errors, refs } = form;
+  const rowProps = layout === "row" ? ({ labelPosition: "start", labelWidth: LABEL_COLUMN } as const) : {};
 
   return (
-    <View style={{ width: "100%", gap: compact ? 14 : 16 }}>
-      <Text style={{ fontSize: compact ? 15 : 16, lineHeight: compact ? 20 : 22, color: colors.muted }}>
-        Update your password to keep your MaslogCare account secure.
-      </Text>
+    <View style={{ gap: layout === "row" ? SPACING.xl : SPACING.lg }}>
+      {banner ? (
+        <ChangePasswordNotice
+          tone={banner.tone}
+          message={banner.message}
+          retryLabel={banner.retry ? S.retry : undefined}
+          onRetry={banner.retry ? submit : undefined}
+          retrying={isSubmitting}
+        />
+      ) : null}
 
-      {errors.unconfirmed ? <ChangePasswordNotice tone="warning" message={errors.unconfirmed} /> : null}
-      {errors.general ? <ChangePasswordNotice tone="danger" message={errors.general} /> : null}
-
-      <TextField
-        inputRef={currentRef}
-        label="Current password"
-        leftIcon="lock"
-        secureToggle
+      <PasswordField
+        {...rowProps}
+        purpose="current"
+        inputRef={refs.currentPassword}
+        initialFocus
+        label={S.fields.currentPassword.label}
+        placeholder={S.fields.currentPassword.placeholder}
+        toggleLabels={toggleLabels(S.fields.currentPassword.label)}
         value={values.currentPassword}
-        onChangeText={(text) => setValue("currentPassword", text)}
-        placeholder="Enter your current password"
-        autoCapitalize="none"
-        maxLength={PASSWORD_MAX_LENGTH}
-        autoCorrect={false}
-        autoComplete="current-password"
-        textContentType="password"
-        returnKeyType="next"
-        onSubmitEditing={focusNew}
-        disabled={isSubmitting}
+        onChangeText={(text) => form.setValue("currentPassword", text)}
+        onBlur={() => form.blurField("currentPassword")}
         error={errors.currentPassword}
-      />
-
-      <TextField
-        inputRef={newRef}
-        label="New password"
-        leftIcon="lock"
-        secureToggle
-        value={values.newPassword}
-        onChangeText={(text) => setValue("newPassword", text)}
-        placeholder="Enter your new password"
-        autoCapitalize="none"
-        maxLength={PASSWORD_MAX_LENGTH}
-        autoCorrect={false}
-        autoComplete="new-password"
-        textContentType="newPassword"
         returnKeyType="next"
-        onSubmitEditing={focusConfirm}
+        onSubmitEditing={() => form.focusField("newPassword")}
         disabled={isSubmitting}
+      />
+
+      <PasswordField
+        {...rowProps}
+        purpose="new"
+        inputRef={refs.newPassword}
+        label={S.fields.newPassword.label}
+        placeholder={S.fields.newPassword.placeholder}
+        toggleLabels={toggleLabels(S.fields.newPassword.label)}
+        value={values.newPassword}
+        onChangeText={(text) => form.setValue("newPassword", text)}
+        onBlur={() => form.blurField("newPassword")}
         error={errors.newPassword}
-      />
-      {values.newPassword ? <PasswordStrengthMeter strength={strength} /> : null}
-
-      <TextField
-        inputRef={confirmRef}
-        label="Confirm new password"
-        leftIcon="lock"
-        secureToggle
-        value={values.confirmPassword}
-        onChangeText={(text) => setValue("confirmPassword", text)}
-        placeholder="Re-enter your new password"
-        autoCapitalize="none"
-        maxLength={PASSWORD_MAX_LENGTH}
-        autoCorrect={false}
-        autoComplete="new-password"
-        textContentType="newPassword"
-        returnKeyType="done"
-        onSubmitEditing={handleSubmit}
+        returnKeyType="next"
+        onSubmitEditing={() => form.focusField("confirmPassword")}
         disabled={isSubmitting}
-        error={errors.confirmPassword}
-        success={Boolean(values.confirmPassword) && values.confirmPassword === values.newPassword}
+        describedBy={requirementsId}
+        below={
+          <PasswordRequirements
+            nativeID={requirementsId}
+            value={values.newPassword}
+            rules={passwordRequirementRules(values.currentPassword)}
+            title={S.requirements.title}
+            stateLabels={{ met: S.requirements.met, notMet: S.requirements.notMet }}
+            colors={{ met: colors.success.fg, unmetIcon: colors.muted, unmetText: colors.muted, heading: colors.body, error: colors.danger.fg }}
+            // The field's error points here, so the rules still unmet turn red with a cross.
+            highlightUnmet={Boolean(errors.newPassword) && errors.newPassword !== S.errors.sameAsCurrent}
+          />
+        }
       />
 
-      <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "flex-end", gap: 12, marginTop: compact ? 8 : 12 }}>
-        <Button variant="ghost" label="Cancel" onPress={onCancel} disabled={isSubmitting} accessibilityLabel="Cancel change password" />
-        <Button label="Change password" loading={isSubmitting} loadingLabel="Changing password…" onPress={handleSubmit} />
-      </View>
+      <PasswordField
+        {...rowProps}
+        purpose="new"
+        inputRef={refs.confirmPassword}
+        label={S.fields.confirmPassword.label}
+        placeholder={S.fields.confirmPassword.placeholder}
+        toggleLabels={toggleLabels(S.fields.confirmPassword.label)}
+        value={values.confirmPassword}
+        onChangeText={(text) => form.setValue("confirmPassword", text)}
+        onBlur={() => form.blurField("confirmPassword")}
+        error={errors.confirmPassword}
+        returnKeyType="done"
+        onSubmitEditing={submit}
+        disabled={isSubmitting}
+      />
     </View>
   );
 };

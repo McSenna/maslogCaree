@@ -46,6 +46,16 @@ export const fetchMasterResidents = async (params: MasterListParams): Promise<Ma
   };
 };
 
+/**
+ * One record, fresh from the server: the details view never reuses a list row.
+ * The id goes in the path, never personal details. The server answers with
+ * no-store, so the browser keeps no copy on a shared device.
+ */
+export const fetchMasterResident = async (id: string): Promise<MasterResidentRecord> => {
+  const { data } = await api.get<RecordResponse>(`${BASE}/${encodeURIComponent(id)}`);
+  return data.record;
+};
+
 export const createMasterResident = async (input: MasterResidentInput): Promise<MasterResidentRecord> => {
   const { data } = await api.post<RecordResponse>(BASE, input);
   return data.record;
@@ -53,11 +63,6 @@ export const createMasterResident = async (input: MasterResidentInput): Promise<
 
 export const updateMasterResident = async (id: string, input: MasterResidentInput): Promise<MasterResidentRecord> => {
   const { data } = await api.patch<RecordResponse>(`${BASE}/${id}`, input);
-  return data.record;
-};
-
-export const setMasterResidentActive = async (id: string, active: boolean): Promise<MasterResidentRecord> => {
-  const { data } = await api.patch<RecordResponse>(`${BASE}/${id}/status`, { active });
   return data.record;
 };
 

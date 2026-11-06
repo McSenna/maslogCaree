@@ -12,6 +12,7 @@ import {
   getDashboardThemeClasses,
   type DashboardThemeClasses,
 } from "@/design/dashboardTheme";
+import { useWebColorSchemeSync } from "@/theme/useWebColorSchemeSync";
 import {
   getStoredTheme,
   hydrateStoredTheme,
@@ -67,6 +68,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const resolvedTheme = theme;
+  useWebColorSchemeSync(resolvedTheme);
 
   const classes = useMemo(
     () => getDashboardThemeClasses(resolvedTheme),

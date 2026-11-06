@@ -9,7 +9,7 @@ const NotificationPanelFooter = ({ onPress }: { onPress: () => void }) => {
   return (
     <View style={{ borderTopWidth: 1, borderTopColor: palette.divider }}>
       <Pressable
-        accessibilityRole="link"
+        accessibilityRole="button"
         accessibilityLabel="View all notifications"
         onPress={onPress}
         style={({ pressed }) => ({

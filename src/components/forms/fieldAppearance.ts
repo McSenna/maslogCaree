@@ -1,4 +1,9 @@
+import type { ViewStyle } from "react-native";
+
 import type { ThemeColors } from "@/theme/colors";
+import { TIMING } from "@/theme/motion";
+import { RADII } from "@/theme/radius";
+import { webStyle } from "@/theme/webStyle";
 
 export type FieldVisualState = {
   focused: boolean;
@@ -29,3 +34,29 @@ export const resolveFieldAppearance = (colors: ThemeColors, state: FieldVisualSt
     ring: state.focused ? (state.error ? colors.danger.border : colors.focusRing) : null,
   };
 };
+
+type FieldAppearance = ReturnType<typeof resolveFieldAppearance>;
+
+/** The bordered box around a text input. A trailing button (show/hide) brings its own padding. */
+export const fieldBoxStyle = (
+  look: FieldAppearance,
+  options: { minHeight: number; multiline: boolean; trailingButton: boolean; disabled: boolean }
+): ViewStyle[] => [
+  {
+    minHeight: options.minHeight,
+    flexDirection: "row",
+    alignItems: options.multiline ? "flex-start" : "center",
+    gap: 10,
+    paddingLeft: 14,
+    paddingRight: options.trailingButton ? 4 : 14,
+    borderRadius: RADII.medium,
+    borderWidth: look.borderWidth,
+    borderColor: look.border,
+    backgroundColor: look.background,
+    opacity: options.disabled ? 0.7 : 1,
+  },
+  webStyle({
+    transition: `border-color ${TIMING.hover}ms ease, box-shadow ${TIMING.hover}ms ease`,
+    boxShadow: look.ring ? `0 0 0 3px ${look.ring}` : "none",
+  }),
+];

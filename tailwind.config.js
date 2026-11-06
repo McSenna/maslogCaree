@@ -6,6 +6,9 @@ module.exports = {
   ],
 
   presets: [require("nativewind/preset")],
+  // The app's own theme setting (ThemeContext) drives `dark:` variants, not the
+  // OS. NativeWind 4 reads only "class" here; "selector" would fall back to media.
+  darkMode: "class",
   theme: {
     screens: {
       xs: "320px",

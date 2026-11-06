@@ -26,7 +26,12 @@
       "favicon": "./assets/images/maslogicon.png"
     },
     "plugins": [
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "asyncRoutes": false
+        }
+      ],
       [
         "expo-splash-screen",
         {
@@ -59,6 +64,18 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f8524601-75ac-49b3-883d-49c259a01305"
+      }
+    },
+    "owner": "kapenx",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f8524601-75ac-49b3-883d-49c259a01305"
     }
   }
 }

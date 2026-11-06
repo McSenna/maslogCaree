@@ -1,150 +1,130 @@
-import { Feather } from "@expo/vector-icons";
 import { useId } from "react";
 import { Platform, Pressable, ScrollView, Text, View } from "react-native";
-import Modal from "@/components/ui/AppModal";
 
+import IconButton from "@/components/buttons/IconButton";
+import Modal from "@/components/ui/AppModal";
 import { useModalFrame } from "@/hooks/useModalFrame";
+import { useThemeColors } from "@/hooks/useThemeColors";
 import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
-import { PROFILE_COLORS as C, PROFILE_RADIUS, PROFILE_SHADOW } from "../config/profileTheme";
+import { useReducedMotion } from "@/theme/motion";
+import { RADII } from "@/theme/radius";
+import { SHADOWS } from "@/theme/shadows";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
+import { webStyle } from "@/theme/webStyle";
+
+import { ChangePasswordActions } from "./ChangePasswordActions";
 import { ChangePasswordForm } from "./ChangePasswordForm";
-import { useChangePassword } from "./useChangePassword";
-import { PALETTE, withAlpha } from "@/theme/palette";
+import { CHANGE_PASSWORD_STRINGS as S } from "./changePasswordStrings";
+import { dialogLabelProps } from "./dialogLabelProps";
+import type { ChangePasswordFlow } from "./useChangePasswordFlow";
 
 type ChangePasswordModalProps = {
   visible: boolean;
-  onClose: () => void;
-  onSuccess?: () => void;
+  flow: ChangePasswordFlow;
 };
 
-const MODAL_WIDTH = 480;
+const MODAL_WIDTH = 800;
+const BACKDROP_BLUR = Platform.OS === "web" ? ({ backdropFilter: "blur(4px)" } as object) : null;
+const BACKDROP_CURSOR = webStyle({ cursor: "default" });
 
-export const ChangePasswordModal = ({
-  visible,
-  onClose,
-  onSuccess,
-}: ChangePasswordModalProps) => {
+/** The centred dialog for tablet and desktop web: labels beside the inputs, as in the mockup. */
+export const ChangePasswordModal = ({ visible, flow }: ChangePasswordModalProps) => {
+  const colors = useThemeColors();
   const frame = useModalFrame(MODAL_WIDTH);
+  const reducedMotion = useReducedMotion();
   const titleId = useId();
+  const subtitleId = useId();
 
-  const changePasswordState = useChangePassword({
-    onSuccess: () => {
-      onSuccess?.();
-      onClose();
-    },
-  });
-
-  const handleClose = () => {
-    if (changePasswordState.isSubmitting) return;
-    changePasswordState.resetForm();
-    onClose();
-  };
-
-  useWebModalBehavior(visible, handleClose);
+  useWebModalBehavior(visible, flow.requestClose);
   const attachFocusTrap = useFocusTrap(visible);
 
   if (!visible) return null;
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={handleClose}>
+    <Modal
+      visible
+      transparent
+      animationType={reducedMotion ? "none" : "fade"}
+      // Web closes on Escape through useWebModalBehavior; RN-web's own keyup close would run it twice.
+      onRequestClose={Platform.OS === "web" ? undefined : flow.requestClose}
+      {...dialogLabelProps(titleId, subtitleId, S.title)}
+    >
       <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 16,
-          backgroundColor: withAlpha(PALETTE.slate[800], 0.45),
-        }}
+        className="flex-1 items-center justify-center p-4"
+        style={[{ backgroundColor: colors.overlay }, BACKDROP_BLUR]}
       >
+        {/* A pointer shortcut only: keyboard and screen reader users have Escape and the × button. */}
         <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Close change password modal"
-          onPress={handleClose}
-          style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+          aria-hidden
+          accessibilityElementsHidden
+          importantForAccessibility="no-hide-descendants"
+          tabIndex={-1}
+          onPress={flow.requestClose}
+          className="absolute inset-0"
+          style={BACKDROP_CURSOR}
         />
 
         <View
           ref={attachFocusTrap as never}
           accessibilityViewIsModal
-          accessibilityLabelledBy={titleId}
-          {...Platform.select({ web: { role: "dialog", "aria-modal": true } as object })}
           style={{
             width: frame.width,
             maxHeight: frame.maxHeight,
-            borderRadius: PROFILE_RADIUS.modal,
-            backgroundColor: C.surface,
+            borderRadius: RADII.large,
+            borderWidth: 1,
+            borderColor: colors.border,
+            backgroundColor: colors.surface,
             overflow: "hidden",
-            ...PROFILE_SHADOW.modal,
+            ...SHADOWS.overlay,
           }}
         >
-          {/* Header */}
           <View
+            className="flex-row items-start justify-between"
             style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingHorizontal: 24,
-              paddingTop: 22,
-              paddingBottom: 14,
+              gap: SPACING.lg,
+              paddingHorizontal: SPACING.xxl,
+              paddingTop: SPACING.xl,
+              paddingBottom: SPACING.lg,
               borderBottomWidth: 1,
-              borderBottomColor: C.divider,
+              borderBottomColor: colors.divider,
             }}
           >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-              <View
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
-                  backgroundColor: C.primarySoft,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Feather name="shield" size={18} color={C.primary} />
-              </View>
-              <Text
-                id={titleId}
-                style={{
-                  fontSize: 20,
-                  fontWeight: "700",
-                  color: C.heading,
-                }}
-              >
-                Change Password
+            <View className="min-w-0 flex-1" style={{ gap: SPACING.xs }}>
+              <Text nativeID={titleId} accessibilityRole="header" style={[TYPE.headline, { color: colors.heading }]}>
+                {S.title}
+              </Text>
+              <Text nativeID={subtitleId} style={[TYPE.bodyLarge, { color: colors.muted }]}>
+                {S.subtitle}
               </Text>
             </View>
-
-            <Pressable
-              onPress={handleClose}
-              disabled={changePasswordState.isSubmitting}
-              accessibilityRole="button"
-              accessibilityLabel="Close"
-              hitSlop={10}
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: 16,
-                backgroundColor: C.background,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Feather name="x" size={18} color={C.muted} />
-            </Pressable>
+            <IconButton icon="x" label={S.close} size={44} onPress={flow.requestClose} disabled={flow.isSubmitting} showTooltip={false} />
           </View>
 
-          {/* Body Content */}
           <ScrollView
             style={{ flexShrink: 1 }}
-            contentContainerStyle={{ padding: 24 }}
-            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: SPACING.xxl, paddingVertical: SPACING.xl }}
             keyboardShouldPersistTaps="handled"
           >
-            <ChangePasswordForm
-              changePasswordState={changePasswordState}
-              onCancel={handleClose}
-            />
+            <ChangePasswordForm flow={flow} layout="row" />
           </ScrollView>
+
+          <View
+            style={{
+              paddingHorizontal: SPACING.xxl,
+              paddingVertical: SPACING.lg,
+              borderTopWidth: 1,
+              borderTopColor: colors.divider,
+            }}
+          >
+            <ChangePasswordActions
+              stacked={false}
+              showCancel
+              isSubmitting={flow.isSubmitting}
+              onSubmit={flow.submit}
+              onCancel={flow.requestClose}
+            />
+          </View>
         </View>
       </View>
     </Modal>

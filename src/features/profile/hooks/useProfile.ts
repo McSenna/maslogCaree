@@ -51,7 +51,6 @@ export type ProfileState = {
 
   edit: ReturnType<typeof useEditProfile>;
 
-  onEditProfile: () => void;
   onChangePhoto: () => void;
   onChangePassword: () => void;
   onNotificationSettings: () => void;
@@ -122,7 +121,6 @@ export const useProfile = (options: ProfileOptions = {}): ProfileState => {
 
     edit,
 
-    onEditProfile: () => edit.startEditing("personal"),
     onChangePhoto: edit.changeAvatar,
     onChangePassword: () => setChangePasswordVisible(true),
     onNotificationSettings: () => showPending("notificationSettings"),

@@ -1,11 +1,11 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
 
 import { EmptyNote } from "@/components/ui/dialog/DialogPieces";
 import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import { TYPE } from "@/theme/typography";
 
 import { formatSlotTime } from "./rescheduleFormat";
-import { PALETTE } from "@/theme/palette";
+import { TimeChip } from "./TimeChip";
 
 type Props = {
   palette: ResidentDialogPalette;
@@ -36,40 +36,15 @@ export const RescheduleTimeGrid = ({ palette, slots, selected, onSelect }: Props
           <View key={group.label} className="gap-2">
             <Text style={[TYPE.caption, { color: palette.muted }]}>{group.label}</Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-              {group.slots.map((slotIso) => {
-                const isSelected = selected === slotIso;
-                const label = formatSlotTime(slotIso);
-
-                return (
-                  <Pressable
-                    key={slotIso}
-                    onPress={() => onSelect(slotIso)}
-                    accessibilityRole="radio"
-                    accessibilityState={{ checked: isSelected }}
-                    aria-checked={isSelected}
-                    accessibilityLabel={label}
-                    style={{
-                      minHeight: 44,
-                      justifyContent: "center",
-                      paddingHorizontal: 14,
-                      borderRadius: 8,
-                      backgroundColor: isSelected ? palette.accent : palette.card,
-                      borderColor: isSelected ? palette.accent : palette.border,
-                      borderWidth: 1,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: isSelected ? "700" : "500",
-                        color: isSelected ? PALETTE.white : palette.body,
-                      }}
-                    >
-                      {label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
+              {group.slots.map((slotIso) => (
+                <TimeChip
+                  key={slotIso}
+                  palette={palette}
+                  label={formatSlotTime(slotIso)}
+                  selected={selected === slotIso}
+                  onPress={() => onSelect(slotIso)}
+                />
+              ))}
             </View>
           </View>
         ))}

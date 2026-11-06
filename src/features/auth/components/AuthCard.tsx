@@ -1,4 +1,3 @@
-import ManagedDeviceSetup from "@/features/webAccess/ManagedDeviceSetup";
 import { useRef } from "react";
 import { ActivityIndicator, Text, View, type TextInput } from "react-native";
 import { LANDING_COLORS } from "@/config/landingAssets";
@@ -67,8 +66,6 @@ const AuthCard = ({
         passwordRef={passwordRef}
         onSubmit={() => void submit()}
       />
-
-      <ManagedDeviceSetup disabled={form.isSubmitting} />
 
       <AuthActionButton
         accessibilityLabel="Log in"

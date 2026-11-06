@@ -1,8 +1,11 @@
 import React, { useCallback } from "react";
 import { Pressable, Text, View } from "react-native";
-import { useNotificationPalette } from "../notification.theme";
+import { useInteractionState } from "@/hooks/useInteractionState";
+import { useThemeColors } from "@/hooks/useThemeColors";
+import { SPACING } from "@/theme/spacing";
+import { TYPE } from "@/theme/typography";
+import { NOTIFICATION_METRICS, NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
 import type { NotificationFilter } from "../notification.types";
-import { PALETTE, withAlpha } from "@/theme/palette";
 
 type NotificationFilterTabsProps = {
   value: NotificationFilter;
@@ -26,56 +29,44 @@ const Tab = ({
   onPress: () => void;
 }) => {
   const palette = useNotificationPalette();
+  const { focusRing } = useThemeColors();
+  const { hovered, focused, handlers } = useInteractionState({ pressScale: 1 });
+  const labelColor = active ? palette.onPrimary : palette.heading;
+  const countColor = active ? palette.onPrimary : palette.body;
+  const fontSize = compact ? TYPE.label.fontSize : TYPE.bodyStrong.fontSize;
 
   return (
     <Pressable
       accessibilityRole="tab"
       accessibilityLabel={`${label}, ${count} notifications`}
       accessibilityState={{ selected: active }}
+      aria-selected={active}
+      {...handlers}
       onPress={onPress}
       style={({ pressed }) => ({
         flexDirection: "row",
         alignItems: "center",
-        gap: 6,
-        height: compact ? 30 : 34,
-        paddingHorizontal: compact ? 12 : 14,
-        borderRadius: 8,
-        backgroundColor: active ? palette.primarySoft : withAlpha(PALETTE.slate[400], 0.08),
-        borderWidth: 1,
-        borderColor: active ? withAlpha(PALETTE.blue[500], 0.22) : "transparent",
-        opacity: pressed ? 0.8 : 1,
+        gap: SPACING.sm,
+        height: compact ? NOTIFICATION_METRICS.compactChipHeight : NOTIFICATION_METRICS.chipHeight,
+        paddingHorizontal: compact ? SPACING.md : SPACING.lg + SPACING.xs,
+        borderRadius: NOTIFICATION_RADIUS.chip,
+        backgroundColor: active ? palette.primary : palette.neutralSoft,
+        opacity: pressed ? 0.8 : hovered ? 0.9 : 1,
+        outlineWidth: focused ? 2 : 0,
+        outlineOffset: 2,
+        outlineColor: focusRing,
+        outlineStyle: "solid",
       })}
     >
-      <Text
-        maxFontSizeMultiplier={1.2}
-        style={{
-          fontSize: compact ? 14.5 : 15,
-          fontWeight: active ? "700" : "500",
-          color: active ? palette.primary : palette.muted,
-        }}
-      >
+      <Text maxFontSizeMultiplier={1.2} style={{ fontSize, fontWeight: "600", color: labelColor }}>
         {label}
       </Text>
-
-      <View
-        style={{
-          paddingHorizontal: 6,
-          paddingVertical: 1.5,
-          borderRadius: 10,
-          backgroundColor: active ? withAlpha(PALETTE.blue[500], 0.14) : withAlpha(PALETTE.slate[400], 0.15),
-        }}
+      <Text
+        maxFontSizeMultiplier={1.2}
+        style={{ fontSize, fontWeight: "600", color: countColor, fontVariant: ["tabular-nums"] }}
       >
-        <Text
-          maxFontSizeMultiplier={1.2}
-          style={{
-            fontSize: 13,
-            fontWeight: active ? "700" : "600",
-            color: active ? palette.primary : palette.muted,
-          }}
-        >
-          {count > 99 ? "99+" : count}
-        </Text>
-      </View>
+        {count > 99 ? "99+" : count}
+      </Text>
     </Pressable>
   );
 };
@@ -91,7 +82,11 @@ const NotificationFilterTabs = ({
   const selectUnread = useCallback(() => onChange("unread"), [onChange]);
 
   return (
-    <View accessibilityRole="tablist" style={{ flexDirection: "row", gap: 8 }}>
+    <View
+      accessibilityRole="tablist"
+      accessibilityLabel="Filter notifications"
+      style={{ flexDirection: "row", flexWrap: "wrap", gap: compact ? SPACING.sm : SPACING.md }}
+    >
       <Tab label="All" count={totalCount} active={value === "all"} compact={compact} onPress={selectAll} />
       <Tab
         label="Unread"

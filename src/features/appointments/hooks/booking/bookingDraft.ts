@@ -1,10 +1,18 @@
-import { classifyBookingFailure, classifyWeeklyFailure, validateBooking, type BookingFailure } from "./bookingRules";
+import {
+  classifyBookingFailure,
+  classifyWeeklyFailure,
+  validateBooking,
+  validateRegularBooking,
+  type BookingFailure,
+} from "./bookingRules";
 import type { BookingErrors } from "./bookingTypes";
 import { validateWeeklyBooking } from "./childDetailsRules";
 
 export type BookingDraft = {
   serviceType: string | null;
   weekly: boolean;
+  /** BP checking: the resident picks a date and time on its own schedule. */
+  regular: boolean;
   scheduleId: string | null;
   slotStart: string | null;
   dateKey: string | null;
@@ -17,18 +25,31 @@ export type BookingDraft = {
 
 type FailureLike = Parameters<typeof classifyBookingFailure>[0];
 
-export const validateDraft = (draft: BookingDraft): BookingErrors =>
-  draft.weekly ? validateWeeklyBooking(draft) : validateBooking(draft);
+export const validateDraft = (draft: BookingDraft): BookingErrors => {
+  if (draft.regular) return validateRegularBooking(draft);
+  return draft.weekly ? validateWeeklyBooking(draft) : validateBooking(draft);
+};
 
 export const classifyDraftFailure = (draft: BookingDraft, failure: FailureLike): BookingFailure =>
   draft.weekly ? classifyWeeklyFailure(failure) : classifyBookingFailure(failure);
 
 /**
- * What is sent: a weekly service (immunization) carries the child and the day
- * only, never a time, reason or notes; a mission service carries what it always did.
+ * What is sent: BP checking carries the chosen date and start with the reason;
+ * a weekly service (immunization) carries the child and the day only, never a
+ * time, reason or notes; a mission service carries what it always did.
  */
-export const draftBody = (draft: BookingDraft, requestKey: string) =>
-  draft.weekly
+export const draftBody = (draft: BookingDraft, requestKey: string) => {
+  if (draft.regular) {
+    return {
+      consultationType: draft.serviceType as string,
+      description: draft.reason.trim(),
+      additionalNotes: draft.notes.trim(),
+      appointmentDate: draft.dateKey as string,
+      slotStart: draft.slotStart as string,
+      requestKey,
+    };
+  }
+  return draft.weekly
     ? {
         consultationType: draft.serviceType as string,
         childName: draft.childName.trim().replace(/\s+/g, " "),
@@ -44,6 +65,4 @@ export const draftBody = (draft: BookingDraft, requestKey: string) =>
         slotStart: draft.slotStart as string,
         requestKey,
       };
-
-export const isDraftComplete = (draft: BookingDraft): boolean =>
-  Object.keys(validateDraft(draft)).length === 0;
+};

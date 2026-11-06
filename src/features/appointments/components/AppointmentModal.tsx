@@ -1,12 +1,13 @@
-import { View } from "react-native";
-
 import ResponsiveDialog from "@/components/ui/dialog/ResponsiveDialog";
+import { useResponsive } from "@/hooks/useResponsive";
 import { showAlert } from "@/utils/notify";
 
 import { useAppointmentBooking } from "../hooks/useAppointmentBooking";
 import BookingConfirmedStep from "./BookingConfirmedStep";
-import BookingRequestStep from "./BookingRequestStep";
-import StepProgress from "./StepProgress";
+import { BookingDetailsStep } from "./booking/BookingDetailsStep";
+import { BookingFooter } from "./booking/BookingFooter";
+import { BookingReviewStep } from "./booking/BookingReviewStep";
+import { BookingStepper } from "./booking/BookingStepper";
 
 export type AppointmentModalProps = {
   visible: boolean;
@@ -14,16 +15,22 @@ export type AppointmentModalProps = {
   onBooked?: () => void;
 };
 
-const MAX_WIDTH = 640;
+// Wide enough for the form beside the schedule sidebar; one column below desktop.
+const DESKTOP_WIDTH = 940;
+const SINGLE_COLUMN_WIDTH = 640;
+
+const STAGE_SCROLL_KEY = { details: 0, review: 1, confirmed: 2 } as const;
 
 /**
- * Booking, centred from tablet width up and a bottom sheet on phones. The state
+ * Booking in two steps, Details then Review, with the actions pinned at the
+ * bottom. Centred from tablet width up and a bottom sheet on phones. The state
  * lives above `ResponsiveDialog`, so crossing the breakpoint swaps the frame and
  * keeps every value and error. `ResponsiveDialog` owns focus, Escape, scroll
  * lock, safe areas and the keyboard.
  */
 const AppointmentModal = ({ visible, onClose, onBooked }: AppointmentModalProps) => {
   const booking = useAppointmentBooking(visible, onClose, onBooked);
+  const { isDesktop } = useResponsive();
 
   // True when closing was stopped: a booking is being sent, or there is input to confirm losing.
   const holdClose = (): boolean => {
@@ -43,24 +50,22 @@ const AppointmentModal = ({ visible, onClose, onBooked }: AppointmentModalProps)
   return (
     <ResponsiveDialog
       visible={visible}
-      title="Book an Appointment"
-      subtitle="Resident Appointment Form"
+      title="Book an appointment"
+      subtitle="Choose a service and appointment time"
       icon="calendar"
-      maxWidth={MAX_WIDTH}
+      headerVariant="prominent"
+      maxWidth={isDesktop ? DESKTOP_WIDTH : SINGLE_COLUMN_WIDTH}
       lightSurface
-      // Submit sits at the end of a long form; the confirmation starts from the top.
-      scrollToKey={booking.booked ? 1 : 0}
+      subheader={<BookingStepper stage={booking.stage} />}
+      footer={booking.stage === "confirmed" ? undefined : <BookingFooter booking={booking} onCancel={requestClose} />}
+      // Each step starts from the top: Continue, Back and the confirmation all change the whole body.
+      scrollToKey={STAGE_SCROLL_KEY[booking.stage]}
       onClose={requestClose}
       onDismissRequest={holdClose}
     >
-      <View style={{ gap: 16 }}>
-        <StepProgress step={booking.step} />
-        {booking.booked ? (
-          <BookingConfirmedStep appointment={booking.booked} onClose={booking.close} />
-        ) : (
-          <BookingRequestStep booking={booking} onCancel={requestClose} />
-        )}
-      </View>
+      {booking.stage === "details" ? <BookingDetailsStep booking={booking} /> : null}
+      {booking.stage === "review" ? <BookingReviewStep booking={booking} /> : null}
+      {booking.booked ? <BookingConfirmedStep appointment={booking.booked} onClose={booking.close} /> : null}
     </ResponsiveDialog>
   );
 };

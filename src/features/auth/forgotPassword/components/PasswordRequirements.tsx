@@ -1,6 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { PASSWORD_RULES, passwordStrength } from "../passwordRules";
+import { PASSWORD_RULES, passwordStrength, type PasswordRule } from "../passwordRules";
 import { RECOVERY_COLORS as C } from "../recoveryTheme";
 import { PALETTE } from "@/theme/palette";
 
@@ -33,31 +33,79 @@ export const PasswordStrengthMeter = ({ value }: { value: string }) => {
   );
 };
 
-const PasswordRequirements = ({ value }: { value: string }) => (
-  <View className="w-full gap-1.5">
-    {PASSWORD_RULES.map((rule) => {
-      const passed = rule.test(value);
-      return (
-        <View
-          key={rule.key}
-          className="flex-row items-center gap-2"
-          accessibilityRole="text"
-          accessibilityLabel={`${rule.label}: ${passed ? "met" : "not met"}`}
-        >
-          <Feather
-            name={passed ? "check-circle" : "circle"}
-            size={13}
-            color={passed ? C.success : C.border}
-          />
-          <Text
-            className="text-[14px]"
-            style={{ color: passed ? C.success : C.muted, fontWeight: passed ? "600" : "400" }}
+export type PasswordRequirementColors = {
+  met: string;
+  unmetIcon: string;
+  unmetText: string;
+  heading: string;
+  /** Unmet rules while the field shows an error. */
+  error?: string;
+};
+
+const RECOVERY_REQUIREMENT_COLORS: PasswordRequirementColors = {
+  met: C.success,
+  unmetIcon: C.border,
+  unmetText: C.muted,
+  heading: C.text,
+};
+
+type PasswordRequirementsProps = {
+  value: string;
+  /** Defaults to the shared password policy. */
+  rules?: PasswordRule[];
+  /** Defaults to the recovery screens' fixed light colors. */
+  colors?: PasswordRequirementColors;
+  /** A short lead-in read before the list. */
+  title?: string;
+  nativeID?: string;
+  /** Spoken after each rule, e.g. "met" and "not met". */
+  stateLabels?: { met: string; notMet: string };
+  /** Marks unmet rules as errors (red cross), for when the field's error points at this list. */
+  highlightUnmet?: boolean;
+};
+
+const PasswordRequirements = ({
+  value,
+  rules = PASSWORD_RULES,
+  colors = RECOVERY_REQUIREMENT_COLORS,
+  title,
+  nativeID,
+  stateLabels = { met: "met", notMet: "not met" },
+  highlightUnmet = false,
+}: PasswordRequirementsProps) => (
+  <View nativeID={nativeID} className="w-full gap-1.5">
+    {title ? (
+      <Text className="text-[14px] font-semibold" style={{ color: colors.heading }}>
+        {title}
+      </Text>
+    ) : null}
+    <View className="w-full gap-1.5">
+      {rules.map((rule) => {
+        const passed = rule.test(value);
+        const flagged = !passed && highlightUnmet && Boolean(colors.error);
+        const unmetColor = flagged ? colors.error : colors.unmetText;
+        return (
+          <View
+            key={rule.key}
+            className="flex-row items-center gap-2"
+            accessibilityRole="text"
+            accessibilityLabel={`${rule.label}: ${passed ? stateLabels.met : stateLabels.notMet}`}
           >
-            {rule.label}
-          </Text>
-        </View>
-      );
-    })}
+            <Feather
+              name={passed ? "check-circle" : flagged ? "x-circle" : "circle"}
+              size={13}
+              color={passed ? colors.met : flagged ? colors.error : colors.unmetIcon}
+            />
+            <Text
+              className="min-w-0 flex-1 text-[14px]"
+              style={{ color: passed ? colors.met : unmetColor, fontWeight: passed || flagged ? "600" : "400" }}
+            >
+              {rule.label}
+            </Text>
+          </View>
+        );
+      })}
+    </View>
   </View>
 );
 

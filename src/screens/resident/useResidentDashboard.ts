@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
 import { useNotificationActions } from "@/features/notifications/hooks/useNotificationActions";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
-import { summarizeResidentAppointments } from "@/utils/residentDashboard";
+import { monthlyVisitBars } from "@/utils/residentDashboard";
 import { mapAnnouncements } from "./dashboard/dashboardMappers";
 import { buildStats } from "./dashboard/dashboardStats";
 import { useDashboardData } from "./dashboard/useDashboardData";
@@ -18,8 +18,8 @@ export const useResidentDashboard = () => {
 
   const stats = useMemo(() => buildStats(data), [data]);
 
-  const summary = useMemo(
-    () => summarizeResidentAppointments(appointmentsState.appointments, PALETTE.blue[600]),
+  const monthlyVisits = useMemo(
+    () => monthlyVisitBars(appointmentsState.appointments, PALETTE.blue[600]),
     [appointmentsState.appointments]
   );
 
@@ -50,7 +50,7 @@ export const useResidentDashboard = () => {
     unreadAnnouncements: data?.statistics.unreadAnnouncements ?? 0,
     nextAppointment: data?.nextAppointment ?? null,
     appointments: appointmentsState.appointments,
-    monthlyVisits: summary.monthlyBars,
+    monthlyVisits,
     announcements,
     loading,
     refreshing,

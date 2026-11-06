@@ -7,6 +7,10 @@ import {
   isServiceDay,
   msUntilNextAppDay,
   serviceDayNames,
+  serviceDayWord,
+  isRegularScheduleService,
+  isAssignedTimeService,
+  isWeeklyService,
   serviceDayNote,
 } from "../serviceDays.ts";
 
@@ -23,9 +27,30 @@ describe("isServiceDay", () => {
   });
 
   it("leaves every other service open on any day", () => {
-    for (const key of ["bp_checking", "prenatal", "general_checkup", "consultation", undefined]) {
+    for (const key of ["prenatal", "general_checkup", "consultation", undefined]) {
       assert.equal(isServiceDay(key, at("2026-10-06")), true, String(key));
     }
+  });
+
+  it("runs BP checking Monday to Saturday, closed on Sunday", () => {
+    const week = ["2026-11-08", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-14"];
+    assert.deepEqual(
+      week.map((value) => isServiceDay("bp_checking", at(value))),
+      [false, true, true, true, true, true, true]
+    );
+  });
+
+  it("tells a resident-picked schedule from an assigned one", () => {
+    assert.equal(isRegularScheduleService("bp_checking"), true);
+    assert.equal(isWeeklyService("bp_checking"), true);
+    assert.equal(isAssignedTimeService("bp_checking"), false);
+    assert.equal(isAssignedTimeService("immunization"), true);
+    assert.equal(isRegularScheduleService("immunization"), false);
+    assert.equal(isRegularScheduleService("general_checkup"), false);
+  });
+
+  it("never locks BP completion to its day", () => {
+    assert.equal(isCompletionLocked("bp_checking", "2026-11-14T01:00:00.000Z", new Date(at("2026-11-09"))), false);
   });
 
   it("reads the barangay's calendar day whatever the device timezone", () => {
@@ -59,7 +84,10 @@ describe("serviceDayNote", () => {
 
   it("exposes the day name for staff-facing copy", () => {
     assert.equal(serviceDayNames("immunization"), "Thursday");
-    assert.equal(serviceDayNames("bp_checking"), null);
+    assert.equal(serviceDayNames("bp_checking"), "Monday, Tuesday, Wednesday, Thursday, Friday, and Saturday");
+    assert.equal(serviceDayNames("prenatal"), null);
+    assert.equal(serviceDayWord("immunization"), "Thursday");
+    assert.equal(serviceDayWord("bp_checking"), "day");
   });
 });
 

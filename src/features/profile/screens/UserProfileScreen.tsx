@@ -60,10 +60,7 @@ const UserProfileScreen = () => {
                 backgroundColor: colors.surface,
               }}
             >
-              <ProfilePageHeader
-                title={state.profile?.role.title ?? "Profile"}
-                onEdit={state.profile && !state.edit.editingSection ? state.onEditProfile : undefined}
-              />
+              <ProfilePageHeader title={state.profile?.role.title ?? "Profile"} />
               <View style={{ paddingHorizontal: SPACING.xxl, paddingVertical: SPACING.xl }}>{renderContent()}</View>
             </View>
           )}

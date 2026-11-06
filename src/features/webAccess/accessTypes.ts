@@ -14,8 +14,3 @@ export interface ResidentWebAccess {
   reason: string;
   revision: number;
 }
-export interface ManagedDevice {
-  id: string;
-  createdAt: string;
-  revokedAt: string | null;
-}

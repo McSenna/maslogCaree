@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getDashboardPath } from "@/config/roleRoutes";
 import { resendOtp, verifyOtp } from "@/services/auth";
 import { getAuthErrorPresentation } from "@/utils/authErrorMessages";
-import { registrationAccessNotice } from "@/features/webAccess/registrationAccessCopy";
+import { REGISTRATION_WEB_ACCESS_NOTICE } from "@/features/webAccess/registrationAccessCopy";
 
 export const OTP_LENGTH = 6;
 const RESEND_COOLDOWN_SEC = 60;
@@ -29,7 +29,7 @@ export const useOtpVerification = ({ email, onClose, onVerified }: Options) => {
   const [verified, setVerified] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
   const [verificationError, setVerificationError] = useState("");
-  const [platformNotice, setPlatformNotice] = useState<ReturnType<typeof registrationAccessNotice> | null>(null);
+  const [platformNotice, setPlatformNotice] = useState<typeof REGISTRATION_WEB_ACCESS_NOTICE | null>(null);
 
   const otpComplete = isOtpComplete(code, OTP_LENGTH);
   const resendDisabled = isResending || resendTimer > 0;
@@ -65,11 +65,11 @@ export const useOtpVerification = ({ email, onClose, onVerified }: Options) => {
     try {
       setIsVerifying(true);
       setVerificationError("");
-      const { token, user, code: accessCode } = await verifyOtp(email.trim(), code);
+      const { token, user } = await verifyOtp(email.trim(), code);
 
       if (!token) {
         setVerified(true);
-        setPlatformNotice(registrationAccessNotice(accessCode));
+        setPlatformNotice(REGISTRATION_WEB_ACCESS_NOTICE);
         return;
       }
 

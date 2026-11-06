@@ -3,6 +3,10 @@
   "compilerOptions": {
     "strict": true,
     "ignoreDeprecations": "6.0",
+    // React Native 0.88 defaults to its Strict TypeScript API; this keeps the
+    // types the app was written against. The opt-out ends after 0.88, so
+    // migrate to the strict types before the next React Native upgrade.
+    "customConditions": ["react-native", "react-native-legacy-deep-imports"],
     // Pure modules that `node --test` loads import each other as "./x.ts";
     // Metro resolves those paths as written, and tsc never emits here.
     "allowImportingTsExtensions": true,

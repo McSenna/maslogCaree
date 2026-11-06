@@ -68,7 +68,6 @@ export const sessionEndNotice = (code: string): Notice => {
       description: "This account can no longer sign in. Contact the barangay health center for help.",
     };
   }
-  if (code === ERROR_CODES.DEVICE_CREDENTIAL_REQUIRED) return { title: "Device setup required", description: "Ask the administrator to provision this device. Save the new credential under Device setup, then sign in again." };
   if (code === ERROR_CODES.RESIDENT_WEB_ACCESS_DENIED) {
     return {
       title: "You have been signed out",

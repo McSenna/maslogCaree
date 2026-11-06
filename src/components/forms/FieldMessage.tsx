@@ -6,10 +6,22 @@ type FieldMessageProps = {
   nativeID?: string;
   error?: string | null;
   helper?: string;
+  /** A short count at the end of the row, such as "12 / 800". */
+  counter?: string;
 };
 
-const FieldMessage = ({ nativeID, error, helper }: FieldMessageProps) => {
+const FieldMessage = ({ nativeID, error, helper, counter }: FieldMessageProps) => {
   const colors = useThemeColors();
+  if (counter) {
+    return (
+      <View className="flex-row items-start gap-3">
+        <View className="min-w-0 flex-1">
+          <FieldMessage nativeID={nativeID} error={error} helper={helper} />
+        </View>
+        <Text style={{ fontSize: 14.5, lineHeight: 19, color: colors.muted, fontVariant: ["tabular-nums"] }}>{counter}</Text>
+      </View>
+    );
+  }
   if (!error && !helper) return null;
 
   return (

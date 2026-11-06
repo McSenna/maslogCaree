@@ -19,12 +19,12 @@ type Props = { screen: UsersScreenState };
 const MasterListPhoneList = ({ screen }: Props) => {
   const palette = useAdminSurfacePalette();
   const master = useMasterListScreen({ isPhone: true, onChanged: screen.summary.refetch });
-  const { list, view, openEdit, askToggle, askDelete, removing, toggling, deleting } = master;
+  const { list, view, openView, openEdit, askDelete, removing, deleting } = master;
   const firstId = list.records[0]?._id;
 
   const renderRecord: ListRenderItem<MasterResidentRecord> = useCallback(
-    ({ item }) => <MasterResidentPhoneRow record={item} first={item._id === firstId} onEdit={openEdit} onToggleActive={askToggle} onDelete={askDelete} busy={removing || toggling} deletingId={removing ? deleting?._id : undefined} />,
-    [firstId, openEdit, askToggle, askDelete, removing, toggling, deleting]
+    ({ item }) => <MasterResidentPhoneRow record={item} first={item._id === firstId} onView={openView} onEdit={openEdit} onDelete={askDelete} busy={removing} deletingId={removing ? deleting?._id : undefined} />,
+    [firstId, openView, openEdit, askDelete, removing, deleting]
   );
 
   const header = (

@@ -4,7 +4,6 @@ import type {
   Baby,
   Checklist,
   Correction,
-  Mother,
   PatientDose,
   VisitLedger,
 } from "../types";
@@ -13,8 +12,6 @@ const post = async <T>(path: string, body: object): Promise<T> => {
   const response = await api.post<T>(`/immunization${path}`, body);
   return response.data;
 };
-const searchMothers = (query: string) =>
-  post<{ mothers: Mother[] }>("/mothers/search", { query });
 const searchBabies = (motherMasterResidentId?: string) =>
   post<{ babies: Baby[] }>("/babies/search", { motherMasterResidentId });
 const checklist = (babyId: string, motherMasterResidentId?: string) =>
@@ -50,7 +47,6 @@ const preferences = (enabled: boolean) =>
   post<{ success: true }>("/preferences", { enabled });
 
 export const immunizationApi = {
-  searchMothers,
   searchBabies,
   checklist,
   visitLedger,

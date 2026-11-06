@@ -1,7 +1,9 @@
 import { useCallback } from "react";
 
 import { toast } from "@/components/feedback/toast/toastStore";
+import { getServiceLabel } from "@/config/appointmentServices";
 import { assignAppointment, type AppointmentRecord } from "@/services/appointments";
+import { isAssignedTimeService } from "@/utils/serviceDays";
 
 import type { AssignMode } from "./useSlotAssignment";
 import { toastError } from "@/utils/errorToast/toastError";
@@ -13,9 +15,10 @@ const formatPlaced = (iso: string | null | undefined): string => {
 };
 
 /**
- * Immunization never goes on a mission. Placing a pending request puts it on
- * the first open Thursday position (the server chooses); moving one is the
- * resident's reschedule, so staff are told so instead of being shown slots.
+ * Weekly services (immunization, BP checking) never go on a mission. Placing a
+ * pending request puts it on the first open position (the server chooses);
+ * moving one is the resident's reschedule, so staff are told so instead of
+ * being shown slots.
  */
 export const useWeeklyPlacement = ({
   setSaving,
@@ -26,20 +29,23 @@ export const useWeeklyPlacement = ({
 }) =>
   useCallback(
     async (appointment: AppointmentRecord, mode: AssignMode) => {
+      const label = getServiceLabel(appointment.consultationType);
       if (mode === "reassign") {
         toast.info(
-          "Immunization keeps its own Thursday schedule",
-          "The resident can reschedule it in the app, and it gets the first open time. You can also cancel it."
+          `${label} keeps its own schedule`,
+          isAssignedTimeService(appointment.consultationType)
+            ? "The resident can reschedule it in the app, and it gets the first open time. You can also cancel it."
+            : "The resident can reschedule it in the app and choose a new time. You can also cancel it."
         );
         return;
       }
       setSaving(true);
       try {
         const placed = await assignAppointment(appointment._id, {});
-        toast.success("Immunization scheduled", `Placed on ${formatPlaced(placed.slotStart)}, first come, first served.`);
+        toast.success(`${label} scheduled`, `Placed on ${formatPlaced(placed.slotStart)}, first come, first served.`);
         void onPlaced();
       } catch (error: unknown) {
-        toastError("Unable to schedule the immunization", error, { fallback: "The request could not be placed." });
+        toastError(`Unable to schedule the ${label.toLowerCase()}`, error, { fallback: "The request could not be placed." });
       } finally {
         setSaving(false);
       }

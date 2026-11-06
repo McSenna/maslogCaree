@@ -29,7 +29,7 @@ const Header = ({ isMobile, onPressLogin, user }: HeaderProps) => {
 
   return (
     <>
-      <AppStatusBar style="light" backgroundColor={HEADER_SURFACE} />
+      <AppStatusBar style="light" />
 
       <View
         style={{

@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { ScrollView, View } from "react-native";
 
 import { useModalFrame } from "@/hooks/useModalFrame";
@@ -28,7 +27,6 @@ const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
   const frame = useModalFrame(PROFILE_MAX_WIDTH);
   const twoColumn = useResponsive().isDesktop;
   const colors = useThemeColors();
-  const scrollRef = useRef<ScrollView>(null);
   const { edit } = state;
   const isEditing = Boolean(edit.editingSection);
 
@@ -40,11 +38,6 @@ const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
       return;
     }
     onClose();
-  };
-
-  const startEditing = () => {
-    if (!isEditing) state.onEditProfile();
-    scrollRef.current?.scrollTo({ y: 0, animated: true });
   };
 
   return (
@@ -67,14 +60,9 @@ const ProfileModal = ({ visible, onClose }: ProfileModalProps) => {
             ...(colors.scheme === "dark" ? { borderWidth: 1, borderColor: colors.border } : null),
           }}
         >
-          <ProfilePageHeader
-            title={state.profile?.role.title ?? "Profile"}
-            onEdit={state.profile ? startEditing : undefined}
-            onClose={dismiss}
-          />
+          <ProfilePageHeader title={state.profile?.role.title ?? "Profile"} onClose={dismiss} />
 
           <ScrollView
-            ref={scrollRef}
             style={{ flexShrink: 1 }}
             contentContainerStyle={{ paddingHorizontal: SPACING.xxl, paddingVertical: SPACING.xl }}
             showsVerticalScrollIndicator={false}

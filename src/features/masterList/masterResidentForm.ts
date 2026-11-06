@@ -129,6 +129,16 @@ export const toMasterInput = (values: MasterResidentInput, isEditing: boolean): 
 export const masterFullName = (record: Pick<MasterResidentRecord, "firstName" | "middleName" | "lastName" | "suffix">) =>
   [record.firstName, record.middleName, record.lastName, record.suffix].map((part) => part.trim()).filter(Boolean).join(" ");
 
+/**
+ * Surname-first name for Master List rows, matching the server's surname sort:
+ * "Dela Cruz, Juan Santos Jr.". Sentences and screen-reader labels keep `masterFullName`.
+ */
+export const masterListName = (record: Pick<MasterResidentRecord, "firstName" | "middleName" | "lastName" | "suffix">) => {
+  const given = [record.firstName, record.middleName, record.suffix].map((part) => part.trim()).filter(Boolean).join(" ");
+  const surname = record.lastName.trim();
+  return surname && given ? `${surname}, ${given}` : surname || given;
+};
+
 export const formatBirthDate = (value: string) => formatTableDate(value);
 
 export const capitalize = (value: string) => (value ? `${value[0].toUpperCase()}${value.slice(1)}` : "");

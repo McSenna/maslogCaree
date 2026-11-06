@@ -15,12 +15,13 @@ const PhoneInput = (props: PhoneInputProps) => (
     autoComplete="tel"
     textContentType="telephoneNumber"
     maxLength={13}
-    trailing={
+    leading={
       <View
         style={{
-          paddingLeft: 10,
-          borderLeftWidth: 1,
-          borderLeftColor: REG_COLORS.border,
+          flexShrink: 0,
+          paddingRight: 10,
+          borderRightWidth: 1,
+          borderRightColor: REG_COLORS.border,
         }}
       >
         <Text style={{ fontSize: 15, fontWeight: "600", color: REG_COLORS.muted }}>PH +63</Text>

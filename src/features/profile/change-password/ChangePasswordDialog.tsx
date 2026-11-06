@@ -1,7 +1,10 @@
 import { Platform } from "react-native";
 
-import { ChangePasswordBottomSheet } from "./ChangePasswordBottomSheet";
+import { useResponsive } from "@/hooks/useResponsive";
+
 import { ChangePasswordModal } from "./ChangePasswordModal";
+import { ChangePasswordScreen } from "./ChangePasswordScreen";
+import { useChangePasswordFlow } from "./useChangePasswordFlow";
 
 export type ChangePasswordDialogProps = {
   visible: boolean;
@@ -9,15 +12,20 @@ export type ChangePasswordDialogProps = {
   onSuccess?: () => void;
 };
 
-export const ChangePasswordDialog = ({
-  visible,
-  onClose,
-  onSuccess,
-}: ChangePasswordDialogProps) =>
-  Platform.OS === "web" ? (
-    <ChangePasswordModal visible={visible} onClose={onClose} onSuccess={onSuccess} />
+/**
+ * One flow, two presentations: the centred modal on tablet and desktop web,
+ * a full screen on phones and in the app. The flow lives here, so resizing a
+ * browser across the breakpoint keeps what was typed.
+ */
+export const ChangePasswordDialog = ({ visible, onClose, onSuccess }: ChangePasswordDialogProps) => {
+  const { isMobile } = useResponsive();
+  const flow = useChangePasswordFlow({ onClose, onSuccess });
+
+  return Platform.OS === "web" && !isMobile ? (
+    <ChangePasswordModal visible={visible} flow={flow} />
   ) : (
-    <ChangePasswordBottomSheet visible={visible} onClose={onClose} onSuccess={onSuccess} />
+    <ChangePasswordScreen visible={visible} flow={flow} />
   );
+};
 
 export default ChangePasswordDialog;

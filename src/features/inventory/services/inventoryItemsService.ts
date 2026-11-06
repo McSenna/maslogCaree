@@ -1,4 +1,5 @@
 import api from "@/services/api";
+import { PAGE_SIZE } from "../constants/inventoryLayout";
 
 import {
   NO_PERMISSIONS,
@@ -28,7 +29,7 @@ export const fetchInventoryItems = async (query: InventoryQuery): Promise<Invent
     items: data.items ?? [],
     total: data.total ?? 0,
     page: data.page ?? 1,
-    limit: data.limit ?? 8,
+    limit: data.limit ?? PAGE_SIZE,
     totalPages: data.totalPages ?? 1,
     permissions: data.permissions ?? NO_PERMISSIONS,
   };

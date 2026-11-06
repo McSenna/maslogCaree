@@ -6,7 +6,7 @@ import type { AppointmentRecord } from "@/services/appointments";
 import { SPACING } from "@/theme/spacing";
 import { TYPE } from "@/theme/typography";
 import { appointmentPatientName, childCaption } from "@/utils/appointmentPatient";
-import { isWeeklyService } from "@/utils/serviceDays";
+import { isAssignedTimeService, isWeeklyService, serviceDayWord } from "@/utils/serviceDays";
 import { formatPriorityTier } from "../utils/slotLabels";
 import WorkspacePanel, { PanelEmpty } from "./WorkspacePanel";
 
@@ -46,7 +46,7 @@ const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelPr
             </Text>
             {/* Immunization has no reason to show: it is identified by the child instead. */}
             <Text style={[TYPE.body, { color: colors.body }]}>
-              {isWeeklyService(appointment.consultationType)
+              {isAssignedTimeService(appointment.consultationType)
                 ? (childCaption(appointment) ?? "Older request with no child details")
                 : appointment.description || "Not set"}
             </Text>
@@ -54,7 +54,7 @@ const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelPr
             <View style={{ marginTop: SPACING.xs, flexDirection: "row", flexWrap: "wrap", gap: SPACING.sm }}>
               <Button
                 size="sm"
-                label={isWeeklyService(appointment.consultationType) ? "Place on next open Thursday" : "Assign slot"}
+                label={isWeeklyService(appointment.consultationType) ? `Place on next open ${serviceDayWord(appointment.consultationType)}` : "Assign slot"}
                 icon="calendar"
                 onPress={() => onAssign(appointment)}
               />

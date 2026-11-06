@@ -11,6 +11,7 @@ import { useReducedMotion } from "@/theme/motion";
 
 import DialogFooter from "../DialogFooter";
 import { DialogHeader } from "../DialogHeader";
+import { ProminentDialogHeader } from "../ProminentDialogHeader";
 import {
   DIALOG_BACKDROP_STYLE,
   DIALOG_CONTENT_PADDING,
@@ -39,6 +40,7 @@ export const DialogModalShell = ({
   flush = false,
   lightSurface = false,
   onDismissRequest,
+  headerVariant = "default",
   subheader,
   scrollToKey,
   scrollToY,
@@ -59,6 +61,7 @@ export const DialogModalShell = ({
   useWebModalBehavior(visible, handleDismiss);
   const attachFocusTrap = useFocusTrap(visible);
   const scrollRef = useShellScrollRequest(scrollToKey, scrollToY);
+  const Header = headerVariant === "prominent" ? ProminentDialogHeader : DialogHeader;
 
   if (!visible) return null;
 
@@ -89,7 +92,7 @@ export const DialogModalShell = ({
             radius === undefined ? null : { borderRadius: radius },
           ]}
         >
-          <DialogHeader
+          <Header
             palette={palette}
             title={title}
             subtitle={subtitle}

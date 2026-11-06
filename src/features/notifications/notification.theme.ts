@@ -6,7 +6,7 @@ import { PALETTE, withAlpha } from "@/theme/palette";
 export type NotificationPalette = {
   background: string;
   surface: string;
-  unreadSurface: string;
+  neutralSoft: string;
   unreadDot: string;
   pressed: string;
   border: string;
@@ -35,7 +35,9 @@ export type NotificationPalette = {
 const fromPalette = (base: AdminDashboardPalette, isDark: boolean): NotificationPalette => ({
   background: base.pageBg,
   surface: base.cardBg,
-  unreadSurface: withAlpha(PALETTE.blue[600], isDark ? 0.1 : 0.04),
+  // Quiet fill for informational icon circles and the unselected filter chip,
+  // so blue is reserved for unread dots and the selected filter.
+  neutralSoft: isDark ? PALETTE.night.raised : PALETTE.slate[200],
   unreadDot: base.primary,
   pressed: base.hoverBg,
   border: base.cardBorder,
@@ -72,18 +74,21 @@ export const useNotificationPalette = (): NotificationPalette => {
 export const NOTIFICATION_RADIUS = {
   control: 12,
   panel: 18,
-  icon: 12,
+  icon: 9999,
+  chip: 8,
   pill: 9999,
 } as const;
 
 export const NOTIFICATION_METRICS = {
-  iconSize: 42,
+  iconSize: 48,
   compactIconSize: 36,
   rowGap: 12,
   rowPaddingY: 14,
   rowPaddingX: 16,
   compactRowPaddingY: 11,
   compactRowPaddingX: 14,
+  chipHeight: 44,
+  compactChipHeight: 36,
   titleDescGap: 4,
   descTimeGap: 6,
   panelMinWidth: 380,

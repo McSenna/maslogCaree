@@ -43,6 +43,7 @@ describe("appointment patient", () => {
 
   it("knows which service has its own weekly schedule", () => {
     assert.equal(isWeeklyService("immunization"), true);
-    for (const key of ["general_checkup", "consultation", "prenatal", "bp_checking", null]) assert.equal(isWeeklyService(key), false);
+    assert.equal(isWeeklyService("bp_checking"), true, "BP checking has its own schedule since 2026-11-06");
+    for (const key of ["general_checkup", "consultation", "prenatal", null]) assert.equal(isWeeklyService(key), false);
   });
 });

@@ -8,6 +8,7 @@ import {
   formFromRecord,
   formatBirthDate,
   masterFullName,
+  masterListName,
   toMasterInput,
   validateMasterForm,
 } from "../masterResidentForm.ts";
@@ -130,6 +131,8 @@ describe("display helpers", () => {
       masterFullName({ ...record, suffix: "Jr." }),
       "Testa Sample Fixture Jr.",
     );
+    assert.equal(masterListName({ ...record, suffix: "Jr." }), "Fixture, Testa Sample Jr.");
+    assert.equal(masterListName({ ...record, middleName: " " }), "Fixture, Testa");
     assert.equal(formatBirthDate("1990-04-12"), "Apr 12, 1990");
   });
 

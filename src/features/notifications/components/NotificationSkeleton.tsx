@@ -1,11 +1,9 @@
 import React from "react";
 import { View } from "react-native";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { NOTIFICATION_METRICS, NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
+import { NOTIFICATION_METRICS, NOTIFICATION_RADIUS } from "../notification.theme";
 
 const NotificationSkeleton = ({ rows = 5 }: { rows?: number }) => {
-  const palette = useNotificationPalette();
-
   return (
     <View accessibilityLabel="Loading notifications" style={{ paddingVertical: 4 }}>
       {Array.from({ length: rows }).map((_, index) => (
@@ -17,8 +15,6 @@ const NotificationSkeleton = ({ rows = 5 }: { rows?: number }) => {
             gap: NOTIFICATION_METRICS.rowGap,
             paddingHorizontal: NOTIFICATION_METRICS.rowPaddingX,
             paddingVertical: NOTIFICATION_METRICS.rowPaddingY,
-            borderBottomWidth: index === rows - 1 ? 0 : 1,
-            borderBottomColor: palette.divider,
           }}
         >
           <Skeleton

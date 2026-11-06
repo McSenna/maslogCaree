@@ -88,16 +88,20 @@ const MasterResidentEditorDialog = ({ editing, onClose, onSaved }: Props) => {
       control?.focus({ preventScroll: true });
       element.scrollIntoView({ block: "center", behavior: "auto" });
     } else {
-      node.measureLayout(
-        scrollRef.current?.getInnerViewNode(),
-        (_x, y) => {
-          scrollRef.current?.scrollTo({
-            y: Math.max(0, y - 16),
-            animated: true,
-          });
-        },
-        () => {},
-      );
+      // measureLayout ignores numeric node handles, so pass the element ref.
+      const innerView = scrollRef.current?.getInnerViewRef();
+      if (innerView) {
+        node.measureLayout(
+          innerView,
+          (_x, y) => {
+            scrollRef.current?.scrollTo({
+              y: Math.max(0, y - 16),
+              animated: true,
+            });
+          },
+          () => {},
+        );
+      }
       const handle = findNodeHandle(node);
       if (handle) AccessibilityInfo.setAccessibilityFocus(handle);
     }

@@ -31,6 +31,25 @@ export const validateBooking = (input: BookingInput): BookingErrors => {
   return errors;
 };
 
+type RegularBookingInput = {
+  serviceType: string | null;
+  dateKey: string | null;
+  slotStart: string | null;
+  reason: string;
+  confirmed: boolean;
+};
+
+/** BP checking: a date and an open time from its own schedule, then the reason, as before. */
+export const validateRegularBooking = (input: RegularBookingInput): BookingErrors => {
+  const errors: BookingErrors = {};
+  if (!input.serviceType) errors.serviceType = "Choose the service you need.";
+  if (!input.dateKey) errors.slot = "Choose a date with open times.";
+  else if (!input.slotStart) errors.slot = "Choose an open time on that date.";
+  if (!input.reason.trim()) errors.reason = "Describe your reason for the visit or your symptoms.";
+  if (!input.confirmed) errors.confirmed = "Confirm that your appointment details are correct.";
+  return errors;
+};
+
 /** One key per booking attempt; the server returns the first booking for a repeated key. */
 export const createBookingRequestKey = (): string =>
   `bk-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;

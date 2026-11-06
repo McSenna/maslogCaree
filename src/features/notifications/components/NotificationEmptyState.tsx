@@ -4,26 +4,21 @@ import { Text, View } from "react-native";
 import { useNotificationPalette } from "../notification.theme";
 import type { NotificationFilter } from "../notification.types";
 
-const COPY: Record<NotificationFilter, { title: string; message: string; icon: keyof typeof Feather.glyphMap; isSuccess?: boolean }> = {
+const COPY: Record<NotificationFilter, { title: string; message: string }> = {
   all: {
     title: "You're all caught up",
     message:
       "No notifications yet. Updates about your appointments and healthcare services will appear here.",
-    icon: "bell",
   },
   unread: {
-    title: "All caught up",
-    message: "You have no unread notifications.",
-    icon: "check-circle",
-    isSuccess: true,
+    title: "No unread notifications",
+    message: "New alerts from Maslog Health Center will show up here.",
   },
 };
 
 const NotificationEmptyState = ({ filter = "all" }: { filter?: NotificationFilter }) => {
   const palette = useNotificationPalette();
-  const { title, message, icon, isSuccess } = COPY[filter];
-  const bg = isSuccess ? palette.successSoft : palette.primarySoft;
-  const fg = isSuccess ? palette.success : palette.primary;
+  const { title, message } = COPY[filter];
 
   return (
     <View style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: 32, paddingVertical: 56 }}>
@@ -34,11 +29,11 @@ const NotificationEmptyState = ({ filter = "all" }: { filter?: NotificationFilte
           borderRadius: 28,
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: bg,
-          marginBottom: 14,
+          backgroundColor: palette.neutralSoft,
+          marginBottom: 16,
         }}
       >
-        <Feather name={icon} size={22} color={fg} />
+        <Feather name="bell" size={22} color={palette.body} />
       </View>
 
       <Text style={{ fontSize: 17, fontWeight: "700", color: palette.heading }}>
@@ -52,7 +47,7 @@ const NotificationEmptyState = ({ filter = "all" }: { filter?: NotificationFilte
           textAlign: "center",
           fontSize: 15,
           lineHeight: 21,
-          color: palette.muted,
+          color: palette.body,
         }}
       >
         {message}

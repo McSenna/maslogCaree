@@ -5,6 +5,7 @@ import { residentDialogPalette, useResidentDialogPalette } from "@/design/reside
 
 import DialogFooter from "../DialogFooter";
 import { DialogHeader } from "../DialogHeader";
+import { ProminentDialogHeader } from "../ProminentDialogHeader";
 import { DIALOG_CONTENT_PADDING } from "../dialogModalStyle";
 import type { DialogShellProps } from "./dialogShell.types";
 import { useShellScrollRequest } from "./useShellScrollRequest";
@@ -28,6 +29,7 @@ export const DialogSheetShell = ({
   sheetHeightRatio = 0.92,
   lightSurface = false,
   onDismissRequest,
+  headerVariant = "default",
   subheader,
   scrollToKey,
   scrollToY,
@@ -35,6 +37,7 @@ export const DialogSheetShell = ({
   const themedPalette = useResidentDialogPalette();
   const palette = lightSurface ? LIGHT_PALETTE : themedPalette;
   const scrollRef = useShellScrollRequest(scrollToKey, scrollToY);
+  const Header = headerVariant === "prominent" ? ProminentDialogHeader : DialogHeader;
 
   if (!visible) return null;
 
@@ -50,7 +53,7 @@ export const DialogSheetShell = ({
       maxHeightRatio={sheetHeightRatio}
       header={(requestClose) => (
         <>
-        <DialogHeader
+        <Header
           palette={palette}
           title={title}
           subtitle={subtitle}

@@ -1,18 +1,24 @@
 import { useEffect } from "react";
-import {
-  AppState,
-  type AppStateStatus,
-  InteractionManager,
-  Platform,
-} from "react-native";
+import { AppState, type AppStateStatus, Platform } from "react-native";
 import { useLatestRef } from "@/hooks/useLatestRef";
+
+// React Native 0.88 removed InteractionManager and names requestIdleCallback as
+// its replacement. Browsers without it get the next macrotask, which is what
+// react-native-web's InteractionManager fell back to.
+const runWhenIdle = (task: () => void) => {
+  if (typeof requestIdleCallback === "function") {
+    requestIdleCallback(() => task());
+    return;
+  }
+  setTimeout(task, 0);
+};
 
 export const useAppForegroundLayout = (onForeground?: () => void) => {
   const onForegroundRef = useLatestRef(onForeground);
 
   useEffect(() => {
     const run = () => {
-      InteractionManager.runAfterInteractions(() => {
+      runWhenIdle(() => {
         onForegroundRef.current?.();
       });
     };
@@ -29,7 +35,7 @@ export const useAppForegroundLayout = (onForeground?: () => void) => {
 
     const onVisibility = () => {
       if (document.visibilityState === "visible") {
-        InteractionManager.runAfterInteractions(() => {
+        runWhenIdle(() => {
           onForegroundRef.current?.();
         });
       }

@@ -23,10 +23,11 @@ const TONE_ICON: Record<NotificationTone, FeatherIcon> = {
   info: "bell",
 };
 
-const paint = (palette: NotificationPalette, key: ToneKey) => ({
-  color: palette[key === "info" ? "primary" : key],
-  soft: palette[key === "info" ? "primarySoft" : (`${key}Soft` as const)],
-});
+// Info is neutral; colour is kept for tones that carry a status meaning.
+const paint = (palette: NotificationPalette, key: ToneKey) =>
+  key === "info"
+    ? { color: palette.heading, soft: palette.neutralSoft }
+    : { color: palette[key], soft: palette[`${key}Soft` as const] };
 
 type VisualSpec = { category: NotificationCategory; icon: FeatherIcon; tone: ToneKey };
 
@@ -92,6 +93,19 @@ export const formatNotificationMessage = (body?: string | null): string => {
   }
 
   return body;
+};
+
+/** The line under the Notifications title, on the page and in the web modal. */
+export const formatUnreadStatus = (unreadCount: number): string =>
+  unreadCount > 0 ? `${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}` : "You're all caught up";
+
+/** Row body text; the full row also spells out an immunization reminder's doses. */
+export const formatNotificationRowBody = (item: NotificationItem, compact: boolean): string => {
+  const message = formatNotificationMessage(item.body);
+  const detail = compact ? null : item.immunizationDetail;
+  if (!detail) return message;
+  const doses = detail.vaccines.map((vaccine) => `${vaccine.name} ${vaccine.label}`).join(", ");
+  return `${message} ${detail.babyName}: ${doses}. Scheduled: ${detail.scheduledOn.slice(0, 10)}. Contact or visit the health center.`;
 };
 
 export const resolveNotificationVisual = (

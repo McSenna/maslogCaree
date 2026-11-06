@@ -6,13 +6,27 @@ const WEEKDAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "
 
 const SERVICE_WEEKDAYS: Readonly<Record<string, readonly number[]>> = {
   immunization: [4],
+  bp_checking: [1, 2, 3, 4, 5, 6],
 };
 
 /** Services with their own weekly schedule (mirrors `scheduling: "weekly"` in the backend config). */
-const WEEKLY_SERVICES: ReadonlySet<string> = new Set(["immunization"]);
+const WEEKLY_SERVICES: ReadonlySet<string> = new Set(["immunization", "bp_checking"]);
+
+/**
+ * Weekly services where the resident picks the date and time (mirrors
+ * `residentPicksTime` in the backend config). Their hours come from the server.
+ */
+const REGULAR_SCHEDULE_SERVICES: ReadonlySet<string> = new Set(["bp_checking"]);
 
 export const isWeeklyService = (serviceKey: string | null | undefined): boolean =>
   Boolean(serviceKey && WEEKLY_SERVICES.has(serviceKey));
+
+export const isRegularScheduleService = (serviceKey: string | null | undefined): boolean =>
+  Boolean(serviceKey && REGULAR_SCHEDULE_SERVICES.has(serviceKey));
+
+/** A weekly service whose time the system assigns (immunization). */
+export const isAssignedTimeService = (serviceKey: string | null | undefined): boolean =>
+  isWeeklyService(serviceKey) && !isRegularScheduleService(serviceKey);
 
 const weekdaysOf = (serviceKey: string | null | undefined): readonly number[] | null =>
   (serviceKey && SERVICE_WEEKDAYS[serviceKey]) || null;
@@ -34,10 +48,17 @@ export const isServiceDay = (serviceKey: string | null | undefined, value: strin
   return weekday != null && weekdays.includes(weekday);
 };
 
-/** "Thursday" for a fixed-day service, null for a service open every day. */
+/** "Thursday" for a one-day service, "Monday, Tuesday, and Saturday" for several, null for every day. */
 export const serviceDayNames = (serviceKey: string | null | undefined): string | null => {
+  const names = weekdaysOf(serviceKey)?.map((day) => WEEKDAY_NAMES[day]);
+  if (!names) return null;
+  return names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names.at(-1)}`;
+};
+
+/** "Thursday" for a one-day service, "day" otherwise; for copy like "the next open day". */
+export const serviceDayWord = (serviceKey: string | null | undefined): string => {
   const weekdays = weekdaysOf(serviceKey);
-  return weekdays ? weekdays.map((day) => WEEKDAY_NAMES[day]).join(" and ") : null;
+  return weekdays?.length === 1 ? WEEKDAY_NAMES[weekdays[0]] : "day";
 };
 
 export const serviceDayNote = (serviceKey: string | null | undefined, serviceLabel: string): string | null => {
@@ -55,7 +76,8 @@ export const isCompletionLocked = (
   slotStart: string | null | undefined,
   now: Date = new Date()
 ): boolean => {
-  if (!weekdaysOf(serviceKey)) return false;
+  // BP checking was never locked to its day (mirrors assertCompletionDayReached).
+  if (!weekdaysOf(serviceKey) || isRegularScheduleService(serviceKey)) return false;
   const scheduledDay = slotStart ? appDayNumber(slotStart) : null;
   const today = appDayNumber(now);
   return scheduledDay == null || today == null || today < scheduledDay;

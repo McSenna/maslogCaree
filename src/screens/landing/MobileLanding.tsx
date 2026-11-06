@@ -26,7 +26,7 @@ const MobileLanding = ({
   return (
     <View style={[styles.mobileRoot, { backgroundColor: LANDING_SURFACE }]}>
       {Platform.OS !== "web" && (
-        <AppStatusBar style="dark" backgroundColor={LANDING_SURFACE} />
+        <AppStatusBar style="dark" />
       )}
 
       <KeyboardAvoidingView

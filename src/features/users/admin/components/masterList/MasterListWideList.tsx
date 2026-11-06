@@ -23,13 +23,13 @@ type Props = { screen: UsersScreenState; width: number; insets: RoleScreenInsets
 
 const MasterListWideList = ({ screen, width, insets }: Props) => {
   const master = useMasterListScreen({ isPhone: false, onChanged: screen.summary.refetch });
-  const { list, openEdit, askToggle, askDelete, removing, toggling, deleting } = master;
+  const { list, openView, openEdit, askDelete, removing, deleting } = master;
   const filtersBesideTabs = MASTER_TOOLBAR_WIDTH <= width - insets.gutter * 2;
   // A new page starts at its first row.
   const scrollRef = useScrollTopOnChange<ScrollView>(list.page);
   const columns = useMemo(
-    () => masterListColumns({ onEdit: openEdit, onToggleActive: askToggle, onDelete: askDelete, busy: removing || toggling, deletingId: removing ? deleting?._id : undefined }),
-    [openEdit, askToggle, askDelete, removing, toggling, deleting]
+    () => masterListColumns({ onView: openView, onEdit: openEdit, onDelete: askDelete, busy: removing, deletingId: removing ? deleting?._id : undefined }),
+    [openView, openEdit, askDelete, removing, deleting]
   );
 
   return (
@@ -67,6 +67,8 @@ const MasterListWideList = ({ screen, width, insets }: Props) => {
             onRetry={list.refresh}
             {...masterListEmptyCopy(list.filtered, master.clearFilters, master.openNew)}
             pagination={{ page: list.page, pageSize: MASTER_PAGE_SIZE, total: list.total, onPageChange: list.setPage }}
+          onRowPress={openView}
+          rowPressMode="pointer"
           />
         </View>
       </ScrollView>

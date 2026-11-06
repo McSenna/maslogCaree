@@ -1,7 +1,7 @@
 import { getStatusLabel } from "@/components/status/appointmentStatusModel";
 import { formatBirthDate } from "@/features/auth/utils/dateOfBirth";
 import type { AppointmentRecord } from "@/services/appointments";
-import { isWeeklyService } from "@/utils/serviceDays";
+import { isAssignedTimeService } from "@/utils/serviceDays";
 
 import { appointmentReference, appointmentServiceLabel } from "../appointmentPresenter";
 import { appDateKey } from "../hooks/booking/childDetailsRules";
@@ -23,7 +23,7 @@ const minutesOf = (appointment: AppointmentRecord): number | null =>
 const BookingSummaryRows = ({ appointment }: { appointment: AppointmentRecord }) => {
   const date = appointment.slotStart ? formatScheduleDate(appointment.slotStart) : "Not set";
 
-  if (isWeeklyService(appointment.consultationType)) {
+  if (isAssignedTimeService(appointment.consultationType)) {
     const minutes = minutesOf(appointment);
     return (
       <>

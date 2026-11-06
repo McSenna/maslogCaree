@@ -4,22 +4,28 @@ import { TableButton } from "@/components/data-table";
 
 import type { MasterResidentRecord } from "../masterList.types";
 import { masterFullName } from "../masterResidentForm";
+import { residentTriggerId } from "../residentDetails/returnFocus";
 
 type Props = {
   record: MasterResidentRecord;
   onEdit: (record: MasterResidentRecord) => void;
   onDelete: (record: MasterResidentRecord) => void;
+  onView: (record: MasterResidentRecord) => void;
   busy?: boolean;
   deletingId?: string;
-  onToggleActive: (record: MasterResidentRecord) => void;
 };
 
-const MasterRecordActions = ({ record, onEdit, onDelete, onToggleActive, busy = false, deletingId }: Props) => {
+const MasterRecordActions = ({ record, onEdit, onDelete, onView, busy = false, deletingId }: Props) => {
   const name = masterFullName(record);
-  const toggle = record.isActive ? "Deactivate" : "Reactivate";
 
   return (
     <View role="group" accessibilityLabel="Resident record actions" className="flex-row items-center gap-2">
+      <TableButton
+        iconOnly size="comfortable" icon="eye" label="View"
+        nativeID={residentTriggerId(record._id)}
+        accessibilityLabel={`View ${name}`}
+        onPress={() => onView(record)}
+      />
       <TableButton iconOnly size="comfortable" disabled={busy} icon="edit-2" label="Edit" accessibilityLabel={`Edit ${name}`} onPress={() => onEdit(record)} />
       <TableButton
         iconOnly size="comfortable" icon="trash-2" label="Delete" tone="danger"
@@ -27,16 +33,6 @@ const MasterRecordActions = ({ record, onEdit, onDelete, onToggleActive, busy = 
         accessibilityLabel={`Delete ${name}`}
         accessibilityHint="Asks you to confirm first"
         onPress={() => onDelete(record)}
-      />
-      <TableButton
-        iconOnly size="comfortable" disabled={busy}
-        icon={record.isActive ? "power" : "refresh-cw"}
-        variant="outlined"
-        tone={record.isActive ? "danger" : "default"}
-        label={toggle}
-        accessibilityLabel={`${toggle} ${name}`}
-        accessibilityHint="Asks you to confirm first"
-        onPress={() => onToggleActive(record)}
       />
     </View>
   );

@@ -27,6 +27,8 @@ type TableButtonProps = {
   loading?: boolean;
   /** Comfortable controls retain a 44px target inside desktop tables. */
   size?: "default" | "comfortable";
+  /** DOM id on web, so a dialog can hand focus back to the button that opened it. */
+  nativeID?: string;
 };
 
 const WEB = webStyle({
@@ -50,6 +52,7 @@ const TableButton = ({
   disabled = false,
   loading = false,
   size = "default",
+  nativeID,
 }: TableButtonProps) => {
   const colors = useThemeColors();
   const onCard = useTablePlacement() === "card";
@@ -64,6 +67,7 @@ const TableButton = ({
   const button = (
     <Pressable
       {...handlers}
+      nativeID={nativeID}
       onPress={(event) => {
         event.stopPropagation();
         onPress();

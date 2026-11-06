@@ -1,4 +1,4 @@
-export const PAGE_SIZE = 8;
+export const PAGE_SIZE = 10;
 
 export const SEARCH_DEBOUNCE_MS = 350;
 

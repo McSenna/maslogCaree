@@ -3,6 +3,8 @@ import React from "react";
 import { Pressable, Text, View } from "react-native";
 import { NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
 import type { NotificationFilter } from "../notification.types";
+import { formatUnreadStatus } from "../notification.utils";
+import MarkAllReadButton from "./MarkAllReadButton";
 import NotificationFilterTabs from "./NotificationFilterTabs";
 
 type NotificationPageHeaderProps = {
@@ -25,7 +27,7 @@ const NotificationPageHeader = ({
   const palette = useNotificationPalette();
 
   return (
-    <View style={{ gap: 12, paddingBottom: 10, paddingTop: 4 }}>
+    <View style={{ gap: 20, paddingBottom: 12, paddingTop: 8 }}>
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
           {onBack ? (
@@ -33,18 +35,17 @@ const NotificationPageHeader = ({
               accessibilityRole="button"
               accessibilityLabel="Go back"
               onPress={onBack}
-              hitSlop={8}
               style={({ pressed }) => ({
-                width: 36,
-                height: 36,
-                marginLeft: -4,
+                width: 44,
+                height: 44,
+                marginLeft: -10,
                 alignItems: "center",
                 justifyContent: "center",
                 borderRadius: NOTIFICATION_RADIUS.pill,
                 backgroundColor: pressed ? palette.divider : "transparent",
               })}
             >
-              <Feather name="arrow-left" size={20} color={palette.heading} />
+              <Feather name="arrow-left" size={22} color={palette.heading} />
             </Pressable>
           ) : null}
 
@@ -54,8 +55,9 @@ const NotificationPageHeader = ({
               maxFontSizeMultiplier={1.3}
               style={{
                 fontSize: 26,
-                fontWeight: "700",
-                letterSpacing: -0.4,
+                lineHeight: 31,
+                fontWeight: "800",
+                letterSpacing: -0.7,
                 color: palette.heading,
               }}
             >
@@ -65,48 +67,18 @@ const NotificationPageHeader = ({
             <Text
               maxFontSizeMultiplier={1.3}
               style={{
-                marginTop: 2,
+                marginTop: 4,
                 fontSize: 15,
-                fontWeight: "500",
-                color: palette.muted,
+                lineHeight: 21,
+                color: palette.body,
               }}
             >
-              {unreadCount > 0
-                ? `${unreadCount} unread notification${unreadCount === 1 ? "" : "s"}`
-                : "You're all caught up"}
+              {formatUnreadStatus(unreadCount)}
             </Text>
           </View>
         </View>
 
-        {unreadCount > 0 ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={`Mark all ${unreadCount} notifications as read`}
-            onPress={onMarkAllRead}
-            hitSlop={6}
-            style={({ pressed }) => ({
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 4.5,
-              height: 32,
-              paddingHorizontal: 9,
-              borderRadius: 8,
-              backgroundColor: pressed ? palette.primarySoft : "transparent",
-            })}
-          >
-            <Feather name="check" size={13} color={palette.primary} />
-            <Text
-              maxFontSizeMultiplier={1.2}
-              style={{
-                fontSize: 14.5,
-                fontWeight: "600",
-                color: palette.primary,
-              }}
-            >
-              Mark all as read
-            </Text>
-          </Pressable>
-        ) : null}
+        <MarkAllReadButton unreadCount={unreadCount} onPress={onMarkAllRead} />
       </View>
 
       <NotificationFilterTabs

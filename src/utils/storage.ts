@@ -3,6 +3,9 @@ import * as SecureStore from "expo-secure-store";
 
 const AUTH_KEY = "maslogcare_current_user";
 const THEME_KEY = "maslogcare_ui_theme";
+// Saved by the device setup screen that was removed on 2026-11-06. Sign-in no
+// longer reads it, so installs that still hold one get it deleted on launch.
+const REMOVED_DEVICE_CREDENTIAL_KEY = "maslogcare_managed_device";
 
 export type StoredTheme = "dark" | "light";
 
@@ -73,6 +76,9 @@ export const hydrateAuthStorage = async (): Promise<void> => {
     cacheHydrated = true;
     return;
   }
+
+  void SecureStore.deleteItemAsync(REMOVED_DEVICE_CREDENTIAL_KEY).catch(() => {
+  });
 
   try {
     const raw = await SecureStore.getItemAsync(AUTH_KEY);

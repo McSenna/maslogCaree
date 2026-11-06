@@ -4,14 +4,17 @@ import { masterFullName } from "../masterResidentForm";
 
 import type { MasterListScreenState } from "../hooks/useMasterListScreen";
 import MasterResidentEditorDialog from "./MasterResidentEditorDialog";
+import ResidentDetailsDialog from "../residentDetails/ResidentDetailsDialog";
 
-/** Editor, deletion and activation confirmations for the master list tab. */
+/** View, editor and deletion confirmation for the master list tab. */
 const MasterListOverlays = ({ screen }: { screen: MasterListScreenState }) => {
-  const { editor, confirming, confirmName } = screen;
-  const deactivating = Boolean(confirming?.isActive);
+  const { editor, viewingId } = screen;
 
   return (
     <>
+      {viewingId ? (
+        <ResidentDetailsDialog key={viewingId} recordId={viewingId} onClose={screen.closeView} onEdit={screen.editFromView} />
+      ) : null}
       {editor ? (
         <MasterResidentEditorDialog
           editing={editor === "new" ? null : editor}
@@ -30,20 +33,6 @@ const MasterListOverlays = ({ screen }: { screen: MasterListScreenState }) => {
         error={screen.deleteError}
         onConfirm={() => void screen.remove()}
         onCancel={screen.cancelDelete}
-      />
-      <ConfirmationModal
-        visible={Boolean(confirming)}
-        title={deactivating ? "Deactivate this record?" : "Reactivate this record?"}
-        message={
-          deactivating
-            ? `${confirmName} (${confirming?.masterResidentId}) will stop matching new sign-ups. Any linked app account keeps working. You can reactivate the record anytime.`
-            : `${confirmName} (${confirming?.masterResidentId}) will match new sign-ups again.`
-        }
-        confirmLabel={deactivating ? "Deactivate record" : "Reactivate record"}
-        destructive={deactivating}
-        loading={screen.toggling}
-        onConfirm={() => void screen.toggleActive()}
-        onCancel={screen.cancelToggle}
       />
     </>
   );

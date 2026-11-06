@@ -55,6 +55,6 @@ export const describePlatformAccess = (
 export const MOBILE_ONLY_NOTICE = {
   title: "Resident web access disabled",
   message: "Your web access has been disabled. Please contact the administrator.",
-  supporting: "The MaslogCare mobile app is not affected. Sign in there with a provisioned device credential and your existing email and password.",
+  supporting: "The MaslogCare mobile app is not affected. Sign in there with your existing email and password.",
   action: "Close notice",
 } as const;

@@ -1,13 +1,13 @@
 import { Feather } from "@expo/vector-icons";
-import { useId, useState, type Ref } from "react";
-import { Platform, Pressable, Text, TextInput, View, type TextInputProps } from "react-native";
+import { useId, useImperativeHandle, useRef, useState, type ReactNode, type Ref } from "react";
+import { Platform, TextInput, View, type TextInputProps } from "react-native";
 import { useThemeColors } from "@/hooks/useThemeColors";
-import { RADII } from "@/theme/radius";
-import { TIMING } from "@/theme/motion";
 import { webStyle } from "@/theme/webStyle";
-import FieldLabel from "./FieldLabel";
+import FieldLayout from "./FieldLayout";
 import FieldMessage from "./FieldMessage";
-import { resolveFieldAppearance } from "./fieldAppearance";
+import SecureToggle from "./SecureToggle";
+import { fieldBoxStyle, resolveFieldAppearance } from "./fieldAppearance";
+import { useSecureReveal } from "./useSecureReveal";
 
 export type TextFieldProps = Omit<TextInputProps, "style" | "editable"> & {
   label: string;
@@ -18,6 +18,8 @@ export type TextFieldProps = Omit<TextInputProps, "style" | "editable"> & {
   required?: boolean;
   leftIcon?: keyof typeof Feather.glyphMap;
   secureToggle?: boolean;
+  /** Names for the show/hide button; default to "Show <label>" and "Hide <label>". */
+  toggleLabels?: { show: string; hide: string };
   inputRef?: Ref<TextInput>;
   /** The input's id, which also ties a real label element to it on web. */
   inputId?: string;
@@ -27,9 +29,18 @@ export type TextFieldProps = Omit<TextInputProps, "style" | "editable"> & {
   initialFocus?: boolean;
   /** Replaces the default height of a multiline input. */
   inputMinHeight?: number;
+  /** `start` puts the label in a fixed column beside the input, for wide forms. */
+  labelPosition?: "top" | "start";
+  labelWidth?: number;
+  size?: "md" | "lg";
+  /** Extra content under the message, in the input's column (a checklist, say). */
+  below?: ReactNode;
+  /** Ids of other elements that describe the input, added after the message's. */
+  describedBy?: string;
 };
 
 const MULTILINE_INPUT = { minHeight: 120, maxHeight: 200, paddingTop: 12, paddingBottom: 12, lineHeight: 23 } as const;
+const FIELD_HEIGHT = { md: 46, lg: 52 } as const;
 
 const TextField = ({
   label,
@@ -40,113 +51,107 @@ const TextField = ({
   required = false,
   leftIcon,
   secureToggle = false,
+  toggleLabels,
   inputRef,
   inputId,
   counter,
   initialFocus = false,
   inputMinHeight,
+  labelPosition = "top",
+  labelWidth = 200,
+  size = "md",
+  below,
+  describedBy,
   secureTextEntry,
   onFocus,
   onBlur,
+  onSelectionChange,
   ...inputProps
 }: TextFieldProps) => {
   const colors = useThemeColors();
   const messageId = useId();
   const [focused, setFocused] = useState(false);
   const [hovered, setHovered] = useState(false);
-  const [revealed, setRevealed] = useState(false);
+  const localInputRef = useRef<TextInput>(null);
+  // The field keeps its own ref (the reveal toggle restores the caret through it) and hands the input to the caller's.
+  useImperativeHandle(inputRef, () => localInputRef.current as TextInput, []);
+  const reveal = useSecureReveal(localInputRef);
   const look = resolveFieldAppearance(colors, { focused, hovered, error: Boolean(error), success, disabled });
-  const hidden = secureToggle ? !revealed : secureTextEntry;
+  const hidden = secureToggle ? !reveal.revealed : secureTextEntry;
   const multiline = Boolean(inputProps.multiline);
+  const describedByIds = [error || helper ? messageId : null, describedBy].filter(Boolean).join(" ") || undefined;
+
+  const message = (
+    <FieldMessage nativeID={messageId} error={error} helper={helper} counter={counter} />
+  );
+
+  const control = (
+    <View
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      style={fieldBoxStyle(look, { minHeight: FIELD_HEIGHT[size], multiline, trailingButton: secureToggle, disabled })}
+    >
+      {leftIcon ? (
+        <Feather name={leftIcon} size={16} color={look.icon} style={multiline ? { marginTop: 15 } : undefined} />
+      ) : null}
+      <TextInput
+        ref={localInputRef}
+        nativeID={inputId}
+        {...inputProps}
+        {...(initialFocus ? (Platform.OS === "web" ? { dataSet: { initialFocus: "true" } } : { autoFocus: true }) : {})}
+        editable={!disabled}
+        secureTextEntry={hidden}
+        accessibilityLabel={inputProps.accessibilityLabel ?? label}
+        aria-invalid={Boolean(error) || undefined}
+        aria-required={required || undefined}
+        aria-describedby={describedByIds}
+        placeholderTextColor={colors.subtle}
+        onSelectionChange={(event) => {
+          reveal.trackSelection(event);
+          onSelectionChange?.(event);
+        }}
+        onFocus={(event) => {
+          setFocused(true);
+          onFocus?.(event);
+        }}
+        onBlur={(event) => {
+          setFocused(false);
+          onBlur?.(event);
+        }}
+        textAlignVertical={multiline ? "top" : inputProps.textAlignVertical}
+        style={[
+          { flex: 1, minWidth: 0, minHeight: 44, fontSize: 17, color: colors.heading },
+          multiline ? MULTILINE_INPUT : null,
+          multiline && inputMinHeight ? { minHeight: inputMinHeight, maxHeight: inputMinHeight } : null,
+          webStyle({ outlineStyle: "none" }),
+        ]}
+      />
+      {secureToggle ? (
+        <SecureToggle
+          revealed={reveal.revealed}
+          onToggle={reveal.toggle}
+          showLabel={toggleLabels?.show ?? `Show ${label.toLowerCase()}`}
+          hideLabel={toggleLabels?.hide ?? `Hide ${label.toLowerCase()}`}
+          disabled={disabled}
+        />
+      ) : success ? (
+        <Feather name="check-circle" size={16} color={colors.success.fg} />
+      ) : null}
+    </View>
+  );
 
   return (
-    <View style={{ width: "100%", gap: 6 }}>
-      <FieldLabel htmlFor={inputId}>
-        <Text style={{ fontSize: 15, fontWeight: "600", color: colors.heading }}>
-          {label}
-          {required ? <Text style={{ color: colors.danger.fg }}> *</Text> : null}
-        </Text>
-      </FieldLabel>
-
-      <View
-        onPointerEnter={() => setHovered(true)}
-        onPointerLeave={() => setHovered(false)}
-        style={[
-          {
-            minHeight: 46,
-            flexDirection: "row",
-            alignItems: multiline ? "flex-start" : "center",
-            gap: 10,
-            paddingHorizontal: 14,
-            borderRadius: RADII.medium,
-            borderWidth: look.borderWidth,
-            borderColor: look.border,
-            backgroundColor: look.background,
-            opacity: disabled ? 0.7 : 1,
-          },
-          webStyle({
-            transition: `border-color ${TIMING.hover}ms ease, box-shadow ${TIMING.hover}ms ease`,
-            boxShadow: look.ring ? `0 0 0 3px ${look.ring}` : "none",
-          }),
-        ]}
-      >
-        {leftIcon ? (
-          <Feather name={leftIcon} size={16} color={look.icon} style={multiline ? { marginTop: 15 } : undefined} />
-        ) : null}
-        <TextInput
-          ref={inputRef}
-          nativeID={inputId}
-          {...inputProps}
-          {...(initialFocus ? (Platform.OS === "web" ? { dataSet: { initialFocus: "true" } } : { autoFocus: true }) : {})}
-          editable={!disabled}
-          secureTextEntry={hidden}
-          accessibilityLabel={inputProps.accessibilityLabel ?? label}
-          aria-invalid={Boolean(error) || undefined}
-          aria-required={required || undefined}
-          aria-describedby={error || helper ? messageId : undefined}
-          placeholderTextColor={colors.subtle}
-          onFocus={(event) => {
-            setFocused(true);
-            onFocus?.(event);
-          }}
-          onBlur={(event) => {
-            setFocused(false);
-            onBlur?.(event);
-          }}
-          textAlignVertical={multiline ? "top" : inputProps.textAlignVertical}
-          style={[
-            { flex: 1, minWidth: 0, minHeight: 44, fontSize: 17, color: colors.heading },
-            multiline ? MULTILINE_INPUT : null,
-            multiline && inputMinHeight ? { minHeight: inputMinHeight, maxHeight: inputMinHeight } : null,
-            webStyle({ outlineStyle: "none" }),
-          ]}
-        />
-        {secureToggle ? (
-          <Pressable
-            onPress={() => setRevealed((value) => !value)}
-            accessibilityRole="button"
-            accessibilityLabel={revealed ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
-            hitSlop={10}
-            style={{ padding: 4 }}
-          >
-            <Feather name={revealed ? "eye-off" : "eye"} size={17} color={colors.muted} />
-          </Pressable>
-        ) : success ? (
-          <Feather name="check-circle" size={16} color={colors.success.fg} />
-        ) : null}
-      </View>
-
-      {counter ? (
-        <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
-          <View style={{ flex: 1, minWidth: 0 }}>
-            <FieldMessage nativeID={messageId} error={error} helper={helper} />
-          </View>
-          <Text style={{ fontSize: 14.5, lineHeight: 19, color: colors.muted, fontVariant: ["tabular-nums"] }}>{counter}</Text>
-        </View>
-      ) : (
-        <FieldMessage nativeID={messageId} error={error} helper={helper} />
-      )}
-    </View>
+    <FieldLayout
+      label={label}
+      required={required}
+      inputId={inputId}
+      position={labelPosition}
+      labelWidth={labelWidth}
+      controlHeight={FIELD_HEIGHT[size]}
+      control={control}
+      message={message}
+      below={below}
+    />
   );
 };
 

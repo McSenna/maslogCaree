@@ -1,8 +1,10 @@
 import { DialogError, DialogStatus } from "@/components/ui/dialog/DialogPieces";
 import { useResidentDialogPalette } from "@/design/residentDialogTheme";
 import type { AppointmentRecord } from "@/types/appointments.types";
+import { isRegularScheduleService } from "@/utils/serviceDays";
 
 import { useRescheduleAppointment } from "../../hooks/useRescheduleAppointment";
+import { RegularRescheduleForm } from "./RegularRescheduleForm";
 import { RescheduleConfirmStep } from "./RescheduleConfirmStep";
 import { RescheduleSelectStep } from "./RescheduleSelectStep";
 
@@ -12,7 +14,7 @@ export type RescheduleAppointmentFormProps = {
   onCancel: () => void;
 };
 
-export const RescheduleAppointmentForm = ({
+const MissionRescheduleForm = ({
   appointment,
   onSuccess,
   onCancel,
@@ -69,5 +71,13 @@ export const RescheduleAppointmentForm = ({
     />
   );
 };
+
+/** BP checking moves on its own calendar; every other service keeps its mission or weekly picker. */
+export const RescheduleAppointmentForm = (props: RescheduleAppointmentFormProps) =>
+  isRegularScheduleService(props.appointment.consultationType) ? (
+    <RegularRescheduleForm {...props} />
+  ) : (
+    <MissionRescheduleForm {...props} />
+  );
 
 export default RescheduleAppointmentForm;

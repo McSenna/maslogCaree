@@ -4,7 +4,7 @@ import { TablePrimaryCell, TableText, type CellContext, type Column } from "@/co
 import { civilStatusLabel } from "@/config/civilStatus";
 
 import type { MasterResidentRecord } from "../masterList.types";
-import { capitalize, formatBirthDate, masterFullName } from "../masterResidentForm";
+import { capitalize, formatBirthDate, masterListName } from "../masterResidentForm";
 import MasterRecordActions from "./MasterRecordActions";
 import { ResidentRolePill } from "./MasterRecordPills";
 
@@ -29,7 +29,7 @@ const masterListColumns = (handlers: Handlers): Column<MasterResidentRecord>[] =
     flex: 1,
     minWidth: 180,
     render: (record, _index, context) => (
-      <TablePrimaryCell title={masterFullName(record)} detail={folded(record, context)} />
+      <TablePrimaryCell title={masterListName(record)} detail={folded(record, context)} />
     ),
   },
   {

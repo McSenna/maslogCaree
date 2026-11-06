@@ -70,7 +70,7 @@ const RoleLayout = ({
         backgroundColor: safeBg,
       }}
     >
-      <AppStatusBar style={isDark ? "light" : "dark"} backgroundColor={safeBg} />
+      <AppStatusBar style={isDark ? "light" : "dark"} />
 
       <View className="flex-1 w-full min-w-0" style={{ backgroundColor: pageSurface }}>
 

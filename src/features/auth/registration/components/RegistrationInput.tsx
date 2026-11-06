@@ -18,6 +18,8 @@ export type RegistrationInputProps = {
   error?: string;
   disabled?: boolean;
   height: number;
+  /** Sits between the icon and the text, e.g. a country code. */
+  leading?: ReactNode;
   trailing?: ReactNode;
   onBlur?: () => void;
   keyboardType?: TextInputProps["keyboardType"];
@@ -41,6 +43,7 @@ const RegistrationInput = ({
   error,
   disabled,
   height,
+  leading,
   trailing,
   onBlur,
   accessibilityHint,
@@ -75,6 +78,8 @@ const RegistrationInput = ({
           />
         ) : null}
 
+        {leading}
+
         <TextInput
           value={value}
           onChangeText={onChangeText}
@@ -89,7 +94,8 @@ const RegistrationInput = ({
           accessibilityLabel={label}
           accessibilityHint={accessibilityHint}
           style={[
-            { flex: 1, height: "100%", fontSize: 17, color: fieldTextColor(disabled) },
+            // minWidth 0: a web <input> otherwise keeps ~20 characters of width and pushes the trailing slot out.
+            { flex: 1, minWidth: 0, height: "100%", fontSize: 17, color: fieldTextColor(disabled) },
             Platform.OS === "web" ? ({ outlineStyle: "none" } as never) : null,
           ]}
           {...inputProps}

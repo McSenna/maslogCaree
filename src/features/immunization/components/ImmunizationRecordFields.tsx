@@ -18,7 +18,7 @@ const ImmunizationRecordFields = ({
   busy?: boolean;
 }) => {
   const { styles } = useImmunizationStyles();
-  const screen = useChecklist(true, null, mother);
+  const screen = useChecklist(mother);
   const transition = useClinicalTransition();
   return (
     <View testID="immunization-record-fields" style={styles.section}>

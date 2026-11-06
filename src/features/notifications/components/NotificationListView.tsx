@@ -64,6 +64,7 @@ const NotificationListView = ({
           item={entry.item}
           onPress={onPressItem}
           navigable={isNavigable?.(entry.item) ?? false}
+          divided={entry.divided}
           compact={compact}
           now={now}
         />

@@ -6,13 +6,13 @@ import { civilStatusLabel } from "@/config/civilStatus";
 
 import MasterRecordActions from "./MasterRecordActions";
 
-import { capitalize, formatBirthDate, masterFullName } from "../masterResidentForm";
+import { capitalize, formatBirthDate, masterListName } from "../masterResidentForm";
 import { ResidentRolePill } from "./MasterRecordPills";
 
 type Props = ComponentProps<typeof MasterRecordActions> & { first: boolean };
 
 const MasterResidentPhoneRow = ({ record, first, ...actions }: Props) => {
-  const name = masterFullName(record);
+  const name = masterListName(record);
   const facts = [formatBirthDate(record.dateOfBirth), capitalize(record.sex), civilStatusLabel(record.civilStatus)]
     .filter(Boolean)
     .join(" · ");

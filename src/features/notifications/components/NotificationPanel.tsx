@@ -25,9 +25,11 @@ type NotificationPanelProps = {
   visible: boolean;
   onClose: () => void;
   bellPosition: BellPosition | null;
+  /** Replaces the route change behind "View all notifications", e.g. with the desktop web modal. */
+  onViewAll?: () => void;
 };
 
-const NotificationPanel = ({ visible, onClose, bellPosition }: NotificationPanelProps) => {
+const NotificationPanel = ({ visible, onClose, bellPosition, onViewAll }: NotificationPanelProps) => {
   const { width, height } = useWindowDimensions();
   const {
     notifications,
@@ -60,9 +62,11 @@ const NotificationPanel = ({ visible, onClose, bellPosition }: NotificationPanel
   const allRoute = getNotificationsRoute(user?.role);
 
   const handleViewAll = useCallback(() => {
+    // The panel leaves before the modal opens, so the two never stack.
+    if (onViewAll) return closeThen(onViewAll);
     animateClose();
     if (allRoute) router.push(allRoute);
-  }, [allRoute, animateClose, router]);
+  }, [allRoute, animateClose, closeThen, onViewAll, router]);
 
   const handleEndReached = useCallback(() => {
     if (hasMore && !loadingMore) void loadMore();
@@ -132,7 +136,7 @@ const NotificationPanel = ({ visible, onClose, bellPosition }: NotificationPanel
             />
           </View>
 
-          {allRoute ? <NotificationPanelFooter onPress={handleViewAll} /> : null}
+          {onViewAll || allRoute ? <NotificationPanelFooter onPress={handleViewAll} /> : null}
         </View>
       </Animated.View>
     </Modal>
