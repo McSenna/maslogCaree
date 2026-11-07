@@ -1,4 +1,5 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import MaslogCareLogo from "@/components/landing/MaslogCareLogo";
 import { getHeaderPalette, HEADER_FONT } from "./headerTokens";
 
@@ -60,7 +61,7 @@ const HeaderBrand = ({ compact, isDark, onPress }: HeaderBrandProps) => {
   if (!onPress) return content;
 
   return (
-    <Pressable
+    <StatePressable
       accessibilityRole="button"
       accessibilityLabel="MaslogCare home"
       onPress={onPress}
@@ -71,7 +72,7 @@ const HeaderBrand = ({ compact, isDark, onPress }: HeaderBrandProps) => {
       })}
     >
       {content}
-    </Pressable>
+    </StatePressable>
   );
 };
 

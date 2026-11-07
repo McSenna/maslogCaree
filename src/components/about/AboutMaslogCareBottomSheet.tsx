@@ -8,7 +8,7 @@ import { LANDING_COLORS } from "@/config/landingAssets";
 import AboutMaslogCareContent from "./AboutMaslogCareContent";
 import AboutFooter from "./AboutFooter";
 import AboutHeader from "./AboutHeader";
-import { CONTENT_GUTTER } from "./aboutTheme";
+import { ABOUT_SCROLL_A11Y, CONTENT_GUTTER } from "./aboutTheme";
 
 type AboutMaslogCareBottomSheetProps = {
   visible: boolean;
@@ -39,6 +39,7 @@ const AboutMaslogCareBottomSheet = ({ visible, onClose }: AboutMaslogCareBottomS
       )}
     >
       <ScrollView
+        {...ABOUT_SCROLL_A11Y}
         style={SHEET_SCROLL_STYLE}
         contentContainerStyle={{ paddingHorizontal: gutter, paddingVertical: 18 }}
         showsVerticalScrollIndicator

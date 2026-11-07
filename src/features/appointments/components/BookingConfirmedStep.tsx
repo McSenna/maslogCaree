@@ -1,7 +1,8 @@
 import { Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import type { AppointmentRecord } from "@/services/appointments";
-import { CONFIRMED_MESSAGE } from "../constants/bookingCopy";
+import { isQueuedService } from "@/utils/serviceDays";
+import { CONFIRMED_MESSAGE, QUEUED_MESSAGE, QUEUED_TITLE, SCHEDULED_FROM_QUEUE_MESSAGE } from "../constants/bookingCopy";
 import { APPOINTMENT_COLORS, APPOINTMENT_METRICS } from "./appointmentTheme";
 import BookingActionButton from "./BookingActionButton";
 import BookingSummaryRows from "./BookingSummaryRows";
@@ -11,8 +12,21 @@ type BookingConfirmedStepProps = {
   onClose: () => void;
 };
 
-/** Shows the booking exactly as the server saved it, never the form's local copy. */
+type Outcome = { title: string; message: string; icon: "check" | "clock"; color: string; background: string };
+
+// Read from the saved status, never from the form: a queued request is only
+// "confirmed" if a mission had room and the queue already placed it.
+const outcomeOf = (appointment: AppointmentRecord): Outcome => {
+  if (appointment.status === "pending") {
+    return { title: QUEUED_TITLE, message: QUEUED_MESSAGE, icon: "clock", color: APPOINTMENT_COLORS.waiting, background: APPOINTMENT_COLORS.waitingBg };
+  }
+  const message = isQueuedService(appointment.consultationType) ? SCHEDULED_FROM_QUEUE_MESSAGE : CONFIRMED_MESSAGE;
+  return { title: "Appointment Confirmed", message, icon: "check", color: APPOINTMENT_COLORS.success, background: APPOINTMENT_COLORS.successBg };
+};
+
+/** Shows the booking or request exactly as the server saved it, never the form's local copy. */
 const BookingConfirmedStep = ({ appointment, onClose }: BookingConfirmedStepProps) => {
+  const outcome = outcomeOf(appointment);
   return (
     <View style={{ gap: 16 }}>
       <View
@@ -33,10 +47,10 @@ const BookingConfirmedStep = ({ appointment, onClose }: BookingConfirmedStepProp
             width: 62,
             height: 62,
             borderRadius: 31,
-            backgroundColor: APPOINTMENT_COLORS.successBg,
+            backgroundColor: outcome.background,
           }}
         >
-          <Feather name="check" size={30} color={APPOINTMENT_COLORS.success} />
+          <Feather name={outcome.icon} size={30} color={outcome.color} />
         </View>
 
         <Text
@@ -44,13 +58,13 @@ const BookingConfirmedStep = ({ appointment, onClose }: BookingConfirmedStepProp
           className="text-center"
           style={{ fontSize: 21, fontWeight: "800", color: APPOINTMENT_COLORS.primary }}
         >
-          Appointment Confirmed
+          {outcome.title}
         </Text>
         <Text
           className="text-center"
           style={{ fontSize: 15.5, lineHeight: 22, color: APPOINTMENT_COLORS.mutedText }}
         >
-          {CONFIRMED_MESSAGE}
+          {outcome.message}
         </Text>
       </View>
 

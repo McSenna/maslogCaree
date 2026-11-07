@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 
 import SearchField from "@/components/ui/SearchField";
 import SelectMenu from "@/components/ui/SelectMenu";
@@ -100,7 +101,7 @@ const AdminSupportToolbar = ({
         />
 
         {hasActiveFilters && onClear ? (
-          <Pressable
+          <StatePressable
             onPress={onClear}
             accessibilityRole="button"
             accessibilityLabel="Clear all filters"
@@ -121,7 +122,7 @@ const AdminSupportToolbar = ({
             <Text style={{ fontSize: 15, fontWeight: "600", color: palette.muted }}>
               Clear
             </Text>
-          </Pressable>
+          </StatePressable>
         ) : null}
       </View>
     </View>

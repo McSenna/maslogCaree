@@ -4,28 +4,22 @@
  */
 import type { BookingErrors } from "./bookingTypes.ts";
 
-type BookingInput = {
-  serviceType: string | null;
-  scheduleId: string | null;
-  slotStart: string | null;
-  reason: string;
-  confirmed: boolean;
-};
-
-type ScheduleLike = { missionScheduleId: string; availableSlotStarts: string[] };
-
 type DayLike = { dateKey: string; openPositions: number };
-
-export type BookingSelection = { scheduleId: string | null; slotStart: string | null };
 
 export type BookingFailure = "slot_unavailable" | "duplicate" | "connection" | "other";
 
 type FailureLike = { code?: string; status?: number; isNetworkError?: boolean; isTimeoutError?: boolean };
 
-export const validateBooking = (input: BookingInput): BookingErrors => {
+type QueuedBookingInput = {
+  serviceType: string | null;
+  reason: string;
+  confirmed: boolean;
+};
+
+/** A queued doctor service (general checkup, consultation): no date or time, the queue assigns them. */
+export const validateQueuedBooking = (input: QueuedBookingInput): BookingErrors => {
   const errors: BookingErrors = {};
   if (!input.serviceType) errors.serviceType = "Choose the service you need.";
-  if (!input.scheduleId || !input.slotStart) errors.slot = "Choose a date and an open time.";
   if (!input.reason.trim()) errors.reason = "Describe your reason for the visit or your symptoms.";
   if (!input.confirmed) errors.confirmed = "Confirm that your appointment details are correct.";
   return errors;
@@ -39,7 +33,7 @@ type RegularBookingInput = {
   confirmed: boolean;
 };
 
-/** BP checking: a date and an open time from its own schedule, then the reason, as before. */
+/** BP checking and prenatal: a date and an open time from their own schedule, then the reason. */
 export const validateRegularBooking = (input: RegularBookingInput): BookingErrors => {
   const errors: BookingErrors = {};
   if (!input.serviceType) errors.serviceType = "Choose the service you need.";
@@ -54,20 +48,6 @@ export const validateRegularBooking = (input: RegularBookingInput): BookingError
 export const createBookingRequestKey = (): string =>
   `bk-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
 
-/** After the open times reload, keep what the resident chose if it is still open. */
-export const keepOpenSelection = (
-  schedules: ScheduleLike[],
-  scheduleId: string | null,
-  slotStart: string | null
-): BookingSelection => {
-  const chosen = schedules.find((schedule) => schedule.missionScheduleId === scheduleId);
-  if (chosen && chosen.availableSlotStarts.length > 0) {
-    return { scheduleId: chosen.missionScheduleId, slotStart: chosen.availableSlotStarts.includes(slotStart ?? "") ? slotStart : null };
-  }
-  const firstOpen = schedules.find((schedule) => schedule.availableSlotStarts.length > 0);
-  return { scheduleId: firstOpen?.missionScheduleId ?? null, slotStart: null };
-};
-
 // A refused time (taken, passed, or off the day's list) always means the list
 // the resident saw is out of date, so all of them reload it.
 const SLOT_CODES = new Set(["SLOT_UNAVAILABLE", "VALIDATION_ERROR"]);
@@ -78,6 +58,12 @@ export const classifyBookingFailure = (failure: FailureLike): BookingFailure => 
   if (failure.isNetworkError || failure.isTimeoutError) return "connection";
   if (failure.status != null && failure.status >= 500) return "connection";
   return "other";
+};
+
+/** A queued request holds no time, so nothing it is refused for means "pick another time". */
+export const classifyQueuedFailure = (failure: FailureLike): BookingFailure => {
+  if (failure.code === "SLOT_UNAVAILABLE" || failure.code === "VALIDATION_ERROR") return "other";
+  return classifyBookingFailure(failure);
 };
 
 /**
@@ -99,7 +85,6 @@ export const keepOpenDay = (days: DayLike[], dateKey: string | null): string | n
 /** Anything the resident chose or typed, which closing the form would lose. */
 export const hasBookingInput = (draft: {
   serviceType: string | null;
-  scheduleId: string | null;
   slotStart: string | null;
   dateKey: string | null;
   reason: string;
@@ -110,7 +95,6 @@ export const hasBookingInput = (draft: {
 }): boolean =>
   Boolean(
     draft.serviceType ||
-      draft.scheduleId ||
       draft.slotStart ||
       draft.dateKey ||
       draft.reason.trim() ||

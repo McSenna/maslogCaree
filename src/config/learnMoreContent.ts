@@ -22,7 +22,7 @@ export const LEARN_MORE_INTRO = {
   titleLead: "Barangay health visits,",
   titleAccent: "booked from your phone",
   description:
-    "MaslogCare is the appointment app of the Barangay Maslog health office. Residents pick an open date and time in the mobile app, and each booking is confirmed right away.",
+    "MaslogCare is the appointment app of the Barangay Maslog health office. Residents book visits in the mobile app: BP checks and prenatal visits at a time they pick, and doctor visits through a queue that assigns the time.",
   imageCaption: "Barangay 61 Maslog, Legazpi City",
 };
 
@@ -32,7 +32,7 @@ export const LEARN_MORE_FEATURES: LearnMoreFeature[] = [
     icon: "calendar-outline",
     title: "Book a visit",
     description:
-      "Choose a service, then pick an open date and time. Your appointment is confirmed right away.",
+      "Pick your own time for BP checks and prenatal visits. Checkups and consultations join the doctor's queue, and you get a time when one opens.",
     tone: "primary",
   },
   {

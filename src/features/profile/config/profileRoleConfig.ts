@@ -14,8 +14,6 @@ export type ProfileRoleConfig = {
   sections: ProfileSectionDefinition[];
 };
 
-export const PROFILE_SUBTITLE = "View and manage your personal information and account settings.";
-
 /** Adding a role takes one entry here; no component reads the role itself. */
 export const PROFILE_ROLE_CONFIG: Record<UserRole, ProfileRoleConfig> = {
   admin: {

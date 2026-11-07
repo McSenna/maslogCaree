@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Feather } from "@expo/vector-icons";
-import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Text, TextInput, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 
 import { RADIUS } from "@/design/adminSurfaces";
 import { useAdminSurfacePalette } from "@/design/useAdminSurfacePalette";
@@ -99,7 +100,7 @@ const AdminSupportResponseForm = ({ sending, onSend }: AdminSupportResponseFormP
             The requester will see this reply in their support portal.
           </Text>
 
-          <Pressable
+          <StatePressable
             onPress={handleSubmit}
             disabled={!canSubmit}
             accessibilityRole="button"
@@ -129,7 +130,7 @@ const AdminSupportResponseForm = ({ sending, onSend }: AdminSupportResponseFormP
             >
               {sending ? "Sending..." : "Send Response"}
             </Text>
-          </Pressable>
+          </StatePressable>
         </View>
       </View>
 

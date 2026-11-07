@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import PanelCard from "@/components/dashboard/admin/PanelCard";
 import { STATUS_LABELS } from "@/components/appointmentQueue/queueTheme";
 import AppointmentStatusBadge from "@/components/status/AppointmentStatusBadge";
@@ -115,7 +116,7 @@ const QueueTable = ({
         emptyTitle={emptyMessage}
       />
       {hidden > 0 ? (
-        <Pressable
+        <StatePressable
           onPress={onOpenQueue}
           accessibilityRole="link"
           accessibilityLabel={`${hidden} more in the queue. Open the queue`}
@@ -126,7 +127,7 @@ const QueueTable = ({
             {hidden} more in the queue
           </Text>
           <Feather name="arrow-right" size={14} color={palette.primary} />
-        </Pressable>
+        </StatePressable>
       ) : null}
     </PanelCard>
   );

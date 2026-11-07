@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ScrollView, View } from "react-native";
 
 import { useQueuePalette } from "@/components/appointmentQueue/queueTheme";
 import Button from "@/components/buttons/Button";
+import { FAB_CONTENT_CLEARANCE } from "@/components/buttons/FloatingActionButton";
+import { useFloatingAction } from "@/components/layout/floatingAction/FloatingActionContext";
 import PageHeader from "@/components/layout/PageHeader";
 import { useTheme } from "@/contexts/ThemeContext";
 import { takeAppointmentDetailRequest } from "@/features/appointments/appointmentDetailRequest";
@@ -10,6 +12,7 @@ import AppointmentDetailSheet from "@/features/appointments/components/Appointme
 import AppointmentModal from "@/features/appointments/components/AppointmentModal";
 import ResidentAppointmentList from "@/features/appointments/components/ResidentAppointmentList";
 import ResidentAppointmentOverlays from "@/features/appointments/components/ResidentAppointmentOverlays";
+import { findWaitingDoctorRequest } from "@/features/appointments/hooks/booking/waitingRequest";
 import { useResidentAppointmentActions } from "@/features/appointments/hooks/useResidentAppointmentActions";
 import { useMedicalRecordViewer } from "@/hooks/useMedicalRecordViewer";
 import { useResidentAppointments } from "@/hooks/useResidentAppointments";
@@ -24,20 +27,37 @@ const ResidentAppointments = () => {
   const insets = useRoleScreenInsets();
   const palette = useQueuePalette();
 
-  const { appointments, loading, error, refresh, revalidate, applyLocal } = useResidentAppointments();
+  const { appointments, loading, error, refresh, revalidate, applyLocal } =
+    useResidentAppointments();
   const actions = useResidentAppointmentActions(revalidate, applyLocal);
   const recordViewer = useMedicalRecordViewer();
+  const waitingRequest = useMemo(
+    () => findWaitingDoctorRequest(appointments),
+    [appointments],
+  );
 
   // `?book=1` is the dashboard's "Book appointment" shortcut.
-  const [bookingOpen, setBookingOpen] = useState(useSearchParamValue("book") === "1");
+  const [bookingOpen, setBookingOpen] = useState(
+    useSearchParamValue("book") === "1",
+  );
   const [selected, setSelected] = useState<AppointmentRecord | null>(null);
   const openBooking = () => setBookingOpen(true);
+  // Phones get the floating button; tablet and desktop keep the header button.
+  // With no appointments the empty state's own button is the one control.
+  const showsEmptyState = !loading && !error && appointments.length === 0;
+  const showFab = isMobile && !showsEmptyState;
+  // RoleLayout draws it beside the bottom navigation, so screen transitions never move it.
+  useFloatingAction(
+    showFab ? { icon: "plus", label: "Book an appointment", onPress: openBooking } : null,
+  );
 
   // The dashboard's "View details" names one appointment; open it once the list has it.
   const requestedId = useRef(takeAppointmentDetailRequest());
   useEffect(() => {
     if (!requestedId.current || loading) return;
-    const requested = appointments.find((appointment) => appointment._id === requestedId.current);
+    const requested = appointments.find(
+      (appointment) => appointment._id === requestedId.current,
+    );
     requestedId.current = null;
     if (requested) setSelected(requested);
   }, [appointments, loading]);
@@ -52,13 +72,25 @@ const ResidentAppointments = () => {
       <ScrollView
         className={`flex-1 ${classes.scrollBg}`}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: insets.gutter, paddingTop: insets.paddingTop }}
+        contentContainerStyle={{
+          paddingHorizontal: insets.gutter,
+          paddingTop: insets.paddingTop,
+          paddingBottom: showFab ? FAB_CONTENT_CLEARANCE : 0,
+        }}
       >
         <View className="gap-6 pb-4">
           <PageHeader
             title="Appointments"
             hideHeading
-            actions={<Button label="Book appointment" icon="plus" onPress={openBooking} fullWidth={isMobile} />}
+            actions={
+              isMobile ? undefined : (
+                <Button
+                  label="Book appointment"
+                  icon="plus"
+                  onPress={openBooking}
+                />
+              )
+            }
           />
 
           <ResidentAppointmentList
@@ -77,6 +109,7 @@ const ResidentAppointments = () => {
             visible={bookingOpen}
             onClose={() => setBookingOpen(false)}
             onBooked={() => void revalidate()}
+            waitingRequest={waitingRequest}
           />
         </View>
       </ScrollView>

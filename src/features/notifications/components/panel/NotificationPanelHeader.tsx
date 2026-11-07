@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { NOTIFICATION_RADIUS, useNotificationPalette } from "../../notification.theme";
 import type { NotificationFilter } from "../../notification.types";
 import NotificationFilterTabs from "../NotificationFilterTabs";
@@ -50,7 +51,7 @@ const NotificationPanelHeader = ({
         </View>
 
         {unreadCount > 0 ? (
-          <Pressable
+          <StatePressable
             accessibilityRole="button"
             accessibilityLabel={`Mark all ${unreadCount} notifications as read`}
             onPress={onMarkAllRead}
@@ -68,10 +69,10 @@ const NotificationPanelHeader = ({
             <Text style={{ fontSize: 14, fontWeight: "700", color: palette.primary }}>
               Mark all read
             </Text>
-          </Pressable>
+          </StatePressable>
         ) : null}
 
-        <Pressable
+        <StatePressable
           accessibilityRole="button"
           accessibilityLabel="Close notifications"
           onPress={onClose}
@@ -86,7 +87,7 @@ const NotificationPanelHeader = ({
           })}
         >
           <Feather name="x" size={17} color={palette.muted} />
-        </Pressable>
+        </StatePressable>
       </View>
 
       <NotificationFilterTabs

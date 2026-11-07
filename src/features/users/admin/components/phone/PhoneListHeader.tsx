@@ -19,7 +19,7 @@ const PhoneListHeader = ({ screen, width }: PhoneListHeaderProps) => {
   const { filters } = screen;
 
   return (
-    <View className="gap-3 pb-3 pt-4">
+    <View className="gap-3 pt-4">
       <View className="px-4">
         <UsersPageHeader screen={screen} compact />
       </View>

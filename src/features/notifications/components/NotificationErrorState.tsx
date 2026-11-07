@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
 
 const NotificationErrorState = ({ onRetry }: { onRetry: () => void }) => {
@@ -39,7 +40,7 @@ const NotificationErrorState = ({ onRetry }: { onRetry: () => void }) => {
         Please check your connection and try again.
       </Text>
 
-      <Pressable
+      <StatePressable
         accessibilityRole="button"
         accessibilityLabel="Try loading notifications again"
         onPress={onRetry}
@@ -55,7 +56,7 @@ const NotificationErrorState = ({ onRetry }: { onRetry: () => void }) => {
         })}
       >
         <Text style={{ fontSize: 15.5, fontWeight: "700", color: palette.onPrimary }}>Try again</Text>
-      </Pressable>
+      </StatePressable>
     </View>
   );
 };

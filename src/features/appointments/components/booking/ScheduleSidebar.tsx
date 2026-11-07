@@ -2,12 +2,13 @@ import { ActivityIndicator } from "react-native";
 
 import type { AppointmentBooking } from "../../hooks/useAppointmentBooking";
 import { APPOINTMENT_COLORS } from "../appointmentTheme";
-import { ClinicHoursRows, SidebarCard, SidebarNote } from "./ClinicHoursCard";
+import { SidebarCard, SidebarNote } from "./ClinicHoursCard";
+import { ClinicHoursRows } from "./ClinicHoursPanel";
 
 /**
- * The right-hand column of the Details step. BP checking shows its clinic
- * hours; a mission service explains where its dates come from; before a
- * service is chosen it says what will appear here.
+ * The right-hand column of the Details step. BP checking and prenatal show
+ * their clinic hours; a queued doctor service explains how its time is set;
+ * before a service is chosen it says what will appear here.
  */
 export const ScheduleSidebar = ({ booking }: { booking: AppointmentBooking }) => {
   const schedule = booking.regularPicker.schedule;
@@ -27,10 +28,11 @@ export const ScheduleSidebar = ({ booking }: { booking: AppointmentBooking }) =>
       </SidebarCard>
     );
   }
-  if (booking.serviceType) {
+  if (booking.queued) {
     return (
-      <SidebarCard title="Mission days">
-        <SidebarNote text={`${label} is offered on medical mission days. The dates you can pick are the ones the health team has scheduled.`} />
+      <SidebarCard title="How scheduling works">
+        <SidebarNote text={`${label} is seen by the doctor on medical mission days. You can send your request now, even before a mission is scheduled.`} />
+        <SidebarNote text="You get a notification when your date and time are assigned, and the appointment then appears under Appointments." />
       </SidebarCard>
     );
   }

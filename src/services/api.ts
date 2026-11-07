@@ -9,6 +9,7 @@ import { forceLogout } from "@/services/authEvents";
 import { ApiError, normalizeApiError } from "@/utils/apiErrorHandler";
 import { build, isUnreadableJsonBody, UNREADABLE_RESPONSE_MESSAGE } from "@/utils/apiError/errorClassification";
 import { ERROR_CODES } from "@/utils/errorCodes";
+import { installRequestTransport } from "./requestTransport";
 
 const devServerHost = (): string | undefined => {
   if (!__DEV__) return undefined;
@@ -26,6 +27,7 @@ const apiClient = createAxios({
     "X-Client-Platform": CLIENT_PLATFORM,
   },
 });
+installRequestTransport(apiClient);
 
 apiClient.interceptors.request.use(
   (config) => {
@@ -70,7 +72,11 @@ apiClient.interceptors.response.use(
       (p) => reqPath === p || reqPath.endsWith(p)
     );
 
-    if (normalizedError.isAuthError && !isAuthFormRequest) {
+    const currentToken = getCachedAccessToken();
+    const sentAuthorization = error?.config?.headers?.Authorization;
+    const rejectedCurrentSession = Boolean(currentToken && sentAuthorization === `Bearer ${currentToken}`);
+
+    if (normalizedError.isAuthError && !isAuthFormRequest && rejectedCurrentSession) {
       const ignore401Logout =
         process.env.EXPO_PUBLIC_ADMIN_401_NO_LOGOUT === "1" &&
         getStoredUser()?.role === "admin";

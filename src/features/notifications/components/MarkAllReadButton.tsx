@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, Text } from "react-native";
+import { Text } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { useInteractionState } from "@/hooks/useInteractionState";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { useNotificationPalette } from "../notification.theme";
@@ -19,7 +20,7 @@ const MarkAllReadButton = ({ unreadCount, onPress }: MarkAllReadButtonProps) => 
   if (unreadCount === 0) return null;
 
   return (
-    <Pressable
+    <StatePressable
       {...handlers}
       accessibilityRole="button"
       accessibilityLabel={`Mark all ${unreadCount} notifications as read`}
@@ -43,7 +44,7 @@ const MarkAllReadButton = ({ unreadCount, onPress }: MarkAllReadButtonProps) => 
       <Text maxFontSizeMultiplier={1.2} style={{ fontSize: 14.5, fontWeight: "600", color: palette.primary }}>
         Mark all as read
       </Text>
-    </Pressable>
+    </StatePressable>
   );
 };
 

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { ActivityIndicator, Pressable, Text, TextInput, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { Feather } from "@expo/vector-icons";
 import { RECOVERY_COLORS as C, RECOVERY_RADIUS as R } from "../recoveryTheme";
 import { PALETTE } from "@/theme/palette";
@@ -51,7 +52,7 @@ export const TextButton = ({
 }) => {
   const color = disabled ? C.border : tone === "primary" ? C.primary : C.muted;
   return (
-    <Pressable
+    <StatePressable
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"
@@ -64,7 +65,7 @@ export const TextButton = ({
       <Text className="text-[15px] font-semibold" style={{ color }}>
         {label}
       </Text>
-    </Pressable>
+    </StatePressable>
   );
 };
 

@@ -44,6 +44,7 @@ export const adminBottomNavItems: NavItem[] = [
   { label: "Inventory", href: "/admin/inventory", icon: "box" },
   { label: "Announcements", shortLabel: "News", href: "/admin/announcements", icon: "volume-2" },
   { label: "Logs", href: "/admin/system-logs", icon: "shield" },
+  { label: "Notifications", shortLabel: "Alerts", href: "/admin/notifications", icon: "bell" },
   { label: "Profile", href: "/admin/profile", icon: "user" },
 ];
 

@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import Animated, { FadeIn, SlideInUp } from "react-native-reanimated";
 import { useResponsive } from "@/hooks/useResponsive";
 import { PALETTE, withAlpha } from "@/theme/palette";
@@ -38,7 +39,7 @@ const ServiceCard = ({
       entering={FadeIn.duration(400).delay(100)}
       style={{ flexBasis, flexGrow: 0, flexShrink: 0, minWidth: flexMin, maxWidth: isDesktop ? "24%" : "48%" }}
     >
-      <Pressable
+      <StatePressable
         style={({ pressed }) => ({
           opacity: pressed ? 0.92 : 1,
           transform: [{ scale: pressed ? 0.98 : 1 }],
@@ -82,7 +83,7 @@ const ServiceCard = ({
           {desc}
         </Text>
         </Animated.View>
-      </Pressable>
+      </StatePressable>
     </Animated.View>
   );
 };

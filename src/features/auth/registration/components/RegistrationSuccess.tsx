@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 
 import type { RegistrationStatus } from "@/services/auth";
 import { PALETTE, withAlpha } from "@/theme/palette";
@@ -104,7 +105,7 @@ const RegistrationSuccess = ({ email, status, onContinue, height }: Registration
         ) : null}
       </View>
 
-      <Pressable
+      <StatePressable
         onPress={onContinue}
         accessibilityRole="button"
         accessibilityLabel={content.action}
@@ -125,7 +126,7 @@ const RegistrationSuccess = ({ email, status, onContinue, height }: Registration
         <Text style={{ fontSize: 17, fontWeight: "700", color: REG_COLORS.surface }}>
           {content.action}
         </Text>
-      </Pressable>
+      </StatePressable>
     </View>
   );
 };

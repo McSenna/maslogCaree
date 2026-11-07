@@ -1,13 +1,8 @@
-import { Text, View } from "react-native";
 import AnimatedListItem from "@/components/animations/AnimatedListItem";
-import Button from "@/components/buttons/Button";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import type { AppointmentRecord } from "@/services/appointments";
 import { SPACING } from "@/theme/spacing";
-import { TYPE } from "@/theme/typography";
-import { appointmentPatientName, childCaption } from "@/utils/appointmentPatient";
-import { isAssignedTimeService, isWeeklyService, serviceDayWord } from "@/utils/serviceDays";
-import { formatPriorityTier } from "../utils/slotLabels";
+import { PendingQueueRow } from "./PendingQueueRow";
 import WorkspacePanel, { PanelEmpty } from "./WorkspacePanel";
 
 type PendingQueuePanelProps = {
@@ -22,7 +17,7 @@ const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelPr
   return (
     <WorkspacePanel
       title="Pending queue"
-      subtitle="Rescheduled immunizations first, then priority tier, then first come, first served."
+      subtitle="Listed in the order the queue schedules them: rescheduled immunizations, then age group (infants, adults 60 and older, children, adolescents, adults), then earliest request."
     >
       {pending.length === 0 ? (
         <PanelEmpty>No residents are waiting for a slot.</PanelEmpty>
@@ -31,35 +26,9 @@ const PendingQueuePanel = ({ pending, onAssign, onDecline }: PendingQueuePanelPr
           <AnimatedListItem
             key={appointment._id}
             index={index}
-            style={{ gap: SPACING.xs, paddingBottom: SPACING.md, borderBottomWidth: 1, borderBottomColor: colors.divider }}
+            style={{ paddingBottom: SPACING.md, borderBottomWidth: 1, borderBottomColor: colors.divider }}
           >
-            <Text style={[TYPE.bodyStrong, { color: colors.heading }]}>
-              {appointmentPatientName(appointment, "Resident")}
-            </Text>
-            <Text style={[TYPE.caption, { color: colors.muted }]}>
-              {appointment.reschedulePriorityAt ? (
-                <Text style={{ color: colors.heading, fontWeight: "700" }}>Rescheduled · </Text>
-              ) : null}
-              {formatPriorityTier(appointment.ageTier)} · requested {appointment.consultationType}
-              {appointment.isUrgent ? " · " : ""}
-              {appointment.isUrgent ? <Text style={{ color: colors.danger.fg, fontWeight: "700" }}>Urgent</Text> : null}
-            </Text>
-            {/* Immunization has no reason to show: it is identified by the child instead. */}
-            <Text style={[TYPE.body, { color: colors.body }]}>
-              {isAssignedTimeService(appointment.consultationType)
-                ? (childCaption(appointment) ?? "Older request with no child details")
-                : appointment.description || "Not set"}
-            </Text>
-
-            <View style={{ marginTop: SPACING.xs, flexDirection: "row", flexWrap: "wrap", gap: SPACING.sm }}>
-              <Button
-                size="sm"
-                label={isWeeklyService(appointment.consultationType) ? `Place on next open ${serviceDayWord(appointment.consultationType)}` : "Assign slot"}
-                icon="calendar"
-                onPress={() => onAssign(appointment)}
-              />
-              <Button size="sm" variant="secondary" label="Decline" onPress={() => onDecline(appointment)} />
-            </View>
+            <PendingQueueRow appointment={appointment} onAssign={onAssign} onDecline={onDecline} />
           </AnimatedListItem>
         ))
       )}

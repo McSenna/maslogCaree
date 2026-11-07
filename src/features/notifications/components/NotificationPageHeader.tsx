@@ -1,9 +1,9 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
 import type { NotificationFilter } from "../notification.types";
-import { formatUnreadStatus } from "../notification.utils";
 import MarkAllReadButton from "./MarkAllReadButton";
 import NotificationFilterTabs from "./NotificationFilterTabs";
 
@@ -25,61 +25,42 @@ const NotificationPageHeader = ({
   onBack,
 }: NotificationPageHeaderProps) => {
   const palette = useNotificationPalette();
+  // Opened directly with nothing unread, the row would hold nothing but its gap.
+  const hasActions = Boolean(onBack) || unreadCount > 0;
 
   return (
     <View style={{ gap: 20, paddingBottom: 12, paddingTop: 8 }}>
-      <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
-          {onBack ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Go back"
-              onPress={onBack}
-              style={({ pressed }) => ({
-                width: 44,
-                height: 44,
-                marginLeft: -10,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: NOTIFICATION_RADIUS.pill,
-                backgroundColor: pressed ? palette.divider : "transparent",
-              })}
-            >
-              <Feather name="arrow-left" size={22} color={palette.heading} />
-            </Pressable>
-          ) : null}
+      {/* No visible title (kape, 2026-11-07); the page keeps its heading for screen readers. */}
+      <Text role="heading" aria-level={1} className="sr-only">
+        Notifications
+      </Text>
 
-          <View style={{ flex: 1, minWidth: 0 }}>
-            <Text
-              accessibilityRole="header"
-              maxFontSizeMultiplier={1.3}
-              style={{
-                fontSize: 26,
-                lineHeight: 31,
-                fontWeight: "800",
-                letterSpacing: -0.7,
-                color: palette.heading,
-              }}
-            >
-              Notifications
-            </Text>
-
-            <Text
-              maxFontSizeMultiplier={1.3}
-              style={{
-                marginTop: 4,
-                fontSize: 15,
-                lineHeight: 21,
-                color: palette.body,
-              }}
-            >
-              {formatUnreadStatus(unreadCount)}
-            </Text>
+      {hasActions ? (
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flex: 1, minWidth: 0 }}>
+            {onBack ? (
+              <StatePressable
+                accessibilityRole="button"
+                accessibilityLabel="Go back"
+                onPress={onBack}
+                style={({ pressed }) => ({
+                  width: 44,
+                  height: 44,
+                  marginLeft: -10,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: NOTIFICATION_RADIUS.pill,
+                  backgroundColor: pressed ? palette.divider : "transparent",
+                })}
+              >
+                <Feather name="arrow-left" size={22} color={palette.heading} />
+              </StatePressable>
+            ) : null}
           </View>
-        </View>
 
-        <MarkAllReadButton unreadCount={unreadCount} onPress={onMarkAllRead} />
-      </View>
+          <MarkAllReadButton unreadCount={unreadCount} onPress={onMarkAllRead} />
+        </View>
+      ) : null}
 
       <NotificationFilterTabs
         value={filter}

@@ -1,5 +1,6 @@
 import ResponsiveDialog from "@/components/ui/dialog/ResponsiveDialog";
 import { useResponsive } from "@/hooks/useResponsive";
+import type { AppointmentRecord } from "@/services/appointments";
 import { showAlert } from "@/utils/notify";
 
 import { useAppointmentBooking } from "../hooks/useAppointmentBooking";
@@ -7,29 +8,35 @@ import BookingConfirmedStep from "./BookingConfirmedStep";
 import { BookingDetailsStep } from "./booking/BookingDetailsStep";
 import { BookingFooter } from "./booking/BookingFooter";
 import { BookingReviewStep } from "./booking/BookingReviewStep";
+import { ScheduleSidebar } from "./booking/ScheduleSidebar";
 import { BookingStepper } from "./booking/BookingStepper";
 
 export type AppointmentModalProps = {
   visible: boolean;
   onClose: () => void;
   onBooked?: () => void;
+  /** The resident's doctor request already in the queue, if any (one may wait at a time). */
+  waitingRequest?: AppointmentRecord | null;
 };
 
 // Wide enough for the form beside the schedule sidebar; one column below desktop.
 const DESKTOP_WIDTH = 940;
 const SINGLE_COLUMN_WIDTH = 640;
+const HOURS_COLUMN_WIDTH = 400;
 
 const STAGE_SCROLL_KEY = { details: 0, review: 1, confirmed: 2 } as const;
 
 /**
  * Booking in two steps, Details then Review, with the actions pinned at the
- * bottom. Centred from tablet width up and a bottom sheet on phones. The state
+ * bottom. On desktop the clinic hours are the dialog's aside: the form scrolls
+ * on its own and the hours stay in their column. Below that there is no room
+ * for a second column, so the hours open under the service instead. Centred from tablet width up and a bottom sheet on phones. The state
  * lives above `ResponsiveDialog`, so crossing the breakpoint swaps the frame and
  * keeps every value and error. `ResponsiveDialog` owns focus, Escape, scroll
  * lock, safe areas and the keyboard.
  */
-const AppointmentModal = ({ visible, onClose, onBooked }: AppointmentModalProps) => {
-  const booking = useAppointmentBooking(visible, onClose, onBooked);
+const AppointmentModal = ({ visible, onClose, onBooked, waitingRequest = null }: AppointmentModalProps) => {
+  const booking = useAppointmentBooking(visible, onClose, onBooked, waitingRequest);
   const { isDesktop } = useResponsive();
 
   // True when closing was stopped: a booking is being sent, or there is input to confirm losing.
@@ -47,6 +54,8 @@ const AppointmentModal = ({ visible, onClose, onBooked }: AppointmentModalProps)
     if (!holdClose()) booking.close();
   };
 
+  const showHours = isDesktop && booking.stage !== "confirmed";
+
   return (
     <ResponsiveDialog
       visible={visible}
@@ -57,6 +66,10 @@ const AppointmentModal = ({ visible, onClose, onBooked }: AppointmentModalProps)
       maxWidth={isDesktop ? DESKTOP_WIDTH : SINGLE_COLUMN_WIDTH}
       lightSurface
       subheader={<BookingStepper stage={booking.stage} />}
+      aside={showHours ? <ScheduleSidebar booking={booking} /> : undefined}
+      asideLabel="Clinic hours"
+      // Wide enough that "Each appointment is NN minutes." sits on one line, as in the design.
+      asideWidth={HOURS_COLUMN_WIDTH}
       footer={booking.stage === "confirmed" ? undefined : <BookingFooter booking={booking} onCancel={requestClose} />}
       // Each step starts from the top: Continue, Back and the confirmation all change the whole body.
       scrollToKey={STAGE_SCROLL_KEY[booking.stage]}

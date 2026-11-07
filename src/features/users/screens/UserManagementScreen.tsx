@@ -27,11 +27,13 @@ const UserManagementScreen = () => {
   const insets = useRoleScreenInsets();
   const { isMobile, width: windowWidth, breakpoint } = useResponsive();
   const [measuredWidth, setMeasuredWidth] = useState<number | null>(null);
-  const screen = useUsersScreen({ isPhone: isMobile });
 
   // Until the first layout, estimate the content width from the window.
   const width = measuredWidth ?? windowWidth - getSidebarWidth(breakpoint) - SHELL_PADDING_X;
   const wide = !isMobile && width - insets.gutter * 2 >= TABLE_MIN_WIDTH;
+  // Portrait tablets also use the infinite phone list, so paging must follow
+  // the rendered layout rather than the window's mobile breakpoint.
+  const screen = useUsersScreen({ isPhone: !wide });
 
   const handleLayout = (event: LayoutChangeEvent) => setMeasuredWidth(event.nativeEvent.layout.width);
 

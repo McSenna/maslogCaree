@@ -2,6 +2,8 @@
  * The clinic-hours rows for the booking sidebar, with no React or app imports
  * so `node --test` can load them. Every value comes from the server schedule.
  * Ranges use an en dash on screen; each row also carries a spoken label.
+ * A time never splits from its AM or PM, and a range wraps only after its dash,
+ * so a narrow sidebar never shows "12:00" on one line and "PM" on the next.
  */
 import type { RegularSchedule, RegularWindow } from "@/types/appointments.types";
 
@@ -12,7 +14,9 @@ const LONG = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", 
 
 export type ClinicHoursRow = { key: string; label: string; lines: string[]; spoken: string };
 
-const range = (from: string, to: string) => `${formatClock(from)} – ${formatClock(to)}`;
+const NBSP = "\u00A0";
+const unbroken = (time: string) => formatClock(time).replace(" ", NBSP);
+const range = (from: string, to: string) => `${unbroken(from)}${NBSP}– ${unbroken(to)}`;
 const spokenRange = (from: string, to: string) => `${formatClock(from)} to ${formatClock(to)}`;
 const signature = (windows: RegularWindow[]) => windows.map((window) => `${window.start}-${window.end}`).join(",");
 const toMinutes = (time: string) => {
@@ -22,12 +26,31 @@ const toMinutes = (time: string) => {
 const minutesOpen = (windows: RegularWindow[]) =>
   windows.reduce((total, window) => total + toMinutes(window.end) - toMinutes(window.start), 0);
 
-/** "Mon–Fri" for a run of three or more, otherwise the full day names. */
+/** Consecutive weekdays grouped: [1, 2, 3, 5] becomes [[1, 2, 3], [5]]. */
+const runsOf = (days: number[]): number[][] =>
+  days.reduce<number[][]>((runs, day) => {
+    const last = runs.at(-1);
+    if (last && day === (last.at(-1) as number) + 1) last.push(day);
+    else runs.push([day]);
+    return runs;
+  }, []);
+
+const andList = (parts: string[]) =>
+  parts.length > 1 ? `${parts.slice(0, -1).join(", ")} and ${parts.at(-1)}` : parts.join("");
+
+/**
+ * Three or more days in a row read as a range ("Mon–Fri", "Mon–Wed, Fri"), in
+ * short names so the label stays on one line; otherwise the full day names.
+ */
 const daysLabel = (days: number[]): { label: string; spoken: string } => {
-  const run = days.length > 2 && days.every((day, index) => index === 0 || day === days[index - 1] + 1);
-  if (run) return { label: `${SHORT[days[0]]}–${SHORT[days.at(-1) as number]}`, spoken: `${LONG[days[0]]} to ${LONG[days.at(-1) as number]}` };
-  const names = days.map((day) => LONG[day]).join(", ");
-  return { label: names, spoken: names };
+  const runs = runsOf(days);
+  if (!runs.some((run) => run.length > 2)) {
+    const names = days.map((day) => LONG[day]).join(", ");
+    return { label: names, spoken: names };
+  }
+  const shown = runs.flatMap((run) => (run.length > 2 ? [`${SHORT[run[0]]}–${SHORT[run.at(-1) as number]}`] : run.map((day) => SHORT[day])));
+  const spoken = runs.flatMap((run) => (run.length > 2 ? [`${LONG[run[0]]} to ${LONG[run.at(-1) as number]}`] : run.map((day) => LONG[day])));
+  return { label: shown.join(", "), spoken: andList(spoken) };
 };
 
 export const clinicHoursRows = (schedule: RegularSchedule): ClinicHoursRow[] => {

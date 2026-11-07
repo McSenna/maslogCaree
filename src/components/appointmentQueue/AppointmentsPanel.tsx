@@ -11,6 +11,11 @@ import StatusTabs from "./appointmentsPanel/StatusTabs";
 import QueuePanel from "./QueuePanel";
 import { STATUS_LABELS, useQueuePalette, type AppointmentStatus } from "./queueTheme";
 
+// "In queue" does not read as an adjective ("No in queue appointments"), so the
+// queue tab says it in words; the other tabs keep "No confirmed appointments."
+const emptyTitleFor = (status: AppointmentStatus): string =>
+  status === "pending" ? "No one is waiting in the queue." : `No ${STATUS_LABELS[status].toLowerCase()} appointments.`;
+
 type AppointmentsPanelProps = {
   appointments: AppointmentRecord[];
   statusCounts: Record<string, number>;
@@ -85,7 +90,7 @@ const AppointmentsPanel = ({
             errorTitle="Unable to load appointments."
             onRetry={onRetry}
             emptyIcon="calendar"
-            emptyTitle={`No ${STATUS_LABELS[activeStatus].toLowerCase()} appointments.`}
+            emptyTitle={emptyTitleFor(activeStatus)}
             emptyDescription={emptyMessage}
             onRowPress={onRowPress}
             rowPressMode={canAct ? "pointer" : "button"}

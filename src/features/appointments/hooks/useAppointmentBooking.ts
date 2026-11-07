@@ -1,31 +1,31 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSyncOnChange } from "@/hooks/useSyncOnChange";
 import type { AppointmentRecord } from "@/services/appointments";
-import { isAssignedTimeService, isRegularScheduleService } from "@/utils/serviceDays";
+import { isAssignedTimeService, isQueuedService, isRegularScheduleService } from "@/utils/serviceDays";
 import { validateDraft, type BookingDraft } from "./booking/bookingDraft";
 import { useBookingFields } from "./booking/useBookingFields";
 import { hasBookingInput } from "./booking/bookingRules";
 import { buildServiceOptions } from "./booking/bookingServiceOptions";
 import type { BookingErrors } from "./booking/bookingTypes";
+import { ALREADY_WAITING, MISSING_DETAILS, stageOf } from "./booking/bookingStage";
 import { useBookingServices } from "./booking/useBookingServices";
 import { useBookingPickers } from "./booking/useBookingPickers";
 import { useBookingSubmit } from "./booking/useBookingSubmit";
 
 export type { BookingErrors } from "./booking/bookingTypes";
 
-export type BookingStage = "details" | "review" | "confirmed";
+export type { BookingStage } from "./booking/bookingStage";
 
-const MISSING_DETAILS = "Some details are missing. Check the highlighted fields.";
-
-const stageOf = (booked: AppointmentRecord | null, reviewing: boolean): BookingStage => {
-  if (booked) return "confirmed";
-  return reviewing ? "review" : "details";
-};
-
-export const useAppointmentBooking = (visible: boolean, onClose: () => void, onBooked?: () => void) => {
+/** `waitingRequest`: the resident's doctor request already in the queue, which blocks a second one. */
+export const useAppointmentBooking = (
+  visible: boolean,
+  onClose: () => void,
+  onBooked?: () => void,
+  waitingRequest: AppointmentRecord | null = null
+) => {
   const { categories, servicesLoading, servicesError, loadServices } = useBookingServices();
   const pickers = useBookingPickers();
-  const { slots, weeklyDays, regularPicker } = pickers;
+  const { weeklyDays, regularPicker } = pickers;
 
   const [serviceType, setServiceType] = useState<string | null>(null);
   const fields = useBookingFields();
@@ -55,6 +55,9 @@ export const useAppointmentBooking = (visible: boolean, onClose: () => void, onB
   const servicesUnavailable = !servicesLoading && serviceOptions.length === 0;
   const weekly = isAssignedTimeService(serviceType);
   const regular = isRegularScheduleService(serviceType);
+  /** General checkup and consultation: requested without a time, placed by the queue. */
+  const queued = isQueuedService(serviceType);
+  const queueBlocked = queued && Boolean(waitingRequest);
 
   const clearError = useCallback((field: keyof BookingErrors) => {
     setErrors((previous) => ({ ...previous, [field]: undefined }));
@@ -72,8 +75,7 @@ export const useAppointmentBooking = (visible: boolean, onClose: () => void, onB
     serviceType,
     weekly,
     regular,
-    scheduleId: slots.scheduleId,
-    slotStart: regular ? regularPicker.slotStart : slots.slotStart,
+    slotStart: regular ? regularPicker.slotStart : null,
     dateKey: regular ? regularPicker.dateKey : weeklyDays.dateKey,
     reason,
     notes,
@@ -96,6 +98,7 @@ export const useAppointmentBooking = (visible: boolean, onClose: () => void, onB
 
   /** Checks the Details step first; the server checks everything again on booking. */
   const continueToReview = () => {
+    if (queueBlocked) return setSubmitError(ALREADY_WAITING);
     const found = validateDraft(draft);
     setErrors(found);
     if (Object.keys(found).length > 0) return setSubmitError(MISSING_DETAILS);
@@ -133,8 +136,10 @@ export const useAppointmentBooking = (visible: boolean, onClose: () => void, onB
     serviceType,
     weekly,
     regular,
+    queued,
+    queueBlocked,
+    waitingRequest,
     chooseService,
-    slots,
     weeklyDays,
     regularPicker,
     ...fields,
@@ -144,7 +149,7 @@ export const useAppointmentBooking = (visible: boolean, onClose: () => void, onB
     submitError,
     submit,
     close,
-    /** A confirmed booking is saved, so only an unsent form has anything to lose. */
+    /** A saved booking or request has nothing to lose, so only an unsent form asks first. */
     hasUnsavedInput: !booked && hasBookingInput(draft),
   };
 };

@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable, ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 
 import Button from "@/components/buttons/Button";
 import { useInteractionState } from "@/hooks/useInteractionState";
@@ -32,7 +33,7 @@ export type ResidentDetailsFrameProps = {
 const CloseButton = ({ colors, onClose }: { colors: ThemeColors; onClose: () => void }) => {
   const { hovered, focused, handlers } = useInteractionState({ pressScale: 1 });
   return (
-    <Pressable
+    <StatePressable
       {...handlers}
       accessibilityRole="button"
       accessibilityLabel="Close resident details"
@@ -49,7 +50,7 @@ const CloseButton = ({ colors, onClose }: { colors: ThemeColors; onClose: () => 
       })}
     >
       <Feather name="x" size={20} color={colors.heading} />
-    </Pressable>
+    </StatePressable>
   );
 };
 

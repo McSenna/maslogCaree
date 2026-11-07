@@ -1,6 +1,5 @@
+import { useState } from "react";
 import { Text, View } from "react-native";
-
-import { useResponsive } from "@/hooks/useResponsive";
 import { BREAKPOINTS } from "@/theme/breakpoints";
 
 import type { UsersScreenState } from "../../hooks/useUsersScreen";
@@ -22,9 +21,12 @@ type UsersPageHeaderProps = {
 
 /** The heading, cards and tabs row that both the accounts list and the masterlist sit under. */
 const UsersPageHeader = ({ screen, compact = false, onAddRecord }: UsersPageHeaderProps) => {
-  const { width } = useResponsive();
+  const [width, setWidth] = useState(0);
   return (
-    <View className={compact ? "gap-3" : "gap-4"}>
+    <View
+      className={compact ? "gap-3" : "gap-4"}
+      onLayout={(event) => setWidth(Math.round(event.nativeEvent.layout.width))}
+    >
       <Text role="heading" aria-level={1} className="sr-only">{USERS_TITLE}</Text>
       <OverviewCards compact={compact} columns={width >= FOUR_CARDS_MIN_WIDTH ? 4 : 2} summary={screen.summary.data} tab={screen.filters.tab} onSelectTab={screen.setTab} />
       <UsersTabsRow screen={screen} onAddRecord={onAddRecord} />

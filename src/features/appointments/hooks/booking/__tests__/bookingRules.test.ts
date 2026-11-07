@@ -3,43 +3,28 @@ import { describe, it } from "node:test";
 
 import {
   classifyBookingFailure,
+  classifyQueuedFailure,
   classifyWeeklyFailure,
   createBookingRequestKey,
   hasBookingInput,
   keepOpenDay,
-  keepOpenSelection,
-  validateBooking,
+  validateQueuedBooking,
 } from "../bookingRules.ts";
 
-const schedule = (id: string, starts: string[]) => ({ missionScheduleId: id, availableSlotStarts: starts });
+const complete = { serviceType: "general_checkup", reason: "Cough", confirmed: true };
 
-const complete = {
-  serviceType: "general_checkup",
-  scheduleId: "m1",
-  slotStart: "2026-10-08T00:00:00.000Z",
-  reason: "Cough",
-  confirmed: true,
-};
-
-describe("validateBooking", () => {
-  it("accepts a complete booking", () => {
-    assert.deepEqual(validateBooking(complete), {});
+describe("validateQueuedBooking", () => {
+  it("accepts a request with no date or time: the queue assigns them", () => {
+    assert.deepEqual(validateQueuedBooking(complete), {});
   });
 
-  it("asks for a date and time before booking", () => {
-    assert.ok(validateBooking({ ...complete, scheduleId: null, slotStart: null }).slot);
-    assert.ok(validateBooking({ ...complete, slotStart: null }).slot);
+  it("never asks a queued request for a slot", () => {
+    assert.equal(validateQueuedBooking({ ...complete, reason: "" }).slot, undefined);
   });
 
   it("flags every missing field at once", () => {
-    const errors = validateBooking({
-      serviceType: null,
-      scheduleId: null,
-      slotStart: null,
-      reason: "   ",
-      confirmed: false,
-    });
-    assert.deepEqual(Object.keys(errors).sort(), ["confirmed", "reason", "serviceType", "slot"]);
+    const errors = validateQueuedBooking({ serviceType: null, reason: "   ", confirmed: false });
+    assert.deepEqual(Object.keys(errors).sort(), ["confirmed", "reason", "serviceType"]);
   });
 });
 
@@ -53,27 +38,6 @@ describe("createBookingRequestKey", () => {
   it("gives separate attempts separate keys", () => {
     const keys = new Set(Array.from({ length: 200 }, () => createBookingRequestKey()));
     assert.equal(keys.size, 200);
-  });
-});
-
-describe("keepOpenSelection", () => {
-  const schedules = [schedule("m1", ["a", "b"]), schedule("m2", [])];
-
-  it("keeps a choice that is still open after a reload", () => {
-    assert.deepEqual(keepOpenSelection(schedules, "m1", "b"), { scheduleId: "m1", slotStart: "b" });
-  });
-
-  it("keeps the date but clears a time someone else took", () => {
-    assert.deepEqual(keepOpenSelection(schedules, "m1", "c"), { scheduleId: "m1", slotStart: null });
-  });
-
-  it("moves to the first date with open times when the chosen date is gone or full", () => {
-    assert.deepEqual(keepOpenSelection(schedules, "gone", "a"), { scheduleId: "m1", slotStart: null });
-    assert.deepEqual(keepOpenSelection(schedules, "m2", null), { scheduleId: "m1", slotStart: null });
-  });
-
-  it("selects nothing when no date has open times", () => {
-    assert.deepEqual(keepOpenSelection([schedule("m2", [])], null, null), { scheduleId: null, slotStart: null });
   });
 });
 
@@ -96,6 +60,18 @@ describe("classifyBookingFailure", () => {
     assert.equal(classifyBookingFailure({ code: "VALIDATION_ERROR", status: 400 }), "slot_unavailable");
     assert.equal(classifyBookingFailure({ code: "MISSING_FIELDS", status: 400 }), "other");
     assert.equal(classifyBookingFailure({ code: "FORBIDDEN", status: 403 }), "other");
+  });
+});
+
+describe("classifyQueuedFailure", () => {
+  it("never treats a refusal as a stale time list, since no time was picked", () => {
+    assert.equal(classifyQueuedFailure({ code: "SLOT_UNAVAILABLE", status: 409 }), "other");
+    assert.equal(classifyQueuedFailure({ code: "VALIDATION_ERROR", status: 400 }), "other");
+  });
+
+  it("keeps the shared handling for dropped connections", () => {
+    assert.equal(classifyQueuedFailure({ code: "NETWORK_ERROR", isNetworkError: true }), "connection");
+    assert.equal(classifyQueuedFailure({ code: "SERVICE_UNAVAILABLE", status: 503 }), "connection");
   });
 });
 
@@ -135,7 +111,6 @@ describe("keepOpenDay", () => {
 describe("hasBookingInput", () => {
   const empty = {
     serviceType: null,
-    scheduleId: null,
     slotStart: null,
     dateKey: null,
     reason: "",

@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { useInteractionState } from "@/hooks/useInteractionState";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { SPACING } from "@/theme/spacing";
@@ -36,7 +37,7 @@ const Tab = ({
   const fontSize = compact ? TYPE.label.fontSize : TYPE.bodyStrong.fontSize;
 
   return (
-    <Pressable
+    <StatePressable
       accessibilityRole="tab"
       accessibilityLabel={`${label}, ${count} notifications`}
       accessibilityState={{ selected: active }}
@@ -67,7 +68,7 @@ const Tab = ({
       >
         {count > 99 ? "99+" : count}
       </Text>
-    </Pressable>
+    </StatePressable>
   );
 };
 

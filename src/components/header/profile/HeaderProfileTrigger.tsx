@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import type { RefObject } from "react";
-import { Animated, Pressable, Text, View } from "react-native";
+import { Animated, Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 
 import UserAvatar from "@/components/ui/UserAvatar";
 import type { CurrentUser } from "@/contexts/AuthContext";
@@ -38,7 +39,7 @@ const HeaderProfileTrigger = ({
   const avatarSize = compact ? 32 : 40;
 
   return (
-    <Pressable
+    <StatePressable
       ref={anchorRef}
       accessibilityRole="button"
       accessibilityLabel={user ? `Open profile menu for ${user.name}` : "Open profile"}
@@ -111,7 +112,7 @@ const HeaderProfileTrigger = ({
           <Feather name="chevron-down" size={18} color={palette.muted} />
         </Animated.View>
       )}
-    </Pressable>
+    </StatePressable>
   );
 };
 

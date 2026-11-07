@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { Feather } from "@expo/vector-icons";
 
 import { REG_COLORS, REG_RADIUS } from "../../registrationTheme";
@@ -12,7 +13,7 @@ type Props = {
 
 const IdUploadDropzone = ({ onPress, isProcessing, hasError }: Props) => {
   return (
-    <Pressable
+    <StatePressable
       onPress={onPress}
       disabled={isProcessing}
       accessibilityRole="button"
@@ -72,7 +73,7 @@ const IdUploadDropzone = ({ onPress, isProcessing, hasError }: Props) => {
           Stored privately & securely for Admin review only
         </Text>
       </View>
-    </Pressable>
+    </StatePressable>
   );
 };
 

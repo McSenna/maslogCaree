@@ -9,6 +9,13 @@ describe("getStatusMeta", () => {
     assert.equal(getStatusLabel("confirmed", "resident"), "Confirmed");
   });
 
+  it("reads a pending request as waiting in the queue, never as confirmed", () => {
+    assert.equal(getStatusLabel("pending", "staff"), "In queue");
+    assert.equal(getStatusLabel("pending", "resident"), "In queue");
+    assert.equal(getStatusMeta("pending").icon, "clock");
+    assert.notEqual(getStatusMeta("pending").tone, getStatusMeta("confirmed").tone);
+  });
+
   it("uses resident-friendly wording for an appointment being served", () => {
     assert.equal(getStatusLabel("processing", "staff"), "In Progress");
     assert.equal(getStatusLabel("processing", "resident"), "Being seen");

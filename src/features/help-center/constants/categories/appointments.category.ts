@@ -12,8 +12,8 @@ export const APPOINTMENTS_CATEGORY: HelpCategory = {
       id: "book-appointment",
       title: "Booking an appointment",
       summary:
-        "Choose a service, pick an open date and time, then book. Your appointment is confirmed right away. For immunization, enter your child's name and date of birth and pick a Thursday; the time is assigned first come, first served.",
-      keywords: ["book", "booking", "schedule", "slot", "consultation", "immunization", "vaccine", "child", "thursday"],
+        "For BP checking or prenatal, pick an open date and time, then book; it is confirmed right away. Prenatal is not offered on Thursdays, when the midwife runs immunization. For a general checkup or consultation, send a request with no date: it joins the doctor's queue, and you are notified when a medical mission date and time are assigned. You can have one doctor request in the queue at a time; send another once it is scheduled, or cancel it first. Baby immunization visits are assigned automatically from the vaccine schedule.",
+      keywords: ["book", "booking", "schedule", "slot", "consultation", "checkup", "queue", "prenatal", "immunization", "vaccine", "child", "thursday"],
     },
     {
       id: "view-appointments",
@@ -25,7 +25,7 @@ export const APPOINTMENTS_CATEGORY: HelpCategory = {
       id: "reschedule-appointment",
       title: "Rescheduling an appointment",
       summary:
-        "Open the appointment, choose Reschedule, then select a new open time. The new time is confirmed right away. An immunization moves to another Thursday and gets that day's first open time.",
+        "Open the appointment, choose Reschedule, then select a new open time. The new time is confirmed right away. A request still in the queue has no time to move yet; you can reschedule it once a date and time are assigned.",
       keywords: ["reschedule", "move", "change date", "rebook"],
     },
     {

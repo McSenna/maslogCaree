@@ -6,9 +6,10 @@ export const LANDING_CONTENT = {
     accent: "from your phone",
   },
 
-  // Matches the backend flow: residents pick an open mission slot and the booking is confirmed on save.
+  // Matches the backend flow (2026-11-07): BP checking and prenatal are booked at a chosen time;
+  // general checkups and consultations are queued and placed on a doctor's mission.
   description:
-    "Choose a service, then pick an open date and time. Your appointment is confirmed right away.",
+    "Pick your own time for BP checks and prenatal visits. Checkups and consultations join the doctor's queue, and you get a time when one opens.",
 
   actions: {
     primary: { label: "Get started", icon: "arrow-forward" as const },
@@ -31,12 +32,12 @@ export const LANDING_FEATURE_COPY: readonly LandingFeatureCopy[] = [
   {
     key: "request",
     title: "Book a visit",
-    description: "Pick a service and an open date and time.",
+    description: "Pick a service and tell us what you need.",
   },
   {
     key: "priority",
-    title: "Confirmed right away",
-    description: "Your appointment is confirmed as soon as you book it.",
+    title: "Fair order for doctor visits",
+    description: "Doctor requests are scheduled by age group, infants and seniors first.",
   },
   {
     key: "schedule",

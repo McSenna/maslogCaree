@@ -12,15 +12,13 @@ import {
 } from "./headerTokens";
 import { HEADER_TOP_GAP, useHeaderTopInset } from "./useHeaderTopInset";
 import { webStyle } from "@/theme/webStyle";
-import MobileNotificationsLink from "./MobileNotificationsLink";
 
 type AppHeaderProps = {
   onPressBrand?: () => void;
   variant: "mobile" | "desktop";
-  mobileNotificationsHref?: string;
 };
 
-const AppHeader = ({ onPressBrand, variant, mobileNotificationsHref }: AppHeaderProps) => {
+const AppHeader = ({ onPressBrand, variant }: AppHeaderProps) => {
   const { width } = useWindowDimensions();
   const { resolvedTheme } = useTheme();
 
@@ -86,10 +84,8 @@ const AppHeader = ({ onPressBrand, variant, mobileNotificationsHref }: AppHeader
             flexShrink: 0,
           }}
         >
-          {!isMobile && <HeaderNotifications compact={isMobile} isDark={isDark} />}
-          {isMobile && mobileNotificationsHref ? (
-            <MobileNotificationsLink href={mobileNotificationsHref} isDark={isDark} />
-          ) : null}
+          {/* Mobile opens notifications from the bottom navigation. */}
+          {!isMobile && <HeaderNotifications compact={false} isDark={isDark} />}
 
           {!isMobile && (
             <View

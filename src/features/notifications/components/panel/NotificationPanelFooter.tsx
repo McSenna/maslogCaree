@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { useNotificationPalette } from "../../notification.theme";
 
 const NotificationPanelFooter = ({ onPress }: { onPress: () => void }) => {
@@ -8,7 +9,7 @@ const NotificationPanelFooter = ({ onPress }: { onPress: () => void }) => {
 
   return (
     <View style={{ borderTopWidth: 1, borderTopColor: palette.divider }}>
-      <Pressable
+      <StatePressable
         accessibilityRole="button"
         accessibilityLabel="View all notifications"
         onPress={onPress}
@@ -25,7 +26,7 @@ const NotificationPanelFooter = ({ onPress }: { onPress: () => void }) => {
           View all notifications
         </Text>
         <Feather name="arrow-right" size={13} color={palette.primary} />
-      </Pressable>
+      </StatePressable>
     </View>
   );
 };

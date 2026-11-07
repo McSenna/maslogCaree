@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import React, { useCallback, useMemo } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { useInteractionState } from "@/hooks/useInteractionState";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { NOTIFICATION_METRICS, NOTIFICATION_RADIUS, useNotificationPalette } from "../notification.theme";
@@ -50,7 +51,7 @@ const NotificationRow = ({
         />
       ) : null}
 
-      <Pressable
+      <StatePressable
         {...handlers}
         accessibilityRole="button"
         accessibilityLabel={`${item.isRead ? "Read" : "Unread"} notification. ${item.title}. ${displayBody}${timestamp ? `. ${timestamp}` : ""}`}
@@ -138,7 +139,7 @@ const NotificationRow = ({
             </Text>
           ) : null}
         </View>
-      </Pressable>
+      </StatePressable>
     </View>
   );
 };

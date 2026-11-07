@@ -50,15 +50,12 @@ export const fetchRegularBookingOptions = async (consultationType: string, query
   return options;
 };
 
-type MissionBookingBody = {
+/** A queued doctor service: what is needed, never when; the queue assigns the time. */
+type QueuedRequestBody = {
   consultationType: string;
   description: string;
   additionalNotes?: string;
-  missionScheduleId: string;
-  slotStart: string;
   requestKey: string;
-  preferredProvider?: string | null;
-  isUrgent?: boolean;
 };
 
 /** A weekly service (immunization): the server picks the time, so only the day is sent. */
@@ -70,7 +67,7 @@ type WeeklyBookingBody = {
   requestKey: string;
 };
 
-/** A regular-schedule service (BP checking): the resident's chosen date and start. */
+/** A regular-schedule service (BP checking, prenatal): the resident's chosen date and start. */
 type RegularBookingBody = {
   consultationType: string;
   description: string;
@@ -81,11 +78,11 @@ type RegularBookingBody = {
 };
 
 /**
- * Books and confirms in one call. `requestKey` stays the same across retries of
- * one attempt, so a repeat returns the first booking instead of making another.
+ * Books (or, for a queued service, requests) in one call. `requestKey` stays the
+ * same across retries of one attempt, so a repeat returns the first result.
  */
 export const createResidentAppointment = async (
-  body: MissionBookingBody | WeeklyBookingBody | RegularBookingBody
+  body: QueuedRequestBody | WeeklyBookingBody | RegularBookingBody
 ): Promise<{ message?: string; appointment: AppointmentRecord }> => {
   const { data } = await api.post<{
     success: boolean;

@@ -33,6 +33,7 @@ export const DialogSheetShell = ({
   subheader,
   scrollToKey,
   scrollToY,
+  aside,
 }: DialogShellProps) => {
   const themedPalette = useResidentDialogPalette();
   const palette = lightSurface ? LIGHT_PALETTE : themedPalette;
@@ -76,6 +77,7 @@ export const DialogSheetShell = ({
         keyboardShouldPersistTaps="handled"
       >
         {children}
+        {aside}
       </ScrollView>
     </BottomSheet>
   );

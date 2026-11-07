@@ -4,9 +4,13 @@ import type { AppointmentBooking } from "../../hooks/useAppointmentBooking";
 import { APPOINTMENT_COLORS } from "../appointmentTheme";
 import BookingActionButton from "../BookingActionButton";
 
-const primaryLabel = (reviewing: boolean, submitting: boolean): string => {
+// A queued service is requested, not booked: nothing is reserved until the queue places it.
+const submitLabel = (queued: boolean) => (queued ? "Request appointment" : "Book appointment");
+
+const primaryLabel = (reviewing: boolean, submitting: boolean, queued: boolean): string => {
   if (!reviewing) return "Continue to review";
-  return submitting ? "Booking..." : "Book appointment";
+  if (submitting) return queued ? "Sending request..." : "Booking...";
+  return submitLabel(queued);
 };
 
 type Props = {
@@ -15,11 +19,12 @@ type Props = {
   onCancel: () => void;
 };
 
-/** The pinned actions: Cancel and Continue on Details, Back and Book on Review. */
+/** The pinned actions: Cancel and Continue on Details, Back and Book (or Request) on Review. */
 export const BookingFooter = ({ booking, onCancel }: Props) => {
   const reviewing = booking.stage === "review";
   const { submitting } = booking;
-  const primaryDisabled = submitting || booking.servicesUnavailable;
+  // A doctor request already in the queue blocks a second; the note above the footer says why.
+  const primaryDisabled = submitting || booking.servicesUnavailable || booking.queueBlocked;
 
   return (
     <View className="flex-row gap-4">
@@ -36,8 +41,8 @@ export const BookingFooter = ({ booking, onCancel }: Props) => {
       <View className="flex-1">
         <BookingActionButton
           variant="primary"
-          label={primaryLabel(reviewing, submitting)}
-          accessibilityLabel={reviewing ? "Book appointment" : "Continue to review"}
+          label={primaryLabel(reviewing, submitting, booking.queued)}
+          accessibilityLabel={reviewing ? submitLabel(booking.queued) : "Continue to review"}
           onPress={reviewing ? () => void booking.submit() : booking.continueToReview}
           disabled={primaryDisabled}
           busy={submitting}

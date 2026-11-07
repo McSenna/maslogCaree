@@ -15,9 +15,10 @@ import {
 
 const postJson = async <T>(
   path: string,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
+  signal?: AbortSignal
 ): Promise<T> => {
-  const response = await api.post<T>(path, body);
+  const response = await api.post<T>(path, body, { signal });
   return response.data;
 };
 
@@ -89,17 +90,14 @@ export const verifyOtp = async (
 
 export const loginWithEmail = async (
   email: string,
-  password: string
+  password: string,
+  signal?: AbortSignal
 ): Promise<{ token: string; user: AuthUser }> => {
   const data = await postJson<LoginResponse>("/login", {
     email: email.trim().toLowerCase(),
     password,
     clientPlatform: CLIENT_PLATFORM,
-  });
-
-  if (data.token) {
-    setStoredUser(toStoredUser(data.user, data.token));
-  }
+  }, signal);
 
   return { token: data.token, user: data.user };
 };

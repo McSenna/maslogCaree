@@ -18,6 +18,9 @@ export const APPOINTMENT_COLORS = {
   placeholder: PALETTE.slate[500],
   successBg: PALETTE.success[50],
   success: PALETTE.success[700],
+  // The pending status's amber, for a request still waiting in the queue.
+  waitingBg: PALETTE.amber[50],
+  waiting: PALETTE.amber[700],
   actionGreen: PALETTE.green[600],
   actionGreenPressed: PALETTE.green[700],
   danger: PALETTE.red[600],

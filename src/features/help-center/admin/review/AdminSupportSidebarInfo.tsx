@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 
 import UserAvatar, { initialsFrom } from "@/components/ui/UserAvatar";
 import { RADIUS } from "@/design/adminSurfaces";
@@ -92,7 +93,7 @@ const AdminSupportSidebarInfo = ({ ticket, busy, onStatusChange }: AdminSupportS
           {SUPPORT_STATUS_ORDER.map((status) => {
             const active = status === ticket.status;
             return (
-              <Pressable
+              <StatePressable
                 key={status}
                 onPress={() => onStatusChange(status)}
                 disabled={busy || active}
@@ -111,7 +112,7 @@ const AdminSupportSidebarInfo = ({ ticket, busy, onStatusChange }: AdminSupportS
                 <Text style={{ fontSize: 13.5, fontWeight: active ? "700" : "500", color: active ? PALETTE.white : palette.body }}>
                   {SUPPORT_STATUS_LABELS[status]}
                 </Text>
-              </Pressable>
+              </StatePressable>
             );
           })}
         </View>

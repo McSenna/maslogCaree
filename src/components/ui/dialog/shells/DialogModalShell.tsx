@@ -1,5 +1,5 @@
 import { useCallback, useId } from "react";
-import { Platform, Pressable, ScrollView, View } from "react-native";
+import { Platform, Pressable, View } from "react-native";
 import Modal from "@/components/ui/AppModal";
 
 import SheetViewport from "@/components/ui/sheetLayout/SheetViewport";
@@ -12,12 +12,9 @@ import { useReducedMotion } from "@/theme/motion";
 import DialogFooter from "../DialogFooter";
 import { DialogHeader } from "../DialogHeader";
 import { ProminentDialogHeader } from "../ProminentDialogHeader";
-import {
-  DIALOG_BACKDROP_STYLE,
-  DIALOG_CONTENT_PADDING,
-  buildDialogSurfaceStyle,
-} from "../dialogModalStyle";
+import { DIALOG_BACKDROP_STYLE, buildDialogSurfaceStyle } from "../dialogModalStyle";
 import type { DialogShellProps } from "./dialogShell.types";
+import { DIALOG_ASIDE_WIDTH, DialogBody } from "./DialogSplitBody";
 import { useShellScrollRequest } from "./useShellScrollRequest";
 
 const LIGHT_PALETTE = residentDialogPalette(false);
@@ -44,6 +41,9 @@ export const DialogModalShell = ({
   subheader,
   scrollToKey,
   scrollToY,
+  aside,
+  asideLabel = "",
+  asideWidth = DIALOG_ASIDE_WIDTH,
 }: DialogShellProps) => {
   const frame = useModalFrame(maxWidth);
   // A landscape phone is wide enough for this dialog but has a keyboard to clear.
@@ -97,7 +97,7 @@ export const DialogModalShell = ({
             title={title}
             subtitle={subtitle}
             icon={icon}
-          media={media}
+            media={media}
             tint={tint}
             tintSoft={tintSoft}
             titleId={titleId}
@@ -106,15 +106,16 @@ export const DialogModalShell = ({
 
           {subheader}
 
-          <ScrollView
-            ref={scrollRef}
-            style={{ flexShrink: 1 }}
-            contentContainerStyle={flush ? undefined : { padding: DIALOG_CONTENT_PADDING, paddingBottom: 24 }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
+          <DialogBody
+            scrollRef={scrollRef}
+            palette={palette}
+            flush={flush}
+            aside={aside}
+            asideLabel={asideLabel}
+            asideWidth={asideWidth}
           >
             {children}
-          </ScrollView>
+          </DialogBody>
 
           {footer ? (
             <DialogFooter palette={palette} filled>

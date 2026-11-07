@@ -115,7 +115,9 @@ const MetricCard = ({
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
       // A selected card's 2px border takes 1px from the padding, so nothing shifts.
-      className={`min-w-0 flex-1 ${selected ? "border-2" : "border"} ${padding(compact, dense, selected)}`}
+      // The grid cell is a column. A zero flex basis here collapses the card's
+      // intrinsic height in Yoga; grow keeps equal heights without losing content.
+      className={`min-w-0 grow shrink-0 ${selected ? "border-2" : "border"} ${padding(compact, dense, selected)}`}
       style={{
         backgroundColor: palette.cardBg,
         borderColor: selected ? palette.primary : palette.cardBorder,

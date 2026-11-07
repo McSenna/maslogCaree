@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { RADII } from "@/theme/radius";
 import type { Announcement } from "../data/announcements";
 import AnnouncementTag from "./AnnouncementTag";
@@ -83,7 +84,7 @@ const FeaturedAnnouncementCard = ({
           </View>
 
           {/* Radius token, not rounded-lg: 16px on a short button reads as a pill. */}
-          <Pressable
+          <StatePressable
             onPress={onViewDetails}
             accessibilityRole="button"
             accessibilityLabel={`View details for ${title}`}
@@ -105,7 +106,7 @@ const FeaturedAnnouncementCard = ({
               View details
             </Text>
             <Feather name="arrow-right" size={14} color={color} />
-          </Pressable>
+          </StatePressable>
         </View>
       </View>
     </View>

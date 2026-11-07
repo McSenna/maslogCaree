@@ -1,4 +1,4 @@
-import { useEffect, useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { View } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNotificationsContext } from "@/contexts/NotificationsContext";
@@ -17,6 +17,8 @@ import ResponsiveContainer from "./ResponsiveContainer";
 import ScreenTransition from "./ScreenTransition";
 import RoleBottomNav from "../navigation/RoleBottomNav";
 import SidebarNavigation from "../navigation/SidebarNavigation";
+import FloatingActionButton from "../buttons/FloatingActionButton";
+import { FloatingActionContext, type FloatingAction } from "./floatingAction/FloatingActionContext";
 import type { NavItem } from "../navigation/SidebarNavigation";
 
 export { ROLE_LAYOUT_PADDING };
@@ -37,11 +39,11 @@ const RoleLayout = ({
 }: RoleLayoutProps) => {
   const { isMobile } = useResponsive();
   const bottomNav = useBottomNavMetrics();
+  // A screen's floating action (useFloatingAction), drawn here beside the bottom navigation.
+  const [floatingAction, setFloatingAction] = useState<FloatingAction | null>(null);
 
   const { user } = useAuth();
   const { unreadCount } = useNotificationsContext();
-  const notificationsPath = user ? getNotificationsPath(user.role as UserRole) : undefined;
-  const navHasNotifications = bottomNavItems.some((item) => item.href === notificationsPath);
 
   const notificationBadges = useMemo(
     () => (user ? { [getNotificationsPath(user.role as UserRole)]: unreadCount } : undefined),
@@ -64,6 +66,7 @@ const RoleLayout = ({
   }, [isMobile, bottomNav.height, bottomNav.bottomInset]);
 
   return (
+    <FloatingActionContext.Provider value={setFloatingAction}>
     <View
       className="flex-1"
       style={{
@@ -75,10 +78,7 @@ const RoleLayout = ({
       <View className="flex-1 w-full min-w-0" style={{ backgroundColor: pageSurface }}>
 
         <View className="w-full md:hidden">
-          <AppHeader
-            variant="mobile"
-            mobileNotificationsHref={navHasNotifications ? undefined : notificationsPath}
-          />
+          <AppHeader variant="mobile" />
         </View>
 
         <View className="flex-1 flex-row w-full min-w-0">
@@ -119,7 +119,10 @@ const RoleLayout = ({
       <View className="w-full md:hidden">
         <RoleBottomNav items={bottomNavItems} badges={notificationBadges} />
       </View>
+
+      {isMobile && floatingAction ? <FloatingActionButton {...floatingAction} /> : null}
     </View>
+    </FloatingActionContext.Provider>
   );
 };
 

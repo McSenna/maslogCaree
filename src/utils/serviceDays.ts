@@ -7,22 +7,33 @@ const WEEKDAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "
 const SERVICE_WEEKDAYS: Readonly<Record<string, readonly number[]>> = {
   immunization: [4],
   bp_checking: [1, 2, 3, 4, 5, 6],
+  // No Thursdays: the midwife runs immunization that day.
+  prenatal: [1, 2, 3, 5, 6],
 };
 
 /** Services with their own weekly schedule (mirrors `scheduling: "weekly"` in the backend config). */
-const WEEKLY_SERVICES: ReadonlySet<string> = new Set(["immunization", "bp_checking"]);
+const WEEKLY_SERVICES: ReadonlySet<string> = new Set(["immunization", "bp_checking", "prenatal"]);
 
 /**
  * Weekly services where the resident picks the date and time (mirrors
  * `residentPicksTime` in the backend config). Their hours come from the server.
  */
-const REGULAR_SCHEDULE_SERVICES: ReadonlySet<string> = new Set(["bp_checking"]);
+const REGULAR_SCHEDULE_SERVICES: ReadonlySet<string> = new Set(["bp_checking", "prenatal"]);
+
+/**
+ * Doctor services residents only request (mirrors `scheduling: "queue"`): no
+ * date or time is chosen; the queue assigns one from a medical mission.
+ */
+const QUEUED_SERVICES: ReadonlySet<string> = new Set(["general_checkup", "consultation"]);
 
 export const isWeeklyService = (serviceKey: string | null | undefined): boolean =>
   Boolean(serviceKey && WEEKLY_SERVICES.has(serviceKey));
 
 export const isRegularScheduleService = (serviceKey: string | null | undefined): boolean =>
   Boolean(serviceKey && REGULAR_SCHEDULE_SERVICES.has(serviceKey));
+
+export const isQueuedService = (serviceKey: string | null | undefined): boolean =>
+  Boolean(serviceKey && QUEUED_SERVICES.has(serviceKey));
 
 /** A weekly service whose time the system assigns (immunization). */
 export const isAssignedTimeService = (serviceKey: string | null | undefined): boolean =>
@@ -76,7 +87,7 @@ export const isCompletionLocked = (
   slotStart: string | null | undefined,
   now: Date = new Date()
 ): boolean => {
-  // BP checking was never locked to its day (mirrors assertCompletionDayReached).
+  // BP checking and prenatal are never locked to their day (mirrors assertCompletionDayReached).
   if (!weekdaysOf(serviceKey) || isRegularScheduleService(serviceKey)) return false;
   const scheduledDay = slotStart ? appDayNumber(slotStart) : null;
   const today = appDayNumber(now);

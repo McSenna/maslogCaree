@@ -3,7 +3,6 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { RADII } from "@/theme/radius";
 import { SPACING } from "@/theme/spacing";
-import { TYPE } from "@/theme/typography";
 import LogoutButton from "../components/LogoutButton";
 import LogoutConfirmModal from "../components/LogoutConfirmModal";
 import ProfileAccordionList from "../components/ProfileAccordionList";
@@ -43,8 +42,9 @@ const UserProfileScreen = () => {
         }}
       >
         <View style={{ width: "100%", maxWidth: PROFILE_MAX_WIDTH, alignSelf: "center", gap: SPACING.lg }}>
+          {/* No visible title on phones either (kape, 2026-11-07); the heading stays for screen readers. */}
           {isMobile ? (
-            <Text accessibilityRole="header" aria-level={1} style={{ ...TYPE.headline, color: colors.heading }}>
+            <Text role="heading" aria-level={1} className="sr-only">
               Profile
             </Text>
           ) : null}

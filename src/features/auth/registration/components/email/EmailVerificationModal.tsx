@@ -6,6 +6,7 @@ import {
   ScrollView,
   useWindowDimensions,
 } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import Modal from "@/components/ui/AppModal";
 import { Feather } from "@expo/vector-icons";
 
@@ -129,7 +130,7 @@ const EmailVerificationModal = ({ visible, email, verification }: EmailVerificat
             boxShadow: `0px 18px 48px ${withAlpha(PALETTE.ink, 0.22)}`,
           }}
         >
-          <Pressable
+          <StatePressable
             accessibilityRole="button"
             accessibilityLabel="Close"
             onPress={close}
@@ -147,7 +148,7 @@ const EmailVerificationModal = ({ visible, email, verification }: EmailVerificat
             })}
           >
             <Feather name="x" size={20} color={REG_COLORS.muted} />
-          </Pressable>
+          </StatePressable>
 
           <ScrollView
             keyboardShouldPersistTaps="handled"

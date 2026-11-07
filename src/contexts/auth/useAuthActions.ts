@@ -32,9 +32,10 @@ export const useAuthActions = ({ setUser }: Options) => {
   );
 
   const login = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, signal?: AbortSignal) => {
       try {
-        const { token, user: userData } = await loginWithEmail(email.trim(), password);
+        const { token, user: userData } = await loginWithEmail(email.trim(), password, signal);
+        if (signal?.aborted) return { success: false, code: ERROR_CODES.REQUEST_CANCELLED };
 
         if (!isPlatformAllowed(userData.role, CLIENT_PLATFORM)) {
           clearStoredUser();

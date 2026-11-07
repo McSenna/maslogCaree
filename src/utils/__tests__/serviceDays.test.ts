@@ -12,6 +12,7 @@ import {
   isAssignedTimeService,
   isWeeklyService,
   serviceDayNote,
+  isQueuedService,
 } from "../serviceDays.ts";
 
 // Oct 5–11 2026 runs Monday to Sunday; Oct 8 is the Thursday.
@@ -30,6 +31,20 @@ describe("isServiceDay", () => {
     for (const key of ["prenatal", "general_checkup", "consultation", undefined]) {
       assert.equal(isServiceDay(key, at("2026-10-06")), true, String(key));
     }
+  });
+
+  it("closes prenatal on Thursdays only, the midwife's immunization day", () => {
+    assert.deepEqual(
+      ["2026-10-04", "2026-10-05", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10"].map((day) => isServiceDay("prenatal", at(day))),
+      [false, true, true, true, false, true, true]
+    );
+    assert.equal(isServiceDay("bp_checking", at("2026-10-08")), true);
+  });
+
+  it("reads the weekday in Manila, not the device or UTC", () => {
+    // 00:30 Thursday in Manila is still Wednesday in UTC.
+    assert.equal(isServiceDay("prenatal", "2026-10-07T16:30:00.000Z"), false);
+    assert.equal(isServiceDay("prenatal", "2026-10-07T15:30:00.000Z"), true);
   });
 
   it("runs BP checking Monday to Saturday, closed on Sunday", () => {
@@ -78,14 +93,19 @@ describe("serviceDayNote", () => {
       serviceDayNote("immunization", "Immunization"),
       "Immunization appointments are available every Thursday only."
     );
-    assert.equal(serviceDayNote("prenatal", "Prenatal"), null);
+    assert.equal(
+      serviceDayNote("prenatal", "Prenatal"),
+      "Prenatal appointments are available every Monday, Tuesday, Wednesday, Friday, and Saturday only."
+    );
+    assert.equal(serviceDayNote("general_checkup", "General Checkup"), null);
     assert.equal(serviceDayNote(undefined, ""), null);
   });
 
   it("exposes the day name for staff-facing copy", () => {
     assert.equal(serviceDayNames("immunization"), "Thursday");
     assert.equal(serviceDayNames("bp_checking"), "Monday, Tuesday, Wednesday, Thursday, Friday, and Saturday");
-    assert.equal(serviceDayNames("prenatal"), null);
+    assert.equal(serviceDayNames("prenatal"), "Monday, Tuesday, Wednesday, Friday, and Saturday");
+    assert.equal(serviceDayNames("consultation"), null);
     assert.equal(serviceDayWord("immunization"), "Thursday");
     assert.equal(serviceDayWord("bp_checking"), "day");
   });
@@ -126,5 +146,18 @@ describe("msUntilNextAppDay", () => {
 
   it("waits a full day when called exactly at midnight", () => {
     assert.equal(msUntilNextAppDay(new Date(at("2026-10-07", "00:00"))), 24 * 60 * 60 * 1000);
+  });
+});
+
+describe("isQueuedService", () => {
+  it("queues the doctor's services and nothing else", () => {
+    assert.equal(isQueuedService("general_checkup"), true);
+    assert.equal(isQueuedService("consultation"), true);
+    for (const key of ["prenatal", "bp_checking", "immunization", null, undefined]) assert.equal(isQueuedService(key), false, String(key));
+  });
+
+  it("lets prenatal residents pick their own time, like BP checking", () => {
+    assert.equal(isRegularScheduleService("prenatal"), true);
+    assert.equal(isRegularScheduleService("general_checkup"), false);
   });
 });

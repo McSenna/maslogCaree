@@ -28,7 +28,7 @@ const MasterListPhoneList = ({ screen }: Props) => {
   );
 
   const header = (
-    <View className="gap-3 pb-3 pt-4">
+    <View className="gap-3 pt-4">
       <View className="px-4">
         <UsersPageHeader screen={screen} compact onAddRecord={master.openNew} />
       </View>

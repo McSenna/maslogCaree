@@ -4,12 +4,17 @@ import type { AppointmentRecord } from "@/services/appointments";
 import { isAssignedTimeService } from "@/utils/serviceDays";
 
 import { appointmentReference, appointmentServiceLabel } from "../appointmentPresenter";
+import { TO_BE_ASSIGNED } from "../constants/bookingCopy";
 import { appDateKey } from "../hooks/booking/childDetailsRules";
 import AppointmentSummaryRow from "./AppointmentSummaryRow";
 import { formatScheduleDate, formatSlotTime } from "./reschedule/rescheduleFormat";
 
+// A request still in the queue has no time yet: it is to be assigned, not missing.
+const unsetLabel = (appointment: AppointmentRecord): string =>
+  appointment.status === "pending" ? TO_BE_ASSIGNED : "Not set";
+
 const timeRange = (appointment: AppointmentRecord): string => {
-  if (!appointment.slotStart) return "Not set";
+  if (!appointment.slotStart) return unsetLabel(appointment);
   const start = formatSlotTime(appointment.slotStart);
   return appointment.slotEnd ? `${start} to ${formatSlotTime(appointment.slotEnd)}` : start;
 };
@@ -21,7 +26,7 @@ const minutesOf = (appointment: AppointmentRecord): number | null =>
 
 /** The saved booking, row by row. An immunization shows the child and that its time was assigned, never a reason. */
 const BookingSummaryRows = ({ appointment }: { appointment: AppointmentRecord }) => {
-  const date = appointment.slotStart ? formatScheduleDate(appointment.slotStart) : "Not set";
+  const date = appointment.slotStart ? formatScheduleDate(appointment.slotStart) : unsetLabel(appointment);
 
   if (isAssignedTimeService(appointment.consultationType)) {
     const minutes = minutesOf(appointment);

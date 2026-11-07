@@ -5,10 +5,11 @@ import { getDashboardPath } from "@/config/roleRoutes";
 import { PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
 import { checkLoginEmail, checkPassword } from "../webLogin/loginIdentifier";
 import { toastLoginFailed, toastLoginRefused } from "./loginFailureToast";
+import { useLoginCancellation } from "./useLoginCancellation";
 
 export type LoginField = "email" | "password";
 
-export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => {
+export const useLoginForm = ({ onSuccess, active = true }: { onSuccess?: () => void; active?: boolean } = {}) => {
   const { login } = useAuth();
   const router = useRouter();
 
@@ -21,6 +22,7 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   // A ref, not state, so a second tap in the same frame is already blocked.
   const inFlight = useRef(false);
+  const beginRequest = useLoginCancellation(active);
 
   const setEmail = useCallback((value: string) => {
     setEmailValue(value);
@@ -34,7 +36,7 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
 
   /** Returns the first invalid field so the caller can move focus to it. */
   const submit = useCallback(async (): Promise<LoginField | null> => {
-    if (inFlight.current) return null;
+    if (inFlight.current || !active) return null;
 
     // Same rule as the web login: an email address only, never a mobile number.
     const idCheck = checkLoginEmail(email);
@@ -48,8 +50,10 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
 
     inFlight.current = true;
     setIsSubmitting(true);
+    const request = beginRequest();
     try {
-      const result = await login(idCheck.value, password);
+      const result = await login(idCheck.value, password, request.signal);
+      if (request.signal.aborted) return null;
       if (result.success && result.role) {
         onSuccess?.();
         router.replace(getDashboardPath(result.role) as never);
@@ -64,13 +68,13 @@ export const useLoginForm = ({ onSuccess }: { onSuccess?: () => void } = {}) => 
 
       toastLoginRefused(result);
     } catch (error: unknown) {
-      toastLoginFailed(error);
+      if (!request.signal.aborted) toastLoginFailed(error);
     } finally {
       inFlight.current = false;
       setIsSubmitting(false);
     }
     return null;
-  }, [email, password, login, router, onSuccess]);
+  }, [email, password, login, router, onSuccess, active, beginRequest]);
 
   const forgotPassword = useCallback(() => setShowForgotPassword(true), []);
 

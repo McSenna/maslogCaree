@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import { Platform, Pressable, ScrollView, Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 
 import { useResponsive } from "@/hooks/useResponsive";
 
@@ -213,7 +214,7 @@ const MasterPurokDropdown = ({
               {options.map((option) => {
                 const checked = option.value === value;
                 return (
-                  <Pressable
+                  <StatePressable
                     key={option.value}
                     accessibilityRole="radio"
                     accessibilityLabel={option.label}
@@ -256,7 +257,7 @@ const MasterPurokDropdown = ({
                         color={REG_COLORS.primary}
                       />
                     ) : null}
-                  </Pressable>
+                  </StatePressable>
                 );
               })}
             </View>

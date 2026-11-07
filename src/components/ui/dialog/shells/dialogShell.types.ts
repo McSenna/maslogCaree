@@ -22,6 +22,15 @@ export type DialogShellProps = {
   flush?: boolean;
   /** How much of the screen height the sheet may take; defaults to the sheet's own. */
   sheetHeightRatio?: number;
+  /**
+   * A side column beside the body on the centred dialog (e.g. clinic hours next
+   * to a form). The body then scrolls on its own and the aside stays put. The
+   * sheet has no room for a column, so there it follows the body instead.
+   */
+  aside?: ReactNode;
+  /** Names the aside for screen readers, as a region. */
+  asideLabel?: string;
+  asideWidth?: number;
   /** Pinned between the header and the scroll region, e.g. tabs. */
   subheader?: ReactNode;
   /** Changing this moves the body to `scrollToY`. */

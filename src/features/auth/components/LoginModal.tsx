@@ -30,7 +30,7 @@ const CARD_EDGE = SPACING.lg;
 
 const LoginModal = ({ visible, onClose, onOpenRegister }: LoginModalProps) => {
   const colors = useThemeColors();
-  const form = useLoginForm({ onSuccess: onClose });
+  const form = useLoginForm({ onSuccess: onClose, active: visible });
   const layout = useSheetLayout({ enabled: visible, variant: "centered", edgePadding: CARD_EDGE });
   const submit = () => void form.submit();
 

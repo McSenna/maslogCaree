@@ -5,7 +5,6 @@ import { useThemeColors } from "@/hooks/useThemeColors";
 import { RADII } from "@/theme/radius";
 import { SPACING } from "@/theme/spacing";
 import { TYPE } from "@/theme/typography";
-import { PROFILE_SUBTITLE } from "../config/profileRoleConfig";
 
 const CLOSE_SIZE = 44;
 const TITLE_MIN_WIDTH = 240;
@@ -37,14 +36,10 @@ const ProfilePageHeader = ({ title, onClose }: ProfilePageHeaderProps) => {
           <Feather name="chevron-right" size={14} color={colors.muted} />
           <Text style={{ ...TYPE.caption, fontWeight: "400", color: colors.muted }}>Profile</Text>
         </View>
-        <Text
-          accessibilityRole="header"
-          aria-level={1}
-          style={{ ...TYPE.display, letterSpacing: -0.5, color: colors.heading }}
-        >
+        {/* The role title is not shown, but the page still needs its level-one heading. */}
+        <Text role="heading" aria-level={1} className="sr-only">
           {title}
         </Text>
-        <Text style={{ ...TYPE.body, color: colors.muted }}>{PROFILE_SUBTITLE}</Text>
       </View>
 
       {onClose ? (

@@ -1,7 +1,8 @@
 import {
   classifyBookingFailure,
+  classifyQueuedFailure,
   classifyWeeklyFailure,
-  validateBooking,
+  validateQueuedBooking,
   validateRegularBooking,
   type BookingFailure,
 } from "./bookingRules";
@@ -11,9 +12,8 @@ import { validateWeeklyBooking } from "./childDetailsRules";
 export type BookingDraft = {
   serviceType: string | null;
   weekly: boolean;
-  /** BP checking: the resident picks a date and time on its own schedule. */
+  /** BP checking and prenatal: the resident picks a date and time on their own schedule. */
   regular: boolean;
-  scheduleId: string | null;
   slotStart: string | null;
   dateKey: string | null;
   reason: string;
@@ -25,23 +25,30 @@ export type BookingDraft = {
 
 type FailureLike = Parameters<typeof classifyBookingFailure>[0];
 
+// Every service that is neither weekly nor regular is a queued doctor service
+// (general checkup, consultation): requested now, given a time by the queue.
+const isQueuedDraft = (draft: BookingDraft): boolean => !draft.regular && !draft.weekly;
+
 export const validateDraft = (draft: BookingDraft): BookingErrors => {
   if (draft.regular) return validateRegularBooking(draft);
-  return draft.weekly ? validateWeeklyBooking(draft) : validateBooking(draft);
+  return draft.weekly ? validateWeeklyBooking(draft) : validateQueuedBooking(draft);
 };
 
-export const classifyDraftFailure = (draft: BookingDraft, failure: FailureLike): BookingFailure =>
-  draft.weekly ? classifyWeeklyFailure(failure) : classifyBookingFailure(failure);
+export const classifyDraftFailure = (draft: BookingDraft, failure: FailureLike): BookingFailure => {
+  if (draft.weekly) return classifyWeeklyFailure(failure);
+  return isQueuedDraft(draft) ? classifyQueuedFailure(failure) : classifyBookingFailure(failure);
+};
 
 /**
- * What is sent: BP checking carries the chosen date and start with the reason;
- * a weekly service (immunization) carries the child and the day only, never a
- * time, reason or notes; a mission service carries what it always did.
+ * What is sent: BP checking and prenatal carry the chosen date and start with
+ * the reason; a weekly service (immunization) carries the child and the day
+ * only; a queued doctor service carries the reason and notes and never a time.
  */
 export const draftBody = (draft: BookingDraft, requestKey: string) => {
+  const consultationType = draft.serviceType as string;
   if (draft.regular) {
     return {
-      consultationType: draft.serviceType as string,
+      consultationType,
       description: draft.reason.trim(),
       additionalNotes: draft.notes.trim(),
       appointmentDate: draft.dateKey as string,
@@ -49,20 +56,14 @@ export const draftBody = (draft: BookingDraft, requestKey: string) => {
       requestKey,
     };
   }
-  return draft.weekly
-    ? {
-        consultationType: draft.serviceType as string,
-        childName: draft.childName.trim().replace(/\s+/g, " "),
-        childDateOfBirth: draft.childDob,
-        appointmentDate: draft.dateKey as string,
-        requestKey,
-      }
-    : {
-        consultationType: draft.serviceType as string,
-        description: draft.reason.trim(),
-        additionalNotes: draft.notes.trim(),
-        missionScheduleId: draft.scheduleId as string,
-        slotStart: draft.slotStart as string,
-        requestKey,
-      };
+  if (draft.weekly) {
+    return {
+      consultationType,
+      childName: draft.childName.trim().replace(/\s+/g, " "),
+      childDateOfBirth: draft.childDob,
+      appointmentDate: draft.dateKey as string,
+      requestKey,
+    };
+  }
+  return { consultationType, description: draft.reason.trim(), additionalNotes: draft.notes.trim(), requestKey };
 };

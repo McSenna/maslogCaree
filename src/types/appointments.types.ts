@@ -5,8 +5,11 @@ export type ConsultationCategory = {
   description?: string;
   residentBookable?: boolean;
   queueRole?: string;
-  /** "weekly": its own recurring schedule (immunization), never booked on a medical mission. */
-  scheduling?: "mission" | "weekly";
+  /**
+   * "weekly": its own recurring schedule (immunization, BP checking, prenatal).
+   * "queue": requested without a time and placed on a medical mission by the queue.
+   */
+  scheduling?: "mission" | "weekly" | "queue";
   durationMinutes?: number;
   durationMinutesMin?: number;
   durationMinutesMax?: number;
@@ -43,6 +46,8 @@ export type ServiceProvider = {
   profilePhoto?: string | null;
 };
 
+export type QueueWaitReason = "no_mission" | "no_open_time";
+
 export type AppointmentRecord = {
   _id: string;
   consultationType: string;
@@ -51,8 +56,12 @@ export type AppointmentRecord = {
   preferredProvider?: { _id?: string; fullname?: string; role?: string } | null;
   status: "pending" | "confirmed" | "declined" | "rescheduled" | "processing" | "completed" | "cancelled";
   isUrgent?: boolean;
+  /** Queue priority group: 1 to 6 by age, 7 when the birth date needs fixing. */
   ageTier?: number;
   prioritySortKey?: number;
+  /** Staff pending lists only: the group's name, and why a queued doctor request has no time yet. */
+  priorityGroupLabel?: string;
+  queueWaitReason?: QueueWaitReason | null;
   createdAt?: string;
   /** Set by the server on every write; realtime updates use it to drop stale or repeated events. */
   updatedAt?: string;
@@ -158,6 +167,8 @@ export type RegularSchedule = {
   weekdays: { weekday: number; windows: RegularWindow[] }[];
   bookingHorizonWeeks: number | null;
   lastBookableDate: string | null;
+  /** Closed weekdays that come with a reason to show (prenatal on Thursdays). */
+  closedDays?: { weekday: number; reason: string }[];
 };
 
 export type RegularOptions = {

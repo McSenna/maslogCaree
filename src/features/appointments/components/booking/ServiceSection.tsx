@@ -5,6 +5,7 @@ import { Pressable, Text, View } from "react-native";
 import { focusRing } from "@/components/data-table/focusRing";
 import { APPOINTMENT_FIELD_ICONS } from "@/config/appointmentServices";
 import { useInteractionState } from "@/hooks/useInteractionState";
+import { useResponsive } from "@/hooks/useResponsive";
 import { TYPE } from "@/theme/typography";
 import { webStyle } from "@/theme/webStyle";
 
@@ -12,7 +13,8 @@ import type { AppointmentBooking } from "../../hooks/useAppointmentBooking";
 import AppointmentAlert from "../AppointmentAlert";
 import { APPOINTMENT_COLORS } from "../appointmentTheme";
 import FormSelectField from "../FormSelectField";
-import { ClinicHoursRows } from "./ClinicHoursCard";
+import { HoursFrame } from "./ClinicHoursCard";
+import { ClinicHoursRows } from "./ClinicHoursPanel";
 import { FormSection } from "./FormSection";
 
 const WEB = webStyle({ cursor: "pointer" });
@@ -41,7 +43,9 @@ const HoursDisclosure = ({ open, onToggle }: { open: boolean; onToggle: () => vo
 /** Section 1 of the Details step: which service, and for BP checking how its schedule works. */
 export const ServiceSection = ({ booking }: { booking: AppointmentBooking }) => {
   const [hoursOpen, setHoursOpen] = useState(false);
-  const schedule = booking.regular ? booking.regularPicker.schedule : null;
+  // On desktop the hours are already the dialog's side column (AppointmentModal), so they are not repeated here.
+  const { isDesktop } = useResponsive();
+  const schedule = booking.regular && !isDesktop ? booking.regularPicker.schedule : null;
 
   return (
     <FormSection title="Service">
@@ -80,9 +84,9 @@ export const ServiceSection = ({ booking }: { booking: AppointmentBooking }) => 
       ) : null}
 
       {schedule && hoursOpen ? (
-        <View className="rounded-xl px-4 pb-4" style={{ backgroundColor: APPOINTMENT_COLORS.neutralBg }}>
+        <HoursFrame>
           <ClinicHoursRows schedule={schedule} />
-        </View>
+        </HoursFrame>
       ) : null}
     </FormSection>
   );

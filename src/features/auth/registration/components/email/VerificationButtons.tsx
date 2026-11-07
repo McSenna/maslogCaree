@@ -1,5 +1,6 @@
 import { useState, type Ref } from "react";
-import { ActivityIndicator, Platform, Pressable, Text, View } from "react-native";
+import { ActivityIndicator, Platform, Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 import { Feather } from "@expo/vector-icons";
 import { REG_COLORS, REG_METRICS, REG_RADIUS } from "../../registrationTheme";
 
@@ -14,7 +15,7 @@ export const LinkButton = ({ label, accessibilityLabel, icon, onPress }: LinkBut
   const [hovered, setHovered] = useState(false);
 
   return (
-    <Pressable
+    <StatePressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
       onPress={onPress}
@@ -43,7 +44,7 @@ export const LinkButton = ({ label, accessibilityLabel, icon, onPress }: LinkBut
       >
         {label}
       </Text>
-    </Pressable>
+    </StatePressable>
   );
 };
 
@@ -66,7 +67,7 @@ export const PrimaryButton = ({
   reducedMotion,
   buttonRef,
 }: PrimaryButtonProps) => (
-  <Pressable
+  <StatePressable
     ref={buttonRef}
     accessibilityRole="button"
     accessibilityLabel={label}
@@ -94,5 +95,5 @@ export const PrimaryButton = ({
     <Text style={{ fontSize: 17, fontWeight: "700", color: REG_COLORS.surface }}>
       {busy && busyLabel ? busyLabel : label}
     </Text>
-  </Pressable>
+  </StatePressable>
 );

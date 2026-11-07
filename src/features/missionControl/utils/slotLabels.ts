@@ -11,17 +11,6 @@ export const formatSlotLabel = (iso: string): string => {
   });
 };
 
-export const formatPriorityTier = (tier: number | undefined): string => {
-  const labels: Record<number, string> = {
-    0: "P0 (0–1: Critical)",
-    1: "P1 (60+: Elderly)",
-    2: "P2 (2–12: Children)",
-    3: "P3 (13–17: Teenagers)",
-    4: "P4 (18–59: Adults)",
-  };
-  return tier == null ? "Not set" : labels[tier] ?? "Not set";
-};
-
 export const formatMissionHours = (mission: MissionScheduleRecord): string => {
   const morning = `${mission.morningStart}–${mission.morningEnd}`;
   const afternoonStart = toMinutesOfDay(mission.afternoonStart);

@@ -47,7 +47,8 @@ export const BookingStepper = ({ stage }: { stage: BookingStage }) => (
       {STEPS.map((step, index) => {
         const state = stateOf(index, stage);
         return (
-          <View key={step.key} className="flex-row items-center gap-4">
+          // Each step is a list item, so the "Booking steps" list is a real list to screen readers.
+          <View key={step.key} role="listitem" className="flex-row items-center gap-4">
             {index > 0 ? (
               <View
                 className="h-0.5 w-12 sm:w-36"

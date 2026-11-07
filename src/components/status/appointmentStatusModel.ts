@@ -21,7 +21,9 @@ type StatusSpec = { staff: string; resident: string; tone: StatusTone; dot: stri
 // loadable by the node test runner, which has no "@/" alias. Dots always sit
 // beside the icon and label, so meaning never rests on colour alone.
 const SPECS: Record<string, StatusSpec> = {
-  pending: { staff: "Pending", resident: "Pending", tone: "warning", dot: PALETTE.amber[500], icon: "clock" },
+  // Pending only ever means "waiting for the queue to assign a time" (bookings
+  // with a chosen time are confirmed at once), so it reads as the queue.
+  pending: { staff: "In queue", resident: "In queue", tone: "warning", dot: PALETTE.amber[500], icon: "clock" },
   confirmed: { staff: "Confirmed", resident: "Confirmed", tone: "success", dot: PALETTE.success[500], icon: "check-circle" },
   rescheduled: { staff: "Rescheduled", resident: "Rescheduled", tone: "info", dot: PALETTE.blue[600], icon: "rotate-ccw" },
   processing: { staff: "In Progress", resident: "Being seen", tone: "progress", dot: PALETTE.blue[600], icon: "activity" },

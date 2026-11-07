@@ -7,6 +7,7 @@ import type { ResidentDialogPalette } from "@/design/residentDialogTheme";
 import { formatDateKey, shiftMonth } from "../../regularSchedule/scheduleFormat";
 import { canGoToNextMonth, canGoToPreviousMonth, timeFieldText } from "../../regularSchedule/scheduleRules";
 import type { RegularSchedulePicker } from "../../regularSchedule/useRegularSchedule";
+import { ClosedDaysNote } from "./ClosedDaysNote";
 import { PickerField } from "./PickerField";
 import { PickerSheet } from "./PickerSheet";
 import { PickerLoadError, RegularTimeArea } from "./RegularTimeArea";
@@ -27,7 +28,7 @@ type Props = {
 type OpenPicker = "date" | "time" | null;
 
 /**
- * Date and time for a regular-schedule service (BP checking) as two boxes.
+ * Date and time for a regular-schedule service (BP checking, prenatal) as two boxes.
  * The Date box opens the calendar; choosing a date closes it and opens the
  * times for that date straight away. The Time box reopens those times. Every
  * value comes from the server, which re-checks the chosen time on save.
@@ -77,6 +78,8 @@ export const RegularScheduleField = ({ palette, serviceLabel, picker, onChange, 
       />
       </View>
 
+      <ClosedDaysNote schedule={schedule} textColor={palette.body} iconColor={palette.accent} />
+
       <PickerSheet palette={palette} visible={openPicker === "date"} title="Choose a date" subtitle={`${serviceLabel} is open on dates with a dot.`} desktopWidth={460} onClose={() => setOpenPicker(null)}>
         <ServiceCalendar
           palette={palette}
@@ -95,6 +98,9 @@ export const RegularScheduleField = ({ palette, serviceLabel, picker, onChange, 
             setOpenPicker("time");
           }}
         />
+        <View className="pt-3">
+          <ClosedDaysNote schedule={schedule} textColor={palette.body} iconColor={palette.accent} />
+        </View>
       </PickerSheet>
 
       <PickerSheet palette={palette} visible={openPicker === "time"} title="Choose a time" subtitle={dateText} desktopWidth={520} onClose={() => setOpenPicker(null)}>

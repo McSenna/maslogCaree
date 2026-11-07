@@ -27,7 +27,8 @@ export interface AuthContextValue {
   isAuthenticated: boolean;
   login: (
     email: string,
-    password: string
+    password: string,
+    signal?: AbortSignal
   ) => Promise<{ success: boolean; role?: UserRole; error?: string; code?: string }>;
   register: (
     payload: RegisterPayload

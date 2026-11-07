@@ -5,6 +5,7 @@ import { getDashboardPath } from "@/config/roleRoutes";
 import { PLATFORM_DENIED_CODES } from "@/utils/errorCodes";
 import { toastLoginFailed, toastLoginRefused } from "../hooks/loginFailureToast";
 import { checkLoginEmail, checkPassword } from "./loginIdentifier";
+import { useLoginCancellation } from "../hooks/useLoginCancellation";
 
 export type LoginStatus = "idle" | "submitting" | "success";
 
@@ -33,6 +34,7 @@ export const useWebLogin = () => {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   // A ref, not state, so a second click in the same frame is already blocked.
   const inFlight = useRef(false);
+  const beginRequest = useLoginCancellation();
 
   const setIdentifier = useCallback((value: string) => {
     setIdentifierValue(value);
@@ -66,8 +68,10 @@ export const useWebLogin = () => {
 
     inFlight.current = true;
     setStatus("submitting");
+    const request = beginRequest();
     try {
-      const result = await login(idCheck.value, password);
+      const result = await login(idCheck.value, password, request.signal);
+      if (request.signal.aborted) return null;
       if (result.success && result.role) {
         setSuccessMessage(successText(result.role));
         setStatus("success");
@@ -83,13 +87,14 @@ export const useWebLogin = () => {
       }
       toastLoginRefused(result);
     } catch (error: unknown) {
+      if (request.signal.aborted) return null;
       setStatus("idle");
       toastLoginFailed(error);
     } finally {
       inFlight.current = false;
     }
     return null;
-  }, [identifier, password, login, router]);
+  }, [identifier, password, login, router, beginRequest]);
 
   return {
     identifier,

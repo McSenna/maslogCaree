@@ -15,9 +15,9 @@ export const residentStatusLabel = (status: string | undefined): string =>
 const CANCELLABLE_STATUSES: AppointmentStatus[] = ["pending", "confirmed", "rescheduled"];
 
 /**
- * Only an appointment that already holds a slot can be moved. New bookings
- * always have one; a pending row is one whose mission was edited or removed,
- * and it waits for the system to place it again rather than jumping that queue.
+ * Only an appointment that already holds a slot can be moved. A pending row is
+ * a queued doctor request, or a visit whose mission was edited or removed, and
+ * it waits for the queue to place it rather than jumping the line.
  */
 const RESCHEDULABLE_STATUSES: AppointmentStatus[] = ["confirmed", "rescheduled"];
 
@@ -78,7 +78,7 @@ export type AppointmentStep = {
 };
 
 const STEP_LABELS: Record<AppointmentStatus, string> = {
-  pending: "Appointment requested",
+  pending: "Added to the queue",
   confirmed: "Appointment confirmed",
   rescheduled: "Appointment rescheduled",
   processing: "Healthcare service performed",
@@ -93,7 +93,8 @@ export const buildAppointmentTimeline = (appointment: AppointmentRecord): Appoin
   if (history.length) {
     return history.map((entry, index) => ({
       key: `${entry.status}-${index}`,
-      label: STEP_LABELS[entry.status] ?? entry.status,
+      // A later pending step is a visit sent back when its mission changed.
+      label: entry.status === "pending" && index > 0 ? "Returned to the queue" : (STEP_LABELS[entry.status] ?? entry.status),
       at: entry.timestamp ?? null,
       tone: entry.status === "declined" || entry.status === "cancelled" ? "declined" : "done",
     }));

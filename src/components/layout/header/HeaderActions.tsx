@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Pressable, Text, View } from "react-native";
+import StatePressable from "@/components/ui/StatePressable";
 
 import UserAvatar from "@/components/ui/UserAvatar";
 import type { CurrentUser } from "@/contexts/AuthContext";
@@ -58,7 +59,7 @@ const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
     >
       {user ? (
         <>
-          <Pressable
+          <StatePressable
             onPress={() => router.push(getProfilePath(user.role))}
             accessibilityRole="button"
             accessibilityLabel="Open profile"
@@ -80,7 +81,7 @@ const HeaderActions = ({ isMobile, user, onPressLogin }: Props) => {
               imageUrl={user?.avatarUrl ?? null}
               accessibilityLabel="Profile photo"
             />
-          </Pressable>
+          </StatePressable>
 
           <Pressable
             onPress={() => router.push(getDashboardPath(user.role))}

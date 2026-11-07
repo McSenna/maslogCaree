@@ -9,7 +9,7 @@ import { useFocusTrap, useWebModalBehavior } from "@/hooks/useWebModalBehavior";
 import AboutMaslogCareContent from "./AboutMaslogCareContent";
 import AboutFooter from "./AboutFooter";
 import AboutHeader from "./AboutHeader";
-import { CONTENT_GUTTER, ABOUT_RADIUS } from "./aboutTheme";
+import { ABOUT_RADIUS, ABOUT_SCROLL_A11Y, CONTENT_GUTTER } from "./aboutTheme";
 import { PALETTE, withAlpha } from "@/theme/palette";
 
 type AboutMaslogCareModalProps = {
@@ -72,6 +72,7 @@ const AboutMaslogCareModal = ({ visible, onClose }: AboutMaslogCareModalProps) =
           <AboutHeader titleId={titleId} onClose={onClose} paddingHorizontal={gutter} />
 
           <ScrollView
+            {...ABOUT_SCROLL_A11Y}
             style={{ flexShrink: 1 }}
             contentContainerStyle={{ paddingHorizontal: gutter, paddingVertical: 20 }}
             showsVerticalScrollIndicator

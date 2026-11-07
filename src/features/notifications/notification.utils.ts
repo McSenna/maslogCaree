@@ -33,6 +33,7 @@ type VisualSpec = { category: NotificationCategory; icon: FeatherIcon; tone: Ton
 
 const EXACT_VISUAL: Record<string, VisualSpec> = {
   appointment_confirmed: { category: "appointment", icon: "check-circle", tone: "success" },
+  appointment_queued: { category: "appointment", icon: "clock", tone: "info" },
   appointment_declined: { category: "appointment", icon: "x-circle", tone: "danger" },
   appointment_cancelled: { category: "appointment", icon: "x-circle", tone: "danger" },
   appointment_rescheduled: { category: "appointment", icon: "clock", tone: "warning" },
